@@ -12,19 +12,23 @@ class Stack:
         return f'Stack [ {", ".join(values)} ]'
 
     def push(self, value):
-        if not self.size: self.head = self.tail = Node(value)
-        else: self.head = Node(value, self.head)
+        if self.size == 0:
+            self.head = self.tail = Node(value)
+        else:
+            self.head = Node(value, self.head)
         self.size += 1
 
     def pop(self):
-        if not self.size: raise IndexError('empty stack')
+        if self.size == 0:
+            raise IndexError('empty stack')
         value = self.head.value
         self.head = self.head.next
         self.size -= 1
         return value
 
     def peek(self):
-        if not self.size: raise IndexError('empty stack')
+        if self.size == 0:
+            raise IndexError('empty stack')
         return self.head.value
 
 
@@ -56,4 +60,5 @@ def test():
     print(s)
 
 
-if __name__ == '__main__': test()
+if __name__ == '__main__':
+    test()

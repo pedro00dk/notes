@@ -12,58 +12,73 @@ class LinkedList:
         return f'LinkedList [ {", ".join(values)} ]'
 
     def _node(self, index):
-        if index < 0 or index > self.size: raise IndexError('out of range')
+        if index < 0 or index > self.size:
+            raise IndexError('out of range')
         direction = 1 if index < self.size / 2 else -1
         node = self.head if direction == 1 else self.tail
         if direction == 1:
-            for i in range(index): node = node.next
+            for i in range(index):
+                node = node.next
         else:
-            for i in range(self.size - 1, index, -1): node = node.prev
+            for i in range(self.size - 1, index, -1):
+                node = node.prev
         return node
 
     def prepend(self, value):
-        if not self.size: self.head = self.tail = Node(value)
+        if self.size == 0:
+            self.head = self.tail = Node(value)
         else:
             self.head = Node(value, None, self.head)
             self.head.next.prev = self.head
         self.size += 1
 
     def append(self, value):
-        if not self.size: self.head = self.tail = Node(value)
+        if self.size == 0:
+            self.head = self.tail = Node(value)
         else:
             self.tail = Node(value, self.tail, None)
             self.tail.prev.next = self.tail
         self.size += 1
 
     def insert(self, index, value):
-        if index == 0: return self.prepend(value)
-        elif index == self.size: return self.append(value)
+        if index == 0:
+            return self.prepend(value)
+        elif index == self.size:
+            return self.append(value)
         node = self._node(index)
         node.prev.next = Node(value, node.prev, node)
         node.prev = node.prev.next
         self.size += 1
 
     def prepop(self):
-        if not self.size: raise IndexError('empty list')
+        if self.size == 0:
+            raise IndexError('empty list')
         value = self.head.value
         self.head = self.head.next
-        if self.head: self.head.prev = None
-        else: self.tail = None
+        if self.head:
+            self.head.prev = None
+        else:
+            self.tail = None
         self.size -= 1
         return value
 
     def pop(self):
-        if not self.size: raise IndexError('empty list')
+        if self.size == 0:
+            raise IndexError('empty list')
         value = self.tail.value
         self.tail = self.tail.prev
-        if self.tail: self.tail.next = None
-        else: self.head = None
+        if self.tail:
+            self.tail.next = None
+        else:
+            self.head = None
         self.size -= 1
         return value
 
-    def remove(self, index):
-        if index == 0: return self.prepop()
-        elif index == self.size - 1: return self.pop()
+    def delete(self, index):
+        if index == 0:
+            return self.prepop()
+        elif index == self.size - 1:
+            return self.pop()
         node = self._node(index)
         node.next.prev = node.prev
         node.prev.next = node.next
@@ -73,7 +88,8 @@ class LinkedList:
     def get(self, index): return self._node(index).value
 
     def reverse(self):
-        if not self.size: return
+        if self.size == 0:
+            return
         node = self.head
         self.head, self.tail = self.tail, self.head
         for i in range(self.size):
@@ -101,8 +117,8 @@ def test():
     print(l)
     print(l.get(6))
     print(l.get(2))
-    print(l.remove(5))
-    print(l.remove(3))
+    print(l.delete(5))
+    print(l.delete(3))
     print(l.pop())
     print(l.prepop())
     print(l)
@@ -110,4 +126,5 @@ def test():
     print(l)
 
 
-if __name__ == '__main__': test()
+if __name__ == '__main__':
+    test()

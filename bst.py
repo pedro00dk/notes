@@ -12,58 +12,83 @@ class BST:
         tree = '\n'.join(lines)
         return f'BST [\n{tree}\n]'
 
-    def insert(self, key, value=None, node=True):
-        if node == True:
-            self.root = self.insert(key, value, self.root)
+    def put(self, key, value=None, node=True):
+        if node is True:
+            self.root = self.put(key, value, self.root)
+            return
+        #
+        if node is None:
+            node = Node(key, value)
             self.size += 1
-        elif not node: return Node(key, value)
-        elif node.key > key: node.left = self.insert(key, value, node.left)
-        elif node.key < key: node.right = self.insert(key, value, node.right)
+        elif node.key > key:
+            node.left = self.put(key, value, node.left)
+        elif node.key < key:
+            node.right = self.put(key, value, node.right)
+        else:
+            node.value = value
         return node
 
-    def remove(self, key, node=True):
-        if node == True:
-            self.root = self.remove(key, self.root)
-            self.size -= 1
-        elif not node: raise KeyError()
-        elif node.key > key: node.left = self.remove(key, node.left)
-        elif node.key < key: node.right = self.remove(key, node.right)
-        elif not node.left: node = node.right
-        elif not node.right: node = node.left
-        else:
+    def delete(self, key, node=True):
+        if node is True:
+            self.root = self.delete(key, self.root)
+            return
+        #
+        if node is None:
+            raise KeyError('not found')
+        elif node.key > key:
+            node.left = self.delete(key, node.left)
+        elif node.key < key:
+            node.right = self.delete(key, node.right)
+        elif node.left is not None and node.right is not None:
             def node_successor(node):
-                if not node: return None
+                if node is None:
+                    return None
                 node = node.right
-                while node and node.left: node = node.left
+                while node is not None and node.left is not None:
+                    node = node.left
                 return node
             successor = node_successor(node)
             node.key, node.value, successor.key = successor.key, successor.value, node.key
-            node.right = self.remove(key, node.right)
+            node.right = self.delete(key, node.right)
+        else:
+            node = node.left if node.right is None else node.right
+            self.size -= 1
         return node
 
     def get(self, key):
         node = self.root
-        while node and node.key != key: node = node.left if node.key > key else node.right
-        if not node: raise KeyError()
+        while node is not None and node.key != key:
+            node = node.left if node.key > key else node.right
+        if node is None:
+            raise KeyError()
         return node.value
 
     def pre_order(self, callback, node=True, depth=0):
-        if node == True: return self.pre_order(callback, self.root)
-        if not node: return
+        if node is True:
+            return self.pre_order(callback, self.root)
+        #
+        if node is None:
+            return
         callback(node.key, node.value, depth)
         self.pre_order(callback, node.left, depth + 1)
         self.pre_order(callback, node.right, depth + 1)
 
     def in_order(self, callback, node=True, depth=0):
-        if node == True: return self.in_order(callback, self.root)
-        if not node: return
+        if node is True:
+            return self.in_order(callback, self.root)
+        #
+        if node is None:
+            return
         self.in_order(callback, node.left, depth + 1)
         callback(node.key, node.value, depth)
         self.in_order(callback, node.right, depth + 1)
 
     def post_order(self, callback, node=True, depth=0):
-        if node == True: return self.post_order(callback, self.root)
-        if not node: return
+        if node is True:
+            return self.post_order(callback, self.root)
+        #
+        if node is None:
+            return
         self.post_order(callback, node.left, depth + 1)
         self.post_order(callback, node.right, depth + 1)
         callback(node.key, node.value, depth)
@@ -71,11 +96,13 @@ class BST:
     def breadth_order(self, callback):
         q = Queue()
         q.offer((self.root, 0))
-        while q.size:
+        while q.size > 0:
             node, depth = q.pool()
             callback(node.key, node.value, depth)
-            if node.left: q.offer((node.left, depth + 1))
-            if node.right: q.offer((node.right, depth + 1))
+            if node.left is not None:
+                q.offer((node.left, depth + 1))
+            if node.right is not None:
+                q.offer((node.right, depth + 1))
 
 
 class Node:
@@ -88,18 +115,18 @@ class Node:
 
 def test():
     t = BST()
-    t.insert(0)
-    t.insert(-10)
-    t.insert(10)
-    t.insert(-15, -1000)
-    t.insert(-5)
-    t.insert(5, 1000)
-    t.insert(15)
+    t.put(0)
+    t.put(-10)
+    t.put(10)
+    t.put(-15, -1000)
+    t.put(-5)
+    t.put(5, 1000)
+    t.put(15)
     print(t.get(5))
     print(t.get(-15))
     print(t)
-    t.remove(5)
-    t.remove(-10)
+    t.delete(5)
+    t.delete(-10)
     print(t)
     t.pre_order(lambda key, value, depth: print(key, end=' '))
     print()
@@ -111,4 +138,5 @@ def test():
     print()
 
 
-if __name__ == '__main__': test()
+if __name__ == '__main__':
+    test()
