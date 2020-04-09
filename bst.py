@@ -12,48 +12,46 @@ class BST:
         tree = '\n'.join(lines)
         return f'BST [\n{tree}\n]'
 
-    def put(self, key, value=None, node=True):
-        if node is True:
-            self.root = self.put(key, value, self.root)
-            return
-        #
+    def put(self, key, value=None):
+        node = self.root
+        previous = None
+        while node is not None and key != node.key:
+            previous = node
+            node = node.left if key < node.key else node.right
         if node is None:
-            node = Node(key, value)
+            if previous is None:
+                self.root = Node(key, value)
+            elif key < previous.key:
+                previous.left = Node(key, value)
+            else:
+                previous.right = Node(key, value)
             self.size += 1
-        elif node.key > key:
-            node.left = self.put(key, value, node.left)
-        elif node.key < key:
-            node.right = self.put(key, value, node.right)
         else:
-            node.value = value
-        return node
+            node.key, node.value = key, value
 
-    def delete(self, key, node=True):
-        if node is True:
-            self.root = self.delete(key, self.root)
-            return
-        #
+    def delete(self, key):
+        previous = None
+        node = self.root
+        while node is not None and key != node.key:
+            previous = node
+            node = node.left if key < node.key else node.right
         if node is None:
             raise KeyError('not found')
-        elif node.key > key:
-            node.left = self.delete(key, node.left)
-        elif node.key < key:
-            node.right = self.delete(key, node.right)
-        elif node.left is not None and node.right is not None:
-            def node_successor(node):
-                if node is None:
-                    return None
-                node = node.right
-                while node is not None and node.left is not None:
-                    node = node.left
-                return node
-            successor = node_successor(node)
-            node.key, node.value, successor.key = successor.key, successor.value, node.key
-            node.right = self.delete(key, node.right)
-        else:
-            node = node.left if node.right is None else node.right
-            self.size -= 1
-        return node
+        if node.left is not None and node.right is not None:
+            previous = node
+            successor = node.right
+            while successor.left is not None:
+                previous = successor
+                successor = successor.left
+            node.key, node.value = successor.key, successor.value
+            node = successor
+        if previous is None:
+            self.root = None
+        elif previous.left is node:
+            previous.left = node.left if node.left is not None else node.right
+        elif previous.right is node:
+            previous.right = node.left if node.left is not None else node.right
+        self.size += 1
 
     def get(self, key):
         node = self.root
@@ -66,7 +64,6 @@ class BST:
     def pre_order(self, callback, node=True, depth=0):
         if node is True:
             return self.pre_order(callback, self.root)
-        #
         if node is None:
             return
         callback(node.key, node.value, depth)
@@ -76,7 +73,6 @@ class BST:
     def in_order(self, callback, node=True, depth=0):
         if node is True:
             return self.in_order(callback, self.root)
-        #
         if node is None:
             return
         self.in_order(callback, node.left, depth + 1)
@@ -86,7 +82,6 @@ class BST:
     def post_order(self, callback, node=True, depth=0):
         if node is True:
             return self.post_order(callback, self.root)
-        #
         if node is None:
             return
         self.post_order(callback, node.left, depth + 1)
@@ -127,6 +122,7 @@ def test():
     print(t)
     t.delete(5)
     t.delete(-10)
+    t.delete(0)
     print(t)
     t.pre_order(lambda key, value, depth: print(key, end=' '))
     print()
