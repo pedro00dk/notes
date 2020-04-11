@@ -43,5 +43,5 @@ def test():
     print(mergesort(random.sample([i for i in range(10)], 10)))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     test()
