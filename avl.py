@@ -154,12 +154,12 @@ class AVL:
 
 
 class Node:
-    def __init__(self, key, value=None, balance=0, left=None, right=None):
+    def __init__(self, key, value=None):
         self.key = key
         self.value = value
-        self.balance = balance
-        self.left = left
-        self.right = right
+        self.balance = 0
+        self.left = None
+        self.right = None
 
 
 def test():

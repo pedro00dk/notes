@@ -101,11 +101,11 @@ class BST:
 
 
 class Node:
-    def __init__(self, key, value=None, left=None, right=None):
+    def __init__(self, key, value=None):
         self.key = key
         self.value = value
-        self.left = left
-        self.right = right
+        self.left = None
+        self.right = None
 
 
 def test():
