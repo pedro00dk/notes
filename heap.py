@@ -37,7 +37,7 @@ class Heap:
         heapifyBottomUp(self.heap, len(self.heap), self.comparer)
 
     def __str__(self):
-        return f'Heap {str(self.heap)}'
+        return f'Heap {self.heap}'
 
     def offer(self, value):
         self.heap.append(value)
