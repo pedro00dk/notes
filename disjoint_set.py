@@ -46,7 +46,6 @@ class DisjointSet:
 
 class HashDisjointSet:
     def __init__(self):
-        super().__init__()
         self.disjoint_set = DisjointSet()
         self.key_map = Hashtable()
 

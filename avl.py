@@ -21,12 +21,12 @@ class AVL:
         if node is None:
             node, growth = Node(key, value), 1
             self.size += 1
-        elif node.key > key:
+        elif key < node.key:
             node.left, child_growth = self.put(key, value, node.left)
             previous_balance = node.balance
             node.balance -= child_growth
             growth = max(0, abs(node.balance) - abs(previous_balance))
-        elif node.key < key:
+        elif key > node.key:
             node.right, child_growth = self.put(key, value, node.right)
             previous_balance = node.balance
             node.balance += child_growth
@@ -41,25 +41,20 @@ class AVL:
             return
         if node is None:
             raise KeyError('not found')
-        elif node.key > key:
+        elif key < node.key:
             node.left, child_growth = self.delete(key, node.left)
             previous_balance = node.balance
             node.balance -= child_growth
             growth = -min(0, abs(node.balance) - abs(previous_balance))
-        elif node.key < key:
+        elif key > node.key:
             node.right, child_growth = self.delete(key, node.right)
             previous_balance = node.balance
             node.balance += child_growth
             growth = -min(0, abs(node.balance) - abs(previous_balance))
         elif node.left is not None and node.right is not None:
-            def node_successor(node):
-                if node is None:
-                    return None
-                node = node.right
-                while node and node.left:
-                    node = node.left
-                return node
-            successor = node_successor(node)
+            successor = node.right
+            while successor.left is not None:
+                successor = successor.left
             successor_key, dummy_key = successor.key, node.left.key
             node.key, node.value, successor.key = dummy_key, successor.value, node.key
             current_node = node
@@ -105,8 +100,8 @@ class AVL:
 
     def get(self, key):
         node = self.root
-        while node is not None and node.key != key:
-            node = node.left if node.key > key else node.right
+        while node is not None and key != node.key:
+            node = node.left if key < node.key else node.right
         if node is None:
             raise KeyError()
         return node.value

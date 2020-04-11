@@ -13,50 +13,50 @@ class BST:
         return f'BST [\n{tree}\n]'
 
     def put(self, key, value=None):
+        parent = None
         node = self.root
-        previous = None
         while node is not None and key != node.key:
-            previous = node
+            parent = node
             node = node.left if key < node.key else node.right
         if node is None:
-            if previous is None:
+            if parent is None:
                 self.root = Node(key, value)
-            elif key < previous.key:
-                previous.left = Node(key, value)
+            elif key < parent.key:
+                parent.left = Node(key, value)
             else:
-                previous.right = Node(key, value)
+                parent.right = Node(key, value)
             self.size += 1
         else:
             node.key, node.value = key, value
 
     def delete(self, key):
-        previous = None
+        parent = None
         node = self.root
         while node is not None and key != node.key:
-            previous = node
+            parent = node
             node = node.left if key < node.key else node.right
         if node is None:
             raise KeyError('not found')
         if node.left is not None and node.right is not None:
-            previous = node
+            parent = node
             successor = node.right
             while successor.left is not None:
-                previous = successor
+                parent = successor
                 successor = successor.left
             node.key, node.value = successor.key, successor.value
             node = successor
-        if previous is None:
+        if parent is None:
             self.root = None
-        elif previous.left is node:
-            previous.left = node.left if node.left is not None else node.right
-        elif previous.right is node:
-            previous.right = node.left if node.left is not None else node.right
-        self.size += 1
+        elif parent.left == node:
+            parent.left = node.left if node.left is not None else node.right
+        elif parent.right == node:
+            parent.right = node.left if node.left is not None else node.right
+        self.size -= 1
 
     def get(self, key):
         node = self.root
-        while node is not None and node.key != key:
-            node = node.left if node.key > key else node.right
+        while node is not None and key != node.key:
+            node = node.left if key < node.key else node.right
         if node is None:
             raise KeyError()
         return node.value

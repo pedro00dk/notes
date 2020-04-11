@@ -12,7 +12,7 @@ class LinkedList:
         return f'LinkedList [ {", ".join(values)} ]'
 
     def _node(self, index):
-        if index < 0 or index > self.size:
+        if index < 0 or index >= self.size:
             raise IndexError('out of range')
         direction = 1 if index < self.size / 2 else -1
         node = self.head if direction == 1 else self.tail
@@ -20,7 +20,7 @@ class LinkedList:
             for i in range(index):
                 node = node.next
         else:
-            for i in range(self.size - 1, index, -1):
+            for i in range(self.size - 1, index - 1, -1):
                 node = node.prev
         return node
 
@@ -85,7 +85,8 @@ class LinkedList:
         self.size -= 1
         return node.value
 
-    def get(self, index): return self._node(index).value
+    def get(self, index):
+        return self._node(index).value
 
     def reverse(self):
         if self.size == 0:
