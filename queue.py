@@ -12,7 +12,7 @@ class Queue:
         return f'Queue [ {", ".join(values)} ]'
 
     def offer(self, value):
-        if self.size == 0:
+        if self.tail is None:
             self.head = self.tail = Node(value)
         else:
             self.tail.next = Node(value)
@@ -20,7 +20,7 @@ class Queue:
         self.size += 1
 
     def pool(self):
-        if self.size == 0:
+        if self.head is None:
             raise IndexError('empty queue')
         value = self.head.value
         self.head = self.head.next
@@ -30,7 +30,7 @@ class Queue:
         return value
 
     def peek(self):
-        if self.size == 0:
+        if self.head is None:
             raise IndexError('empty queue')
         return self.head.value
 

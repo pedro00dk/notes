@@ -19,7 +19,7 @@ class Stack:
         self.size += 1
 
     def pop(self):
-        if self.size == 0:
+        if self.head is None:
             raise IndexError('empty stack')
         value = self.head.value
         self.head = self.head.next
@@ -27,7 +27,7 @@ class Stack:
         return value
 
     def peek(self):
-        if self.size == 0:
+        if self.head is None:
             raise IndexError('empty stack')
         return self.head.value
 

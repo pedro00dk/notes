@@ -25,7 +25,7 @@ class LinkedList:
         return node
 
     def prepend(self, value):
-        if self.size == 0:
+        if self.head is None:
             self.head = self.tail = Node(value)
         else:
             self.head = Node(value, None, self.head)
@@ -33,7 +33,7 @@ class LinkedList:
         self.size += 1
 
     def append(self, value):
-        if self.size == 0:
+        if self.tail is None:
             self.head = self.tail = Node(value)
         else:
             self.tail = Node(value, self.tail, None)
@@ -51,7 +51,7 @@ class LinkedList:
         self.size += 1
 
     def prepop(self):
-        if self.size == 0:
+        if self.head is None:
             raise IndexError('empty list')
         value = self.head.value
         self.head = self.head.next
@@ -63,7 +63,7 @@ class LinkedList:
         return value
 
     def pop(self):
-        if self.size == 0:
+        if self.tail is None:
             raise IndexError('empty list')
         value = self.tail.value
         self.tail = self.tail.prev
