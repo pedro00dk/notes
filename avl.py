@@ -68,19 +68,19 @@ class AVL:
     def _rotate(self, node, growth, rank=2):
         if node is not None and node.balance <= -rank:
             if node.left.balance > 0:
-                node, rotation_growth = self._left(node.left)
+                node, rotation_growth = self._rotate_left(node.left)
                 growth += rotation_growth
-            node, rotation_growth = self._right(node)
+            node, rotation_growth = self._rotate_right(node)
             growth += rotation_growth
         elif node is not None and node.balance >= rank:
             if node.right.balance < 0:
-                node, rotation_growth = self._right(node.right)
+                node, rotation_growth = self._rotate_right(node.right)
                 growth += rotation_growth
-            node, rotation_growth = self._left(node)
+            node, rotation_growth = self._rotate_left(node)
             growth += rotation_growth
         return node, growth
 
-    def _left(self, node):
+    def _rotate_left(self, node):
         child = node.right
         node.right = child.left
         child.left = node
@@ -89,7 +89,7 @@ class AVL:
         child.balance = child.balance - 1 + min(node.balance, 0)
         return child, growth
 
-    def _right(self, node):
+    def _rotate_right(self, node):
         child = node.left
         node.left = child.right
         child.right = node
