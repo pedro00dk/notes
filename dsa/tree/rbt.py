@@ -1,18 +1,9 @@
-from queue import Queue
+from .tree import Node, Tree
 
 
-class RBT:
+class RBT(Tree):
     def __init__(self):
-        self.root = None
-        self.size = 0
-
-    def __str__(self):
-        lines = []
-        self.pre_order(
-            lambda key, value, depth, red: lines.append(f'{f"|  " * depth}├─ {"R" if red else "B"} # {key}: {value}')
-        )
-        tree = '\n'.join(lines)
-        return f'RBT [\n{tree}\n]'
+        super().__init__('RBT', lambda node, depth: f'{"R" if node.red else "B"} # {node.key}: {node.value}')
 
     def put(self, key, value=None):
         parent = None
@@ -22,17 +13,18 @@ class RBT:
             node = node.left if key < node.key else node.right
         if node is None:
             if parent is None:
-                node = self.root = Node(key, value)
+                node = self.root = RBTNode(key, value)
             elif key < parent.key:
-                node = parent.left = Node(key, value)
+                node = parent.left = RBTNode(key, value)
                 parent.left.parent = parent
             else:
-                node = parent.right = Node(key, value)
+                node = parent.right = RBTNode(key, value)
                 parent.right.parent = parent
             self.size += 1
             self.root = self._put_fix(node)
         else:
-            node.key, node.value = key, value
+            node.key, node.value, old_value = key, value, node.value
+            return old_value
 
     def _put_fix(self, created):
         node = created
@@ -71,7 +63,8 @@ class RBT:
             successor = node.right
             while successor.left is not None:
                 successor = successor.left
-            node.key, node.value = successor.key, successor.value
+            node.key, successor.key = successor.key, node.key
+            node.value, successor.value = successor.value, node.value
             node = successor
         if node.parent is None:
             child = self.root = None
@@ -85,6 +78,7 @@ class RBT:
                 child.parent = node.parent
         self.size -= 1
         self.root = self._delete_fix(node, child)
+        return node.value
 
     def _delete_fix(self, deleted, replacer):
         if self._red(deleted):
@@ -136,7 +130,7 @@ class RBT:
 
     def _red(self, node):
         return node is not None and node.red
-    
+
     def _blk(self, node):
         return node is None or not node.red
 
@@ -194,88 +188,42 @@ class RBT:
                 child.parent.right = child
         return child
 
-    def get(self, key):
-        node = self.root
-        while node is not None and node.key != key:
-            node = node.left if node.key > key else node.right
-        if node is None:
-            raise KeyError()
-        return node.value
 
-    def pre_order(self, callback, node=True, depth=0):
-        if node is True:
-            return self.pre_order(callback, self.root)
-        if node is None:
-            return
-        callback(node.key, node.value, depth, node.red)
-        self.pre_order(callback, node.left, depth + 1)
-        self.pre_order(callback, node.right, depth + 1)
-
-    def in_order(self, callback, node=True, depth=0):
-        if node is True:
-            return self.in_order(callback, self.root)
-        if node is None:
-            return
-        self.in_order(callback, node.left, depth + 1)
-        callback(node.key, node.value, depth, node.red)
-        self.in_order(callback, node.right, depth + 1)
-
-    def post_order(self, callback, node=True, depth=0):
-        if node is True:
-            return self.post_order(callback, self.root)
-        if node is None:
-            return
-        self.post_order(callback, node.left, depth + 1)
-        self.post_order(callback, node.right, depth + 1)
-        callback(node.key, node.value, depth, node.red)
-
-    def breadth_order(self, callback):
-        q = Queue()
-        q.offer((self.root, 0))
-        while q.size > 0:
-            node, depth = q.pool()
-            callback(node.key, node.value, depth, node.red)
-            if node.left is not None:
-                q.offer((node.left, depth + 1))
-            if node.right is not None:
-                q.offer((node.right, depth + 1))
-
-
-class Node:
+class RBTNode(Node):
     def __init__(self, key, value=None):
-        self.key = key
-        self.value = value
-        self.red = True
+        super().__init__(key, value)
         self.parent = None
-        self.left = None
-        self.right = None
+        self.red = True
 
 
 def test():
+    from ..util import match
     t = RBT()
-    t.put(-15, -1000)
-    t.put(-10)
-    t.put(-5)
-    t.put(0)
-    t.put(5, 1000)
-    t.put(10)
-    t.put(15)
-    print(t.get(5))
-    print(t.get(-15))
-    print(t)
-    t.delete(5)
-    print(t)
-    t.delete(-10)
-    print(t)
-    t.delete(0)
-    print(t)
-    t.pre_order(lambda key, value, depth, red: print(key, end=' '))
+    match([
+        (t.put, [-15, -1000], None),
+        (t.put, [-10], None),
+        (t.put, [-5], None),
+        (t.put, [0], None),
+        (t.put, [5, 1000], None),
+        (t.put, [10], None),
+        (t.put, [15], None),
+        (t.get, [5], 1000),
+        (t.get, [-15], -1000),
+        (print, [t], True),
+        (t.delete, [0], None),
+        (print, [t], True),
+        (t.delete, [-10], None),
+        (print, [t], True),
+        (t.delete, [-15], -1000),
+        (print, [t], None)
+    ])
+    t.pre_order(lambda node, depth: print(node.key, end=' '))
     print()
-    t.in_order(lambda key, value, depth, red: print(key, end=' '))
+    t.in_order(lambda node, depth: print(node.key, end=' '))
     print()
-    t.post_order(lambda key, value, depth, red: print(key, end=' '))
+    t.post_order(lambda node, depth: print(node.key, end=' '))
     print()
-    t.breadth_order(lambda key, value, depth, red: print(key, end=' '))
+    t.breadth_order(lambda node, depth: print(node.key, end=' '))
     print()
 
 

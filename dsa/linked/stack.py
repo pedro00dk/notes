@@ -11,6 +11,9 @@ class Stack:
             node = node.next
         return f'Stack [ {", ".join(values)} ]'
 
+    def __len__(self):
+        return self.size
+
     def push(self, value):
         if self.size == 0:
             self.head = self.tail = Node(value)
@@ -39,25 +42,28 @@ class Node:
 
 
 def test():
+    from ..util import match
     s = Stack()
-    s.push(0)
-    s.push(1)
-    s.push(2)
-    s.push(3)
-    s.push(4)
-    s.push(5)
-    print(s)
-    s.pop()
-    s.pop()
-    print(s.peek())
-    print(s)
-    s.pop()
-    s.pop()
-    print(s.peek())
-    print(s)
-    s.pop()
-    s.pop()
-    print(s)
+    match([
+        (s.push, [0], None),
+        (s.push, [1], None),
+        (s.push, [2], None),
+        (s.push, [3], None),
+        (s.push, [4], None),
+        (s.push, [5], None),
+        (print, [s], None),
+        (s.pop, [], 5),
+        (s.pop, [], 4),
+        (s.peek, [], 3),
+        (print, [s], None),
+        (s.pop, [], 3),
+        (s.pop, [], 2),
+        (s.peek, [], 1),
+        (print, [s], None),
+        (s.pop, [], 1),
+        (s.pop, [], 0),
+        (print, [s], None)
+    ])
 
 
 if __name__ == '__main__':

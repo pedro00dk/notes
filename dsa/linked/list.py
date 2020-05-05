@@ -11,6 +11,9 @@ class LinkedList:
             node = node.next
         return f'LinkedList [ {", ".join(values)} ]'
 
+    def __len__(self):
+        return size
+
     def _node(self, index):
         if index < 0 or index >= self.size:
             raise IndexError('out of range')
@@ -106,25 +109,29 @@ class Node:
 
 
 def test():
+    from ..util import match
     l = LinkedList()
-    l.prepend(2)
-    l.prepend(1)
-    l.prepend(0)
-    l.append(5)
-    l.append(6)
-    l.append(7)
-    l.insert(3, 3)
-    l.insert(4, 4)
-    print(l)
-    print(l.get(6))
-    print(l.get(2))
-    print(l.delete(5))
-    print(l.delete(3))
-    print(l.pop())
-    print(l.prepop())
-    print(l)
-    l.reverse()
-    print(l)
+    match([
+        (l.prepend, [2], None),
+        (l.prepend, [1], None),
+        (l.prepend, [0], None),
+        (l.append, [5], None),
+        (l.append, [6], None),
+        (l.append, [7], None),
+        (l.insert, [3, 3], None),
+        (l.insert, [4, 4], None),
+        (print, [l], None),
+        (l.get, [6], 5),
+        (l.get, [2], 2),
+        (l.delete, [4], 4),
+        (l.delete, [3], 2),
+        (print, [l], None),
+        (l.pop, [], 7),
+        (l.prepop, [], 0),
+        (print, [l], None),
+        (l.reverse, [], None),
+        (print, [l], None)
+    ])
 
 
 if __name__ == '__main__':

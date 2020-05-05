@@ -1,6 +1,3 @@
-import random
-
-
 def siftUp(heap, i, length, comparer):
     while (parent:= (i - 1) // 2) >= 0 and comparer(heap[i], heap[parent]):
         heap[i], heap[parent] = heap[parent], heap[i]
@@ -58,26 +55,31 @@ class Heap:
 
 
 def test():
+    import random
+    from .util import match
     h = Heap(random.sample([i for i in range(10)], 10), mode='min')
-    h.offer(10)
-    h.offer(11)
-    h.offer(12)
-    h.offer(13)
-    h.offer(14)
-    h.offer(15)
-    print(h)
-    print(h.pool())
-    print(h.pool())
-    print(h)
-    print(h.pool())
-    print(h.pool())
-    print(h.pool())
-    print(h)
-    print(h.pool())
-    print(h.pool())
-    print(h.pool())
-    print(h.pool())
-    print(h)
+    match([
+        (print, [h], None),
+        (h.offer, [10], None),
+        (h.offer, [11], None),
+        (h.offer, [12], None),
+        (h.offer, [13], None),
+        (h.offer, [14], None),
+        (h.offer, [15], None),
+        (print, [h], None),
+        (h.pool, [], 0),
+        (h.pool, [], 1),
+        (print, [h], None),
+        (h.pool, [], 2),
+        (h.pool, [], 3),
+        (h.pool, [], 4),
+        (print, [h], None),
+        (h.pool, [], 5),
+        (h.pool, [], 6),
+        (h.pool, [], 7),
+        (h.pool, [], 8),
+        (print, [h], None)
+    ])
 
 
 if __name__ == '__main__':

@@ -11,6 +11,9 @@ class Queue:
             node = node.next
         return f'Queue [ {", ".join(values)} ]'
 
+    def __len__(self):
+        return size
+
     def offer(self, value):
         if self.tail is None:
             self.head = self.tail = Node(value)
@@ -19,7 +22,7 @@ class Queue:
             self.tail = self.tail.next
         self.size += 1
 
-    def pool(self):
+    def poll(self):
         if self.head is None:
             raise IndexError('empty queue')
         value = self.head.value
@@ -42,25 +45,28 @@ class Node:
 
 
 def test():
+    from ..util import match
     q = Queue()
-    q.offer(0)
-    q.offer(1)
-    q.offer(2)
-    q.offer(3)
-    q.offer(4)
-    q.offer(5)
-    print(q)
-    q.pool()
-    q.pool()
-    print(q.peek())
-    print(q)
-    q.pool()
-    q.pool()
-    print(q.peek())
-    print(q)
-    q.pool()
-    q.pool()
-    print(q)
+    match([
+        (q.offer, [0], None),
+        (q.offer, [1], None),
+        (q.offer, [2], None),
+        (q.offer, [3], None),
+        (q.offer, [4], None),
+        (q.offer, [5], None),
+        (print, [q], None),
+        (q.poll, [], 0),
+        (q.poll, [], 1),
+        (q.peek, [], 2),
+        (print, [q], None),
+        (q.poll, [], 2),
+        (q.poll, [], 3),
+        (q.peek, [], 4),
+        (print, [q], None),
+        (q.poll, [], 4),
+        (q.poll, [], 5),
+        (print, [q], None)
+    ])
 
 
 if __name__ == '__main__':

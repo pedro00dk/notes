@@ -9,7 +9,7 @@ def knapsack_naive(items, capacity, item=0):
 
 
 def knapsack_dynamic(items, capacity):
-    k = [[0 for x in range(capacity + 1)] for x in range(len(items)+1)]
+    k = [[0 for x in range(capacity + 1)] for x in range(len(items) + 1)]
     for i in range(1, len(items) + 1):
         value, weight = items[i - 1] if i > 0 else (0, 0)
         for c in range(1, capacity + 1):
@@ -30,11 +30,14 @@ def knapsack_memo(items, capacity, item=0, memo={}):
 
 
 def test():
+    from ..util import match
     items = [(60, 10), (100, 20), (120, 30)]
     capacity = 50
-    print(knapsack_naive(items, capacity))
-    print(knapsack_dynamic(items, capacity))
-    print(knapsack_memo(items, capacity))
+    match([
+        (knapsack_naive, [items, capacity], 220),
+        (knapsack_dynamic, [items, capacity], 220),
+        (knapsack_memo, [items, capacity], 220)
+    ])
 
 
 if __name__ == '__main__':

@@ -1,6 +1,3 @@
-import tester
-
-
 def mergesort(array, left=None, right=None, acc=None):
     left = left if left is not None else 0
     right = right if right is not None else len(array) - 1
@@ -36,11 +33,12 @@ def mergesort(array, left=None, right=None, acc=None):
 
 
 def test():
+    from ..util import benchmark
     print(mergesort([]))
     print(mergesort([0]))
     print(mergesort([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
     print(mergesort([9, 8, 7, 6, 5, 4, 3, 2, 1, 0]))
-    tester.test_sort(mergesort)
+    benchmark(mergesort)
 
 
 if __name__ == '__main__':

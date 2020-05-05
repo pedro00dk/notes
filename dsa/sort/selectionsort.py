@@ -1,5 +1,3 @@
-import tester
-
 def selectionsort(array):
     for i in range(0, len(array)):
         k = i
@@ -15,7 +13,8 @@ def test():
     print(selectionsort([0]))
     print(selectionsort([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
     print(selectionsort([9, 8, 7, 6, 5, 4, 3, 2, 1, 0]))
-    tester.test_sort(selectionsort)
+    from ..util import benchmark
+    benchmark(selectionsort)
 
 
 if __name__ == '__main__':
