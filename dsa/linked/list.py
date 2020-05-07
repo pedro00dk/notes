@@ -1,99 +1,90 @@
-class LinkedList:
+from .abc import Linked
+
+
+class LinkedList(Linked):
     def __init__(self):
+        super().__init__()
         self.head = self.tail = None
-        self.size = 0
 
-    def __str__(self):
-        values = []
+    def __iter__(self):
         node = self.head
-        for i in range(self.size):
-            values.append(str(node.value))
+        while node is not None:
+            yield node.value
             node = node.next
-        return f'LinkedList [ {", ".join(values)} ]'
 
-    def __len__(self):
-        return size
-
-    def _node(self, index):
-        if index < 0 or index >= self.size:
+    def _insert(self, index, value):
+        if index < 0 or index > self.size:
             raise IndexError('out of range')
-        direction = 1 if index < self.size / 2 else -1
-        node = self.head if direction == 1 else self.tail
-        if direction == 1:
-            for i in range(index):
-                node = node.next
-        else:
-            for i in range(self.size - 1, index - 1, -1):
-                node = node.prev
-        return node
-
-    def prepend(self, value):
         if self.head is None:
             self.head = self.tail = Node(value)
-        else:
+        elif index == 0:
             self.head = Node(value, None, self.head)
             self.head.next.prev = self.head
-        self.size += 1
-
-    def append(self, value):
-        if self.tail is None:
-            self.head = self.tail = Node(value)
-        else:
+        elif index == self.size:
             self.tail = Node(value, self.tail, None)
             self.tail.prev.next = self.tail
-        self.size += 1
-
-    def insert(self, index, value):
-        if index == 0:
-            return self.prepend(value)
-        elif index == self.size:
-            return self.append(value)
-        node = self._node(index)
-        node.prev.next = Node(value, node.prev, node)
-        node.prev = node.prev.next
-        self.size += 1
-
-    def prepop(self):
-        if self.head is None:
-            raise IndexError('empty list')
-        value = self.head.value
-        self.head = self.head.next
-        if self.head:
-            self.head.prev = None
         else:
-            self.tail = None
-        self.size -= 1
-        return value
+            current = self._find_index(index)
+            node = Node(value, current.prev, current)
+            node.prev.next = node.next.prev = node
+        self.size += 1
 
-    def pop(self):
-        if self.tail is None:
-            raise IndexError('empty list')
-        value = self.tail.value
-        self.tail = self.tail.prev
-        if self.tail:
+    def _delete(self, node):
+        if node.prev is None and node.next is None:
+            self.head = self.tail = None
+        elif node.prev is None:
+            self.head = node.next
+            self.head.prev = None
+        elif node.next is None:
+            self.tail = node.prev
             self.tail.next = None
         else:
-            self.head = None
-        self.size -= 1
-        return value
-
-    def delete(self, index):
-        if index == 0:
-            return self.prepop()
-        elif index == self.size - 1:
-            return self.pop()
-        node = self._node(index)
-        node.next.prev = node.prev
-        node.prev.next = node.next
+            node.prev.next = node.next
+            node.next.prev = node.prev
         self.size -= 1
         return node.value
 
-    def get(self, index):
-        return self._node(index).value
+    def _find_index(self, index):
+        if index < 0 or index >= self.size:
+            raise IndexError('out of range')
+        forward = index < self.size / 2
+        node = self.head if forward else self.tail
+        for i in range(index if forward else (self.size - 1 - index)):
+            node = node.next if forward else node.prev
+        return node
+
+    def _find_value(self, value):
+        node = self.head
+        for i in range(self.size):
+            if value == node.value:
+                break
+            node = node.next
+        if node is None:
+            raise ValueError('not found')
+        return node, i
+
+    def push(self, value, index=None):
+        return self._insert(index if index is not None else self.size, value)
+
+    def pop(self, index=None):
+        return self._delete(self._find_index(index if index is not None else self.size - 1))
+
+    def remove(self, value):
+        return self._delete(self._find_value(value)[0])
+
+    def get(self, index=None):
+        return self._find_index(index if index is not None else self.size - 1).value
+
+    def index(self, value):
+        try:
+            return self._find_value(value)[1]
+        except ValueError:
+            return -1
+
+    def contains(self, value):
+        return self.index(value) != -1
 
     def reverse(self):
-        if self.size == 0:
-            return
         node = self.head
         self.head, self.tail = self.tail, self.head
         for i in range(self.size):
@@ -112,22 +103,22 @@ def test():
     from ..util import match
     l = LinkedList()
     match([
-        (l.prepend, [2], None),
-        (l.prepend, [1], None),
-        (l.prepend, [0], None),
-        (l.append, [5], None),
-        (l.append, [6], None),
-        (l.append, [7], None),
-        (l.insert, [3, 3], None),
-        (l.insert, [4, 4], None),
+        (l.push, [2, 0], None),
+        (l.push, [1, 0], None),
+        (l.push, [0, 0], None),
+        (l.push, [5], None),
+        (l.push, [6], None),
+        (l.push, [7], None),
+        (l.push, [3, 3], None),
+        (l.push, [4, 4], None),
         (print, [l], None),
-        (l.get, [6], 5),
+        (l.get, [6], 6),
         (l.get, [2], 2),
-        (l.delete, [4], 4),
-        (l.delete, [3], 2),
+        (l.pop, [4], 4),
+        (l.pop, [3], 3),
         (print, [l], None),
         (l.pop, [], 7),
-        (l.prepop, [], 0),
+        (l.pop, [0], 0),
         (print, [l], None),
         (l.reverse, [], None),
         (print, [l], None)

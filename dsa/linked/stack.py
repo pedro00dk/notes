@@ -1,21 +1,19 @@
-class Stack:
+from .abc import Linked
+
+
+class Stack(Linked):
     def __init__(self):
+        super().__init__()
         self.head = None
-        self.size = 0
 
-    def __str__(self):
-        values = []
+    def __iter__(self):
         node = self.head
-        for i in range(self.size):
-            values.append(str(node.value))
+        while node is not None:
+            yield node.value
             node = node.next
-        return f'Stack [ {", ".join(values)} ]'
-
-    def __len__(self):
-        return self.size
 
     def push(self, value):
-        if self.size == 0:
+        if self.head is None:
             self.head = self.tail = Node(value)
         else:
             self.head = Node(value, self.head)

@@ -1,18 +1,16 @@
-class Queue:
+from .abc import Linked
+
+
+class Queue(Linked):
     def __init__(self):
+        super().__init__()
         self.head = self.tail = None
-        self.size = 0
 
-    def __str__(self):
-        values = []
+    def __iter__(self):
         node = self.head
-        for i in range(self.size):
-            values.append(str(node.value))
+        while node is not None:
+            yield node.value
             node = node.next
-        return f'Queue [ {", ".join(values)} ]'
-
-    def __len__(self):
-        return size
 
     def offer(self, value):
         if self.tail is None:
