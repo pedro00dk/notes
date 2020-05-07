@@ -1,3 +1,6 @@
+import itertools
+import random
+
 from ..linked.list import LinkedList
 from ..linked.queue import Queue
 
@@ -8,7 +11,8 @@ class Graph:
         pass
 
     def __str__(self):
-        return '\n'.join(f'{v}: {[e for e, w in edges]}' for v, (edges, w) in enumerate(self.vertices))
+        data = '\n'.join(f'{v}: {[e for e, w in edges]}' for v, (edges, w) in enumerate(self.vertices))
+        return f'Graph [\n{data}\n]'
 
     def __len__(self):
         return len(self.vertices)
@@ -20,6 +24,16 @@ class Graph:
             graph.make_vertex()
             for target in range(0, vertex):
                 graph.make_edge(vertex, target)
+        return graph
+
+    @classmethod
+    def random(cls, n, d=0.5):
+        graph = Graph()
+        for vertex in range(n):
+            graph.make_vertex()
+        edges = round(min(max(0, d), 1) * n * (n - 1) / 2)
+        for source, target in random.sample([*itertools.combinations(range(n), 2)], edges):
+            graph.make_edge(source, target)
         return graph
 
     def _depth_search(self, vertex, visited, depth=0):
@@ -47,12 +61,12 @@ class Graph:
         self.vertices.append((LinkedList(), weight))
         return vertex
 
-    def make_edge(self, vertex_a, vertex_b, weight=1, bidirectional=True):
-        if vertex_a < 0 or vertex_a >= len(self.vertices) or vertex_b < 0 or vertex_b >= len(self.vertices):
+    def make_edge(self, source, target, weight=1, bidirectional=True):
+        if source < 0 or source >= len(self.vertices) or target < 0 or target >= len(self.vertices):
             raise IndexError('out of range')
-        self.vertices[vertex_a][0].push((vertex_b, weight))
+        self.vertices[source][0].push((target, weight))
         if bidirectional:
-            self.vertices[vertex_b][0].push((vertex_a, weight))
+            self.vertices[target][0].push((source, weight))
 
     def traverse(self, vertex, mode='dfs', visited=None):
         if vertex < 0 or vertex >= len(self.vertices):
