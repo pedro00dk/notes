@@ -36,25 +36,25 @@ class Graph:
             graph.make_edge(source, target)
         return graph
 
-    def _depth_search(self, vertex, visited, depth=0):
+    def _depth_search(self, vertex, visited, previous=None, depth=0):
         if visited[vertex]:
             return
         visited[vertex] = True
-        yield vertex, self.vertices[vertex][1]
+        yield vertex, previous
         for target, weight in self.vertices[vertex][0]:
-            yield from self._depth_search(target, visited, depth + 1)
+            yield from self._depth_search(target, visited, vertex, depth + 1)
 
-    def _breadth_search(self, vertex, visited, depth=0):
+    def _breadth_search(self, vertex, visited, previous=None, depth=0):
         queue = Queue()
-        queue.offer(vertex)
+        queue.offer((vertex, previous))
         while queue.size > 0:
-            vertex = queue.poll()
+            vertex, previous = queue.poll()
             if visited[vertex]:
                 continue
             visited[vertex] = True
-            yield vertex, self.vertices[vertex][1]
+            yield vertex, previous
             for target, weight in self.vertices[vertex][0]:
-                queue.offer(target)
+                queue.offer((target, vertex))
 
     def make_vertex(self, weight=1):
         vertex = len(self.vertices)
@@ -78,10 +78,10 @@ class Graph:
 def test():
     g = Graph.complete(5)
     print(g)
-    for vertex, weight in g.traverse(0, 'dfs'):
+    for vertex, previous in g.traverse(0, 'dfs'):
         print(vertex, end=' ')
     print()
-    for vertex, weight in g.traverse(0, 'bfs'):
+    for vertex, previous in g.traverse(0, 'bfs'):
         print(vertex, end=' ')
     print()
 

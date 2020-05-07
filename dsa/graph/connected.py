@@ -11,11 +11,11 @@ def connected(graph):
     for vertex in range(len(graph)):
         if visited[vertex]:
             continue
-        for traverse_vertex, _ in graph.traverse(vertex, 'dfs', visited):
+        for traverse_vertex, previous in graph.traverse(vertex, 'dfs', visited):
             visited[traverse_vertex] = True
             groups[traverse_vertex] = group
         group += 1
-    return groups
+    return group, groups
 
 
 def test():
