@@ -19,28 +19,6 @@ class Tree(ABC):
     def __len__(self):
         return self.size
 
-    @abstractmethod
-    def put(self, key, value):
-        pass
-
-    @abstractmethod
-    def take(self, key):
-        pass
-
-    def get(self, key):
-        node = self.root
-        while node is not None and key != node.key:
-            node = node.left if key < node.key else node.right
-        if node is None:
-            raise KeyError('not found')
-        return node.value
-
-    def traverse(self, mode='in'):
-        return self._pre_order(self.root) if mode == 'pre' else \
-            self._in_order(self.root) if mode == 'in' else \
-            self._post_order(self.root) if mode == 'post' else \
-            self._breadth_order(self.root)
-
     def _pre_order(self, node, depth=0):
         if node is None:
             return
@@ -72,6 +50,28 @@ class Tree(ABC):
             yield node, depth
             q.offer((node.left, depth + 1))
             q.offer((node.right, depth + 1))
+
+    @abstractmethod
+    def put(self, key, value):
+        pass
+
+    @abstractmethod
+    def take(self, key):
+        pass
+
+    def get(self, key):
+        node = self.root
+        while node is not None and key != node.key:
+            node = node.left if key < node.key else node.right
+        if node is None:
+            raise KeyError('not found')
+        return node.value
+
+    def traverse(self, mode='in'):
+        return self._pre_order(self.root) if mode == 'pre' else \
+            self._in_order(self.root) if mode == 'in' else \
+            self._post_order(self.root) if mode == 'post' else \
+            self._breadth_order(self.root)
 
 
 class Node(ABC):
