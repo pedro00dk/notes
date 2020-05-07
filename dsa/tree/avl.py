@@ -1,13 +1,13 @@
-from .tree import Node, Tree
+from .abc import Node, Tree
 
 
 class AVL(Tree):
     def __init__(self):
-        super().__init__('AVL', lambda node, depth: f'b:{node.balance} # {node.key}: {node.value}')
+        super().__init__(lambda node, depth: f'b:{node.balance} # {node.key}: {node.value}')
 
     def put(self, key, value=None):
         self.root, growth, old_value = self._put(key, value, self.root)
-        return None
+        return old_value
 
     def _put(self, key, value, node):
         if node is None:
@@ -27,20 +27,20 @@ class AVL(Tree):
             node.key, node.value, growth, old_value = key, value, 0, node.value
         return (*self._rotate(node, growth), old_value)
 
-    def delete(self, key):
-        self.root, growth, value = self._delete(key, self.root)
+    def take(self, key):
+        self.root, growth, value = self._take(key, self.root)
         return value
 
-    def _delete(self, key, node):
+    def _take(self, key, node):
         if node is None:
             raise KeyError('not found')
         elif key < node.key:
-            node.left, child_growth, value = self._delete(key, node.left)
+            node.left, child_growth, value = self._take(key, node.left)
             previous_balance = node.balance
             node.balance -= child_growth
             growth = -min(0, abs(node.balance) - abs(previous_balance))
         elif key > node.key:
-            node.right, child_growth, value = self._delete(key, node.right)
+            node.right, child_growth, value = self._take(key, node.right)
             previous_balance = node.balance
             node.balance += child_growth
             growth = -min(0, abs(node.balance) - abs(previous_balance))
@@ -52,7 +52,7 @@ class AVL(Tree):
             node.key, successor.key = dummy_key, node.key
             node.value, successor.value = successor.value, node.value
             current_node = node
-            node, growth, value = self._delete(key, node)
+            node, growth, value = self._take(key, node)
             current_node.key = successor_key
         else:
             node, growth, value = node.left if node.right is None else node.right, -1, node.value
@@ -113,18 +113,22 @@ def test():
         (t.get, [5], 1000),
         (t.get, [-15], -1000),
         (print, [t], None),
-        (t.delete, [0], None),
-        (t.delete, [-10], None),
-        (t.delete, [-15], -1000),
+        (t.take, [0], None),
+        (t.take, [-10], None),
+        (t.take, [-15], -1000),
         (print, [t], None)
     ])
-    t.pre_order(lambda node, depth: print(node.key, end=' '))
+    for node, depth in t.traverse('pre'):
+        print(node.key, end=' ')
     print()
-    t.in_order(lambda node, depth: print(node.key, end=' '))
+    for node, depth in t.traverse('in'):
+        print(node.key, end=' ')
     print()
-    t.post_order(lambda node, depth: print(node.key, end=' '))
+    for node, depth in t.traverse('post'):
+        print(node.key, end=' ')
     print()
-    t.breadth_order(lambda node, depth: print(node.key, end=' '))
+    for node, depth in t.traverse('breadth'):
+        print(node.key, end=' ')
     print()
 
 

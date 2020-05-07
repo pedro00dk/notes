@@ -1,9 +1,9 @@
-from .tree import Node, Tree
+from .abc import Node, Tree
 
 
 class RBT(Tree):
     def __init__(self):
-        super().__init__('RBT', lambda node, depth: f'{"R" if node.red else "B"} # {node.key}: {node.value}')
+        super().__init__(lambda node, depth: f'{"R" if node.red else "B"} # {node.key}: {node.value}')
 
     def put(self, key, value=None):
         parent = None
@@ -53,7 +53,7 @@ class RBT(Tree):
         root.red = False
         return root
 
-    def delete(self, key):
+    def take(self, key):
         node = self.root
         while node is not None and key != node.key:
             node = node.left if key < node.key else node.right
@@ -77,10 +77,10 @@ class RBT(Tree):
             if child is not None:
                 child.parent = node.parent
         self.size -= 1
-        self.root = self._delete_fix(node, child)
+        self.root = self._take_fix(node, child)
         return node.value
 
-    def _delete_fix(self, deleted, replacer):
+    def _take_fix(self, deleted, replacer):
         if self._red(deleted):
             return self.root
         if self._red(replacer):
@@ -210,20 +210,24 @@ def test():
         (t.get, [5], 1000),
         (t.get, [-15], -1000),
         (print, [t], True),
-        (t.delete, [0], None),
+        (t.take, [0], None),
         (print, [t], True),
-        (t.delete, [-10], None),
+        (t.take, [-10], None),
         (print, [t], True),
-        (t.delete, [-15], -1000),
+        (t.take, [-15], -1000),
         (print, [t], None)
     ])
-    t.pre_order(lambda node, depth: print(node.key, end=' '))
+    for node, depth in t.traverse('pre'):
+        print(node.key, end=' ')
     print()
-    t.in_order(lambda node, depth: print(node.key, end=' '))
+    for node, depth in t.traverse('in'):
+        print(node.key, end=' ')
     print()
-    t.post_order(lambda node, depth: print(node.key, end=' '))
+    for node, depth in t.traverse('post'):
+        print(node.key, end=' ')
     print()
-    t.breadth_order(lambda node, depth: print(node.key, end=' '))
+    for node, depth in t.traverse('breadth'):
+        print(node.key, end=' ')
     print()
 
 

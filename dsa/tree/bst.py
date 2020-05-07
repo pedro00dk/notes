@@ -1,9 +1,9 @@
-from .tree import Node, Tree
+from .abc import Node, Tree
 
 
 class BST(Tree):
     def __init__(self):
-        super().__init__('BST', lambda node, depth: f'{node.key}: {node.value}')
+        super().__init__(lambda node, depth: f'{node.key}: {node.value}')
 
     def put(self, key, value=None):
         parent = None
@@ -23,7 +23,7 @@ class BST(Tree):
             node.key, node.value, old_value = key, value, node.value
             return old_value
 
-    def delete(self, key):
+    def take(self, key):
         parent = None
         node = self.root
         while node is not None and key != node.key:
@@ -68,18 +68,22 @@ def test():
         (t.get, [5], 1000),
         (t.get, [-15], -1000),
         (print, [t], True),
-        (t.delete, [5], 1000),
-        (t.delete, [-10], None),
-        (t.delete, [0], None),
+        (t.take, [5], 1000),
+        (t.take, [-10], None),
+        (t.take, [0], None),
         (print, [t], None)
     ])
-    t.pre_order(lambda node, depth: print(node.key, end=' '))
+    for node, depth in t.traverse('pre'):
+        print(node.key, end=' ')
     print()
-    t.in_order(lambda node, depth: print(node.key, end=' '))
+    for node, depth in t.traverse('in'):
+        print(node.key, end=' ')
     print()
-    t.post_order(lambda node, depth: print(node.key, end=' '))
+    for node, depth in t.traverse('post'):
+        print(node.key, end=' ')
     print()
-    t.breadth_order(lambda node, depth: print(node.key, end=' '))
+    for node, depth in t.traverse('breadth'):
+        print(node.key, end=' ')
     print()
 
 
