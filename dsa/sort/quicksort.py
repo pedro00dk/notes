@@ -1,10 +1,11 @@
-def quicksort(array, left=None, right=None):
-    left = left if left is not None else 0
-    right = right if right is not None else len(array) - 1
+def quicksort(array):
+    sort(array, 0, len(array) - 1)
+    return array
 
+
+def sort(array, left, right):
     if right - left <= 0:
-        return array
-
+        return
     pivot = array[(left + right) // 2]
     left_index, right_index = left, right
     while True:
@@ -17,10 +18,8 @@ def quicksort(array, left=None, right=None):
         array[left_index], array[right_index] = array[right_index], array[left_index]
         left_index += 1
         right_index -= 1
-
-    quicksort(array, left, right_index)
-    quicksort(array, right_index + 1, right)
-    return array
+    sort(array, left, right_index)
+    sort(array, right_index + 1, right)
 
 
 def test():
