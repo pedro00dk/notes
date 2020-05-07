@@ -14,7 +14,7 @@ def binary_search(l, key, getter=lambda x: x):
 
 
 def test():
-    from .util import match
+    from ..util import match
     match([
         (binary_search, [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6], 6),
         (binary_search, [[0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8], 4),
