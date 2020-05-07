@@ -41,15 +41,15 @@ class Tree(ABC):
         yield node, depth
 
     def _breadth_order(self, node, depth=0):
-        q = Queue()
-        q.offer((node, depth))
-        while q.size > 0:
-            node, depth = q.poll()
+        queue = Queue()
+        queue.offer((node, depth))
+        while queue.size > 0:
+            node, depth = queue.poll()
             if node is None:
                 continue
             yield node, depth
-            q.offer((node.left, depth + 1))
-            q.offer((node.right, depth + 1))
+            queue.offer((node.left, depth + 1))
+            queue.offer((node.right, depth + 1))
 
     @abstractmethod
     def put(self, key, value):
@@ -66,6 +66,19 @@ class Tree(ABC):
         if node is None:
             raise KeyError('not found')
         return node.value
+
+    def contains(self, key):
+        try:
+            self.get(key)
+            return True
+        except KeyError:
+            return False
+
+    def contains_value(self, value):
+        for node, depth in self.traverse():
+            if value == node.value:
+                return True
+        return False
 
     def traverse(self, mode='in'):
         return self._pre_order(self.root) if mode == 'pre' else \

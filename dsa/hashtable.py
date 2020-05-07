@@ -26,61 +26,62 @@ class Hashtable:
                 continue
             self.put(entry.key, entry.value)
 
-    def _probe_linear(self, hash_, index, const=1):
+    def _probe_linear(self, hash_, trie, const=1):
         # works with greatest common divisor of capacity and const must be 1 for complete cycle
-        return (hash_ + index * const) % self.capacity
+        return (hash_ + trie * const) % self.capacity
 
-    def _probe_quadratic_power(self, hash_, index):
+    def _probe_quadratic_power(self, hash_, trie):
         # capacity must be power of two for complete cycle
-        return (hash_ + (index ** 2 + index) // 2) % self.capacity
+        return (hash_ + (trie ** 2 + trie) // 2) % self.capacity
 
-    def _probe_quadratic_prime(self, hash_, index):
+    def _probe_quadratic_prime(self, hash_, trie):
         # capacity must be prime > 3 and load_factor <= 0.5, complete cycle never garanteed
-        return (hash_ + index ** 2) % self.capacity
+        return (hash_ + trie ** 2) % self.capacity
+
+    def _find(self, key, free=True):
+        hash_ = hash(key)
+        probe = self._probe_quadratic_power if self.quadratic else self._probe_linear
+        for index in (probe(hash_, trie) for trie in range(self.capacity)):
+            entry = self.table[index]
+            if entry is None or \
+                    free and entry.deleted or \
+                    not entry.deleted and entry.hash_ == hash_ and entry.key == key:
+                break
+        return hash_, index, entry
 
     def put(self, key, value=None):
         if self.size / self.capacity > self.load_threshold:
             self._rebuild()
-        probe = self._probe_quadratic_power if self.quadratic else self._probe_linear
-        hash_ = hash(key)
-        for i in range(self.capacity):
-            index = probe(hash_, i)
-            entry = self.table[index]
-            if entry is None or entry.deleted or entry.hash_ == hash_ and entry.key == key:
-                break
+        hash_, index, entry = self._find(key, True)
         if entry is None or entry.deleted:
             self.size += 1
         self.table[index] = Entry(hash_, False, key, value)
 
     def delete(self, key):
-        probe = self._probe_quadratic_power if self.quadratic else self._probe_linear
-        hash_ = hash(key)
-        for i in range(self.capacity):
-            index = probe(hash_, i)
-            entry = self.table[index]
-            if entry is None or not entry.deleted and entry.hash_ == hash_ and entry.key == key:
-                break
+        hash_, index, entry = self._find(key, False)
         if entry is None:
             raise KeyError('not found')
         value = entry.value
-        entry.hash_ = None
         entry.deleted = True
-        entry.key = None
-        entry.value = None
+        entry.key = entry.value = None
         self.size -= 1
         return value
 
     def get(self, key):
-        probe = self._probe_quadratic_power if self.quadratic else self._probe_linear
-        hash_ = hash(key)
-        for i in range(self.capacity):
-            index = probe(hash_, i)
-            entry = self.table[index]
-            if entry is None or not entry.deleted and entry.hash_ == hash_ and entry.key == key:
-                break
+        hash_, index, entry = self._find(key, False)
         if entry is None:
             raise KeyError('not found')
         return entry.value
+
+    def contains(self, key):
+        hash_, index, entry = self._find(key, False)
+        return entry is not None
+
+    def contains_value(self, value):
+        for entry in self.table:
+            if value == entry.value:
+                return True
+        return False
 
 
 class Entry:
@@ -96,9 +97,9 @@ def test():
     from .util import match
     h = Hashtable()
     match([
-        *((h.put, [i, i * 2], None) for i in random.sample([i for i in range(100)], 100)),
+        *((h.put, [str(i), i * 2], None) for i in random.sample([i for i in range(100)], 100)),
         (print, [h], None),
-        *((h.delete, [i], i * 2) for i in random.sample([i for i in range(100)], 100) if i % 3 == 0),
+        *((h.delete, [str(i)], i * 2) for i in random.sample([i for i in range(100)], 100) if i % 3 == 0),
         (print, [h], None)
     ])
 
