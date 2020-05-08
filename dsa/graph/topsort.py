@@ -7,7 +7,7 @@ def topsort(graph: Graph):
     for vertex in range(len(graph)):
         if visited[vertex]:
             continue
-        for traverse_vertex, previous in graph.traverse(vertex, visited=visited, before=False):
+        for traverse_vertex, previous, *_ in graph.traverse(vertex, visited=visited, before=False):
             order.append(traverse_vertex)
     order.reverse()
     return order

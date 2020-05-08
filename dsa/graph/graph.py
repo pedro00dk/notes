@@ -47,34 +47,38 @@ class Graph:
         pass
 
     def __str__(self):
-        data = '\n'.join(f'{v}: {[e for e, w in edges]}' for v, (edges, w) in enumerate(self.vertices))
+        data = '\n'.join(f'{v}: {[e for e, w in edges]}' for v, (w, edges) in enumerate(self.vertices))
         return f'Graph [\n{data}\n]'
 
     def __len__(self):
         return len(self.vertices)
 
-    def _depth_search(self, vertex, visited, before=True, previous=None, depth=0):
+    def _depth_search(self, vertex, visited, before=True, previous=None, edge_weight=None, depth=0):
         if visited[vertex]:
             return
         visited[vertex] = True
+        weight, edges = self.vertices[vertex]
+        previous_weight = self.vertices[previous][0] if previous is not None else None
         if before:
-            yield vertex, previous
-        for target, weight in self.vertices[vertex][0]:
-            yield from self._depth_search(target, visited, vertex, depth + 1)
+            yield vertex, previous, weight, previous_weight, edge_weight
+        for target, target_edge_weight in edges:
+            yield from self._depth_search(target, visited, before, vertex, target_edge_weight, depth + 1)
         if not before:
-            yield vertex, previous
+            yield vertex, weight, previous, previous_weight, edge_weight
 
     def _breadth_search(self, vertex, visited, before=True, previous=None, depth=0):
         queue = Queue()
-        queue.offer((vertex, previous))
-        while queue.size > 0:
-            vertex, previous = queue.poll()
+        queue.offer((vertex, previous, None))
+        while len(queue) > 0:
+            vertex, previous, edge_weight = queue.poll()
             if visited[vertex]:
                 continue
             visited[vertex] = True
-            yield vertex, previous
-            for target, weight in self.vertices[vertex][0]:
-                queue.offer((target, vertex))
+            weight, edges = self.vertices[vertex]
+            previous_weight = self.vertices[previous][0] if previous is not None else None
+            yield vertex, previous, weight, previous_weight, edge_weight
+            for target, target_edge_weight in edges:
+                queue.offer((target, vertex, target_edge_weight))
 
     def traverse(self, vertex, mode='dfs', visited=None, before=True):
         if vertex < 0 or vertex >= len(self.vertices):
@@ -85,24 +89,24 @@ class Graph:
 
     def make_vertex(self, weight=1):
         vertex = len(self.vertices)
-        self.vertices.append(([], weight))
+        self.vertices.append((weight, []))
         return vertex
 
     def make_edge(self, source, target, weight=1, bidirectional=True):
         if source < 0 or source >= len(self.vertices) or target < 0 or target >= len(self.vertices):
             raise IndexError('out of range')
-        self.vertices[source][0].append((target, weight))
+        self.vertices[source][1].append((target, weight))
         if bidirectional:
-            self.vertices[target][0].append((source, weight))
+            self.vertices[target][1].append((source, weight))
 
 
 def test():
     g = Graph.complete(5)
     print(g)
-    for vertex, previous in g.traverse(0, 'dfs'):
+    for vertex, previous, *_ in g.traverse(0, 'dfs'):
         print(vertex, end=' ')
     print()
-    for vertex, previous in g.traverse(0, 'bfs'):
+    for vertex, previous, *_ in g.traverse(0, 'bfs'):
         print(vertex, end=' ')
     print()
     print('Complete Graph:\n', Graph.complete())

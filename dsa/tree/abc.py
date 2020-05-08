@@ -43,7 +43,7 @@ class Tree(ABC):
     def _breadth_order(self, node, depth=0):
         queue = Queue()
         queue.offer((node, depth))
-        while queue.size > 0:
+        while len(queue) > 0:
             node, depth = queue.poll()
             if node is None:
                 continue
