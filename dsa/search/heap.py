@@ -1,12 +1,15 @@
 class Heap:
     def __init__(self, content=None, mode='max'):
         self.heap = content if content is not None else []
-        self.comparer = (lambda x, y: x > y) if mode == 'max' else (lambda x, y: x < y)
+        self.comparer = (lambda x, y: x > y) if mode == 'max' else (lambda x, y: x < y) if mode == 'min' else mode
         # self.heapifyTopDown(len(self.heap))
         self.heapifyBottomUp(len(self.heap))
 
     def __str__(self):
         return f'Heap {self.heap}'
+
+    def __len__(self):
+        return len(self.heap)
 
     def _siftUp(self, i, length):
         while (parent:= (i - 1) // 2) >= 0 and self.comparer(self.heap[i], self.heap[parent]):
@@ -40,7 +43,9 @@ class Heap:
         if len(self.heap) == 0:
             raise IndexError('empty queue')
         chosen = self.heap[0]
-        self.heap[0] = self.heap.pop()
+        replacement = self.heap.pop()
+        if len(self.heap) > 0:
+            self.heap[0] = replacement
         self._siftDown(0, len(self.heap))
         return chosen
 
