@@ -11,9 +11,8 @@ def connected(graph):
     for vertex in range(len(graph)):
         if visited[vertex]:
             continue
-        for traverse_vertex, previous, *_ in graph.traverse(vertex, visited=visited):
-            visited[traverse_vertex] = True
-            groups[traverse_vertex] = group
+        for vertex, previous, *_ in graph.traverse(vertex, visited=visited):
+            groups[vertex] = group
         group += 1
     return group, groups
 
