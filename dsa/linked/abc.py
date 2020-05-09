@@ -9,8 +9,11 @@ class Linked(ABC):
     def __iter__(self):
         pass
 
-    def __str__(self):
-        return f'{type(self).__name__} [ {", ".join(str(value) for value in self)} ]'
-
     def __len__(self):
         return self.size
+
+    def __str__(self):
+        return f'{type(self).__name__} [{", ".join(str(value) for value in self)}]'
+
+    def empty(self):
+        return self.size == 0

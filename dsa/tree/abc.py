@@ -12,12 +12,12 @@ class Tree(ABC):
     def __iter__(self):
         return self.traverse()
 
+    def __len__(self):
+        return self.size
+
     def __str__(self):
         tree = '\n'.join(f'{"|  " * depth}├─ {self.printer(node, depth)}' for node, depth in self.traverse('pre'))
         return f'{type(self).__name__} [\n{tree}\n]'
-
-    def __len__(self):
-        return self.size
 
     def _pre_order(self, node, depth=0):
         if node is None:
@@ -50,6 +50,9 @@ class Tree(ABC):
             yield node, depth
             queue.offer((node.left, depth + 1))
             queue.offer((node.right, depth + 1))
+
+    def empty(self):
+        return self.size == 0
 
     def traverse(self, mode='in'):
         return self._pre_order(self.root) if mode == 'pre' else \
