@@ -1,4 +1,4 @@
-def siftDown(heap, i, length):
+def sift_down(heap, i, length):
     while (left:= i * 2 + 1) < length:
         right = left + 1
         chosen = i
@@ -13,10 +13,10 @@ def siftDown(heap, i, length):
 def heapsort(array):
     length = len(array)
     for i in range(length // 2 - 1, -1, -1):
-        siftDown(array, i, length)
+        sift_down(array, i, length)
     for i in range(len(array) - 1, 0, -1):
         array[0], array[i] = array[i], array[0]
-        siftDown(array, 0, i)
+        sift_down(array, 0, i)
     return array
 
 
