@@ -43,7 +43,7 @@ class Tree(ABC):
     def _breadth(self, node, / , *, depth=0):
         queue = Queue()
         queue.offer((node, depth))
-        while len(queue) > 0:
+        while not queue.empty():
             node, depth = queue.poll()
             if node is None:
                 continue

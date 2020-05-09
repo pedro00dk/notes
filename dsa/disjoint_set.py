@@ -3,42 +3,42 @@ from .hashtable import Hashtable
 
 class DisjointSet:
     def __init__(self, size=0):
-        self.sets = [i for i in range(size)]
-        self.ranks = [0 for i in range(size)]
-        self.sizes = [1 for i in range(size)]
-        self.count = len(self.sets)
+        self._sets = [i for i in range(size)]
+        self._ranks = [0 for i in range(size)]
+        self._sizes = [1 for i in range(size)]
+        self._groups = len(self._sets)
+
+    def __len__(self):
+        return len(self._sets)
 
     def __str__(self):
         lines = '\n'.join(
-            [f'{i} -> {self.sets[i]} # rank: {self.ranks[i]} size: {self.sizes[i]}' for i in range(len(self.sets))]
+            [f'{i} -> {self._sets[i]} # rank: {self._ranks[i]} size: {self._sizes[i]}' for i in range(len(self._sets))]
         )
-        return f'Disjoint Set [\n{lines}\n]'
-
-    def __len__(self):
-        return len(self.sets)
+        return f'DisjointSet [\n{lines}\n]'
 
     def groups(self):
-        return self.count
+        return self._groups
 
-    def size(self, key):
-        return self.sizes[self.find(key)]
+    def group_size(self, key):
+        return self._sizes[self.find(key)]
 
     def make_set(self):
-        key = len(self.sets)
-        self.sets.append(key)
-        self.ranks.append(0)
-        self.sizes.append(1)
-        self.count += 1
+        key = len(self._sets)
+        self._sets.append(key)
+        self._ranks.append(0)
+        self._sizes.append(1)
+        self._groups += 1
         return key
 
     def find(self, key):
-        if key < 0 or key >= len(self.sets):
+        if key < 0 or key >= len(self._sets):
             raise KeyError('not found')
         root = key
-        while root != self.sets[root]:
-            root = self.sets[root]
-        while key != self.sets[key]:
-            key, self.sets[key] = self.sets[key], root
+        while root != self._sets[root]:
+            root = self._sets[root]
+        while key != self._sets[key]:
+            key, self._sets[key] = self._sets[key], root
         return root
 
     def union(self, key_a, key_b):
@@ -46,12 +46,12 @@ class DisjointSet:
         key_b = self.find(key_b)
         if key_a == key_b:
             return
-        if self.ranks[key_a] < self.ranks[key_b]:
+        if self._ranks[key_a] < self._ranks[key_b]:
             key_a, key_b = key_b, key_a
-        self.sets[key_b] = key_a
-        self.ranks[key_a] += 1 if self.ranks[key_a] == self.ranks[key_b] else 0
-        self.sizes[key_a] += self.sizes[key_b]
-        self.count -= 1
+        self._sets[key_b] = key_a
+        self._ranks[key_a] += 1 if self._ranks[key_a] == self._ranks[key_b] else 0
+        self._sizes[key_a] += self._sizes[key_b]
+        self._groups -= 1
 
     def connected(self, key_a, key_b):
         return self.find(key_a) == self.find(key_b)
@@ -70,8 +70,8 @@ class HashDisjointSet:
     def __len__(self):
         return len(self.disjoint_set)
 
-    def size(self, key):
-        return self.disjoint_set.size(self.map.get(key))
+    def group_size(self, key):
+        return self.disjoint_set.group_size(self.map.get(key))
 
     def make_set(self, key):
         try:
@@ -127,8 +127,8 @@ def test():
         (d.connected, ['u', '1'], False),
         (len, [d], 10),
         (d.groups, [], 2),
-        (d.size, ['a'], 5),
-        (d.size, ['0'], 5)
+        (d.group_size, ['a'], 5),
+        (d.group_size, ['0'], 5)
     ])
 
 
