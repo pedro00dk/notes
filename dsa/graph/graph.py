@@ -6,113 +6,107 @@ from ..linked.queue import Queue
 
 
 class Graph:
-    @classmethod
-    def complete(cls, vertices=5, vw_range=(1, 1), ew_range=(1, 1)):
-        graph = Graph()
-        for vertex in range(vertices):
-            graph.make_vertex(random.randint(*vw_range))
-            for target in range(0, vertex):
-                graph.make_edge(vertex, target, random.randint(*ew_range))
-        return graph
-
-    @classmethod
-    def random(cls, vertices=5, density=0.5, vw_range=(1, 1), ew_range=(1, 1)):
-        graph = Graph()
-        for vertex in range(vertices):
-            graph.make_vertex(random.randint(*vw_range))
-        edges = round(min(max(0, density), 1) * vertices * (vertices - 1) / 2)
-        for source, target in random.sample([*itertools.combinations(range(vertices), 2)], edges):
-            graph.make_edge(source, target, random.randint(*ew_range))
-        return graph
-
-    @classmethod
-    def random_dag(cls, ranks_range=(3, 5), vertices_range=(1, 5), probability=0.5, vw_range=(1, 1), ew_range=(1, 1)):
-        graph = Graph()
-        ranks = random.randint(*ranks_range)
-        previous_vertices = 0
-        for rank in range(ranks):
-            vertices = random.randint(*vertices_range)
-            for vertice in range(previous_vertices, vertices + previous_vertices):
-                graph.make_vertex(random.randint(*vw_range))
-            for previous in range(previous_vertices):
-                for vertice in range(previous_vertices, vertices + previous_vertices):
-                    if random.random() < probability:
-                        graph.make_edge(previous, vertice, random.randint(*ew_range), False)
-                    pass
-            previous_vertices += vertices
-        return graph
-
     def __init__(self):
-        self.vertices = []
-        pass
-
-    def __str__(self):
-        data = '\n'.join(f'{v}: {[e for e, w in edges]}' for v, (w, edges) in enumerate(self.vertices))
-        return f'Graph [\n{data}\n]'
+        self._vertices = []
+        self._edges = []
 
     def __len__(self):
-        return len(self.vertices)
+        return self.vertices_length()
 
-    def _depth_search(self, vertex, visited, before=True, previous=None, edge_weight=None, depth=0):
-        if visited[vertex]:
+    def __str__(self):
+        lines = "\n".join(
+            f'{v._id} w={v.weight} => {", ".join(f"({e._target} l={e.length})" for e in es)}'
+            for v, es in ((self.get_vertex(id), self.get_edges(id)) for id in range(self.vertices_length()))
+        )
+        return f'Graph [\n{lines}\n]'
+        pass
+
+    def ___iter__(self):
+        return self.vertices()
+
+    def _depth(self, id, / , visited, yield_all_edges = False, yield_after = False, *, previous = None, edge = None, depth = 0):
+        vertex = self._vertices[id]
+        if visited[id]:
+            if yield_all_edges and edge is not None:
+                yield vertex, previous, edge, depth
             return
-        visited[vertex] = True
-        weight, edges = self.vertices[vertex]
-        previous_weight = self.vertices[previous][0] if previous is not None else None
-        if before:
-            yield vertex, previous, weight, previous_weight, edge_weight
-        for target, target_edge_weight in edges:
-            yield from self._depth_search(target, visited, before, vertex, target_edge_weight, depth + 1)
-        if not before:
-            yield vertex, weight, previous, previous_weight, edge_weight
+        visited[id] = True
+        if not yield_after:
+            yield vertex, previous, edge, depth
+        for edge in self._edges[id]:
+            yield from self._depth(
+                edge._target, visited, yield_after, yield_all_edges, previous=vertex, edge=edge, depth=depth + 1
+            )
+        if not yield_after:
+            yield vertex, previous, edge, depth
 
-    def _breadth_search(self, vertex, visited, before=True, previous=None, depth=0):
+    def _breadth(self, id, /, visited, yield_all_edges=False):
         queue = Queue()
-        queue.offer((vertex, previous, None))
-        while len(queue) > 0:
-            vertex, previous, edge_weight = queue.poll()
-            if visited[vertex]:
+        queue.offer((id, None, None, 0))
+        while not queue.empty():
+            id, previous, edge, depth = queue.poll()
+            vertex = self._vertices[id]
+            if visited[id]:
+                if yield_all_edges and edge is not None:
+                    yield vertex, previous, edge, depth
                 continue
-            visited[vertex] = True
-            weight, edges = self.vertices[vertex]
-            previous_weight = self.vertices[previous][0] if previous is not None else None
-            yield vertex, previous, weight, previous_weight, edge_weight
-            for target, target_edge_weight in edges:
-                queue.offer((target, vertex, target_edge_weight))
+            visited[id] = True
+            yield vertex, previous, edge, depth
+            for edge in self._edges[id]:
+                queue.offer((edge._target, vertex, edge, depth + 1))
 
-    def traverse(self, vertex, mode='dfs', visited=None, before=True):
-        if vertex < 0 or vertex >= len(self.vertices):
-            raise IndexError('out of range')
-        visited = visited if visited is not None else [False] * len(self.vertices)
-        return self._depth_search(vertex, visited, before) if mode == 'dfs' else \
-            self._breadth_search(vertex, visited, before)
-
-    def make_vertex(self, weight=1):
-        vertex = len(self.vertices)
-        self.vertices.append((weight, []))
+    def make_vertex(self, /, weight=1, data=None):
+        vertex = Vertex(self.vertices_length(), weight, data)
+        self._vertices.append(vertex)
+        self._edges.append([])
         return vertex
 
-    def make_edge(self, source, target, weight=1, bidirectional=True):
-        if source < 0 or source >= len(self.vertices) or target < 0 or target >= len(self.vertices):
+    def make_edge(self, source, target, / , length=1, data=None, *, bidirectional=True):
+        if source < 0 or source >= self.vertices_length() or target < 0 or target >= self.vertices_length():
             raise IndexError('out of range')
-        self.vertices[source][1].append((target, weight))
+        self._edges[source].append(Edge(source, target, length, data))
         if bidirectional:
-            self.vertices[target][1].append((source, weight))
+            self._edges[target].append(Edge(target, source, length, data))
+
+    def get_vertex(self, id):
+        return self._vertices[id]
+
+    def get_edges(self, id):
+        return (*self._edges[id],)
+
+    def vertices_length(self):
+        return len(self._vertices)
+
+    def edges_length(self):
+        length = 0
+        for id in range(self.vertices_length()):
+            length += len(self._edges[id])
+        return length
+
+    def vertices(self):
+        return iter(self._vertices)
+
+    def edges(self, id=None):
+        if id is not None:
+            return iter(self._edges[id])
+        return (edge for edges in self._edges for edge in edges)
+
+    def traverse(self, id, mode='depth', /, visited=None, yield_all_edges=False, yield_after=False):
+        visited = visited if visited is not None else [False] * self.vertices_length()
+        return self._depth(id, visited, yield_all_edges, yield_after) if mode == 'depth' else \
+            self._breadth(id, visited, yield_all_edges)
 
 
-def test():
-    g = Graph.complete(5)
-    print(g)
-    for vertex, previous, *_ in g.traverse(0, 'dfs'):
-        print(vertex, end=' ')
-    print()
-    for vertex, previous, *_ in g.traverse(0, 'bfs'):
-        print(vertex, end=' ')
-    print()
-    print('Complete Graph:\n', Graph.complete())
-    print('Random Graph:\n', Graph.random())
-    print('Random Directed Acyclic Graph:\n', Graph.random_dag())
+class Vertex:
+    def __init__(self, id, /, weight=1, data=None):
+        self._id = id
+        self.weight = weight
+        self.data = data
 
 
-if __name__ == '__main__':
-    test()
+class Edge:
+    def __init__(self, source, target, /, length=1, data=None):
+        self._source = source
+        self._target = target
+        self.length = length
+        self.data = data
