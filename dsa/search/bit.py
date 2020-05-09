@@ -1,31 +1,34 @@
 class BIT:
     def __init__(self, array):
-        self.tree = [0] + array
+        self._tree = [0] + array
         self._build()
 
+    def __len__(self):
+        return len(self._tree) - 1
+
     def __str__(self):
-        return f'BIT {self.tree}'
+        return f'BIT {self._tree}'
 
     def _lsb(self, index):
         return index & -index
 
     def _build(self):
-        for index in range(1, len(self.tree)):
-            if (parent:= index + self._lsb(index)) < len(self.tree):
-                self.tree[parent] += self.tree[index]
+        for index in range(1, len(self._tree)):
+            if (parent:= index + self._lsb(index)) < len(self._tree):
+                self._tree[parent] += self._tree[index]
 
     def _prefix_sum(self, index):
         acc = 0
         while index > 0:
-            acc += self.tree[index]
+            acc += self._tree[index]
             index -= self._lsb(index)
         return acc
 
     def add(self, index, value):
         # index parameter is zero based
         index += 1
-        while index < len(self.tree):
-            self.tree[index] += value
+        while index < len(self._tree):
+            self._tree[index] += value
             index += self._lsb(index)
 
     def set(self, index, value):
@@ -35,7 +38,7 @@ class BIT:
 
     def sum(self, i, j):
         # index parameters are zero based
-        if (i > j or j >= len(self.tree)):
+        if (i > j or j >= len(self._tree)):
             raise IndexError('illegal index')
         return self._prefix_sum(j + 1) - self._prefix_sum(i)
 

@@ -1,16 +1,16 @@
-def binary_search(l, key, getter=lambda x: x):
+def binary_search(array, key, /, comparator=lambda x, y: x - y):
     left = 0
-    right = len(l) - 1
+    right = len(array) - 1
     while left <= right:
         center = (left + right) // 2
-        center_key = getter(l[center])
-        if key < center_key:
+        comparison = comparator(key, array[center])
+        if comparison < 0:
             right = center - 1
-        elif key > center_key:
+        elif comparison > 0:
             left = center + 1
         else:
             return center
-    return None
+    raise KeyError('not found')
 
 
 def test():
