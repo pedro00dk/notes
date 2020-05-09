@@ -7,25 +7,25 @@ class BST(Tree):
 
     def put(self, key, value=None):
         parent = None
-        node = self.root
+        node = self._root
         while node is not None and key != node.key:
             parent = node
             node = node.left if key < node.key else node.right
         if node is None:
             if parent is None:
-                self.root = Node(key, value)
+                self._root = Node(key, value)
             elif key < parent.key:
                 parent.left = Node(key, value)
             else:
                 parent.right = Node(key, value)
-            self.size += 1
+            self._size += 1
         else:
             node.key, node.value, old_value = key, value, node.value
             return old_value
 
     def take(self, key):
         parent = None
-        node = self.root
+        node = self._root
         while node is not None and key != node.key:
             parent = node
             node = node.left if key < node.key else node.right
@@ -40,12 +40,12 @@ class BST(Tree):
             node.key, node.value = successor.key, successor.value
             node = successor
         if parent is None:
-            self.root = None
+            self._root = None
         elif parent.left == node:
             parent.left = node.left if node.left is not None else node.right
         elif parent.right == node:
             parent.right = node.left if node.left is not None else node.right
-        self.size -= 1
+        self._size -= 1
         return node.value
 
 
@@ -68,17 +68,17 @@ def test():
         (t.take, [0], None),
         (print, [t], None)
     ])
-    for node, depth in t.traverse('pre'):
-        print(node.key, end=' ')
+    for key, value, depth in t.traverse('pre'):
+        print(key, end=' ')
     print()
-    for node, depth in t.traverse('in'):
-        print(node.key, end=' ')
+    for key, value, depth in t.traverse('in'):
+        print(key, end=' ')
     print()
-    for node, depth in t.traverse('post'):
-        print(node.key, end=' ')
+    for key, value, depth in t.traverse('post'):
+        print(key, end=' ')
     print()
-    for node, depth in t.traverse('breadth'):
-        print(node.key, end=' ')
+    for key, value, depth in t.traverse('breadth'):
+        print(key, end=' ')
     print()
 
 

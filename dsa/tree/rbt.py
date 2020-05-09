@@ -7,21 +7,21 @@ class RBT(Tree):
 
     def put(self, key, value=None):
         parent = None
-        node = self.root
+        node = self._root
         while node is not None and key != node.key:
             parent = node
             node = node.left if key < node.key else node.right
         if node is None:
             if parent is None:
-                node = self.root = RBTNode(key, value)
+                node = self._root = RBTNode(key, value)
             elif key < parent.key:
                 node = parent.left = RBTNode(key, value)
                 parent.left.parent = parent
             else:
                 node = parent.right = RBTNode(key, value)
                 parent.right.parent = parent
-            self.size += 1
-            self.root = self._put_fix(node)
+            self._size += 1
+            self._root = self._put_fix(node)
         else:
             node.key, node.value, old_value = key, value, node.value
             return old_value
@@ -49,12 +49,12 @@ class RBT(Tree):
             grand_parent.red = False
             grand_parent.left.red = grand_parent.right.red = True
             break
-        root = self._root(node)
+        root = self._top(node)
         root.red = False
         return root
 
     def take(self, key):
-        node = self.root
+        node = self._root
         while node is not None and key != node.key:
             node = node.left if key < node.key else node.right
         if node is None:
@@ -67,7 +67,7 @@ class RBT(Tree):
             node.value, successor.value = successor.value, node.value
             node = successor
         if node.parent is None:
-            child = self.root = None
+            child = self._root = None
         elif node.parent.left == node:
             child = node.parent.left = node.left if node.left is not None else node.right
             if child is not None:
@@ -76,16 +76,16 @@ class RBT(Tree):
             child = node.parent.right = node.left if node.left is not None else node.right
             if child is not None:
                 child.parent = node.parent
-        self.size -= 1
-        self.root = self._take_fix(node, child)
+        self._size -= 1
+        self._root = self._take_fix(node, child)
         return node.value
 
     def _take_fix(self, deleted, replacer):
         if self._red(deleted):
-            return self.root
+            return self._root
         if self._red(replacer):
             replacer.red = False
-            return self.root
+            return self._root
         node = replacer
         while (parent:= self._parent(node)) is not None:
             sibling = self._sibling(node)
@@ -126,7 +126,7 @@ class RBT(Tree):
                 sibling.left.red = False
                 self._rotate_right(parent)
             break
-        return self._root(node if node is not None else deleted)
+        return self._top(node if node is not None else deleted)
 
     def _red(self, node):
         return node is not None and node.red
@@ -153,7 +153,7 @@ class RBT(Tree):
     def _uncle(self, node):
         return self._sibling(self._parent(node))
 
-    def _root(self, node):
+    def _top(self, node):
         while (parent:= self._parent(node)) is not None:
             node = parent
         return node
@@ -217,17 +217,17 @@ def test():
         (t.take, [-15], -1000),
         (print, [t], None)
     ])
-    for node, depth in t.traverse('pre'):
-        print(node.key, end=' ')
+    for key, value, depth in t.traverse('pre'):
+        print(key, end=' ')
     print()
-    for node, depth in t.traverse('in'):
-        print(node.key, end=' ')
+    for key, value, depth in t.traverse('in'):
+        print(key, end=' ')
     print()
-    for node, depth in t.traverse('post'):
-        print(node.key, end=' ')
+    for key, value, depth in t.traverse('post'):
+        print(key, end=' ')
     print()
-    for node, depth in t.traverse('breadth'):
-        print(node.key, end=' ')
+    for key, value, depth in t.traverse('breadth'):
+        print(key, end=' ')
     print()
 
 

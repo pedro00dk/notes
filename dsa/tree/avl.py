@@ -6,13 +6,13 @@ class AVL(Tree):
         super().__init__(lambda node, depth: f'b:{node.balance} # {node.key}: {node.value}')
 
     def put(self, key, value=None):
-        self.root, growth, old_value = self._put(key, value, self.root)
+        self._root, growth, old_value = self._put(key, value, self._root)
         return old_value
 
     def _put(self, key, value, node):
         if node is None:
             node, growth, old_value = AVLNode(key, value), 1, None
-            self.size += 1
+            self._size += 1
         elif key < node.key:
             node.left, child_growth, old_value = self._put(key, value, node.left)
             previous_balance = node.balance
@@ -28,7 +28,7 @@ class AVL(Tree):
         return (*self._rotate(node, growth), old_value)
 
     def take(self, key):
-        self.root, growth, value = self._take(key, self.root)
+        self._root, growth, value = self._take(key, self._root)
         return value
 
     def _take(self, key, node):
@@ -56,7 +56,7 @@ class AVL(Tree):
             current_node.key = successor_key
         else:
             node, growth, value = node.left if node.right is None else node.right, -1, node.value
-            self.size -= 1
+            self._size -= 1
         return (*self._rotate(node, growth), value)
 
     def _rotate(self, node, growth, rank=2):
@@ -118,17 +118,17 @@ def test():
         (t.take, [-15], -1000),
         (print, [t], None)
     ])
-    for node, depth in t.traverse('pre'):
-        print(node.key, end=' ')
+    for key, value, depth in t.traverse('pre'):
+        print(key, end=' ')
     print()
-    for node, depth in t.traverse('in'):
-        print(node.key, end=' ')
+    for key, value, depth in t.traverse('in'):
+        print(key, end=' ')
     print()
-    for node, depth in t.traverse('post'):
-        print(node.key, end=' ')
+    for key, value, depth in t.traverse('post'):
+        print(key, end=' ')
     print()
-    for node, depth in t.traverse('breadth'):
-        print(node.key, end=' ')
+    for key, value, depth in t.traverse('breadth'):
+        print(key, end=' ')
     print()
 
 
