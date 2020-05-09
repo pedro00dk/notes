@@ -19,7 +19,7 @@ def random_undirected(vertices=5, density=0.5, vw_range=(1, 1), ew_range=(1, 1))
         graph.make_vertex(weight=random.randint(*vw_range))
     edges = round(min(max(0, density), 1) * vertices * (vertices - 1) / 2)
     for source, target in random.sample([*itertools.combinations(range(vertices), 2)], edges):
-        graph.make_edge(source, target, length=random.randint(*ew_range), bidirectional=True)
+        graph.make_edge(source, target, length=random.randint(*ew_range), directed=False)
     return graph
 
 
@@ -29,7 +29,7 @@ def random_directed(vertices=5, density=0.5, vw_range=(1, 1), ew_range=(1, 1)):
         graph.make_vertex(weight=random.randint(*vw_range))
     edges = round(min(max(0, density), 1) * vertices * (vertices - 1))
     for source, target in random.sample([*itertools.permutations(range(vertices), 2)], edges):
-        graph.make_edge(source, target, length=random.randint(*ew_range), bidirectional=False)
+        graph.make_edge(source, target, length=random.randint(*ew_range), directed=True)
     return graph
 
 
@@ -44,7 +44,7 @@ def random_dag(ranks_range=(3, 5), vertices_range=(1, 5), probability=0.5, vw_ra
         for previous in range(previous_vertices):
             for vertice in range(previous_vertices, vertices + previous_vertices):
                 if random.random() < probability:
-                    graph.make_edge(previous, vertice, length=random.randint(*ew_range), bidirectional=False)
+                    graph.make_edge(previous, vertice, length=random.randint(*ew_range), directed=True)
                 pass
         previous_vertices += vertices
     return graph

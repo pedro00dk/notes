@@ -9,6 +9,9 @@ class Graph:
     def __init__(self):
         self._vertices = []
         self._edges = []
+        self._edges_length = 0
+        self._directed_edges = True
+        self._cycle_edges = 0
 
     def __len__(self):
         return self.vertices_length()
@@ -21,10 +24,10 @@ class Graph:
         return f'Graph [\n{lines}\n]'
         pass
 
-    def ___iter__(self):
+    def __iter__(self):
         return self.vertices()
 
-    def _depth(self, id, / , visited, yield_all_edges = False, yield_after = False, *, previous = None, edge = None, depth = 0):
+    def _depth(self, id, /, visited, yield_all_edges = False, yield_after = False, *, previous = None, edge = None, depth = 0):
         vertex = self._vertices[id]
         if visited[id]:
             if yield_all_edges and edge is not None:
@@ -40,7 +43,7 @@ class Graph:
         if not yield_after:
             yield vertex, previous, edge, depth
 
-    def _breadth(self, id, /, visited, yield_all_edges=False):
+    def _breadth(self, id, / , visited, yield_all_edges=False):
         queue = Queue()
         queue.offer((id, None, None, 0))
         while not queue.empty():
@@ -55,17 +58,20 @@ class Graph:
             for edge in self._edges[id]:
                 queue.offer((edge._target, vertex, edge, depth + 1))
 
-    def make_vertex(self, /, weight=1, data=None):
+    def make_vertex(self, / , weight=1, data=None):
         vertex = Vertex(self.vertices_length(), weight, data)
         self._vertices.append(vertex)
         self._edges.append([])
         return vertex
 
-    def make_edge(self, source, target, / , length=1, data=None, *, bidirectional=True):
+    def make_edge(self, source, target, /, length=1, data=None, *, directed=False):
         if source < 0 or source >= self.vertices_length() or target < 0 or target >= self.vertices_length():
             raise IndexError('out of range')
         self._edges[source].append(Edge(source, target, length, data))
-        if bidirectional:
+        self._edges_length += 1 + int(not directed)
+        self._directed_edges += int(directed)
+        self._cycle_edges += int(source == target) + int(not directed)
+        if not directed:
             self._edges[target].append(Edge(target, source, length, data))
 
     def get_vertex(self, id):
@@ -78,10 +84,16 @@ class Graph:
         return len(self._vertices)
 
     def edges_length(self):
-        length = 0
-        for id in range(self.vertices_length()):
-            length += len(self._edges[id])
-        return length
+        return self._edges_length
+    
+    def fixed_edges_length(self):
+        return self._edges_length - self._directed_edges
+    
+    def is_directed(self):
+        return self._directed_edges > 0
+    
+    def has_cycles(self):
+        return self._cycle_edges > 0
 
     def vertices(self):
         return iter(self._vertices)
@@ -91,21 +103,21 @@ class Graph:
             return iter(self._edges[id])
         return (edge for edges in self._edges for edge in edges)
 
-    def traverse(self, id, mode='depth', /, visited=None, yield_all_edges=False, yield_after=False):
+    def traverse(self, id, mode='depth', / , visited=None, yield_all_edges=False, yield_after=False):
         visited = visited if visited is not None else [False] * self.vertices_length()
         return self._depth(id, visited, yield_all_edges, yield_after) if mode == 'depth' else \
             self._breadth(id, visited, yield_all_edges)
 
 
 class Vertex:
-    def __init__(self, id, /, weight=1, data=None):
+    def __init__(self, id, / , weight=1, data=None):
         self._id = id
         self.weight = weight
         self.data = data
 
 
 class Edge:
-    def __init__(self, source, target, /, length=1, data=None):
+    def __init__(self, source, target, / , length=1, data=None):
         self._source = source
         self._target = target
         self.length = length
