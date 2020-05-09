@@ -51,15 +51,6 @@ class Tree(ABC):
             queue.offer((node.left, depth + 1))
             queue.offer((node.right, depth + 1))
 
-    def empty(self):
-        return self.size == 0
-
-    def traverse(self, mode='in'):
-        return self._pre_order(self.root) if mode == 'pre' else \
-            self._in_order(self.root) if mode == 'in' else \
-            self._post_order(self.root) if mode == 'post' else \
-            self._breadth_order(self.root)
-
     @abstractmethod
     def put(self, key, value):
         pass
@@ -89,8 +80,17 @@ class Tree(ABC):
                 return True
         return False
 
+    def empty(self):
+        return self.size == 0
 
-class Node(ABC):
+    def traverse(self, mode='in'):
+        return self._pre_order(self.root) if mode == 'pre' else \
+            self._in_order(self.root) if mode == 'in' else \
+            self._post_order(self.root) if mode == 'post' else \
+            self._breadth_order(self.root)
+
+
+class Node:
     def __init__(self, key, value=None):
         self.key = key
         self.value = value

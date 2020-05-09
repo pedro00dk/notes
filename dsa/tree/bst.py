@@ -13,11 +13,11 @@ class BST(Tree):
             node = node.left if key < node.key else node.right
         if node is None:
             if parent is None:
-                self.root = BSTNode(key, value)
+                self.root = Node(key, value)
             elif key < parent.key:
-                parent.left = BSTNode(key, value)
+                parent.left = Node(key, value)
             else:
-                parent.right = BSTNode(key, value)
+                parent.right = Node(key, value)
             self.size += 1
         else:
             node.key, node.value, old_value = key, value, node.value
@@ -47,11 +47,6 @@ class BST(Tree):
             parent.right = node.left if node.left is not None else node.right
         self.size -= 1
         return node.value
-
-
-class BSTNode(Node):
-    def __init__(self, key, value=None):
-        super().__init__(key, value)
 
 
 def test():
