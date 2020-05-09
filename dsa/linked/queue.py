@@ -6,27 +6,27 @@ class Queue(Linked):
         super().__init__()
 
     def offer(self, value):
-        if self.tail is None:
-            self.head = self.tail = Node(value)
+        if self._tail is None:
+            self._head = self._tail = Node(value)
         else:
-            self.tail.next = Node(value)
-            self.tail = self.tail.next
-        self.size += 1
+            self._tail.next = Node(value)
+            self._tail = self._tail.next
+        self._size += 1
 
     def poll(self):
-        if self.head is None:
+        if self._head is None:
             raise IndexError('empty queue')
-        value = self.head.value
-        self.head = self.head.next
-        if self.head is None:
-            self.tail = None
-        self.size -= 1
+        value = self._head.value
+        self._head = self._head.next
+        if self._head is None:
+            self._tail = None
+        self._size -= 1
         return value
 
     def peek(self):
-        if self.head is None:
+        if self._head is None:
             raise IndexError('empty queue')
-        return self.head.value
+        return self._head.value
 
 
 def test():

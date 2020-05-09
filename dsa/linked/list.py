@@ -5,70 +5,62 @@ class LinkedList(Linked):
     def __init__(self):
         super().__init__()
 
-    def _check_index(self, index, insert=False):
-        if index < 0 or insert and index > self.size or not insert and index >= self.size:
-            raise IndexError('out of range')
-
-    def _find_index(self, index):
-        self._check_index(index)
-        forward = index < self.size / 2
-        node = self.head if forward else self.tail
-        for i in range(index if forward else (self.size - 1 - index)):
-            node = node.next if forward else node.prev
-        return node
-
-    def _find_value(self, value):
-        node = self.head
-        for i in range(self.size):
-            if value == node.value:
-                break
-            node = node.next
-        if node is None:
-            raise ValueError('not found')
-        return node, i
-
     def _insert(self, index, value):
-        self._check_index(index, True)
-        if self.head is None:
-            self.head = self.tail = ListNode(value)
+        self._check(index, True)
+        if self._head is None:
+            self._head = self._tail = ListNode(value)
         elif index == 0:
-            self.head = ListNode(value, None, self.head)
-            self.head.next.prev = self.head
-        elif index == self.size:
-            self.tail = ListNode(value, self.tail, None)
-            self.tail.prev.next = self.tail
+            self._head = ListNode(value, None, self._head)
+            self._head.next.prev = self._head
+        elif index == self._size:
+            self._tail = ListNode(value, self._tail, None)
+            self._tail.prev.next = self._tail
         else:
-            current = self._find_index(index)
+            current = self._find(index)[0]
             node = ListNode(value, current.prev, current)
             node.prev.next = node.next.prev = node
-        self.size += 1
+        self._size += 1
 
     def _delete(self, node):
         if node.prev is None and node.next is None:
-            self.head = self.tail = None
+            self._head = self._tail = None
         elif node.prev is None:
-            self.head = node.next
-            self.head.prev = None
+            self._head = node.next
+            self._head.prev = None
         elif node.next is None:
-            self.tail = node.prev
-            self.tail.next = None
+            self._tail = node.prev
+            self._tail.next = None
         else:
             node.prev.next = node.next
             node.next.prev = node.prev
-        self.size -= 1
+        self._size -= 1
         return node.value
 
+    def _find(self, index):
+        self._check(index)
+        forward = index < self._size / 2
+        node = self._head if forward else self._tail
+        for i in range(index if forward else (self._size - 1 - index)):
+            node = node.next if forward else node.prev
+        return node, index
+
+    def _find_value(self, value):
+        for i, node in enumerate(self._nodes()):
+            if value == node.value:
+                return node, i
+        raise ValueError('not found')
+
     def push(self, value, index=None):
-        return self._insert(index if index is not None else self.size, value)
+        return self._insert(index if index is not None else self._size, value)
 
     def pop(self, index=None):
-        return self._delete(self._find_index(index if index is not None else self.size - 1))
+        return self._delete(self._find(index if index is not None else self._size - 1)[0])
 
     def remove(self, value):
         return self._delete(self._find_value(value)[0])
 
     def get(self, index=None):
-        return self._find_index(index if index is not None else self.size - 1).value
+        return self._find(index if index is not None else self.size - 1)[0].value
 
     def index(self, value):
         try:
@@ -80,9 +72,8 @@ class LinkedList(Linked):
         return self.index(value) != -1
 
     def reverse(self):
-        node = self.head
-        self.head, self.tail = self.tail, self.head
-        for i in range(self.size):
+        self._head, self._tail, node = self._tail, self._head, self._head
+        for i in range(self._size):
             node.prev, node.next = node.next, node.prev
             node = node.prev
 
@@ -115,6 +106,8 @@ def test():
         (l.pop, [0], 0),
         (print, [l], None),
         (l.reverse, [], None),
+        (l.index, [5], 1),
+        (l.index, [2], 2),
         (print, [l], None)
     ])
 

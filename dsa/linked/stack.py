@@ -6,24 +6,24 @@ class Stack(Linked):
         super().__init__()
 
     def push(self, value):
-        if self.head is None:
-            self.head = self.tail = Node(value)
+        if self._head is None:
+            self._head = Node(value)
         else:
-            self.head = Node(value, self.head)
-        self.size += 1
+            self._head = Node(value, self._head)
+        self._size += 1
 
     def pop(self):
-        if self.head is None:
+        if self._head is None:
             raise IndexError('empty stack')
-        value = self.head.value
-        self.head = self.head.next
-        self.size -= 1
+        value = self._head.value
+        self._head = self._head.next
+        self._size -= 1
         return value
 
     def peek(self):
-        if self.head is None:
+        if self._head is None:
             raise IndexError('empty stack')
-        return self.head.value
+        return self._head.value
 
 
 def test():
