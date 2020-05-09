@@ -1,11 +1,23 @@
-def knapsack_naive(items, capacity, item=0):
+def knapsack_naive(items, capacity, / , *, item=0):
     if item == len(items) or capacity == 0:
         return 0
     value, weight = items[item]
     return max(
-        knapsack_naive(items, capacity, item + 1),
-        0 if capacity < weight else value + knapsack_naive(items, capacity - weight, item + 1)
+        knapsack_naive(items, capacity, item=item + 1),
+        0 if capacity < weight else value + knapsack_naive(items, capacity - weight, item=item + 1)
     )
+
+
+def knapsack_memo(items, capacity, /, *, item=0, memo={}):
+    if item == len(items) or capacity == 0:
+        return 0
+    if memo.setdefault(item, {}).setdefault(capacity, 0) == 0:
+        value, weight = items[item]
+        memo[item][capacity] = max(
+            knapsack_memo(items, capacity, item=item + 1, memo=memo),
+            0 if capacity < weight else value + knapsack_memo(items, capacity - weight, item=item + 1, memo=memo)
+        )
+    return memo[item][capacity]
 
 
 def knapsack_dynamic(items, capacity):
@@ -17,26 +29,14 @@ def knapsack_dynamic(items, capacity):
     return k[-1][-1]
 
 
-def knapsack_memo(items, capacity, item=0, memo={}):
-    if item == len(items) or capacity == 0:
-        return 0
-    if memo.setdefault(item, {}).setdefault(capacity, 0) == 0:
-        value, weight = items[item]
-        memo[item][capacity] = max(
-            knapsack_memo(items, capacity, item + 1, memo),
-            0 if capacity < weight else value + knapsack_memo(items, capacity - weight, item + 1, memo)
-        )
-    return memo[item][capacity]
-
-
 def test():
     from ..util import match
     items = [(60, 10), (100, 20), (120, 30)]
     capacity = 50
     match([
         (knapsack_naive, [items, capacity], 220),
-        (knapsack_dynamic, [items, capacity], 220),
-        (knapsack_memo, [items, capacity], 220)
+        (knapsack_memo, [items, capacity], 220),
+        (knapsack_dynamic, [items, capacity], 220)
     ])
 
 
