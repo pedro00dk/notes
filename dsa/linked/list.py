@@ -1,31 +1,45 @@
-from .abc import Linked
+from .abc import Linked, Node
 
 
 class LinkedList(Linked):
     def __init__(self):
         super().__init__()
-        self.head = self.tail = None
 
-    def __iter__(self):
+    def _check_index(self, index, insert=False):
+        if index < 0 or insert and index > self.size or not insert and index >= self.size:
+            raise IndexError('out of range')
+
+    def _find_index(self, index):
+        self._check_index(index)
+        forward = index < self.size / 2
+        node = self.head if forward else self.tail
+        for i in range(index if forward else (self.size - 1 - index)):
+            node = node.next if forward else node.prev
+        return node
+
+    def _find_value(self, value):
         node = self.head
-        while node is not None:
-            yield node.value
+        for i in range(self.size):
+            if value == node.value:
+                break
             node = node.next
+        if node is None:
+            raise ValueError('not found')
+        return node, i
 
     def _insert(self, index, value):
-        if index < 0 or index > self.size:
-            raise IndexError('out of range')
+        self._check_index(index, True)
         if self.head is None:
-            self.head = self.tail = Node(value)
+            self.head = self.tail = ListNode(value)
         elif index == 0:
-            self.head = Node(value, None, self.head)
+            self.head = ListNode(value, None, self.head)
             self.head.next.prev = self.head
         elif index == self.size:
-            self.tail = Node(value, self.tail, None)
+            self.tail = ListNode(value, self.tail, None)
             self.tail.prev.next = self.tail
         else:
             current = self._find_index(index)
-            node = Node(value, current.prev, current)
+            node = ListNode(value, current.prev, current)
             node.prev.next = node.next.prev = node
         self.size += 1
 
@@ -43,25 +57,6 @@ class LinkedList(Linked):
             node.next.prev = node.prev
         self.size -= 1
         return node.value
-
-    def _find_index(self, index):
-        if index < 0 or index >= self.size:
-            raise IndexError('out of range')
-        forward = index < self.size / 2
-        node = self.head if forward else self.tail
-        for i in range(index if forward else (self.size - 1 - index)):
-            node = node.next if forward else node.prev
-        return node
-
-    def _find_value(self, value):
-        node = self.head
-        for i in range(self.size):
-            if value == node.value:
-                break
-            node = node.next
-        if node is None:
-            raise ValueError('not found')
-        return node, i
 
     def push(self, value, index=None):
         return self._insert(index if index is not None else self.size, value)
@@ -92,11 +87,10 @@ class LinkedList(Linked):
             node = node.prev
 
 
-class Node:
+class ListNode(Node):
     def __init__(self, value, prev=None, next=None):
-        self.value = value
+        super().__init__(value, next)
         self.prev = prev
-        self.next = next
 
 
 def test():

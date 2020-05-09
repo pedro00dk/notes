@@ -1,16 +1,9 @@
-from .abc import Linked
+from .abc import Linked, Node
 
 
 class Queue(Linked):
     def __init__(self):
         super().__init__()
-        self.head = self.tail = None
-
-    def __iter__(self):
-        node = self.head
-        while node is not None:
-            yield node.value
-            node = node.next
 
     def offer(self, value):
         if self.tail is None:
@@ -34,12 +27,6 @@ class Queue(Linked):
         if self.head is None:
             raise IndexError('empty queue')
         return self.head.value
-
-
-class Node:
-    def __init__(self, value, next=None):
-        self.value = value
-        self.next = next
 
 
 def test():
