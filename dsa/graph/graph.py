@@ -38,7 +38,7 @@ class Graph:
             yield vertex, previous, edge, depth
         for edge in self._edges[id]:
             yield from self._depth(
-                edge._target, visited, yield_after, yield_all_edges, previous=vertex, edge=edge, depth=depth + 1
+                edge._target, visited, yield_all_edges, yield_after, previous=vertex, edge=edge, depth=depth + 1
             )
         if yield_after:
             yield vertex, previous, edge, depth
