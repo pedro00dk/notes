@@ -1,21 +1,23 @@
-from .graph import Graph
+from .factory import *
 
 
-def topological_sort(graph):
+def topological_sort(graph: Graph):
+    if not graph.is_directed():
+        raise Exception('topological sort only works with directed acyclic graphs')
     order = []
-    visited = [False] * len(graph)
-    for source in range(len(graph)):
-        if visited[source]:
+    visited = [False] * graph.vertices_length()
+    for source in graph.vertices():
+        if visited[source._id]:
             continue
-        for traverse_vertex, previous, *_ in graph.traverse(source, visited=visited, before=False):
-            order.append(traverse_vertex)
+        for vertex, *_ in graph.traverse(source._id, visited=visited, yield_after=True):
+            order.append(vertex._id)
     order.reverse()
     return order
 
 
 def test():
     for i in range(10):
-        g = Graph.random_dag()
+        g = random_dag()
         print(g)
         print(topological_sort(g))
         print('\n')
