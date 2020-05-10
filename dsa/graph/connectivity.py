@@ -6,24 +6,19 @@ def connected(graph: Graph):
     if not graph.is_undirected():
         raise Exception('connected algorithm only works with undirected graphs')
     visited = [False] * len(graph)
-    groups = [None] * len(graph)
-    if graph.vertices_length() == 0:
-        return groups
-    group = 0
+    groups = []
     for source in graph.vertices():
         if visited[source._id]:
             continue
-        for vertex, *_ in graph.traverse(source._id, visited=visited):
-            groups[vertex._id] = group
-        group += 1
-    return group, groups
+        groups.append([vertex for vertex, *_ in graph.traverse(source._id, visited=visited)])
+    return groups
 
 
 def test():
     for i in range(10):
         g = random_undirected(20, 0.1)
         print(g)
-        print(connected(g))
+        print([[vertex._id for vertex in group] for group in connected(g)])
         print('\n')
 
 

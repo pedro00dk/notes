@@ -10,7 +10,7 @@ def topological_sort(graph: Graph):
         if visited[source._id]:
             continue
         for vertex, *_ in graph.traverse(source._id, visited=visited, yield_after=True):
-            order.append(vertex._id)
+            order.append(vertex)
     order.reverse()
     return order
 
@@ -19,7 +19,7 @@ def test():
     for i in range(10):
         g = random_dag()
         print(g)
-        print(topological_sort(g))
+        print([vertex._id for vertex in topological_sort(g)])
         print('\n')
 
 

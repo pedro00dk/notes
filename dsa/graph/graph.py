@@ -40,7 +40,7 @@ class Graph:
             yield from self._depth(
                 edge._target, visited, yield_after, yield_all_edges, previous=vertex, edge=edge, depth=depth + 1
             )
-        if not yield_after:
+        if yield_after:
             yield vertex, previous, edge, depth
 
     def _breadth(self, id, / , visited, yield_all_edges=False):
