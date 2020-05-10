@@ -3,8 +3,8 @@ from .factory import *
 
 
 def connected(graph: Graph):
-    if graph.is_directed():
-        raise Exception('connected algorithm does not work with directed graphs')
+    if not graph.is_undirected():
+        raise Exception('connected algorithm only works with undirected graphs')
     visited = [False] * len(graph)
     groups = [None] * len(graph)
     if graph.vertices_length() == 0:

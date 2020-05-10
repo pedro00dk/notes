@@ -10,7 +10,7 @@ class Graph:
         self._vertices = []
         self._edges = []
         self._edges_length = 0
-        self._directed_edges = True
+        self._directed_edges = 0
         self._cycle_edges = 0
 
     def __len__(self):
@@ -70,7 +70,8 @@ class Graph:
         self._edges[source].append(Edge(source, target, length, data))
         self._edges_length += 1 + int(not directed)
         self._directed_edges += int(directed)
-        self._cycle_edges += int(source == target) + int(not directed)
+        is_cycle = source == target
+        self._cycle_edges += int(is_cycle) + int(is_cycle and not directed)
         if not directed:
             self._edges[target].append(Edge(target, source, length, data))
 
@@ -85,14 +86,20 @@ class Graph:
 
     def edges_length(self):
         return self._edges_length
-    
-    def fixed_edges_length(self):
-        return self._edges_length - self._directed_edges
-    
+
+    def unique_edges_length(self):
+        return (self._edges_length - self._directed_edges) / 2 + self._directed_edges
+
+    def is_undirected(self):
+        return self._directed_edges == 0
+
     def is_directed(self):
+        return self._directed_edges == self._edges_length
+
+    def has_directed_edges(self):
         return self._directed_edges > 0
-    
-    def has_cycles(self):
+
+    def has_edge_cycles(self):
         return self._cycle_edges > 0
 
     def vertices(self):
