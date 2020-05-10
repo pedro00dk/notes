@@ -54,6 +54,8 @@ class Heap:
             raise IndexError('empty queue')
         return self._heap[0]
 
+    def empty(self):
+        return len(self._heap) == 0
 
 def test():
     import random
