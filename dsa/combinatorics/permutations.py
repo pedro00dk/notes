@@ -134,12 +134,18 @@ def test():
         print('  cycles', [*permutations_cycle([*range(n)], k)])
         print()
     print('benchmark')
-    print('        cycles', timeit(
-        'for n in range(8): list(permutations_cycle([*range(n)]))', globals=globals(), number=100))
-    print('heap recursive', timeit(
-        'for n in range(8): list(permutations_heap_rec([*range(n)]))', globals=globals(), number=100))
-    print('heap iterative', timeit(
-        'for n in range(8): list(permutations_heap_itr([*range(n)]))', globals=globals(), number=100))
+    print(
+        '        cycles',
+        timeit('for n in range(8): list(permutations_cycle([*range(n)]))', globals=globals(), number=100)
+    )
+    print(
+        'heap recursive',
+        timeit('for n in range(8): list(permutations_heap_rec([*range(n)]))', globals=globals(), number=100)
+    )
+    print(
+        'heap iterative',
+        timeit('for n in range(8): list(permutations_heap_itr([*range(n)]))', globals=globals(), number=100)
+    )
 
 
 if __name__ == '__main__':
