@@ -6,8 +6,8 @@ def factorial_rec(n: int):
     Factorial algorithm, recursive implementation.
     ```
     n! = {
-        n * (n - 1)! if n > 0,
-        1 if n == 0
+        1 if n == 0,
+        n * (n - 1)!
     }
     ```
 
@@ -22,7 +22,7 @@ def factorial_rec(n: int):
     - `n: int`: value to compute factorial
     - `#return#: int`: factorial of `n`
     """
-    return n * factorial_rec(n - 1) if n > 1 else 1
+    return 1 if n <= 1 else n * factorial_rec(n - 1)
 
 
 def factorial_itr(f: int):
