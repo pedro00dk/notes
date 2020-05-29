@@ -32,3 +32,9 @@ $ python -m dsa.tree.avl
     -   combinations count **- O(n)**
     -   combinations recursive **- O(n choose k)**
     -   combinations iterative **- O(n choose k)**
+
+## Sorting Algorithms
+
+-   [bubblesort](./dsa/sort/bubblesort.py) **- O(n^2)**
+-   [insertionsort](./dsa/sort/insertionsort.py) **- O(n^2)**
+-   [selectionsort](./dsa/sort/selectionsort.py) **- O(n^2)**

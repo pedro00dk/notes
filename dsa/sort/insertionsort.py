@@ -1,4 +1,18 @@
-def insertionsort(array):
+def insertionsort(array: list):
+    """
+    Insertionsort implementation.
+
+    > optimizations:
+    - save current element to be sorted and override previous values rather than swapping, then place the saved value in
+      its position.
+
+    > complexity:
+    - time: `O(n^2)`
+    - space: `O(1)`
+
+    > parameters:
+    - `array: list`: array to be sorted
+    """
     for i in range(1, len(array)):
         key = array[i]
         j = i - 1
@@ -10,12 +24,22 @@ def insertionsort(array):
 
 
 def test():
-    from ..util import benchmark
+    from random import randint
+    from timeit import timeit
     print(insertionsort([]))
     print(insertionsort([0]))
-    print(insertionsort([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
-    print(insertionsort([9, 8, 7, 6, 5, 4, 3, 2, 1, 0]))
-    benchmark(insertionsort)
+    print(insertionsort([*range(20)]))
+    print(insertionsort([*range(20 - 1, -1, -1)]))
+    for i in [5, 10, 50, 100, 500, 1000]:
+        print(
+            'array length:', i,
+            timeit(
+                'insertionsort(array)',
+                setup='array=[randint(0, i**2) for j in range(i)]',
+                globals={**globals(), **locals()},
+                number=100
+            )
+        )
 
 
 if __name__ == '__main__':
