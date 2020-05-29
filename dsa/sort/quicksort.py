@@ -37,21 +37,21 @@ def quicksort(array: list):
 
 def test():
     from random import randint
-    from timeit import timeit
+    from timeit import repeat
     print(quicksort([]))
     print(quicksort([0]))
     print(quicksort([*range(20)]))
     print(quicksort([*range(20 - 1, -1, -1)]))
     for i in [5, 10, 50, 100, 500, 1000]:
-        print(
-            'array length:', i,
-            timeit(
-                'quicksort(array)',
-                setup='array=[randint(0, i**2) for j in range(i)]',
-                globals={**globals(), **locals()},
-                number=100
-            )
+        results = repeat(
+            'quicksort(array)',
+            setup='array=[randint(0, i**2) for j in range(i)]',
+            globals={**globals(), **locals()},
+            number=1,
+            repeat=100
         )
+        print('array length:', i, sum(results))
+
 
 
 if __name__ == '__main__':
