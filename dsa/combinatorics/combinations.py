@@ -18,7 +18,7 @@ def combinations_count_rec(n: int, k: int):
     > parameters:
     - `n: int`: number of items
     - `k: int`: size of groups
-
+    - `#return#: int`: C(n, k)
     """
     return 1 if n <= 1 or k == 0 or n == k else combinations_count_rec(n - 1, k - 1) + combinations_count_rec(n - 1, k)
 
@@ -45,6 +45,7 @@ def combinations_count_def(n: int, k: int):
     > parameters:
     - `n: int`: number of items
     - `k: int`: size of groups
+    - `#return#: int`: C(n, k)
     """
     k = min(k, n - k)
     return permutations_count(n, k) // factorial_itr(k)
@@ -61,7 +62,7 @@ def combinations_rec(items: list, k: int):
     > parameters:
     - `items: list`: items to generate combinations
     - `k: int`: size of groups
-    - `return` - generator of `items` combinations of `k` size
+    - `#return#:int`: generator of `items` combinations of `k` size
     """
     n = len(items)
     if n == 0:
@@ -90,7 +91,7 @@ def combinations_itr(items: list, k: int):
     > parameters:
     - `items: list`: items to generate combinations
     - `k: int`: size of groups
-    - `return` - generator of `items` combinations of `k` size
+    - `#return#: int`: generator of `items` combinations of `k` size
     """
     n = len(items)
     if n == 0 or k <= 0 or k > n:

@@ -8,6 +8,7 @@ def selectionsort(array: list):
 
     > parameters:
     - `array: list`: array to be sorted
+    - `#return#: list`: `array` sorted
     """
     for i in range(0, len(array)):
         k = i

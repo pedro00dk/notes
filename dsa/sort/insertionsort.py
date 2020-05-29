@@ -12,6 +12,7 @@ def insertionsort(array: list):
 
     > parameters:
     - `array: list`: array to be sorted
+    - `#return#: list`: `array` sorted
     """
     for i in range(1, len(array)):
         key = array[i]

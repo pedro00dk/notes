@@ -14,6 +14,7 @@ def permutations_count(n: int, /, k: int = None):
     > parameters:
     - `n: int`: number of items
     - `k: int` (optional -> `len(items)`): size of groups
+    - `#return#: int`: P(n, k)
     """
     k = k if k is not None else n
     if n < 0 or k < 0 or k > n:
@@ -34,9 +35,9 @@ def permutations_cycle(items: list, /, k: int = None):
     - space: `O(n! * n)` or `O(n)` if permutations are not stored
 
     > parameters:
-    - `items: list` - items to generate the permutations
+    - `items: list`: items to generate the permutations
     - `k: int` (optional -> `len(items)`): size of groups (k-cycle size)
-    - `return` - generator of `items` permutations of `k` size
+    - `#return#: int`: generator of `items` permutations of `k` size
     """
     n = len(items)
     k = k if k is not None else n
@@ -69,8 +70,8 @@ def permutations_heap_rec(items: list):
     - space: `O(n! * n)` or `O(n)` if permutations are not stored
 
     > parameters:
-    - `items: list` - items to generate the permutations
-    - `return` - generator of `items` permutations
+    - `items: list`: items to generate the permutations
+    - `#return#: int`: generator of `items` permutations
     """
     n = len(items)
     if n == 0:
@@ -99,8 +100,8 @@ def permutations_heap_itr(items: list):
     - space: `O(n! * n)` or `O(n)` if permutations are not stored
 
     > parameters:
-    - `items: list` - elements to generate the permutations
-    - `return` - generator of `items` permutations
+    - `items: list`: elements to generate the permutations
+    - `#return#: int`: generator of `items` permutations
     """
     n = len(items)
     if n == 0:

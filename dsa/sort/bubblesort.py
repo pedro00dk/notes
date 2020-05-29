@@ -8,6 +8,7 @@ def bubblesort(array: list):
 
     > parameters:
     - `array: list`: array to be sorted
+    - `#return#: list`: `array` sorted
     """
     for i in range(len(array) - 1, -1, -1):
         for j in range(0, i):
