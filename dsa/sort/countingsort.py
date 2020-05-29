@@ -1,10 +1,11 @@
 def countingsort(array: list):
     """
     Countingsort implementation.
+    Countingsort assumes all values contained in `array` are of `int` type.
 
     > complexity:
-    - time: `O(n + k)` where `k` is `max_key - min_key`
-    - space: `O(n + k)` where `k` is `max_key - min_key`
+    - time: `O(n + k)` where `k` is `max_value - min_value`
+    - space: `O(n + k)` where `k` is `max_value - min_value`
 
     > parameters:
     - `array: list`: array to be sorted
@@ -12,15 +13,16 @@ def countingsort(array: list):
     """
     if len(array) == 0:
         return array
-    min_key, max_key = min(array), max(array)
-    count = [0] * (max_key - min_key + 1)
-    for i in array:
-        count[i - min_key] += 1
+    min_value, max_value = min(array), max(array)
+    value_range = max_value - min_value + 1
+    count = [0] * value_range
+    for value in array:
+        count[value - min_value] += 1
     k = 0
-    for i in range(len(count)):
-        for j in range(count[i]):
-            array[k + j] = i + min_key
-        k += count[i]
+    for value in range(len(count)):
+        for j in range(count[value]):
+            array[k + j] = value + min_value
+        k += count[value]
     return array
 
 
