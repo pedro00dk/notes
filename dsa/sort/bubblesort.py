@@ -35,6 +35,5 @@ def test():
         print('array length:', i, sum(results))
 
 
-
 if __name__ == '__main__':
     test()

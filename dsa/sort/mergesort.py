@@ -1,6 +1,6 @@
-def mergesort(array):
+def mergesort(array: list):
     """
-    Heapsort implementation.
+    Mergesort implementation.
 
     > complexity:
     - time: `O(n*log(n))`
@@ -46,7 +46,7 @@ def test():
     print(mergesort([0]))
     print(mergesort([*range(20)]))
     print(mergesort([*range(20 - 1, -1, -1)]))
-    for i in [5, 10, 50, 100, 500, 1000]:
+    for i in [5, 10, 50, 100, 500, 1000, 5000, 10000]:
         results = repeat(
             'mergesort(array)',
             setup='array=[randint(0, i**2) for j in range(i)]',
@@ -55,7 +55,6 @@ def test():
             repeat=100
         )
         print('array length:', i, sum(results))
-
 
 
 if __name__ == '__main__':

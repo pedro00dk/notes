@@ -52,7 +52,7 @@ def test():
     print(heapsort([0]))
     print(heapsort([*range(20)]))
     print(heapsort([*range(20 - 1, -1, -1)]))
-    for i in [5, 10, 50, 100, 500, 1000]:
+    for i in [5, 10, 50, 100, 500, 1000, 5000, 10000]:
         results = repeat(
             'heapsort(array)',
             setup='array=[randint(0, i**2) for j in range(i)]',
@@ -61,7 +61,6 @@ def test():
             repeat=100
         )
         print('array length:', i, sum(results))
-
 
 
 if __name__ == '__main__':
