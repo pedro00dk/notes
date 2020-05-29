@@ -40,4 +40,7 @@ $ python -m dsa.tree.avl
 -   [selectionsort](./dsa/sort/selectionsort.py) **- O(n^2)**
 -   [heapsort](./dsa/sort/heapsort.py) **- O(n*log(n))**
 -   [mergesort](./dsa/sort/mergesort.py) **- O(n*log(n))**
--   [quicksort](./dsa/sort/quicksort.py) **- average: O(n*log(n)), worst: O(n^2)**
+-   [quicksort](./dsa/sort/quicksort.py)
+    -    quicksort Hoare's partition **- average: O(n*log(n)), worst: O(n^2)**
+    -    quicksort Lomuto's partition **- average: O(n*log(n)), worst: O(n^2)**
+    -    quicksort dual pivot partition **- average: O(n*log(n)), worst: O(n^2)**
