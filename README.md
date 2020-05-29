@@ -44,3 +44,4 @@ $ python -m dsa.tree.avl
     -    quicksort Hoare's partition **- average: O(n*log(n)), worst: O(n^2)**
     -    quicksort Lomuto's partition **- average: O(n*log(n)), worst: O(n^2)**
     -    quicksort dual pivot partition **- average: O(n*log(n)), worst: O(n^2)**
+-   [countingsort](./dsa/sort/countingsort.py) **- O(n + k)**
