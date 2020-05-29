@@ -1,8 +1,22 @@
-def sift_down(heap, i, length):
-    while (left:= i * 2 + 1) < length:
+def sift_down(heap: list, i: int, length: int):
+    """
+    Heap sift down algorithm.
+    Appart from the sift down in the heap.py module, this one uses direct numeric comparisons rathen than comparators
+    and is max only.
+
+    > complexity:
+    - time: `O(log(n))`
+    - space: `O(1)`
+
+    > parameters:
+    - `heap: list`: array containing heap structure
+    - `i: int`: index of value to sift down
+    - `length: int`: length of the heap (may be smaller than `len(heap)`)
+    """
+    while (left := i * 2 + 1) < length:
         right = left + 1
         chosen = i
-        chosen = left if left < length and heap[left] > heap[chosen] else chosen
+        chosen = left if heap[left] > heap[chosen] else chosen
         chosen = right if right < length and heap[right] > heap[chosen] else chosen
         if chosen == i:
             break
@@ -10,7 +24,18 @@ def sift_down(heap, i, length):
         i = chosen
 
 
-def heapsort(array):
+def heapsort(array: list):
+    """
+    Heapsort implementation.
+
+    > complexity:
+    - time: `O(n*log(n))`
+    - space: `O(1)`
+
+    > parameters:
+    - `array: list`: array to be sorted
+    - `#return#: list`: `array` sorted
+    """
     length = len(array)
     for i in range(length // 2 - 1, -1, -1):
         sift_down(array, i, length)
@@ -21,12 +46,22 @@ def heapsort(array):
 
 
 def test():
-    from ..util import benchmark
+    from random import randint
+    from timeit import timeit
     print(heapsort([]))
     print(heapsort([0]))
-    print(heapsort([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
-    print(heapsort([9, 8, 7, 6, 5, 4, 3, 2, 1, 0]))
-    benchmark(heapsort)
+    print(heapsort([*range(20)]))
+    print(heapsort([*range(20 - 1, -1, -1)]))
+    for i in [5, 10, 50, 100, 500, 1000]:
+        print(
+            'array length:', i,
+            timeit(
+                'heapsort(array)',
+                setup='array=[randint(0, i**2) for j in range(i)]',
+                globals={**globals(), **locals()},
+                number=100
+            )
+        )
 
 
 if __name__ == '__main__':

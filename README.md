@@ -38,3 +38,6 @@ $ python -m dsa.tree.avl
 -   [bubblesort](./dsa/sort/bubblesort.py) **- O(n^2)**
 -   [insertionsort](./dsa/sort/insertionsort.py) **- O(n^2)**
 -   [selectionsort](./dsa/sort/selectionsort.py) **- O(n^2)**
+-   [heapsort](./dsa/sort/heapsort.py) **- O(n*log(n))**
+-   [mergesort](./dsa/sort/mergesort.py) **- O(n*log(n))**
+-   [quicksort](./dsa/sort/quicksort.py) **- average: O(n*log(n)), worst: O(n^2)**
