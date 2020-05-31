@@ -20,12 +20,13 @@ def selectionsort(array: list):
 
 
 def test():
-    from random import randint
+    from random import randint, sample
     from timeit import repeat
     print(selectionsort([]))
     print(selectionsort([0]))
     print(selectionsort([*range(20)]))
     print(selectionsort([*range(20 - 1, -1, -1)]))
+    print(selectionsort(sample([*range(20)], 20)))
     for i in [5, 10, 50, 100, 500, 1000]:
         results = repeat(
             'selectionsort(array)',

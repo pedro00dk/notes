@@ -18,12 +18,13 @@ def bubblesort(array: list):
 
 
 def test():
-    from random import randint
+    from random import randint, sample
     from timeit import repeat
     print(bubblesort([]))
     print(bubblesort([0]))
     print(bubblesort([*range(20)]))
     print(bubblesort([*range(20 - 1, -1, -1)]))
+    print(bubblesort(sample([*range(20)], 20)))
     for i in [5, 10, 50, 100, 500, 1000]:
         results = repeat(
             'bubblesort(array)',

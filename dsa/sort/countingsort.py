@@ -30,12 +30,13 @@ def countingsort(array: list):
 
 
 def test():
-    from random import randint
+    from random import randint, sample
     from timeit import repeat
     print(countingsort([]))
     print(countingsort([0]))
     print(countingsort([*range(20)]))
     print(countingsort([*range(20 - 1, -1, -1)]))
+    print(countingsort(sample([*range(20)], 20)))
     for i in [5, 10, 50, 100, 500, 1000, 5000, 10000]:
         results = repeat(
             'countingsort(array)',
