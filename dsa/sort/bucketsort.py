@@ -1,11 +1,11 @@
 from .insertionsort import insertionsort
 
 
-def bucketsort(array: list, /, k: int = None, subsort: type(abs) = insertionsort):
+def bucketsort(array: list, /, k: int = None, subsort: type(abs) = None):
     """
     Bucketsort implementation.
     This implementation uses insertionsort as internal sorter.
-    The deafult `k` value (which is `len(array)`) can be manually modified as well as the `subsort` algorithm.
+    The default `k` value (which is `len(array)`) can be manually modified as well as the `subsort` algorithm.
 
     > complexity:
     - time: average: `O(n + (n^2/k) + k)`, worst `O(n^2)`, best: `O(n)` if `n ~ k` and uniform distribution.
