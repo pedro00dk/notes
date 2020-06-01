@@ -70,7 +70,7 @@ def quicksort_lomuto(array: list):
     return array
 
 
-def quicksort_dp(array: list):
+def quicksort_dual_pivot(array: list):
     """
     Quicksort dual-pivot implementation.
 
@@ -117,41 +117,14 @@ def quicksort_dp(array: list):
 
 
 def test():
-    from random import randint, sample
-    from timeit import repeat
-    quicksort_dp([1, 2, 0])
-    for array in [[], [0], [*range(20)], [*range(20 - 1, -1, -1)], sample([*range(20)], 20)]:
-        print('array', array)
-        print('     quicksort hoare', quicksort_hoare([*array]))
-        print('    quicksort lomuto', quicksort_lomuto([*array]))
-        print('quicksort dual pivot', quicksort_dp([*array]))
-    print('benchmark')
-    for i in [5, 10, 50, 100, 500, 1000, 5000, 10000]:
-        print('array length:', i)
-        quicksort_hoare_results = repeat(
-            'quicksort_hoare(array)',
-            setup='array=[randint(0, i**2) for j in range(i)]',
-            globals={**globals(), **locals()},
-            number=1,
-            repeat=100
-        )
-        print('     quicksort hoare', sum(quicksort_hoare_results))
-        quicksort_lomuto_results = repeat(
-            'quicksort_lomuto(array)',
-            setup='array=[randint(0, i**2) for j in range(i)]',
-            globals={**globals(), **locals()},
-            number=1,
-            repeat=100
-        )
-        print('    quicksort lomuto', sum(quicksort_lomuto_results))
-        quicksort_dp_results = repeat(
-            'quicksort_dp(array)',
-            setup='array=[randint(0, i**2) for j in range(i)]',
-            globals={**globals(), **locals()},
-            number=1,
-            repeat=100
-        )
-        print('quicksort dual pivot', sum(quicksort_dp_results))
+    from .test import test
+    test(
+        [
+            ('     hoare', quicksort_hoare, 'quicksort_hoare(array)'),
+            ('    lomuto', quicksort_lomuto, 'quicksort_lomuto(array)'),
+            ('dual pivot', quicksort_dual_pivot, 'quicksort_dual_pivot(array)')
+        ]
+    )
 
 
 if __name__ == '__main__':

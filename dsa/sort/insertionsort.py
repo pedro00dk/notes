@@ -25,22 +25,8 @@ def insertionsort(array: list):
 
 
 def test():
-    from random import randint, sample
-    from timeit import repeat
-    print(insertionsort([]))
-    print(insertionsort([0]))
-    print(insertionsort([*range(20)]))
-    print(insertionsort([*range(20 - 1, -1, -1)]))
-    print(insertionsort(sample([*range(20)], 20)))
-    for i in [5, 10, 50, 100, 500, 1000]:
-        results = repeat(
-            'insertionsort(array)',
-            setup='array=[randint(0, i**2) for j in range(i)]',
-            globals={**globals(), **locals()},
-            number=1,
-            repeat=100
-        )
-        print('array length:', i, sum(results))
+    from .test import test
+    test([('insertionsort', insertionsort, 'insertionsort(array)')], benchmark_tests=[0, 1, 10, 100, 1000])
 
 
 if __name__ == '__main__':

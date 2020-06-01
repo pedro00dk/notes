@@ -20,22 +20,8 @@ def selectionsort(array: list):
 
 
 def test():
-    from random import randint, sample
-    from timeit import repeat
-    print(selectionsort([]))
-    print(selectionsort([0]))
-    print(selectionsort([*range(20)]))
-    print(selectionsort([*range(20 - 1, -1, -1)]))
-    print(selectionsort(sample([*range(20)], 20)))
-    for i in [5, 10, 50, 100, 500, 1000]:
-        results = repeat(
-            'selectionsort(array)',
-            setup='array=[randint(0, i**2) for j in range(i)]',
-            globals={**globals(), **locals()},
-            number=1,
-            repeat=100
-        )
-        print('array length:', i, sum(results))
+    from .test import test
+    test([('selectionsort', selectionsort, 'selectionsort(array)')], benchmark_tests=[0, 1, 10, 100, 1000])
 
 
 if __name__ == '__main__':

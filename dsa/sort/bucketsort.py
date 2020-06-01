@@ -33,22 +33,20 @@ def bucketsort(array: list, /, k: int = None, subsort: type(abs) = None):
 
 
 def test():
-    from random import randint, sample
-    from timeit import repeat
-    print(bucketsort([]))
-    print(bucketsort([0]))
-    print(bucketsort([*range(20)]))
-    print(bucketsort([*range(20 - 1, -1, -1)]))
-    print(bucketsort(sample([*range(20)], 20)))
-    for i in [5, 10, 50, 100, 500, 1000, 5000, 10000]:
-        results = repeat(
-            'bucketsort(array)',
-            setup='array=[randint(0, i**2) for j in range(i)]',
-            globals={**globals(), **locals()},
-            number=1,
-            repeat=100
-        )
-        print('array length:', i, sum(results))
+    from .test import test
+    test(
+        [
+            ('bucketsort k=8*n ', bucketsort, 'bucketsort(array, len(array) * 8)'),
+            ('bucketsort k=4*n ', bucketsort, 'bucketsort(array, len(array) * 4)'),
+            ('bucketsort k=2*n ', bucketsort, 'bucketsort(array, len(array) * 2)'),
+            ('bucketsort k=n   ', bucketsort, 'bucketsort(array)'),
+            ('bucketsort k=n/2 ', bucketsort, 'bucketsort(array, len(array) // 2)'),
+            ('bucketsort k=n/4 ', bucketsort, 'bucketsort(array, len(array) // 4)'),
+            ('bucketsort k=n/8 ', bucketsort, 'bucketsort(array, len(array) // 8)'),
+            ('bucketsort k=n/16', bucketsort, 'bucketsort(array, len(array) // 16)'),
+            ('bucketsort k=n/32', bucketsort, 'bucketsort(array, len(array) // 32)')
+        ]
+    )
 
 
 if __name__ == '__main__':

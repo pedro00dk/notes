@@ -30,22 +30,18 @@ def countingsort(array: list):
 
 
 def test():
-    from random import randint, sample
-    from timeit import repeat
-    print(countingsort([]))
-    print(countingsort([0]))
-    print(countingsort([*range(20)]))
-    print(countingsort([*range(20 - 1, -1, -1)]))
-    print(countingsort(sample([*range(20)], 20)))
-    for i in [5, 10, 50, 100, 500, 1000, 5000, 10000]:
-        results = repeat(
-            'countingsort(array)',
-            setup='array=[randint(-i, i) for j in range(i)]', # input optimized for countingsort (small spread)
-            globals={**globals(), **locals()},
-            number=1,
-            repeat=100
-        )
-        print('array length:', i, sum(results))
+    from .test import test
+    print('terrible input')
+    test([('countingsort', countingsort, 'countingsort(array)')], array_min='-i*10', array_max='i*10')
+    print()
+    print('bad input')
+    test([('countingsort', countingsort, 'countingsort(array)')], array_min='-i*5', array_max='i*5')
+    print()
+    print('good input')
+    test([('countingsort', countingsort, 'countingsort(array)')], array_min='-i', array_max='i')
+    print('best input')
+    test([('countingsort', countingsort, 'countingsort(array)')], array_min='-10', array_max='10')
+    print()
 
 
 if __name__ == '__main__':
