@@ -37,7 +37,7 @@ def permutations_cycle(items: list, /, k: int = None):
     > parameters:
     - `items: list`: items to generate the permutations
     - `k: int` (optional -> `len(items)`): size of groups (k-cycle size)
-    - `#return#: int`: generator of `items` permutations of `k` size
+    - `#return#: iter(tuple)`: generator of `items` permutations of `k` size
     """
     n = len(items)
     k = k if k is not None else n
@@ -71,7 +71,7 @@ def permutations_heap_rec(items: list):
 
     > parameters:
     - `items: list`: items to generate the permutations
-    - `#return#: int`: generator of `items` permutations
+    - `#return#: iter(tuple)`: generator of `items` permutations
     """
     n = len(items)
     if n == 0:
@@ -101,7 +101,7 @@ def permutations_heap_itr(items: list):
 
     > parameters:
     - `items: list`: elements to generate the permutations
-    - `#return#: int`: generator of `items` permutations
+    - `#return#: iter(tuple)`: generator of `items` permutations
     """
     n = len(items)
     if n == 0:

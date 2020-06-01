@@ -62,7 +62,7 @@ def combinations_rec(items: list, k: int):
     > parameters:
     - `items: list`: items to generate combinations
     - `k: int`: size of groups
-    - `#return#:int`: generator of `items` combinations of `k` size
+    - `#return#: iter(tuple)`: generator of `items` combinations of `k` size
     """
     n = len(items)
     if n == 0:
@@ -91,7 +91,7 @@ def combinations_itr(items: list, k: int):
     > parameters:
     - `items: list`: items to generate combinations
     - `k: int`: size of groups
-    - `#return#: int`: generator of `items` combinations of `k` size
+    - `#return#: iter(tuple)`: generator of `items` combinations of `k` size
     """
     n = len(items)
     if n == 0 or k <= 0 or k > n:
