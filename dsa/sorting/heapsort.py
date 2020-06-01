@@ -46,8 +46,8 @@ def heapsort(array: list):
 
 
 def test():
-    from .test import test
-    test([('heapsort', heapsort, 'heapsort(array)')])
+    from ..test import benchmark
+    benchmark([('heapsort', heapsort, 'heapsort(array)')])
 
 
 if __name__ == '__main__':

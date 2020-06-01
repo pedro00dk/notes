@@ -117,8 +117,8 @@ def quicksort_dual_pivot(array: list):
 
 
 def test():
-    from .test import test
-    test(
+    from ..test import benchmark
+    benchmark(
         [
             ('     hoare', quicksort_hoare, 'quicksort_hoare(array)'),
             ('    lomuto', quicksort_lomuto, 'quicksort_lomuto(array)'),

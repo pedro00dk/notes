@@ -41,8 +41,8 @@ def bogosort_deterministic(array: list):
 
 
 def test():
-    from .test import test
-    test(
+    from ..test import benchmark
+    benchmark(
         [
             ('       bogosort random', bogosort_random, 'bogosort_random(array)'),
             ('bogosort deterministic', bogosort_deterministic, 'bogosort_deterministic(array)'),

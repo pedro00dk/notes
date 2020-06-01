@@ -30,17 +30,17 @@ def countingsort(array: list):
 
 
 def test():
-    from .test import test
+    from ..test import benchmark
     print('terrible input')
-    test([('countingsort', countingsort, 'countingsort(array)')], array_min='-i*10', array_max='i*10')
+    benchmark([('countingsort', countingsort, 'countingsort(array)')], array_min='-i*10', array_max='i*10')
     print()
     print('bad input')
-    test([('countingsort', countingsort, 'countingsort(array)')], array_min='-i*5', array_max='i*5')
+    benchmark([('countingsort', countingsort, 'countingsort(array)')], array_min='-i*5', array_max='i*5')
     print()
     print('good input')
-    test([('countingsort', countingsort, 'countingsort(array)')], array_min='-i', array_max='i')
+    benchmark([('countingsort', countingsort, 'countingsort(array)')], array_min='-i', array_max='i')
     print('best input')
-    test([('countingsort', countingsort, 'countingsort(array)')], array_min='-10', array_max='10')
+    benchmark([('countingsort', countingsort, 'countingsort(array)')], array_min='-10', array_max='10')
     print()
 
 

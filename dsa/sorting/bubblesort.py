@@ -18,8 +18,8 @@ def bubblesort(array: list):
 
 
 def test():
-    from .test import test
-    test([('bubblesort', bubblesort, 'bubblesort(array)')], benchmark_tests=[0, 1, 10, 100, 1000])
+    from ..test import benchmark
+    benchmark([('bubblesort', bubblesort, 'bubblesort(array)')], benchmark_tests=[0, 1, 10, 100, 1000])
 
 
 if __name__ == '__main__':

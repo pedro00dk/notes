@@ -20,8 +20,8 @@ def selectionsort(array: list):
 
 
 def test():
-    from .test import test
-    test([('selectionsort', selectionsort, 'selectionsort(array)')], benchmark_tests=[0, 1, 10, 100, 1000])
+    from ..test import benchmark
+    benchmark([('selectionsort', selectionsort, 'selectionsort(array)')], benchmark_tests=[0, 1, 10, 100, 1000])
 
 
 if __name__ == '__main__':

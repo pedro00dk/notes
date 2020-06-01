@@ -145,8 +145,8 @@ def radixsort_msd(array: list, /, power=4):
 
 
 def test():
-    from .test import test
-    test(
+    from ..test import benchmark
+    benchmark(
         [
             ('radixsort lsd p=1', radixsort_lsd, 'radixsort_lsd(array, 1)'),
             ('radixsort lsd p=2', radixsort_lsd, 'radixsort_lsd(array, 2)'),

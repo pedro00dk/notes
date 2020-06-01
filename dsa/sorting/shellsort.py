@@ -60,8 +60,8 @@ def shellsort(array: list, gapgen=Gap.Ciura2001):
 
 
 def test():
-    from .test import test
-    test(
+    from ..test import benchmark
+    benchmark(
         [
             (
                 '            shellsort Shell1959',

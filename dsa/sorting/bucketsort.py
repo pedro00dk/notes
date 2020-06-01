@@ -33,8 +33,8 @@ def bucketsort(array: list, /, k: int = None, subsort: type(lambda array: array)
 
 
 def test():
-    from .test import test
-    test(
+    from ..test import benchmark
+    benchmark(
         [
             ('bucketsort k=8*n ', bucketsort, 'bucketsort(array, len(array) * 8)'),
             ('bucketsort k=4*n ', bucketsort, 'bucketsort(array, len(array) * 4)'),
