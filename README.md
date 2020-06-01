@@ -38,11 +38,17 @@ $ python -m dsa.tree.avl
 -   [bubblesort](./dsa/sort/bubblesort.py) **- O(n^2)**
 -   [insertionsort](./dsa/sort/insertionsort.py) **- O(n^2)**
 -   [selectionsort](./dsa/sort/selectionsort.py) **- O(n^2)**
--   [heapsort](./dsa/sort/heapsort.py) **- O(n*log(n))**
--   [mergesort](./dsa/sort/mergesort.py) **- O(n*log(n))**
+-   [heapsort](./dsa/sort/heapsort.py) **- O(n\*log(n))**
+-   [mergesort](./dsa/sort/mergesort.py) **- O(n\*log(n))**
 -   [quicksort](./dsa/sort/quicksort.py)
-    -    quicksort Hoare's partition **- average: O(n*log(n)), worst: O(n^2)**
-    -    quicksort Lomuto's partition **- average: O(n*log(n)), worst: O(n^2)**
-    -    quicksort dual pivot partition **- average: O(n*log(n)), worst: O(n^2)**
+    -   quicksort Hoare's partition **- average: O(n\*log(n)), worst: O(n^2)**
+    -   quicksort Lomuto's partition **- average: O(n\*log(n)), worst: O(n^2)**
+    -   quicksort dual pivot partition **- average: O(n\*log(n)), worst: O(n^2)**
 -   [countingsort](./dsa/sort/countingsort.py) **- O(n + k)**
--   [bucketsort](./dsa/sort/countingsort.py) **- average: O(n + (n^2/k) + k), worst O(n^2), best: O(n)**
+-   [bucketsort](./dsa/sort/bucketsort.py) **- average: O(n + (n^2/k) + k), worst O(n^2), best: O(n)**
+-   [radixsort](./dsa/sort/radixsort.py)
+    -   radixsort least-significant-digit **- O(n\*w)**
+    -   radixsort most-significant-digit **- O(n\*w)**
+-   [bogosort](./dsa/sort/bogosort.py)
+    -   bogosort random **- unbounded**
+    -   bogosort deterministic **- O(n!)**
