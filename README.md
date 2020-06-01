@@ -15,6 +15,10 @@ $ python -m dsa.tree.avl
 
 ---
 
+The time complexity in **big-O** notation is shown beside the algorithms names.
+Space complexity is available in the algorithms files.
+
+--
 ## Enumeration Combinatorics
 
 -   [factorial](./dsa/combinatorics/factorial.py)
@@ -44,6 +48,15 @@ $ python -m dsa.tree.avl
     -   quicksort Hoare's partition **- average: O(n\*log(n)), worst: O(n^2)**
     -   quicksort Lomuto's partition **- average: O(n\*log(n)), worst: O(n^2)**
     -   quicksort dual pivot partition **- average: O(n\*log(n)), worst: O(n^2)**
+-   [shellsort](./dsa/sort/shellsort.py) **- O(n * (log(n)/log(log(n)))^2), for all gaps**
+    -   shellsort gap Shell1959 **- O(n^2)**
+    -   shellsort gap FrankLazarus1960 **- O(n^(3/2))**
+    -   shellsort gap Hibbard1963 **- O(n^(3/2))**
+    -   shellsort gap PapernovStasevich1965 **- O(n^(3/2))**
+    -   shellsort gap Knuth1973 **- O(n^(3/2))**
+    -   shellsort gap Sedgewick1982 **- O(n^(4/3))**
+    -   shellsort gap Tokuda1992 **- unknown**
+    -   shellsort gap Ciura2001 **- unknown**
 -   [countingsort](./dsa/sort/countingsort.py) **- O(n + k)**
 -   [bucketsort](./dsa/sort/bucketsort.py) **- average: O(n + (n^2/k) + k), worst O(n^2), best: O(n)**
 -   [radixsort](./dsa/sort/radixsort.py)
