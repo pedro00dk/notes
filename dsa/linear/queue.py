@@ -1,11 +1,21 @@
-from .abc import Linked, Node
+from .abc import Linear, Node
 
 
-class Queue(Linked):
+class Queue(Linear):
     def __init__(self):
         super().__init__()
 
     def offer(self, value):
+        """
+        Insert `value` at the end of the queue.
+
+        > complexity:
+        - time: `O(1)`
+        - space: `O(1)`
+
+        > parameters:
+        - `value: any`: value to insert
+        """
         if self._tail is None:
             self._head = self._tail = Node(value)
         else:
@@ -14,6 +24,16 @@ class Queue(Linked):
         self._size += 1
 
     def poll(self):
+        """
+        Delete the value at the begginging of the queue.
+
+        > complexity:
+        - time: `O(1)`
+        - space: `O(1)`
+
+        > parameters:
+        - `#return#: any`: deleted value
+        """
         if self._head is None:
             raise IndexError('empty queue')
         value = self._head.value
@@ -24,13 +44,23 @@ class Queue(Linked):
         return value
 
     def peek(self):
+        """
+        Get the value at the beggening of the queue without removeing it.
+
+        > complexity:
+        > time: `O(1)`
+        > space: `O(1)`
+
+        > parameters:
+        - `#return#: any`: value at the begginging of the queue
+        """
         if self._head is None:
             raise IndexError('empty queue')
         return self._head.value
 
 
 def test():
-    from ..util import match
+    from ..test import match
     q = Queue()
     match([
         (q.offer, [0], None),

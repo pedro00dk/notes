@@ -19,6 +19,7 @@ The time complexity in **big-O** notation is shown beside the algorithms names.
 Space complexity is available in the algorithms files.
 
 --
+
 ## Enumeration Combinatorics
 
 -   [factorial](./dsa/combinatorics/factorial.py)
@@ -48,7 +49,7 @@ Space complexity is available in the algorithms files.
     -   quicksort Hoare's partition **- average: O(n\*log(n)), worst: O(n^2)**
     -   quicksort Lomuto's partition **- average: O(n\*log(n)), worst: O(n^2)**
     -   quicksort dual pivot partition **- average: O(n\*log(n)), worst: O(n^2)**
--   [shellsort](./dsa/sorting/shellsort.py) **- O(n * (log(n)/log(log(n)))^2), for all gaps**
+-   [shellsort](./dsa/sorting/shellsort.py) **- O(n \* (log(n)/log(log(n)))^2), for all gaps**
     -   shellsort gap Shell1959 **- O(n^2)**
     -   shellsort gap FrankLazarus1960 **- O(n^(3/2))**
     -   shellsort gap Hibbard1963 **- O(n^(3/2))**
@@ -67,3 +68,24 @@ Space complexity is available in the algorithms files.
 -   [bogosort](./dsa/sorting/bogosort.py)
     -   bogosort random **- unbounded**
     -   bogosort deterministic **- O((n + 1)!)**
+
+## Data Structures
+
+-   [linear (base class)](./dsa/linear/abc.py)
+    -   traversal **- O(n)**
+    -   value index **- O(n)**
+    -   contains value **- O(n)**
+    -   [linked list (double)](./dsa/linear/list.py)
+        -   push **- O(n)**
+        -   pop (index deletion) **- O(n)**
+        -   remove (value deletion) **- O(n)**
+        -   get (index) **- O(n)**
+        -   reverse **- O(n)**
+    -   [queue](./dsa/linear/queue.py)
+        -   offer **- O(1)**
+        -   poll **- O(1)**
+        -   peek **- O(1)**
+    -   [stack](./dsa/linear/stack.py)
+        -   push **- O(1)**
+        -   pop **- O(1)**
+        -   peek **- O(1)**
