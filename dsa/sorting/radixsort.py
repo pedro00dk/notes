@@ -1,7 +1,7 @@
 import math
 
 
-def radixsort_lsd(array: list, /, power: int = 4):
+def radixsort_lsd(array: list, /, power=4):
     """
     Radixsort Least-Significant-Digit implementation.
     This implementation only supports integer values.
@@ -65,7 +65,7 @@ def radixsort_lsd(array: list, /, power: int = 4):
     return array
 
 
-def radixsort_msd(array: list, /, power: int = 1):
+def radixsort_msd(array: list, /, power=4):
     """
     Radixsort Most-Significant-Digit implementation.
     This implementation only supports integer values.

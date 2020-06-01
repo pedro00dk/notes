@@ -3,7 +3,9 @@ import math
 
 
 class Gap(enum.Enum):
-    # k starts at 1
+    """
+    Gap generator functions to be used in the shellsort algorithm.
+    """
     Shell1959 = lambda n, k: max(n / (2 * k), 1)                                  # O(n^2)
     FrankLazarus1960 = lambda n, k: 2 * math.floor(n / 2**k) + 1                  # O(n^(3/2))
     Hibbard1963 = lambda n, k: 2**k - 1                                           # O(n^(3/2))
@@ -19,11 +21,12 @@ def shellsort(array: list, gapgen=Gap.Ciura2001):
     Shellsort implementation.
 
     > complexity:
-    - time: `O(n * (log(n)/log(log(n)))^2)`, for all gaps
+    - time: `O(n * (log(n)/log(log(n)))^2)`, for any gaps
     - space: `O(1)`
 
     > parameters:
     - `array: list`: array to be sorted
+    - `gapgen: (int, int) -> int (optional -> `Gap.Ciura2001`)`: gap generation algorithm
     - `#return#: list`: `array` sorted
     """
     n = len(array)

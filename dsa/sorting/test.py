@@ -2,14 +2,22 @@ from random import randint, sample
 from timeit import repeat
 
 
-def test(algorithms: list, /, print_tests: list = None, benchmark_tests: list = None, array_min: str = '-i**2', array_max='i**2', tries: list = 100):
+def test(algorithms: list, /, loads: list = None, print_tests: list = None, print_length: int = 20, benchmark_tests: list = None, array_min: str = '-i**2', array_max='i**2', tries: list = 100):
     """
     Function for testing and benchmarking algorithms.
     """
+    for load in loads if loads is not None else []:
+        globals()[load.__name__] = load
     for _, function, _ in algorithms:
         globals()[function.__name__] = function
     print_tests = print_tests if print_tests is not None else \
-        [[], [0], [*range(20)], [*range(20 - 1, -1, -1)], sample([*range(20)], 20)]
+        [
+            [],
+            [0],
+            [*range(print_length)],
+            [*range(print_length - 1, -1, -1)],
+            sample([*range(print_length)], print_length)
+        ]
     benchmark_tests = benchmark_tests if benchmark_tests is not None else [0, 1, 10, 100, 1000, 10000]
     print('print tests')
     for array in print_tests:
@@ -25,6 +33,6 @@ def test(algorithms: list, /, print_tests: list = None, benchmark_tests: list = 
                 setup=f'array=[randint({array_min}, {array_max}) for _ in range(i)]',
                 globals={**globals(), **locals()},
                 number=1,
-                repeat=100
+                repeat=tries
             )
             print(label, sum(results))

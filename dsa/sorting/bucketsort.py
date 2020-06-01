@@ -1,7 +1,7 @@
 from .insertionsort import insertionsort
 
 
-def bucketsort(array: list, /, k: int = None, subsort: type(abs) = None):
+def bucketsort(array: list, /, k: int = None, subsort: type(lambda array: array) = None):
     """
     Bucketsort implementation.
     This implementation uses insertionsort as internal sorter.
@@ -14,7 +14,7 @@ def bucketsort(array: list, /, k: int = None, subsort: type(abs) = None):
     > parameters:
     - `array: list`: array to be sorted
     - `k: int` (optional -> `len(array)`): number of buckets
-    - `subsort: (a) -> list` (optional -> `insertionsort`): algorithm to sort buckets
+    - `subsort: (list) -> list` (optional -> `insertionsort`): algorithm to sort buckets
     - `#return#: list`: `array` sorted
     """
     if len(array) == 0:
