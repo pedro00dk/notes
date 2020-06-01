@@ -49,6 +49,8 @@ $ python -m dsa.tree.avl
 -   [radixsort](./dsa/sort/radixsort.py)
     -   radixsort least-significant-digit **- O(n\*w)**
     -   radixsort most-significant-digit **- O(n\*w)**
+-   [stoogesort](./dsa/sort/stoogesort.py) **- O(n^2.7)**
+-   [slowsort](./dsa/sort/slowsort.py) **- O(T(n)), where T(n) = T(n-1) + T(n/2)\*2 + 1**
 -   [bogosort](./dsa/sort/bogosort.py)
     -   bogosort random **- unbounded**
-    -   bogosort deterministic **- O(n!)**
+    -   bogosort deterministic **- O((n + 1)!)**
