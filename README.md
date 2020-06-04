@@ -17,7 +17,7 @@ $ python -m dsa.tree.avl
 -   I use type hints only in functions parameters, and only the simple ones.
 -   Although I use simple type hints in functions, when commenting, I use a combination of python _primitives_ (`str`, `int`, `float`, etc) and typescript complex types and operators (`|`, `&`, `typeof`, `[]`, `{}`, etc), and generics (`<T extends any>`, etc), and extra syntax for tuples `(T,)`, `(<T>, <U>)` and `<T>()`.
 -   Some functions such as default functions (`__len__`, `__str__`, etc) and simple functions are not commented.
--   The `n` value in most asymptotic complexity descriptions refer to the main input size, which may be an array or string size, the absolute value of a numeric parameter, etc. Other complexity variables are usually described in the comments or in the code.
+-   The `n` value in most asymptotic complexity descriptions refer to the main input size, which may be an array or string size, the absolute value of a numeric parameter, the size of a data structure, etc. Other complexity variables are usually described in the comments or in the code.
 
 ---
 
@@ -95,3 +95,17 @@ Space complexity is available in the algorithms files.
         -   push **- O(1)**
         -   pop **- O(1)**
         -   peek **- O(1)**
+-   [tree (base class)](./dsa/tree/abc.py)
+    -   traversal **- O(n)**
+    -   get **- average or balanced trees: O(log(n)), worst: O(n)**
+    -   contains key **- average or balanced trees: O(log(n)), worst: O(n)**
+    -   contains value **- O(n)**
+    -   [bst](./dsa/tree/bst.py)
+        -   put **- average: O(log(n)), worst: O(n)**
+        -   take **- average: O(log(n)), worst: O(n)**
+    -   [avl](./dsa/tree/avl.py)
+        -   put **- O(log(n))**
+        -   take **- O(log(n))**
+    -   [rbt](./dsa/tree/rbt.py)
+        -   put **- O(log(n))**
+        -   take **- O(log(n))**

@@ -2,10 +2,21 @@ from .abc import Node, Tree
 
 
 class BST(Tree):
+    """
+    Binary Search Tree implementation.
+    """
+
     def __init__(self):
         super().__init__(lambda node, depth: f'{node.key}: {node.value}')
 
-    def put(self, key, value=None):
+    def put(self, key, /, value=None):
+        """
+        Check abstract class for documentation.
+
+        > complexity:
+        - time: average: `O(log(n))`, worst: `O(n)`
+        - space: `O(1)`
+        """
         parent = None
         node = self._root
         while node is not None and key != node.key:
@@ -24,13 +35,20 @@ class BST(Tree):
             return old_value
 
     def take(self, key):
+        """
+        Check abstract class for documentation.
+
+        > complexity:
+        - time: average: `O(log(n))`, worst: `O(n)`
+        - space: `O(1)`
+        """
         parent = None
         node = self._root
         while node is not None and key != node.key:
             parent = node
             node = node.left if key < node.key else node.right
         if node is None:
-            raise KeyError('not found')
+            raise KeyError(f'key ({str(key)}) not found')
         if node.left is not None and node.right is not None:
             parent = node
             successor = node.right
@@ -50,7 +68,7 @@ class BST(Tree):
 
 
 def test():
-    from ..util import match
+    from ..test import match
     t = BST()
     match([
         (t.put, [0], None),
