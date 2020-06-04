@@ -4,7 +4,7 @@ from .permutations import permutations_count
 
 def combinations_count_rec(n: int, k: int):
     """
-    Recursive implementation of combinations using pascal triangle properties.
+    Recursive implementation of `n` combinations of `k`size using pascal triangle properties.
     ```
     C(n, k) = {
         1 if n == 0 or k == 0 or n == k,
@@ -12,20 +12,21 @@ def combinations_count_rec(n: int, k: int):
     }
     ```
     > complexity:
-    - time: `O(min(n^k, n^(n-k)))`
+    - time: `O(min(n**k, n**(n-k)))`
     - space: `O(n)` 
 
     > parameters:
     - `n: int`: number of items
     - `k: int`: size of groups
-    - `#return#: int`: C(n, k)
+
+    > `return: int`: C(n, k)
     """
     return 1 if n <= 1 or k == 0 or n == k else combinations_count_rec(n - 1, k - 1) + combinations_count_rec(n - 1, k)
 
 
 def combinations_count_def(n: int, k: int):
     """
-    Count combinations of `k` size in `n` elements.
+    Count `n` combinations of `k`size using permutation divisions.
     ```
     C(n, k) = P(n, k) / P(k, k) = (n!/(n-k)!) / (k!/(k-k)!) = P(n, k)/k! = (n!/(n - k)!)/k! = n!/((n-k)!k!)
     ```
@@ -45,7 +46,8 @@ def combinations_count_def(n: int, k: int):
     > parameters:
     - `n: int`: number of items
     - `k: int`: size of groups
-    - `#return#: int`: C(n, k)
+
+    > `return: int`: C(n, k)
     """
     k = min(k, n - k)
     return permutations_count(n, k) // factorial_itr(k)
@@ -60,9 +62,10 @@ def combinations_rec(items: list, k: int):
     - space: `O(C(n, k) * n)` or `O(n)` if combinations are not stored
 
     > parameters:
-    - `items: list`: items to generate combinations
+    - `items: any[]`: items to generate combinations
     - `k: int`: size of groups
-    - `#return#: iter(tuple)`: generator of `items` combinations of `k` size
+
+    > `return: Generator<(any())>`: generator of `items` combinations of `k` size
     """
     n = len(items)
     if n == 0:
@@ -89,9 +92,10 @@ def combinations_itr(items: list, k: int):
     - space: `O(C(n, k) * n)` or `O(n)` if combinations are not stored
 
     > parameters:
-    - `items: list`: items to generate combinations
+    - `items: any[]`: items to generate combinations
     - `k: int`: size of groups
-    - `#return#: iter(tuple)`: generator of `items` combinations of `k` size
+
+    > `return: Generator<(any())>`: generator of `items` combinations of `k` size
     """
     n = len(items)
     if n == 0 or k <= 0 or k > n:

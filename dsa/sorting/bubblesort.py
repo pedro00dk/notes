@@ -3,12 +3,13 @@ def bubblesort(array: list):
     Bubblesort implementation.
 
     > complexity:
-    - time: `O(n^2)`
+    - time: `O(n**2)`
     - space: `O(1)`
 
     > parameters:
-    - `array: list`: array to be sorted
-    - `#return#: list`: `array` sorted
+    - `array: (int | float)[]`: array to be sorted
+    
+    > `return: typeof(array)`: `array` sorted
     """
     for i in range(len(array) - 1, -1, -1):
         for j in range(0, i):

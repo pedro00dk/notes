@@ -9,7 +9,7 @@ def sift_down(heap: list, i: int, length: int):
     - space: `O(1)`
 
     > parameters:
-    - `heap: list`: array containing heap structure
+    - `heap: (int | float)[]`: array containing heap structure
     - `i: int`: index of value to sift down
     - `length: int`: length of the heap (may be smaller than `len(heap)`)
     """
@@ -33,8 +33,9 @@ def heapsort(array: list):
     - space: `O(1)`
 
     > parameters:
-    - `array: list`: array to be sorted
-    - `#return#: list`: `array` sorted
+    - `array: (int | float)[]`: array to be sorted
+    
+    > `return: typeof(array)`: `array` sorted
     """
     length = len(array)
     for i in range(length // 2 - 1, -1, -1):

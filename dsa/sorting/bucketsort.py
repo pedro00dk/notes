@@ -8,14 +8,15 @@ def bucketsort(array: list, /, k: int = None, subsort: type(lambda array: array)
     The default `k` value (which is `len(array)`) can be manually modified as well as the `subsort` algorithm.
 
     > complexity:
-    - time: average: `O(n + (n^2/k) + k)`, worst `O(n^2)`, best: `O(n)` if `n ~ k` and uniform distribution.
+    - time: average: `O(n + (n**2/k) + k)`, worst `O(n**2)`, best: `O(n)` if `n ~ k` and uniform distribution.
     - space: `O(n * k)`
 
     > parameters:
-    - `array: list`: array to be sorted
-    - `k: int` (optional -> `len(array)`): number of buckets
-    - `subsort: (list) -> list` (optional -> `insertionsort`): algorithm to sort buckets
-    - `#return#: list`: `array` sorted
+    - `array: (int | float)[]`: array to be sorted
+    - `k: int? = len(array)`: number of buckets
+    - `subsort: ((int | float)[] -> (int | float)[])? = insertionsort`: algorithm to sort buckets
+
+    > `return: typeof(array)`: `array` sorted
     """
     if len(array) == 0:
         return array

@@ -7,8 +7,9 @@ def slowsort(array: list):
     - space: `O(n)`
 
     > parameters:
-    - `array: list`: array to be sorted
-    - `#return#: list`: `array` sorted
+    - `array: (int | float)[]`: array to be sorted
+
+    > `return: typeof(array)`: `array` sorted
     """
     if len(array) == 0:
         return array

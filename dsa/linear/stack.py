@@ -30,8 +30,7 @@ class Stack(Linear):
         - time: `O(1)`
         - space: `O(1)`
 
-        > parameters:
-        - `#return#: any`: deleted value
+        > `return: any`: deleted value
         """
         if self._head is None:
             raise IndexError('empty stack')
@@ -48,8 +47,7 @@ class Stack(Linear):
         > time: `O(1)`
         > space: `O(1)`
 
-        > parameters:
-        - `#return#: any`: value at the top of the stack
+        > `return: any`: value at the top of the stack
         """
         if self._head is None:
             raise IndexError('empty stack')

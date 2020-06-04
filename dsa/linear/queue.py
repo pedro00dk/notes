@@ -31,8 +31,7 @@ class Queue(Linear):
         - time: `O(1)`
         - space: `O(1)`
 
-        > parameters:
-        - `#return#: any`: deleted value
+        > `return: any`: deleted value
         """
         if self._head is None:
             raise IndexError('empty queue')
@@ -51,8 +50,7 @@ class Queue(Linear):
         > time: `O(1)`
         > space: `O(1)`
 
-        > parameters:
-        - `#return#: any`: value at the begginging of the queue
+        > `return: any`: value at the begginging of the queue
         """
         if self._head is None:
             raise IndexError('empty queue')

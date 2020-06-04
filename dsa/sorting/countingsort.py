@@ -9,8 +9,9 @@ def countingsort(array: list):
     - space: `O(n + k)` where `k` is `value_range`
 
     > parameters:
-    - `array: list`: array to be sorted
-    - `#return#: list`: `array` sorted
+    - `array: int[]`: array to be sorted
+    
+    > `return: typeof(array)`: `array` sorted
     """
     if len(array) == 0:
         return array

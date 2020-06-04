@@ -6,12 +6,12 @@ class Gap(enum.Enum):
     """
     Gap generator functions to be used in the shellsort algorithm.
     """
-    Shell1959 = lambda n, k: max(n / (2 * k), 1)                                  # O(n^2)
-    FrankLazarus1960 = lambda n, k: 2 * math.floor(n / 2**k) + 1                  # O(n^(3/2))
-    Hibbard1963 = lambda n, k: 2**k - 1                                           # O(n^(3/2))
-    PapernovStasevich1965 = lambda n, k: 2**(k - 1) + 1 if k > 1 else 1           # O(n^(3/2))
-    Knuth1973 = lambda n, k: min((3**k - 1) // 2, math.ceil(n / 3))               # O(n^(3/2))
-    Sedgewick1982 = lambda n, k: 4**(k) - 1 + 3 * 2**(k - 2) + 1 if k > 1 else 1  # O(n^(4/3))
+    Shell1959 = lambda n, k: max(n / (2 * k), 1)                                  # O(n**2)
+    FrankLazarus1960 = lambda n, k: 2 * math.floor(n / 2**k) + 1                  # O(n**(3/2))
+    Hibbard1963 = lambda n, k: 2**k - 1                                           # O(n**(3/2))
+    PapernovStasevich1965 = lambda n, k: 2**(k - 1) + 1 if k > 1 else 1           # O(n**(3/2))
+    Knuth1973 = lambda n, k: min((3**k - 1) // 2, math.ceil(n / 3))               # O(n**(3/2))
+    Sedgewick1982 = lambda n, k: 4**(k) - 1 + 3 * 2**(k - 2) + 1 if k > 1 else 1  # O(n**(4/3))
     Tokuda1992 = lambda n, k: math.ceil((1 / 5) * (9 * (9 / 4) ** (k - 1) - 4))   # unknown
     Ciura2001 = lambda n, k: (1, 4, 10, 23, 57, 132, 301, 701)[min(k - 1, 7)]     # unknown
 
@@ -21,13 +21,14 @@ def shellsort(array: list, gapgen=Gap.Ciura2001):
     Shellsort implementation.
 
     > complexity:
-    - time: `O(n * (log(n)/log(log(n)))^2)`, for any gaps
+    - time: `O(n * (log(n)/log(log(n)))**2)`, for any gaps
     - space: `O(1)`
 
     > parameters:
-    - `array: list`: array to be sorted
-    - `gapgen: (int, int) -> int (optional -> `Gap.Ciura2001`)`: gap generation algorithm
-    - `#return#: list`: `array` sorted
+    - `array: (int | float)[]`: array to be sorted
+    - `gapgen: ((int, int) -> int)? = Gap.Ciura2001`: gap generation algorithm
+
+    > `return: typeof(array)`: `array` sorted
     """
     n = len(array)
     gaps = []

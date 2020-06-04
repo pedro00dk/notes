@@ -20,12 +20,13 @@ def factorial_rec(n: int):
 
     > parameters:
     - `n: int`: value to compute factorial
-    - `#return#: int`: factorial of `n`
+
+    > `return: int`: factorial of `n`
     """
     return 1 if n <= 1 else n * factorial_rec(n - 1)
 
 
-def factorial_itr(f: int):
+def factorial_itr(n: int):
     """
     Factorial algorithm, interactive implementation.
     ```
@@ -36,15 +37,16 @@ def factorial_itr(f: int):
     - start loop from 2 because `0! == 1` and `1! == 1`
 
     > complexity:
-    - time: `O(f)`
+    - time: `O(n)`
     - space: `O(1)`
 
     > parameters:
-    - `f: int`: value to compute factorial
-    - `#return#: int`: factorial of `f`
+    - `n: int`: value to compute factorial
+
+    > `return: int`: factorial of `n`
     """
     r = 1
-    for i in range(2, f + 1):
+    for i in range(2, n + 1):
         r *= i
     return r
 
@@ -58,8 +60,9 @@ def factorial_stirling(n: float):
     - space: `O(1)`
 
     > parameters:
-    - `f: int`: value to compute factorial
-    - `#return#: int`: factorial approximation of `f`
+    - `n: float`: value to compute factorial
+
+    > `return: int`: factorial approximation of `n`
     """
     return (2 * math.pi * n) ** (0.5) * (n / math.e) ** n
 
@@ -73,8 +76,9 @@ def factorial_ramanujan(n: float):
     - space: `O(1)`
 
     > parameters:
-    - `f: int`: value to compute factorial
-    - `#return#: int`: factorial approximation of `f`
+    - `n: int`: value to compute factorial
+    
+    > `return: int`: factorial approximation of `n`
     """
     return math.pi ** 0.5 * (1 / 30 + n * (1 + n * (4 + n * 8))) ** (1 / 6) * (n / math.e) ** n
 

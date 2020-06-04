@@ -37,7 +37,7 @@ class Linear(ABC):
 
         > parameters:
         - `index: int`: index to check
-        - `insert: bool` (optional -> `False`): if is an insertion index
+        - `insert: bool? = False`: if is an insertion index
         """
         if index < 0 or insert and index > self._size or not insert and index >= self._size:
             raise IndexError(f'index ({index}) out of range [0, {self._size}{"]" if insert else ")"}')
@@ -46,8 +46,7 @@ class Linear(ABC):
         """
         Return a generator for the structure nodes.
 
-        > parameters:
-        - `#return#: iter(Node)`: generator of structure nodes
+        > `return: Generator(Node)`: generator of structure nodes
         """
         node = self._head
         while node is not None:
@@ -58,8 +57,7 @@ class Linear(ABC):
         """
         Return a generator for the structure values.
 
-        > parameters:
-        - `#return#: iter(any)`: generator of structure values
+        > `return: Generator(any)`: generator of structure values
         """
         return (node.value for node in self._nodes())
 
@@ -67,8 +65,7 @@ class Linear(ABC):
         """
         Return if the structure is empty.
 
-        > parameters:
-        - `#return#: bool`: if empty
+        > `return: bool`: if empty
         """
         return self._size == 0
 
@@ -78,7 +75,8 @@ class Linear(ABC):
 
         > parameters:
         - `value: any`: value to check
-        - `#return#: int`: index of value
+
+        > `return: int`: index of value
         """
         for i, v in enumerate(self.values()):
             if value == v:
@@ -91,6 +89,7 @@ class Linear(ABC):
 
         > parameters:
         - `value: any`: value to check
-        - `#return#: bool`: if contains
+
+        > `return: bool`: if contains
         """
         return any(value == v for v in self.values())

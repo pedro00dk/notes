@@ -8,12 +8,13 @@ def quicksort_hoare(array: list):
     Random pivot is not used because python random functions are very slow.
 
     > complexity:
-    - time: average: `O(n*log(n))`, worst: `O(n^2)`
+    - time: average: `O(n*log(n))`, worst: `O(n**2)`
     - space: average: `O(log(n))`, worst: `O(n)`
 
     > parameters:
-    - `array: list`: array to be sorted
-    - `#return#: list`: `array` sorted
+    - `array: (int | float)[]`: array to be sorted
+
+    > `return: typeof(array)`: `array` sorted
     """
     def rec(array: list, left: int, right: int):
         if left >= right:
@@ -44,12 +45,13 @@ def quicksort_lomuto(array: list):
     Random pivot is not used because python random functions are very slow.
 
     > complexity:
-    - time: average: `O(n*log(n))`, worst: `O(n^2)`
+    - time: average: `O(n*log(n))`, worst: `O(n**2)`
     - space: average: `O(log(n))`, worst: `O(n)`
 
     > parameters:
-    - `array: list`: array to be sorted
-    - `#return#: list`: `array` sorted
+    - `array: (int | float)[]`: array to be sorted
+
+    > `return: typeof(array)`: `array` sorted
     """
     def rec(array: list, left: int, right: int):
         if left >= right:
@@ -75,12 +77,13 @@ def quicksort_dual_pivot(array: list):
     Quicksort dual-pivot implementation.
 
     > complexity:
-    - time: average: `O(n*log(n))`, worst: `O(n^2)`
+    - time: average: `O(n*log(n))`, worst: `O(n**2)`
     - space: average: `O(log(n))`, worst: `O(n)`
 
     > parameters:
-    - `array: list`: array to be sorted
-    - `#return#: list`: `array` sorted
+    - `array: (int | float)[]`: array to be sorted
+
+    > `return: typeof(array)`: `array` sorted
     """
     def rec(array: list, left: int, right: int):
         if left >= right:

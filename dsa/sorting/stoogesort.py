@@ -6,12 +6,13 @@ def stoogesort(array: list):
     Stoogesort implementation.
 
     > complexity:
-    - time: `O(n^(log(3)/log(1.5))) ~ O(n^2.7)`
+    - time: `O(n**(log(3)/log(1.5))) ~ O(n**2.7)`
     - space: `O(log(n, 3))`
 
     > parameters:
-    - `array: list`: array to be sorted
-    - `#return#: list`: `array` sorted
+    - `array: (int | float)[]`: array to be sorted
+
+    > `return: typeof(array)`: `array` sorted
     """
     if len(array) == 0:
         return array

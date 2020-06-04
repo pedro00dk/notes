@@ -32,7 +32,8 @@ class LinkedList(Linear):
 
         > parameters:
         - `index: int`: node index
-        - `#return#: ListNode`: node at `index`
+
+        > `return: ListNode`: node at `index`
         """
         self._check(index)
         forward = index < self._size / 2
@@ -51,7 +52,8 @@ class LinkedList(Linear):
 
         > parameters:
         - `value: any`: node value
-        - `#return#: ListNode`: node containing `value`
+
+        > `return: ListNode`: node containing `value`
         """
         for i, node in enumerate(self._nodes()):
             if value == node.value:
@@ -121,7 +123,7 @@ class LinkedList(Linear):
 
         > parameters:
         - `value: any`: value to insert
-        - `index: int` (optional -> `len(self)`): insertion index
+        - `index: int? = len(self)`: insertion index
         """
         return self._insert(index if index is not None else self._size, value)
 
@@ -135,8 +137,9 @@ class LinkedList(Linear):
         - space: `O(1)`
 
         > parameters:
-        - `index: int` (optional -> `len(self) - 1`): deletion index
-        - `#return#: any`: value from the deleted node
+        - `index: int? = len(self) - 1`: deletion index
+
+        > `return: any`: value from the deleted node
         """
         return self._delete(self._node_index(index if index is not None else self._size - 1)[0])
 
@@ -149,8 +152,9 @@ class LinkedList(Linear):
         - space: `O(1)`
 
         > parameters:
-        - `index: int` (optional -> `len(self) - 1`): deletion index
-        - `#return#: any`: value from the deleted node
+        - `index: int? = len(self) - 1`: deletion index
+
+        > `return: any`: value from the deleted node
         """
         return self._delete(self._node_value(value)[0])
 
@@ -165,7 +169,8 @@ class LinkedList(Linear):
 
         > parameters:
         - `index: int`: value index
-        - `#return#: any`: value at `index`
+
+        > `return: any`: value at `index`
         """
         return self._node_index(index if index is not None else self.size - 1)[0].value
 

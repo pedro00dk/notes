@@ -7,8 +7,8 @@ def radixsort_lsd(array: list, /, power=4):
     This implementation only supports integer values.
     Use bucketsort for floating-point values.
 
-    This implementation can subwords of 2^power bases (default is 2^4 = 16).
-    10^power bases are not supported due to focus in speed (2^power bases allow bit manupulation).
+    This implementation can subwords of 2**power bases (default is 2**4 = 16).
+    10**power bases are not supported due to focus in speed (2**power bases allow bit manupulation).
 
     Since this implementation has no fixed base, the time and space complexity will vary with `power`.
     By increasing `power`, the word size `w` becomes smaller, reducing a bit the amount of countingsort calls.
@@ -18,13 +18,14 @@ def radixsort_lsd(array: list, /, power=4):
     However, this cost on small arrays is much more pronounced, worsening the performance.
 
     > complexity:
-    - time: `O(n * w)` where `w` is `log(value_range, 2^power)`
-    - space: `O(n + w)` where `w` is `log(value_range, 2^power)`
+    - time: `O(n * w)` where `w` is `log(value_range, 2**power)`
+    - space: `O(n + w)` where `w` is `log(value_range, 2**power)`
 
     > parameters:
-    - `array: list`: array to be sorted
-    - `power: int`: the amount of bits to use as radix
-    - `#return#: list`: `array` sorted
+    - `array: int[]`: array to be sorted
+    - `power: int? = 4`: the amount of bits to use as radix
+
+    > `return: typeof(array)`: `array` sorted
     """
     if len(array) == 0:
         return array
@@ -76,8 +77,8 @@ def radixsort_msd(array: list, /, power=4):
     Radixsort msd variation performance can be improved by using a second subsort algorithm such as quicksort when the
     groups get smaller.
 
-    This implementation can subwords of 2^power bases (default is 2^4 = 16).
-    10^power bases are not supported due to focus in speed (2^power bases allow bit manupulation).
+    This implementation can subwords of 2**power bases (default is 2**4 = 16).
+    10**power bases are not supported due to focus in speed (2**power bases allow bit manupulation).
 
     Since this implementation has no fixed base, the time and space complexity will vary with `power`.
     By increasing `power`, the word size `w` becomes smaller.
@@ -87,13 +88,14 @@ def radixsort_msd(array: list, /, power=4):
     So there is not too much benefit in increasing it too much, because the performance gets worse very fast.
 
     > complexity:
-    - time: `O(n * w)` where `w` is `log(value_range, 2^power)`
-    - space: `O(n + w)` where `w` is `log(value_range, 2^power)`
+    - time: `O(n * w)` where `w` is `log(value_range, 2**power)`
+    - space: `O(n + w)` where `w` is `log(value_range, 2**power)`
 
     > parameters:
-    - `array: list`: array to be sorted
-    - `power: int`: the amount of bits to use as radix
-    - `#return#: list`: `array` sorted
+    - `array: int[]`: array to be sorted
+    - `power: int? = 4`: the amount of bits to use as radix
+
+    > `return: typeof(array)`: `array` sorted
     """
     if len(array) == 0:
         return array

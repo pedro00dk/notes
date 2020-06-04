@@ -7,8 +7,9 @@ def mergesort(array: list):
     - space: `O(n)`
 
     > parameters:
-    - `array: list`: array to be sorted
-    - `#return#: list`: `array` sorted
+    - `array: (int | float)[]`: array to be sorted
+
+    > `return: typeof(array)`: `array` sorted
     """
     def rec(array: list, left: int, right: int, temp: list):
         center = (left + right) // 2
