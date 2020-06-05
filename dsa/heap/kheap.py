@@ -1,3 +1,6 @@
+from .abc import Heap
+
+
 def sift_up(heap: list, k: int, i: int, comparator: type(lambda a, b: 0)):
     """
     K-Heap sift up algorithm.
@@ -100,59 +103,45 @@ def heapify_bottom_up(heap: list, k: int, comparator: type(lambda a, b: 0), /, l
         sift_down(heap, k, i, comparator, length)
 
 
-class KHeap:
+class KHeap(Heap):
     """
     K-Heap implementation.
     """
 
-    def __init__(self, /, data: list = None, k=4, comparator='max'):
+    def __init__(self, /, data: list = None, comparator='max', k=4):
         """
+        Check abstract class for documentation.
+
         > complexity:
         - time: `O(n)`
         - space: `O(1)`
-
-        > parameters:
-        - `data: <T>[]`: initial data to populate the heap
-        - `k: int? = 4`: heap arity
-        - `comparator: 'min' | 'max' | (<T>, <T>) -> int`: a comparator string for numeric values (`min`, `max`) or a
-            min comparator to check values (smaller values go to the top)
         """
-        self._heap = data if data is not None else []
+        super().__init__(data, comparator)
         self._k = k
-        self._comparator = (lambda a, b: a - b) if comparator == 'min' else \
-            (lambda a, b: b - a) if comparator == 'max' else comparator
         # heapify_top_down(self._heap, self._k, self._comparator)
         heapify_bottom_up(self._heap, self._k, self._comparator)
 
-    def __len__(self):
-        return len(self._heap)
-
     def __str__(self):
-        return f'Heap {self._heap}'
+        return f'k={self._k} {super().__str__()}'
 
     def offer(self, value):
         """
-        Insert `value` in the heap.
+        Check abstract class for documentation.
 
         > complexity:
         - time: `O(k*log(n, k))`
         - space: `O(1)`
-
-        > parameters:
-        - `value: <T>`: value to insert
         """
         self._heap.append(value)
         sift_up(self._heap, self._k, len(self._heap) - 1, self._comparator)
 
     def poll(self):
         """
-        Delete the value at the top of the heap.
+        Check abstract class for documentation.
 
         > complexity:
         - time: `O(k*log(n, k))`
         - space: `O(1)`
-
-        > `return: <T>`: deleted value
         """
         if len(self._heap) == 0:
             raise IndexError('empty heap')
@@ -163,28 +152,11 @@ class KHeap:
             sift_down(self._heap, self._k, 0, self._comparator)
         return value
 
-    def peek(self):
-        """
-        Get the value at the top of the heap without removing it.
-
-        > complexity:
-        > time: `O(1)`
-        > space: `O(1)`
-
-        > `return: <T>`: value at the top of the heap
-        """
-        if len(self._heap) == 0:
-            raise IndexError('empty heap')
-        return self._heap[0]
-
-    def empty(self):
-        return len(self._heap) == 0
-
 
 def test():
     import random
     from ..test import match
-    h = KHeap(random.sample([i for i in range(10)], 10), 4, 'min')
+    h = KHeap(random.sample([i for i in range(10)], 10), 'min', 4)
     match([
         (print, [h], None),
         (h.offer, [10], None),

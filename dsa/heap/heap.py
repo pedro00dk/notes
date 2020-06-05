@@ -1,3 +1,6 @@
+from .abc import Heap
+
+
 def sift_up(heap: list, i: int, comparator: type(lambda a, b: 0)):
     """
     Binary Heap sift up algorithm.
@@ -91,57 +94,41 @@ def heapify_bottom_up(heap: list, comparator: type(lambda a, b: 0), /, length: i
         sift_down(heap, i, comparator, length)
 
 
-class Heap:
+class BHeap(Heap):
     """
     Binary Heap implementation.
     """
 
     def __init__(self, /, data: list = None, comparator='max'):
         """
+        Check abstract class for documentation.
+
         > complexity:
         - time: `O(n)`
         - space: `O(1)`
-
-        > parameters:
-        - `data: <T>[]`: initial data to populate the heap
-        - `comparator: 'min' | 'max' | (<T>, <T>) -> int`: a comparator string for numeric values (`min`, `max`) or a
-            min comparator to check values (smaller values go to the top)
         """
-        self._heap = data if data is not None else []
-        self._comparator = (lambda a, b: a - b) if comparator == 'min' else \
-            (lambda a, b: b - a) if comparator == 'max' else comparator
+        super().__init__(data, comparator)
         # heapify_top_down(self._heap, self._comparator)
         heapify_bottom_up(self._heap, self._comparator)
 
-    def __len__(self):
-        return len(self._heap)
-
-    def __str__(self):
-        return f'Heap {self._heap}'
-
     def offer(self, value):
         """
-        Insert `value` in the heap.
+        Check abstract class for documentation.
 
         > complexity:
         - time: `O(log(n))`
         - space: `O(1)`
-
-        > parameters:
-        - `value: <T>`: value to insert
         """
         self._heap.append(value)
         sift_up(self._heap, len(self._heap) - 1, self._comparator)
 
     def poll(self):
         """
-        Delete the value at the top of the heap.
+        Check abstract class for documentation.
 
         > complexity:
         - time: `O(log(n))`
         - space: `O(1)`
-
-        > `return: <T>`: deleted value
         """
         if len(self._heap) == 0:
             raise IndexError('empty heap')
@@ -152,28 +139,11 @@ class Heap:
             sift_down(self._heap, 0, self._comparator)
         return value
 
-    def peek(self):
-        """
-        Get the value at the top of the heap without removing it.
-
-        > complexity:
-        > time: `O(1)`
-        > space: `O(1)`
-
-        > `return: <T>`: value at the top of the heap
-        """
-        if len(self._heap) == 0:
-            raise IndexError('empty heap')
-        return self._heap[0]
-
-    def empty(self):
-        return len(self._heap) == 0
-
 
 def test():
     import random
     from ..test import match
-    h = Heap(random.sample([i for i in range(10)], 10), 'min')
+    h = BHeap(random.sample([i for i in range(10)], 10), 'min')
     match([
         (print, [h], None),
         (h.offer, [10], None),

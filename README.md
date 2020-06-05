@@ -109,21 +109,21 @@ Space complexity is available in the algorithms files.
     -   [rbt](./dsa/tree/rbt.py)
         -   put **- O(log(n))**
         -   take **- O(log(n))**
--   [binary heap](./dsa/heap/heap.py)
-    -   sift up **- O(log(n))**
-    -   sift down **- O(log(n))**
-    -   heapify top down **- O(n\*log(n))**
-    -   heapify bottom up **- O(n)**
-    -   init **- O(n)**
-    -   offer **- O(log(n))**
-    -   poll **- O(log(n))**
+-   [heap (base class)](./dsa/heap/abc.py)
     -   peek **- O(1)**
--   [k-ary heap](./dsa/heap/heap.py)
-    -   sift up **- O(k\*log(n, k))**
-    -   sift down **- O(k\*log(n, k))**
-    -   heapify top down **- O(n\*k\*log(n, k))**
-    -   heapify bottom up **- O(n)**
-    -   init **- O(n)**
-    -   offer **- O(k\*log(n, k))**
-    -   poll **- O(k\*log(n, k))**
-    -   peek **- O(1)**
+    -   [binary heap](./dsa/heap/heap.py)
+        -   sift up **- O(log(n))**
+        -   sift down **- O(log(n))**
+        -   heapify top down **- O(n\*log(n))**
+        -   heapify bottom up **- O(n)**
+        -   init **- O(n)**
+        -   offer **- O(log(n))**
+        -   poll **- O(log(n))**
+    -   [k-ary heap](./dsa/heap/kheap.py)
+        -   sift up **- O(k\*log(n, k))**
+        -   sift down **- O(k\*log(n, k))**
+        -   heapify top down **- O(n\*k\*log(n, k))**
+        -   heapify bottom up **- O(n)**
+        -   init **- O(n)**
+        -   offer **- O(k\*log(n, k))**
+        -   poll **- O(k\*log(n, k))**
