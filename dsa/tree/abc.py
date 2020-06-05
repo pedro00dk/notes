@@ -5,10 +5,11 @@ from ..linear.queue import Queue
 
 class Node:
     """
-    Base Node class for tree data structures.
+    Base Node class for trees.
     """
 
-    def __init__(self, key, value=None):
+    @abstractmethod
+    def __init__(self, key, /, value=None):
         self.key = key
         self.value = value
         self.left = None
@@ -17,7 +18,7 @@ class Node:
 
 class Tree(ABC):
     """
-    Abstract base class for binary tree data structures.
+    Abstract base class for binary trees.
     This class provides basic fields used in common tree data structures, which are `root` and `size`
     The `printer` attribute is used to generate the tree string representation
     """
@@ -168,7 +169,7 @@ class Tree(ABC):
         Insert a new entry containing `key` and `value` in the tree.
         If `key` already exists, then, `value` is replaced.
 
-        > complexity: check tree implementations
+        > complexity: check subclass implementations
 
         > parameters:
         - `key: (int | float)`: key of the entry
@@ -183,7 +184,7 @@ class Tree(ABC):
         """
         Remove from the entry containing `key` from the tree and return its value.
 
-        > complexity: check tree implementations
+        > complexity: check subclass implementations
 
         > parameters:
         - `key: (int | float)`: key of the entry

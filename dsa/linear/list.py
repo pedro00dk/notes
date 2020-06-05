@@ -6,7 +6,7 @@ class ListNode(Node):
     Node with the extra `tail` property for doubly linked lists.
     """
 
-    def __init__(self, value, prev=None, next=None):
+    def __init__(self, value, /, prev=None, next=None):
         super().__init__(value, next)
         self.prev = prev
 

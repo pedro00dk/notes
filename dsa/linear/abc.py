@@ -6,7 +6,7 @@ class Node:
     Base Node class for linear data structures.
     """
 
-    def __init__(self, value, next=None):
+    def __init__(self, value, /, next=None):
         self.value = value
         self.next = next
 
@@ -17,6 +17,7 @@ class Linear(ABC):
     This class provides basic fields used in common linear data structures, which are `head`, `tail` and `size`
     """
 
+    @abstractmethod
     def __init__(self):
         self._head = self._tail = None
         self._size = 0

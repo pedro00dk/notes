@@ -4,8 +4,10 @@ from abc import ABC, abstractmethod
 class Heap:
     """
     Abstract base class for heaps.
+    This class provides basic fields used in common heap data structures, which are `heap` and `comparator`
     """
 
+    @abstractmethod
     def __init__(self, /, data: list = None, comparator='max'):
         """
         > complexity: check tree implementations
@@ -26,6 +28,11 @@ class Heap:
         return f'{type(self).__name__} {self._heap}'
 
     def empty(self):
+        """
+        Return if the structure is empty.
+
+        > `return: bool`: if empty
+        """
         return len(self._heap) == 0
 
     @abstractmethod
@@ -33,7 +40,7 @@ class Heap:
         """
         Insert `value` in the heap.
 
-        > complexity: check tree implementations
+        > complexity: check subclass implementations
 
         > parameters:
         - `value: <T>`: value to insert
@@ -45,7 +52,7 @@ class Heap:
         """
         Delete the value at the top of the heap.
 
-        > complexity: check tree implementations
+        > complexity: check subclass implementations
 
         > `return: <T>`: deleted value
         """
@@ -55,7 +62,7 @@ class Heap:
         """
         Get the value at the top of the heap without removing it.
 
-        > complexity: check tree implementations
+        > complexity: check subclass implementations
 
         > `return: <T>`: value at the top of the heap
         """
