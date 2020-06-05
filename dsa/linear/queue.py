@@ -44,7 +44,7 @@ class Queue(Linear):
 
     def peek(self):
         """
-        Get the value at the beggening of the queue without removeing it.
+        Get the value at the beggening of the queue without removing it.
 
         > complexity:
         > time: `O(1)`

@@ -35,11 +35,11 @@ Space complexity is available in the algorithms files.
     -   ramanujan's factorial approximation **- O(1)**
 -   [permutations](./dsa/combinatorics/permutations.py)
     -   permutations count **- O(n)**
-    -   permutations using permutation cycles **- O(n**k) -> O(n!) when k --> n\*\*
+    -   permutations using permutation cycles **- O(n\*\*k) -> O(n!) when k --> n**
     -   permutations heap algorithm recursive **- O(n!)**
     -   permutations heap algorithm iterative **- O(n!)**
 -   [combinatorics](./dsa/combinatorics/combinations.py)
-    -   combinations count recursive **- O(min(n**k, n**(n-k)))**
+    -   combinations count recursive **- O(min(n\*\*k, n\*\*(n-k)))**
     -   combinations count **- O(n)**
     -   combinations recursive **- O(n choose k)**
     -   combinations iterative **- O(n choose k)**
@@ -65,11 +65,11 @@ Space complexity is available in the algorithms files.
     -   shellsort gap Tokuda1992 **- unknown**
     -   shellsort gap Ciura2001 **- unknown**
 -   [countingsort](./dsa/sorting/countingsort.py) **- O(n + k)**
--   [bucketsort](./dsa/sorting/bucketsort.py) **- average: O(n + (n*\*2/k) + k), worst O(n*\*2), best: O(n)**
+-   [bucketsort](./dsa/sorting/bucketsort.py) **- average: O(n + (n\*\*2/k) + k), worst O(n\*\*2), best: O(n)**
 -   [radixsort](./dsa/sorting/radixsort.py)
     -   radixsort least-significant-digit **- O(n\*w)**
     -   radixsort most-significant-digit **- O(n\*w)**
--   [stoogesort](./dsa/sorting/stoogesort.py) **- O(n**2.7)\*\*
+-   [stoogesort](./dsa/sorting/stoogesort.py) **- O(n\*\*2.7)**
 -   [slowsort](./dsa/sorting/slowsort.py) **- O(T(n)), where T(n) = T(n-1) + T(n/2)\*2 + 1**
 -   [bogosort](./dsa/sorting/bogosort.py)
     -   bogosort random **- unbounded**
@@ -109,3 +109,12 @@ Space complexity is available in the algorithms files.
     -   [rbt](./dsa/tree/rbt.py)
         -   put **- O(log(n))**
         -   take **- O(log(n))**
+-   [binary heap](./dsa/heap/heap.py)
+    -   sift up **- O(log(n))**
+    -   sift down **- O(log(n))**
+    -   heapify top down **- O(n\*log(n))**
+    -   heapify bottom up **- O(n)**
+    -   init **- O(n)**
+    -   offer **- O(log(n))**
+    -   poll **- O(log(n))**
+    -   peek **- O(1)**
