@@ -118,3 +118,12 @@ Space complexity is available in the algorithms files.
     -   offer **- O(log(n))**
     -   poll **- O(log(n))**
     -   peek **- O(1)**
+-   [k-ary heap](./dsa/heap/heap.py)
+    -   sift up **- O(k\*log(n, k))**
+    -   sift down **- O(k\*log(n, k))**
+    -   heapify top down **- O(n\*k\*log(n, k))**
+    -   heapify bottom up **- O(n)**
+    -   init **- O(n)**
+    -   offer **- O(k\*log(n, k))**
+    -   poll **- O(k\*log(n, k))**
+    -   peek **- O(1)**
