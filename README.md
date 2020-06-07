@@ -24,56 +24,7 @@ $ python -m dsa.tree.avl
 The time complexity in **big-O** notation is shown beside the algorithms names.
 Space complexity is available in the algorithms files.
 
---
-
-## Enumeration Combinatorics
-
--   [factorial](./dsa/combinatorics/factorial.py)
-    -   factorial recursive **- O(n)**
-    -   factorial iterative **- O(n)**
-    -   stirling's factorial approximation **- O(1)**
-    -   ramanujan's factorial approximation **- O(1)**
--   [permutations](./dsa/combinatorics/permutations.py)
-    -   permutations count **- O(n)**
-    -   permutations using permutation cycles **- O(n\*\*k) -> O(n!) when k --> n**
-    -   permutations heap algorithm recursive **- O(n!)**
-    -   permutations heap algorithm iterative **- O(n!)**
--   [combinatorics](./dsa/combinatorics/combinations.py)
-    -   combinations count recursive **- O(min(n\*\*k, n\*\*(n-k)))**
-    -   combinations count **- O(n)**
-    -   combinations recursive **- O(n choose k)**
-    -   combinations iterative **- O(n choose k)**
-
-## Sorting Algorithms
-
--   [bubblesort](./dsa/sorting/bubblesort.py) **- O(n\*\*2)**
--   [insertionsort](./dsa/sorting/insertionsort.py) **- O(n\*\*2)**
--   [selectionsort](./dsa/sorting/selectionsort.py) **- O(n\*\*2)**
--   [heapsort](./dsa/sorting/heapsort.py) **- O(n\*log(n))**
--   [mergesort](./dsa/sorting/mergesort.py) **- O(n\*log(n))**
--   [quicksort](./dsa/sorting/quicksort.py)
-    -   quicksort Hoare's partition **- average: O(n\*log(n)), worst: O(n\*\*2)**
-    -   quicksort Lomuto's partition **- average: O(n\*log(n)), worst: O(n\*\*2)**
-    -   quicksort dual pivot partition **- average: O(n\*log(n)), worst: O(n\*\*2)**
--   [shellsort](./dsa/sorting/shellsort.py) **- O(n \* (log(n)/log(log(n)))\*\*2), for all gaps**
-    -   shellsort gap Shell1959 **- O(n\*\*2)**
-    -   shellsort gap FrankLazarus1960 **- O(n\*\*(3/2))**
-    -   shellsort gap Hibbard1963 **- O(n\*\*(3/2))**
-    -   shellsort gap PapernovStasevich1965 **- O(n\*\*(3/2))**
-    -   shellsort gap Knuth1973 **- O(n\*\*(3/2))**
-    -   shellsort gap Sedgewick1982 **- O(n\*\*(4/3))**
-    -   shellsort gap Tokuda1992 **- unknown**
-    -   shellsort gap Ciura2001 **- unknown**
--   [countingsort](./dsa/sorting/countingsort.py) **- O(n + k)**
--   [bucketsort](./dsa/sorting/bucketsort.py) **- average: O(n + (n\*\*2/k) + k), worst O(n\*\*2), best: O(n)**
--   [radixsort](./dsa/sorting/radixsort.py)
-    -   radixsort least-significant-digit **- O(n\*w)**
-    -   radixsort most-significant-digit **- O(n\*w)**
--   [stoogesort](./dsa/sorting/stoogesort.py) **- O(n\*\*2.7)**
--   [slowsort](./dsa/sorting/slowsort.py) **- O(T(n)), where T(n) = T(n-1) + T(n/2)\*2 + 1**
--   [bogosort](./dsa/sorting/bogosort.py)
-    -   bogosort random **- unbounded**
-    -   bogosort deterministic **- O((n + 1)!)**
+---
 
 ## Data Structures
 
@@ -120,10 +71,78 @@ Space complexity is available in the algorithms files.
         -   offer **- O(log(n))**
         -   poll **- O(log(n))**
     -   [k-ary heap](./dsa/heap/kheap.py)
-        -   sift up **- O(k\*log(n, k))**
-        -   sift down **- O(k\*log(n, k))**
-        -   heapify top down **- O(n\*k\*log(n, k))**
+        -   sift up **- O(k\*log(n,k))**
+        -   sift down **- O(k\*log(n,k))**
+        -   heapify top down **- O(n\*k\*log(n,k))**
         -   heapify bottom up **- O(n)**
         -   init **- O(n)**
-        -   offer **- O(k\*log(n, k))**
-        -   poll **- O(k\*log(n, k))**
+        -   offer **- O(k\*log(n,k))**
+        -   poll **- O(k\*log(n,k))**
+-   [hashtable (base class)](./dsa/hashtable/abc.py)
+    -   implemented probers:
+        -   Linear Probing
+        -   Quadratic Prime Probing
+        -   Quadratic Triangular Probing
+    -   traversal **- O(n)**
+    -   put **- O(1) amortized**
+    -   take **- O(1)**
+    -   get **- O(1)**
+    -   contains key **O(1)**
+    -   contains value **- O(n)**
+    -   [open addressing hashtable](./dsa/hashtable/oa_hashtable.py)
+    -   [sequence chaining hashtable](./dsa/hashtable/oa_hashtable.py)
+
+## Sorting Algorithms
+
+-   [bubblesort](./dsa/sorting/bubblesort.py) **- O(n\*\*2)**
+-   [insertionsort](./dsa/sorting/insertionsort.py) **- O(n\*\*2)**
+-   [selectionsort](./dsa/sorting/selectionsort.py) **- O(n\*\*2)**
+-   [heapsort](./dsa/sorting/heapsort.py) **- O(n\*log(n))**
+-   [mergesort](./dsa/sorting/mergesort.py) **- O(n\*log(n))**
+-   [quicksort](./dsa/sorting/quicksort.py)
+    -   quicksort Hoare's partition **- average: O(n\*log(n)), worst: O(n\*\*2)**
+    -   quicksort Lomuto's partition **- average: O(n\*log(n)), worst: O(n\*\*2)**
+    -   quicksort dual pivot partition **- average: O(n\*log(n)), worst: O(n\*\*2)**
+-   [shellsort](./dsa/sorting/shellsort.py) **- O(n \* (log(n)/log(log(n)))\*\*2), for all gaps**
+    -   shellsort gap Shell1959 **- O(n\*\*2)**
+    -   shellsort gap FrankLazarus1960 **- O(n\*\*(3/2))**
+    -   shellsort gap Hibbard1963 **- O(n\*\*(3/2))**
+    -   shellsort gap PapernovStasevich1965 **- O(n\*\*(3/2))**
+    -   shellsort gap Knuth1973 **- O(n\*\*(3/2))**
+    -   shellsort gap Sedgewick1982 **- O(n\*\*(4/3))**
+    -   shellsort gap Tokuda1992 **- unknown**
+    -   shellsort gap Ciura2001 **- unknown**
+-   [countingsort](./dsa/sorting/countingsort.py) **- O(n + k)**
+-   [bucketsort](./dsa/sorting/bucketsort.py) **- average: O(n + (n\*\*2/k) + k), worst O(n\*\*2), best: O(n)**
+-   [radixsort](./dsa/sorting/radixsort.py)
+    -   radixsort least-significant-digit **- O(n\*w)**
+    -   radixsort most-significant-digit **- O(n\*w)**
+-   [stoogesort](./dsa/sorting/stoogesort.py) **- O(n\*\*2.7)**
+-   [slowsort](./dsa/sorting/slowsort.py) **- O(T(n)), where T(n) = T(n-1) + T(n/2)\*2 + 1**
+-   [bogosort](./dsa/sorting/bogosort.py)
+    -   bogosort random **- unbounded**
+    -   bogosort deterministic **- O((n + 1)!)**
+
+## Enumeration Combinatorics
+
+-   [factorial](./dsa/combinatorics/factorial.py)
+    -   factorial recursive **- O(n)**
+    -   factorial iterative **- O(n)**
+    -   stirling's factorial approximation **- O(1)**
+    -   ramanujan's factorial approximation **- O(1)**
+-   [permutations](./dsa/combinatorics/permutations.py)
+    -   permutations count **- O(n)**
+    -   permutations using permutation cycles **- O(n\*\*k) -> O(n!) when k --> n**
+    -   permutations heap algorithm recursive **- O(n!)**
+    -   permutations heap algorithm iterative **- O(n!)**
+-   [combinatorics](./dsa/combinatorics/combinations.py)
+    -   combinations count recursive **- O(min(n\*\*k, n\*\*(n-k)))**
+    -   combinations count **- O(n)**
+    -   combinations recursive **- O(n choose k)**
+    -   combinations iterative **- O(n choose k)**
+
+## Searching Algorithms
+
+-   [array search](./dsa/linear/abc.py)
+    -   binary search **- O(log(n))**
+    -   k-ary search **- O(k\*log(n,k))**
