@@ -146,3 +146,4 @@ Space complexity is available in the algorithms files.
 -   [array search](./dsa/linear/abc.py)
     -   binary search **- O(log(n))**
     -   k-ary search **- O(k\*log(n,k))**
+    -   interpolation search **- O(log(log(n))) uniformly distributed arrays, worst: O(n)**
