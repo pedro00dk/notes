@@ -210,7 +210,7 @@ class Tree(ABC):
         while node is not None and key != node.key:
             node = node.left if key < node.key else node.right
         if node is None:
-            raise KeyError('not found')
+            raise KeyError(f'key ({str(key)}) not found')
         return node.value
 
     def contains(self, key):

@@ -5,6 +5,8 @@ import math
 class Gap(enum.Enum):
     """
     Gap generator functions to be used in the shellsort algorithm.
+    Enum functions are directly bound to values, meaning it is not necessary to access the `value` field, which does not
+    even exist for functions.
     """
     Shell1959 = lambda n, k: max(n / (2 * k), 1)                                  # O(n**2)
     FrankLazarus1960 = lambda n, k: 2 * math.floor(n / 2**k) + 1                  # O(n**(3/2))
@@ -32,17 +34,17 @@ def shellsort(array: list, gapgen=Gap.Ciura2001):
     """
     n = len(array)
     gaps = []
-    first_gap = int(gapgen(n, 1))
+    first_gap = int(gapgen.value(n, 1))
     gaps.append(first_gap)
     if first_gap > 1:
         for k in range(2, n + 3):
-            gap = int(gapgen(n, k))
+            gap = int(gapgen.value(n, k))
             gaps.append(gap)
             if gap == 1:
                 break
     else:
         for k in range(2, n + 3):
-            gap = int(gapgen(n, k))
+            gap = int(gapgen.value(n, k))
             if gap < n and gap != gaps[-1]:
                 gaps.append(gap)
             else:

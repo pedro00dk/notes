@@ -14,8 +14,8 @@ class Heap:
 
         > parameters:
         - `data: <T>[]`: initial data to populate the heap
-        - `comparator: 'min' | 'max' | (<T>, <T>) -> int`: a comparator string for numeric values (`min`, `max`) or a
-            min comparator to check values (smaller values go to the top)
+        - `comparator: ('min' | 'max' | (<T>, <T>) -> int)? = max`: a comparator string for numeric values
+            (`min`, `max`) or a min comparator to check values (smaller values go to the top)
         """
         self._heap = data if data is not None else []
         self._comparator = (lambda a, b: a - b) if comparator == 'min' else \

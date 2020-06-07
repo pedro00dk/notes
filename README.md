@@ -51,13 +51,13 @@ Space complexity is available in the algorithms files.
     -   get **- average or balanced trees: O(log(n)), worst: O(n)**
     -   contains key **- average or balanced trees: O(log(n)), worst: O(n)**
     -   contains value **- O(n)**
-    -   [bst](./dsa/tree/bst.py)
+    -   [binary search tree](./dsa/tree/bst.py)
         -   put **- average: O(log(n)), worst: O(n)**
         -   take **- average: O(log(n)), worst: O(n)**
-    -   [avl](./dsa/tree/avl.py)
+    -   [avl tree](./dsa/tree/avl.py)
         -   put **- O(log(n))**
         -   take **- O(log(n))**
-    -   [rbt](./dsa/tree/rbt.py)
+    -   [red-black tree](./dsa/tree/rbt.py)
         -   put **- O(log(n))**
         -   take **- O(log(n))**
 -   [heap (base class)](./dsa/heap/abc.py)
