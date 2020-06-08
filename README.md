@@ -78,6 +78,15 @@ Space complexity is available in the algorithms files.
         -   init **- O(n)**
         -   offer **- O(k\*log(n,k))**
         -   poll **- O(k\*log(n,k))**
+-   [disjoint set](./dsa/dset.py)
+    -   implemented:
+        -   Numeric keys disjoint set
+        -   Hashed keys disjoint set
+    -   init **- O(n)**
+    -   make set **- O(1)**
+    -   find **- O(1)**
+    -   union **- O(1)**
+    -   connected **- O(1)**
 -   [binary index tree (fenwick tree)](./dsa/bit.py)
     -   init **- O(n)**
     -   prefix sum **- O(log(n))**
