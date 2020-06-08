@@ -63,7 +63,7 @@ class AVL(Tree):
         """
         def rec(key, node: AVLNode):
             if node is None:
-                raise KeyError(f'key ({str(key)}) not found')
+                raise KeyError(f'key ({key}) not found')
             elif key < node.key:
                 node.left, child_growth, value = rec(key, node.left)
                 previous_balance = node.balance

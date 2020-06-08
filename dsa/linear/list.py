@@ -58,7 +58,7 @@ class LinkedList(Linear):
         for i, node in enumerate(self._nodes()):
             if value == node.value:
                 return node, i
-        raise ValueError(f'value ({str(value)}) not found')
+        raise ValueError(f'value ({value}) not found')
 
     def _insert(self, index: int, value):
         """

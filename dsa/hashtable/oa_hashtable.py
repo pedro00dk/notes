@@ -67,7 +67,7 @@ class OAHashtable(Hashtable):
     def take(self, key):
         hash_, index, entry = self._find(key, False)
         if entry is None:
-            raise KeyError(f'key ({str(key)}) not found')
+            raise KeyError(f'key ({key}) not found')
         value = entry.value
         entry.deleted = True
         entry.key = entry.value = None
@@ -77,7 +77,7 @@ class OAHashtable(Hashtable):
     def get(self, key):
         hash_, index, entry = self._find(key, False)
         if entry is None:
-            raise KeyError(f'key ({str(key)}) not found')
+            raise KeyError(f'key ({key}) not found')
         return entry.value
 
 

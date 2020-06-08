@@ -48,7 +48,7 @@ class BST(Tree):
             parent = node
             node = node.left if key < node.key else node.right
         if node is None:
-            raise KeyError(f'key ({str(key)}) not found')
+            raise KeyError(f'key ({key}) not found')
         if node.left is not None and node.right is not None:
             parent = node
             successor = node.right

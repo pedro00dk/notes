@@ -13,7 +13,7 @@ def match(operations):
         print(
             action.__name__,
             '  args: ', ', '.join(str(arg) for arg in args),
-            f'result: {str(result)}' if result is not None else '',
+            f'result: {result}' if result is not None else '',
             f'expected: {expected}' if not correct else ''
         )
 

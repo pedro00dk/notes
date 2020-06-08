@@ -82,7 +82,7 @@ class SCHashtable(Hashtable):
             parent = node
             node = node.next
         if node is None:
-            raise KeyError(f'key ({str(key)}) not found')
+            raise KeyError(f'key ({key}) not found')
         if parent is None:
             self._table[index] = node.next
         else:
@@ -100,7 +100,7 @@ class SCHashtable(Hashtable):
         while node is not None and key != node.key:
             node = node.next
         if node is None:
-            raise KeyError(f'key ({str(key)}) not found')
+            raise KeyError(f'key ({key}) not found')
         return node.value
 
 
