@@ -48,7 +48,7 @@ class Tree(ABC):
 
         > parameters:
         - `node: Node`: root node for traversal
-        - `depth: int`: base depth
+        - `INTERNAL depth: int? = 0`: base depth
 
         > `return: Generator<(Node, int)>`: generator of nodes and depths
         """
@@ -68,7 +68,7 @@ class Tree(ABC):
 
         > parameters:
         - `node: Node`: root node for traversal
-        - `depth: int`: base depth
+        - `INTERNAL depth: int? = 0`: base depth
 
         > `return: Generator<(Node, int)>`: generator of nodes and depths
         """
@@ -88,7 +88,7 @@ class Tree(ABC):
 
         > parameters:
         - `node: Node`: root node for traversal
-        - `depth: int`: base depth
+        - `INTERNAL depth: int? = 0`: base depth
 
         > `return: Generator<(Node, int)>`: generator of nodes and depths
         """
@@ -108,7 +108,7 @@ class Tree(ABC):
 
         > parameters:
         - `node: Node`: root node for traversal
-        - `depth: int`: base depth
+        - `INTERNAL depth: int? = 0`: base depth
 
         > `return: Generator<(Node, int)>`: generator of nodes and depths
         """
