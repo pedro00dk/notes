@@ -78,6 +78,12 @@ Space complexity is available in the algorithms files.
         -   init **- O(n)**
         -   offer **- O(k\*log(n,k))**
         -   poll **- O(k\*log(n,k))**
+-   [binary index tree (fenwick tree)](./dsa/bit.py)
+    -   init **- O(n)**
+    -   prefix sum **- O(log(n))**
+    -   prefix sum range **- O(log(n))**
+    -   add **- O(log(n))**
+    -   set **- O(log(n))**
 -   [hashtable (base class)](./dsa/hashtable/abc.py)
     -   implemented probers:
         -   Linear Probing
