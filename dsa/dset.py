@@ -31,7 +31,7 @@ class DisjointSet:
 
     def sets(self):
         """
-        Return the number o disjoint sets.
+        Return the number of disjoint sets.
 
         > `return: int`: number of sets
         """

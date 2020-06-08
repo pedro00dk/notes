@@ -54,7 +54,7 @@ Space complexity is available in the algorithms files.
     -   [binary search tree](./dsa/tree/bst.py)
         -   put **- average: O(log(n)), worst: O(n)**
         -   take **- average: O(log(n)), worst: O(n)**
-    -   [avl tree](./dsa/tree/avl.py)
+    -   [avl tree (with ranks)](./dsa/tree/avl.py)
         -   put **- O(log(n))**
         -   take **- O(log(n))**
     -   [red-black tree](./dsa/tree/rbt.py)
@@ -106,6 +106,18 @@ Space complexity is available in the algorithms files.
     -   contains value **- O(n)**
     -   [open addressing hashtable](./dsa/hashtable/oa_hashtable.py)
     -   [sequence chaining hashtable](./dsa/hashtable/oa_hashtable.py)
+-   [graph (adjacency list)](./dsa/graph/graph.py) _- see graph theory algorithms section_
+    -   [factory](./dsa/graph/factory.py)
+        -   complete
+        -   random undirected
+        -   random directed
+        -   random directed acyclic
+    -   traverse depth **O(v + e)**
+    -   traverse breadth **O(v + e)**
+    -   traverse vertices **O(v)**
+    -   traverse edges **O(v + e)**
+    -   make vertex **O(1)**
+    -   make edge **O(1)**
 
 ## Sorting Algorithms
 
