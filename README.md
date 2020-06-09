@@ -153,9 +153,12 @@ Space complexity is available in the algorithms files.
 ## Graph Theory
 
 -   [connectivity algorithms](./dsa/graph/connectivity.py)
-    - connected depth first search **- O(v + e)**
-    - connected breadth first search **- O(v + e)**
-    - connected disjoint set **- O(v + e)**
+    - undirected graphs only
+        - connected depth first search **- O(v + e)**
+        - connected breadth first search **- O(v + e)**
+        - connected disjoint set **- O(v + e)**
+    -   any graph
+        - tarjan's strong connected components **- O(v + e)**
 
 ## Enumeration Combinatorics
 

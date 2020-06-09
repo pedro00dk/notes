@@ -70,7 +70,7 @@ class Graph:
     def __iter__(self):
         return self.vertices()
 
-    def _depth(self, id: int, visited: list, /, yield_all_edges=False, yield_before=True, yield_after=False, *, parent=None, edge=None, depth=0):
+    def _depth(self, id: int, visited: list, /, yield_before=True, yield_after=False, yield_back=False, *, parent=None, edge=None, depth=0):
         """
         Return a generator for Depth First Search traversals.
 
@@ -81,35 +81,35 @@ class Graph:
         > parameters:
         - `id: int`: root vertex id
         - `visited: bool[]`: list of visited vertices
-        - `yield_all_edges: bool? = False`: yield edges that point to already visited vertices
         - `yield_before: bool? = True`: yield vertices before yield all its children
         - `yield_after: bool? = False`: yield vertices after yield all its children
+        - `yield_back: bool? = False`: yield edges that point to already visited vertices
         - `INTERNAL parent: int? = None`: parent vertex id
         - `INTERNAL edge: Edge? = None`: the edge from `parent` to the next vertex
         - `INTERNAL depth: int? = 0`: base depth
 
-        > `return: Generator<(Vertex, Vertex, Edge, int, bool)>`: generator of vertices, parents, edges, depth and if
-            yielded before (`True`, otherwise `False`)
+        > `return: Generator<(Vertex, Vertex, Edge, int, bool, bool)>`: generator of vertices, parents, edges, depth,
+            if yielded before (`True`, otherwise `False`), and if is a back edge
         """
         vertex = self._vertices[id]
         if visited[id]:
-            if yield_all_edges and edge is not None:
+            if yield_back and edge is not None:
                 if yield_before:
-                    yield vertex, parent, edge, depth, True
+                    yield vertex, parent, edge, depth, True, True
                 if yield_after:
-                    yield vertex, parent, edge, depth, False
+                    yield vertex, parent, edge, depth, False, True
             return
         if yield_before:
-            yield vertex, parent, edge, depth, True
+            yield vertex, parent, edge, depth, True, False
         visited[id] = True
         for edge in self._edges[id]:
             yield from self._depth(
-                edge._target, visited, yield_all_edges, yield_before, yield_after, parent=vertex, edge=edge, depth=depth + 1
+                edge._target, visited, yield_before, yield_after, yield_back, parent=vertex, edge=edge, depth=depth + 1
             )
         if yield_after:
-            yield vertex, parent, edge, depth, False
+            yield vertex, parent, edge, depth, False, False
 
-    def _breadth(self, id: int, visited: list, /, yield_all_edges=False):
+    def _breadth(self, id: int, visited: list, /, yield_back=False):
         """
         Return a generator for Breadth First Search traversals.
 
@@ -120,10 +120,10 @@ class Graph:
         > parameters:
         - `id: int`: root vertex id
         - `visited: bool[]`: list of visited vertices
-        - `yield_all_edges: bool? = False`: yield edges that point to already visited vertices
+        - `yield_back: bool? = False`: yield edges that point to already visited vertices
 
-        > `return: Generator<(Vertex, Vertex, Edge, int, bool)>`: generator of vertices, parents, edges, depth and if
-            yielded before (always `True` in this search algorithm)
+        > `return: Generator<(Vertex, Vertex, Edge, int, bool, bool)>`: generator of vertices, parents, edges, depth,
+            if yielded before (always `True` in this algorithm), and if is a back edge
         """
         queue = Queue()
         queue.offer((id, None, None, 0))
@@ -131,15 +131,15 @@ class Graph:
             id, parent, edge, depth = queue.poll()
             vertex = self._vertices[id]
             if visited[id]:
-                if yield_all_edges and edge is not None:
-                    yield vertex, parent, edge, depth, True
+                if yield_back and edge is not None:
+                    yield vertex, parent, edge, depth, True, True
                 continue
-            yield vertex, parent, edge, depth, True
+            yield vertex, parent, edge, depth, True, False
             visited[id] = True
             for edge in self._edges[id]:
                 queue.offer((edge._target, vertex, edge, depth + 1))
 
-    def traverse(self, id, mode='depth', /, visited: list = None, yield_all_edges=False, yield_before=True, yield_after=False):
+    def traverse(self, id, mode='depth', /, visited: list = None, yield_before=True, yield_after=False, yield_back=False):
         """
         Return a generator for graph traversals.
 
@@ -151,15 +151,16 @@ class Graph:
         - `id: int`: root vertex id
         - `mode: 'depth' | 'breadth'`: traversal mode
         - `visited: bool[]? = [False] * self.vertices_count()`: list of visited vertices
-        - `yield_all_edges: bool? = False`: yield edges that point to already visited vertices
         - `yield_before: bool? = True`: yield vertices before yield all its children (only for `mode == 'depth'`)
         - `yield_after: bool? = False`: yield vertices after yield all its children (only for `mode == 'depth'`)
+        - `yield_back: bool? = False`: yield edges that point to already visited vertices
 
-        > `return: Generator<(Vertex, Vertex, Edge, int)>`: generator of vertices, parents, edges and depth
+        > `return: Generator<(Vertex, Vertex, Edge, int, bool, bool)>`: generator of vertices, parents, edges, depth,
+            if yielded before (`True`, otherwise `False`), and if is a back edge
         """
         visited = visited if visited is not None else [False] * self.vertices_count()
-        return self._depth(id, visited, yield_all_edges, yield_before, yield_after) if mode == 'depth' else \
-            self._breadth(id, visited, yield_all_edges)
+        return self._depth(id, visited, yield_before, yield_after, yield_back) if mode == 'depth' else \
+            self._breadth(id, visited, yield_back)
 
     def vertices(self):
         """

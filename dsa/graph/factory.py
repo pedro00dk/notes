@@ -58,10 +58,10 @@ def test():
     for edge in g.edges():
         print(f'{edge._source}>{edge._target}', end=' ')
     print()
-    for vertex, parent, edge, depth, before in g.traverse(0, 'dfs'):
+    for vertex, *_ in g.traverse(0, 'dfs'):
         print(vertex._id, end=' ')
     print()
-    for vertex, parent, edge, depth, before in g.traverse(0, 'bfs'):
+    for vertex, *_ in g.traverse(0, 'bfs'):
         print(vertex._id, end=' ')
     print()
     for i in range(10):

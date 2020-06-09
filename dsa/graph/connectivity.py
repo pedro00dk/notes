@@ -1,4 +1,5 @@
 from ..dset import DisjointSet
+from ..linear.stack import Stack
 from .graph import Graph
 
 
@@ -24,7 +25,7 @@ def connected_traverse(graph: Graph, /, mode='depth'):
     for vertex in graph.vertices():
         if visited[vertex._id]:
             continue
-        groups.append([v for v, *_ in graph.traverse(vertex._id, mode, visited=visited)])
+        groups.append([vertex for vertex, *_ in graph.traverse(vertex._id, mode, visited=visited)])
     return groups
 
 
@@ -39,7 +40,6 @@ def connected_disjoint_set(graph: Graph):
 
     > parameters:
     - `graph: Graph`: graph to search groups
-    - `mode: ('depth' | 'breadth')? = 'depth'`: the traversal algorithm to use
 
     > `return: Vertex[][]`: list containing vertex groups
     """
@@ -59,38 +59,76 @@ def connected_disjoint_set(graph: Graph):
         groups[indices[group]].append(graph.get_vertex(id))
     return groups
 
-# def tarjan_strong(graph: Graph):
-#     visited = [False] * len(graph)
-#     parent_link = [i for i in range(graph.vertices_count())]
-#     groups = []
-     
-#     for vertex in graph.vertices():
-#         if visited[vertex._id]:
-#             continue
-#         # groups.append([v for v, *_ in graph.traverse(vertex._id, mode, visited=visited)])
-#         for vertex, parent, edge in graph.traverse(vertex._id, 'depth', visited,False, True):
-#             parent_link[vertex]
 
-#     return groups
+def tarjan_scc(graph: Graph):
+    """
+    Tarjan's Strongly Connected Components algorithm.
+    This algorithm uses the DFS already implemented in Graph.
+    Because of that, there is less flexibility of the place where code can be executed in the DFS.
+    As a result, extra logic is necessary to implement the algorithm:
+    - the low_link comparison which is normally done after each in the vertex scope after each child DFS, is executed
+        in the child scope when it returns (child has access to parent vertex)
+    - conditions to avoid checks for completed groups in back edges are added because back edges are yielded just like
+        any other edge
 
-#     pass
+    > complexity:
+    - time: `O(v + e)`
+    - space: `O(v)`
+
+    > parameters:
+    - `graph: Graph`: graph to search groups
+
+    > `return: Vertex[][]`: list containing vertex groups
+    """
+    next_order_id = 0
+    order_ids = [None] * graph.vertices_count()  # also used to check if vertex is stacked (when value is not None)
+    low_links = [None] * graph.vertices_count()
+    visited = [False] * graph.vertices_count()
+    stack = Stack()
+    groups = []
+    for vertex in graph.vertices():
+        if visited[vertex._id]:
+            continue
+        for vertex, parent, *_, before, back in graph.traverse(vertex._id, 'depth', visited, True, True, True):
+            if before and not back:
+                order_ids[vertex._id] = low_links[vertex._id] = next_order_id
+                next_order_id += 1
+                stack.push(vertex._id)
+            elif not before and order_ids[vertex._id] is not None:
+                if parent is not None:
+                    low_links[parent._id] = min(low_links[parent._id], low_links[vertex._id])
+                if not back and low_links[vertex._id] == order_ids[vertex._id]:
+                    group = []
+                    while True:
+                        id = stack.pop()
+                        order_ids[id] = None
+                        group.append(graph.get_vertex(id))
+                        if id == vertex._id:
+                            break
+                    groups.append(group)
+    return groups
+
 
 def test():
-    from . import factory
     from ..test import benchmark
+    from . import factory
     benchmark(
         [
             (
-                '  connected traverse depth',
+                '   connected traverse depth',
                 lambda graph: [[vertex._id for vertex in group] for group in connected_traverse(graph, mode='depth')]
             ),
             (
-                'connected traverse breadth',
+                ' connected traverse breadth',
                 lambda graph: [[vertex._id for vertex in group] for group in connected_traverse(graph, mode='breadth')]
             ),
             (
-                '    connected disjoint set',
+                '     connected disjoint set',
                 lambda graph: [[vertex._id for vertex in group] for group in connected_disjoint_set(graph)]
+            ),
+            (
+                '    tarjan strong connected',
+                lambda graph: [[vertex._id for vertex in group] for group in tarjan_scc(graph)]
             )
         ],
         loads=[connected_traverse],
