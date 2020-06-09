@@ -23,7 +23,11 @@ class Tree(ABC):
     The `printer` attribute is used to generate the tree string representation
     """
 
-    def __init__(self, printer: type(lambda node, depth: '')):
+    def __init__(self, printer):
+        """
+        > parameters:
+        - `printer: (Node, int) -> str`: function to print a tree node info from the node object and its depth
+        """
         self._root = None
         self._size = 0
         self._printer = printer

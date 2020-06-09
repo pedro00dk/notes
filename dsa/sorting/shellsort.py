@@ -1,8 +1,8 @@
-import enum
 import math
+from enum import Enum
 
 
-class Gap(enum.Enum):
+class Gap(Enum):
     """
     Gap generator functions to be used in the shellsort algorithm.
     Enum functions are directly bound to values, meaning it is not necessary to access the `value` field, which does not

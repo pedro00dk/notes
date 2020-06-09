@@ -1,5 +1,5 @@
-import enum
 from abc import ABC, abstractmethod
+from enum import Enum
 
 # prime numbers near to the 2**powers for power range of [1, 32]
 PRIMES = (
@@ -9,7 +9,7 @@ PRIMES = (
 )
 
 
-class Prober(enum.Enum):
+class Prober(Enum):
     """
     Open Addressing probe strategies.
     - `'threshold'` contains the default and max load threshold for the hashtable for the probe function.

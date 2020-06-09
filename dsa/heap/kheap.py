@@ -1,7 +1,7 @@
 from .abc import Heap
 
 
-def sift_up(heap: list, k: int, i: int, comparator: type(lambda a, b: 0)):
+def sift_up(heap: list, k: int, i: int, comparator):
     """
     K-Heap sift up algorithm.
     The `comparator` function is used to compare for a min heap.
@@ -23,7 +23,7 @@ def sift_up(heap: list, k: int, i: int, comparator: type(lambda a, b: 0)):
         i = parent
 
 
-def sift_down(heap: list, k: int, i: int, comparator: type(lambda a, b: 0), /, length: int = None):
+def sift_down(heap: list, k: int, i: int, comparator, /, length: int = None):
     """
     K-Heap sift down algorithm.
     The `comparator` function is used to compare for a min heap.
@@ -60,7 +60,7 @@ def sift_down(heap: list, k: int, i: int, comparator: type(lambda a, b: 0), /, l
         i = chosen
 
 
-def heapify_top_down(heap: list, k: int, comparator: type(lambda a, b: 0), /, length: int = None):
+def heapify_top_down(heap: list, k: int, comparator, /, length: int = None):
     """
     Heapify the `heap` list using top down strategy.
     The `comparator` function is used to compare for a min heap.
@@ -81,7 +81,7 @@ def heapify_top_down(heap: list, k: int, comparator: type(lambda a, b: 0), /, le
         sift_up(heap, k, i, comparator)
 
 
-def heapify_bottom_up(heap: list, k: int, comparator: type(lambda a, b: 0), /, length: int = None):
+def heapify_bottom_up(heap: list, k: int, comparator, /, length: int = None):
     """
     Heapify the `heap` list using bottom up strategy.
     This strategy is faster then top down.
