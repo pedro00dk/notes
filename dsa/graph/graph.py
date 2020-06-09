@@ -1,6 +1,3 @@
-import itertools
-import random
-
 from ..linear.queue import Queue
 
 
