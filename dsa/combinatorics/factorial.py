@@ -77,26 +77,27 @@ def factorial_ramanujan(n: float):
 
     > parameters:
     - `n: int`: value to compute factorial
-    
+
     > `return: int`: factorial approximation of `n`
     """
     return math.pi ** 0.5 * (1 / 30 + n * (1 + n * (4 + n * 8))) ** (1 / 6) * (n / math.e) ** n
 
 
 def test():
-    from timeit import timeit
-    for i in (0, 1, 5, 10, 20, 30, 40, 50):
-        print('n =', i)
-        print(' recursive', factorial_rec(i))
-        print('iteractive', factorial_itr(i))
-        print('  stirling', factorial_stirling(i))
-        print(' ramanujan', factorial_ramanujan(i))
-        print()
-    print('benchmark')
-    print(' recursive', timeit('for i in range(50): factorial_rec(i)', globals=globals(), number=10000))
-    print('iteractive', timeit('for i in range(50): factorial_itr(i)', globals=globals(), number=10000))
-    print('  stirling', timeit('for i in range(50): factorial_stirling(i)', globals=globals(), number=10000))
-    print(' ramanujan', timeit('for i in range(50): factorial_ramanujan(i)', globals=globals(), number=10000))
+    from ..test import benchmark
+    benchmark(
+        [
+            (' recursive', factorial_rec),
+            ('iteractive', factorial_itr),
+            ('  stirling', factorial_stirling),
+            (' ramanujan', factorial_ramanujan)
+
+        ],
+        test_input_iter=(0, 1, 5, 10, 20, 30, 40, 50),
+        bench_size_iter=range(0, 51, 10),
+        bench_input=lambda s, r: s,
+        bench_tries=100000
+    )
 
 
 if __name__ == '__main__':

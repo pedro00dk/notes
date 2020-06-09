@@ -102,7 +102,7 @@ def combinations_itr(items: list, k: int):
         yield ()
         return
     indices = [*range(k)]
-    yield(*(items[i] for i in indices),)
+    yield (*(items[i] for i in indices),)
     while True:
         for i in range(k - 1, -1, -1):
             if indices[i] < i + n - k:
@@ -117,33 +117,18 @@ def combinations_itr(items: list, k: int):
 
 
 def test():
-    from timeit import timeit
-    [*combinations_itr(list('abcde'), 2)]
-
-    for n, k in [(5, 2), (0, 0), (2, 0), (2, 1), (4, 3), (6, 2), (6, 5), (8, 6), (6, 3)]:
-        print('count recursive', f'C({n}, {k}) = {combinations_count_rec(n, k)}')
-        print('  count default', f'C({n}, {k}) = {combinations_count_def(n, k)}')
-        print('      recursive', [*combinations_rec([*range(n)], k)])
-        print('      iterative', [*combinations_itr([*range(n)], k)])
-        print()
-
-    print('benchmark count')
-    print(
-        'count recursive',
-        timeit('for n in range(16): combinations_count_rec(n, n // 2)', globals=globals(), number=1000)
-    )
-    print(
-        '  count default',
-        timeit('for n in range(16): combinations_count_def(n, n // 2)', globals=globals(), number=1000)
-    )
-    print('benchmark')
-    print(
-        'recursive',
-        timeit('for n in range(16): list(combinations_rec([*range(n)], n // 2))', globals=globals(), number=100)
-    )
-    print(
-        'iterative',
-        timeit('for n in range(16): list(combinations_itr([*range(n)], n // 2))', globals=globals(), number=100)
+    from ..test import benchmark
+    benchmark(
+        [
+            ('count recursive', lambda args: f'C({args[0]}, {args[1]}) = {combinations_count_rec(*args)}'),
+            ('  count default', lambda args: f'C({args[0]}, {args[1]}) = {combinations_count_def(*args)}'),
+            ('      recursive', lambda args: [*combinations_rec([*range(args[0])], args[1])]),
+            ('      iterative', lambda args: [*combinations_itr([*range(args[0])], args[1])])
+        ],
+        test_input_iter=((5, 2), (0, 0), (2, 0), (2, 1), (4, 3), (6, 2), (6, 5), (8, 6), (6, 3)),
+        bench_size_iter=range(16),
+        bench_input=lambda s, r: (s, s // 2),
+        bench_tries=100
     )
 
 

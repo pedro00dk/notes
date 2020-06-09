@@ -127,29 +127,18 @@ def permutations_heap_itr(items: list):
 
 
 def test():
-    from timeit import timeit
-    for n in [0, 1, 2, 3, 4, 5]:
-        print(f'P({n}, {n}) = {permutations_count(n)}')
-        print('        cycles', [*permutations_cycle([*range(n)])])
-        print('heap recursive', [*permutations_heap_rec([*range(n)])])
-        print('heap iterative', [*permutations_heap_itr([*range(n)])])
-        print()
-    for n, k in [(2, 0), (2, 1), (4, 3), (6, 2)]:
-        print(f'P({n}, {k}) = {permutations_count(n, k)}')
-        print('  cycles', [*permutations_cycle([*range(n)], k)])
-        print()
-    print('benchmark')
-    print(
-        '        cycles',
-        timeit('for n in range(8): list(permutations_cycle([*range(n)]))', globals=globals(), number=100)
-    )
-    print(
-        'heap recursive',
-        timeit('for n in range(8): list(permutations_heap_rec([*range(n)]))', globals=globals(), number=100)
-    )
-    print(
-        'heap iterative',
-        timeit('for n in range(8): list(permutations_heap_itr([*range(n)]))', globals=globals(), number=100)
+    from ..test import benchmark
+    benchmark(
+        [
+            ('         count', lambda n: f'P({n}, {n}) = {permutations_count(n)}'),
+            ('        cycles', lambda n: [*permutations_cycle([*range(n)])]),
+            ('heap recursive', lambda n: [*permutations_heap_rec([*range(n)])]),
+            ('heap iterative', lambda n: [*permutations_heap_itr([*range(n)])]),
+        ],
+        test_input_iter=range(6),
+        bench_size_iter=range(9),
+        bench_input=lambda s, r: s,
+        bench_tries=100
     )
 
 
