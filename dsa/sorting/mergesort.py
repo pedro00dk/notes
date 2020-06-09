@@ -41,8 +41,8 @@ def mergesort(array: list):
 
 
 def test():
-    from ..test import benchmark
-    benchmark([('mergesort', mergesort, 'mergesort(array)')])
+    from ..test import sort_benchmark
+    sort_benchmark([('mergesort', mergesort)])
 
 
 if __name__ == '__main__':

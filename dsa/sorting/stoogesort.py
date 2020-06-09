@@ -32,8 +32,8 @@ def stoogesort(array: list):
 
 
 def test():
-    from ..test import benchmark
-    benchmark([('stoogesort', stoogesort, 'stoogesort(array)')], benchmark_tests=[0, 1, 10, 100, 1000])
+    from ..test import sort_benchmark
+    sort_benchmark([('stoogesort', stoogesort)], bench_size_iter=(0, 1, 10, 100, 1000))
 
 
 if __name__ == '__main__':

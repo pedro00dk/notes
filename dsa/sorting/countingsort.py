@@ -10,7 +10,7 @@ def countingsort(array: list):
 
     > parameters:
     - `array: int[]`: array to be sorted
-    
+
     > `return: typeof(array)`: `array` sorted
     """
     if len(array) == 0:
@@ -31,17 +31,18 @@ def countingsort(array: list):
 
 
 def test():
-    from ..test import benchmark
+    from ..test import sort_benchmark
     print('terrible input')
-    benchmark([('countingsort', countingsort, 'countingsort(array)')], array_min='-i*10', array_max='i*10')
+    sort_benchmark([('countingsort', countingsort)], value_range=lambda s: (-s * 10, s * 10))
     print()
     print('bad input')
-    benchmark([('countingsort', countingsort, 'countingsort(array)')], array_min='-i*5', array_max='i*5')
+    sort_benchmark([('countingsort', countingsort)], value_range=lambda s: (-s * 5, s * 5))
     print()
     print('good input')
-    benchmark([('countingsort', countingsort, 'countingsort(array)')], array_min='-i', array_max='i')
+    sort_benchmark([('countingsort', countingsort)], value_range=lambda s: (-s, s))
+    print()
     print('best input')
-    benchmark([('countingsort', countingsort, 'countingsort(array)')], array_min='-10', array_max='10')
+    sort_benchmark([('countingsort', countingsort)], value_range=lambda s: (-10, 10))
     print()
 
 

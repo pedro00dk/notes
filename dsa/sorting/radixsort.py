@@ -147,21 +147,21 @@ def radixsort_msd(array: list, /, power=4):
 
 
 def test():
-    from ..test import benchmark
-    benchmark(
+    from ..test import sort_benchmark
+    sort_benchmark(
         [
-            ('radixsort lsd p=1', radixsort_lsd, 'radixsort_lsd(array, 1)'),
-            ('radixsort lsd p=2', radixsort_lsd, 'radixsort_lsd(array, 2)'),
-            ('radixsort lsd p=3', radixsort_lsd, 'radixsort_lsd(array, 3)'),
-            ('radixsort lsd p=4', radixsort_lsd, 'radixsort_lsd(array, 4)'),
-            ('radixsort lsd p=5', radixsort_lsd, 'radixsort_lsd(array, 5)'),
-            ('radixsort lsd p=6', radixsort_lsd, 'radixsort_lsd(array, 6)'),
-            ('radixsort msd p=1', radixsort_msd, 'radixsort_msd(array, 1)'),
-            ('radixsort msd p=2', radixsort_msd, 'radixsort_msd(array, 2)'),
-            ('radixsort msd p=3', radixsort_msd, 'radixsort_msd(array, 3)'),
-            ('radixsort msd p=4', radixsort_msd, 'radixsort_msd(array, 4)'),
-            ('radixsort msd p=5', radixsort_msd, 'radixsort_msd(array, 5)'),
-            ('radixsort msd p=6', radixsort_msd, 'radixsort_msd(array, 6)')
+            ('radixsort lsd p=1', lambda array: radixsort_lsd(array, 1)),
+            ('radixsort lsd p=2', lambda array: radixsort_lsd(array, 2)),
+            ('radixsort lsd p=3', lambda array: radixsort_lsd(array, 3)),
+            ('radixsort lsd p=4', lambda array: radixsort_lsd(array, 4)),
+            ('radixsort lsd p=5', lambda array: radixsort_lsd(array, 5)),
+            ('radixsort lsd p=6', lambda array: radixsort_lsd(array, 6)),
+            ('radixsort msd p=1', lambda array: radixsort_msd(array, 1)),
+            ('radixsort msd p=2', lambda array: radixsort_msd(array, 2)),
+            ('radixsort msd p=3', lambda array: radixsort_msd(array, 3)),
+            ('radixsort msd p=4', lambda array: radixsort_msd(array, 4)),
+            ('radixsort msd p=5', lambda array: radixsort_msd(array, 5)),
+            ('radixsort msd p=6', lambda array: radixsort_msd(array, 6))
         ]
     )
 

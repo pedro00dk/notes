@@ -120,12 +120,12 @@ def quicksort_dual_pivot(array: list):
 
 
 def test():
-    from ..test import benchmark
-    benchmark(
+    from ..test import sort_benchmark
+    sort_benchmark(
         [
-            ('     hoare', quicksort_hoare, 'quicksort_hoare(array)'),
-            ('    lomuto', quicksort_lomuto, 'quicksort_lomuto(array)'),
-            ('dual pivot', quicksort_dual_pivot, 'quicksort_dual_pivot(array)')
+            ('     hoare', quicksort_hoare),
+            ('    lomuto', quicksort_lomuto),
+            ('dual pivot', quicksort_dual_pivot)
         ]
     )
 

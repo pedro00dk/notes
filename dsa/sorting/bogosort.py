@@ -13,7 +13,7 @@ def bogosort_random(array: list):
 
     > parameters:
     - `array: (int | float)[]`: array to be sorted
-    
+
     > `return: typeof(array)`: `array` sorted
     """
     while any(array[i] > array[i + 1] for i in range(len(array) - 1)):
@@ -31,7 +31,7 @@ def bogosort_deterministic(array: list):
 
     > parameters:
     - `array: (int | float)[]`: array to be sorted
-    
+
     > `return: typeof(array)`: `array` sorted
     """
     for permutation in permutations_cycle(array):
@@ -43,15 +43,15 @@ def bogosort_deterministic(array: list):
 
 
 def test():
-    from ..test import benchmark
-    benchmark(
+    from ..test import sort_benchmark
+    sort_benchmark(
         [
-            ('       bogosort random', bogosort_random, 'bogosort_random(array)'),
-            ('bogosort deterministic', bogosort_deterministic, 'bogosort_deterministic(array)'),
+            ('       bogosort random', bogosort_random),
+            ('bogosort deterministic', bogosort_deterministic),
         ],
-        print_length=5,
-        benchmark_tests=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        tries=10
+        test_size=5,
+        bench_size_iter=(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+        bench_repeats=10
     )
 
 

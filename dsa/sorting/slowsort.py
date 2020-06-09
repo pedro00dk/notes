@@ -29,8 +29,8 @@ def slowsort(array: list):
 
 
 def test():
-    from ..test import benchmark
-    benchmark([('slowsort', slowsort, 'slowsort(array)')], benchmark_tests=[0, 1, 10, 100, 1000])
+    from ..test import sort_benchmark
+    sort_benchmark([('slowsort', slowsort)], bench_size_iter=(0, 1, 10, 100, 1000))
 
 
 if __name__ == '__main__':
