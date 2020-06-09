@@ -1,5 +1,3 @@
-import enum
-
 from .abc import Entry, Hashtable, Prober
 
 
