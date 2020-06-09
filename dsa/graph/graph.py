@@ -297,3 +297,20 @@ class Graph:
         > `return: Edge()`: edge tuple list
         """
         return (*self._edges[id],)
+
+    def transposed(self):
+        """
+        Return a copy of the graph with edges transposed.
+
+        > complexity:
+        - time: `O(v + e)`
+        - space: `O(v + e)`
+
+        > `return: Graph`: transposed copy of the graph
+        """
+        transposed_graph = Graph()
+        for vertex in self.vertices():
+            transposed_graph.make_vertex(vertex.weight, vertex.data)
+        for edge in self.edges():
+            transposed_graph.make_edge(edge._target, edge._source, edge.length, edge.data, True)
+        return transposed_graph

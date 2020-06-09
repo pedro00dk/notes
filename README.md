@@ -149,6 +149,7 @@ Space complexity is available in the algorithms files.
     -   traverse edges **O(v + e)**
     -   make vertex **O(1)**
     -   make edge **O(1)**
+    -   transpose **O(v + e)**
 
 ## Graph Theory
 
@@ -158,7 +159,8 @@ Space complexity is available in the algorithms files.
         - connected breadth first search **- O(v + e)**
         - connected disjoint set **- O(v + e)**
     -   any graph
-        - tarjan's strong connected components **- O(v + e)**
+        - tarjan's strongly connected components **- O(v + e)**
+        - kosaraju's strongly connected components **- O(v + e)**
 
 ## Enumeration Combinatorics
 

@@ -109,6 +109,38 @@ def tarjan_scc(graph: Graph):
     return groups
 
 
+def kosaraju_scc(graph: Graph):
+    """
+    Kosraju's Strongly Connected Components algorithm.
+    This algorithm uses the DFS already implemented in Graph.
+
+    > complexity:
+    - time: `O(v + e)`
+    - space: `O(v + e)`
+
+    > parameters:
+    - `graph: Graph`: graph to search groups
+
+    > `return: Vertex[][]`: list containing vertex groups
+    """
+    visited = [False] * graph.vertices_count()
+    stack = Stack()
+    for vertex in graph.vertices():
+        if visited[vertex._id]:
+            continue
+        for vertex, *_ in graph.traverse(vertex._id, 'depth', visited, False, True, False):
+            stack.push(vertex._id)
+    transposed_graph = graph.transposed()
+    visited = [False] * graph.vertices_count()
+    groups = []
+    while not stack.empty():
+        id = stack.pop()
+        if visited[id]:
+            continue
+        groups.append([vertex for vertex, *_ in graph.traverse(id, 'depth', visited, True, False, False)])
+    return groups
+
+
 def test():
     from ..test import benchmark
     from . import factory
@@ -129,6 +161,10 @@ def test():
             (
                 '    tarjan strong connected',
                 lambda graph: [[vertex._id for vertex in group] for group in tarjan_scc(graph)]
+            ),
+            (
+                '  kosaraju strong connected',
+                lambda graph: [[vertex._id for vertex in group] for group in kosaraju_scc(graph)]
             )
         ],
         loads=[connected_traverse],
