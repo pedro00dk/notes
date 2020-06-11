@@ -70,9 +70,11 @@ class Graph:
     def __iter__(self):
         return self.vertices()
 
-    def _depth(self, id: int, visited: list, /, yield_before=True, yield_after=False, yield_back=False, *, parent=None, edge=None, depth=0):
+    def _depth(self, id: int, visited: list, /, yield_before=True, yield_after=False, yield_back=False, *, parent=None, edge=None):
         """
         Return a generator for Depth First Search traversals.
+        This implementation must not be used to implement other algorithms because of the performance impact of
+        generators, allocated tuples and non-optminized implementation for reference only.
 
         > complexity:
         - time: `O(v + e)`
@@ -95,23 +97,25 @@ class Graph:
         if visited[id]:
             if yield_back and edge is not None:
                 if yield_before:
-                    yield vertex, parent, edge, depth, True, True
+                    yield vertex, parent, edge
                 if yield_after:
-                    yield vertex, parent, edge, depth, False, True
+                    yield vertex, parent, edge
             return
         if yield_before:
-            yield vertex, parent, edge, depth, True, False
+            yield vertex, parent, edge
         visited[id] = True
         for edge in self._edges[id]:
             yield from self._depth(
-                edge._target, visited, yield_before, yield_after, yield_back, parent=vertex, edge=edge, depth=depth + 1
+                edge._target, visited, yield_before, yield_after, yield_back, parent=vertex, edge=edge
             )
         if yield_after:
-            yield vertex, parent, edge, depth, False, False
+            yield vertex, parent, edge
 
     def _breadth(self, id: int, visited: list, /, yield_back=False):
         """
         Return a generator for Breadth First Search traversals.
+        This implementation must not be used to implement other algorithms because of the performance impact of
+        generators, allocated tuples and non-optminized implementation for reference only.
 
         > complexity:
         - time: `O(v + e)`
@@ -132,7 +136,7 @@ class Graph:
             vertex = self._vertices[id]
             if visited[id]:
                 if yield_back and edge is not None:
-                    yield vertex, parent, edge, depth, True, True
+                    yield vertex, parent, edge, depth, True
                 continue
             yield vertex, parent, edge, depth, True, False
             visited[id] = True
@@ -142,6 +146,8 @@ class Graph:
     def traverse(self, id, mode='depth', /, visited: list = None, yield_before=True, yield_after=False, yield_back=False):
         """
         Return a generator for graph traversals.
+        This implementation must not be used to implement other algorithms because of the performance impact of
+        generators, allocated tuples and non-optminized implementation for reference only.
 
         > complexity:
         - time: `O(v + e)`

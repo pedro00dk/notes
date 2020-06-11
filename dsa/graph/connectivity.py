@@ -1,4 +1,5 @@
 from ..dset import DisjointSet
+from ..linear.queue import Queue
 from ..linear.stack import Stack
 from .graph import Graph
 
@@ -20,12 +21,35 @@ def connected_traverse(graph: Graph, /, mode='depth'):
     """
     if not graph.is_undirected():
         raise Exception('connected algorithm only works with undirected graphs')
-    visited = [False] * len(graph)
+    visited = [False] * graph.vertices_count()
     groups = []
-    for vertex in graph.vertices():
-        if visited[vertex._id]:
+
+    def dfs(id: int, group: list):
+        group.append(graph.get_vertex(id))
+        visited[id] = True
+        for edge in graph.edges(id):
+            if not visited[edge._target]:
+                dfs(edge._target, group)
+
+    def bfs(id: int, group: list):
+        queue = Queue()
+        queue.offer(id)
+        while not queue.empty():
+            id = queue.poll()
+            group.append(graph.get_vertex(id))
+            visited[id] = True
+            for edge in graph.edges(id):
+                if not visited[edge._target]:
+                    dfs(edge._target, group)
+
+    traversal = dfs if mode == 'depth' else bfs
+
+    for id in range(graph.vertices_count()):
+        if visited[id]:
             continue
-        groups.append([vertex for vertex, *_ in graph.traverse(vertex._id, mode, visited=visited)])
+        group = []
+        traversal(id, group)
+        groups.append(group)
     return groups
 
 
@@ -63,13 +87,6 @@ def connected_disjoint_set(graph: Graph):
 def tarjan_scc(graph: Graph):
     """
     Tarjan's Strongly Connected Components algorithm.
-    This algorithm uses the DFS already implemented in Graph.
-    Because of that, there is less flexibility of the place where code can be executed in the DFS.
-    As a result, extra logic is necessary to implement the algorithm:
-    - the low_link comparison which is normally done after each in the vertex scope after each child DFS, is executed
-        in the child scope when it returns (child has access to parent vertex)
-    - conditions to avoid checks for completed groups in back edges are added because back edges are yielded just like
-        any other edge
 
     > complexity:
     - time: `O(v + e)`
@@ -80,39 +97,41 @@ def tarjan_scc(graph: Graph):
 
     > `return: Vertex[][]`: list containing vertex groups
     """
-    next_order_id = 0
-    order_ids = [None] * graph.vertices_count()  # also used to check if vertex is stacked (when value is not None)
-    low_links = [None] * graph.vertices_count()
-    visited = [False] * graph.vertices_count()
+    next_order = [0]
+    order = [None] * graph.vertices_count()  # also used to encode visited and stacked (None, -1)
+    low = [None] * graph.vertices_count()
     stack = Stack()
     groups = []
-    for vertex in graph.vertices():
-        if visited[vertex._id]:
+
+    def dfs(id: int):
+        order[id] = low[id] = next_order[0]
+        next_order[0] += 1
+        stack.push(id)
+        for edge in graph.edges(id):
+            if order[edge._target] is None:  # not visited
+                dfs(edge._target)
+            if order[edge._target] != -1:  # stacked
+                low[id] = min(low[id], low[edge._target])
+        if low[id] == order[id]:
+            group = []
+            while True:
+                nid = stack.pop()
+                order[nid] = -1
+                group.append(graph.get_vertex(nid))
+                if nid == id:
+                    break
+            groups.append(group)
+
+    for id in range(graph.vertices_count()):
+        if order[id]:
             continue
-        for vertex, parent, *_, before, back in graph.traverse(vertex._id, 'depth', visited, True, True, True):
-            if before and not back:
-                order_ids[vertex._id] = low_links[vertex._id] = next_order_id
-                next_order_id += 1
-                stack.push(vertex._id)
-            elif not before and order_ids[vertex._id] is not None:
-                if parent is not None:
-                    low_links[parent._id] = min(low_links[parent._id], low_links[vertex._id])
-                if not back and low_links[vertex._id] == order_ids[vertex._id]:
-                    group = []
-                    while True:
-                        id = stack.pop()
-                        order_ids[id] = None
-                        group.append(graph.get_vertex(id))
-                        if id == vertex._id:
-                            break
-                    groups.append(group)
+        dfs(id)
     return groups
 
 
 def kosaraju_scc(graph: Graph):
     """
     Kosraju's Strongly Connected Components algorithm.
-    This algorithm uses the DFS already implemented in Graph.
 
     > complexity:
     - time: `O(v + e)`
@@ -125,19 +144,37 @@ def kosaraju_scc(graph: Graph):
     """
     visited = [False] * graph.vertices_count()
     stack = Stack()
-    for vertex in graph.vertices():
-        if visited[vertex._id]:
+
+    def dfs_stack(id: int):
+        visited[id] = True
+        for edge in graph.edges(id):
+            if not visited[edge._target]:
+                dfs_stack(edge._target)
+        stack.push(id)
+
+    def dfs_group(id: int, group: list):
+        group.append(graph.get_vertex(id))
+        visited[id] = True
+        for edge in graph.edges(id):
+            if not visited[edge._target]:
+                dfs_group(edge._target, group)
+
+    for id in range(graph.vertices_count()):
+        if visited[id]:
             continue
-        for vertex, *_ in graph.traverse(vertex._id, 'depth', visited, False, True, False):
-            stack.push(vertex._id)
+        dfs_stack(id)
+
     transposed_graph = graph.transposed()
     visited = [False] * graph.vertices_count()
     groups = []
+
     while not stack.empty():
         id = stack.pop()
         if visited[id]:
             continue
-        groups.append([vertex for vertex, *_ in graph.traverse(id, 'depth', visited, True, False, False)])
+        group = []
+        dfs_group(id, group)
+        groups.append(group)
     return groups
 
 
