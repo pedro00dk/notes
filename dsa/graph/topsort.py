@@ -79,8 +79,8 @@ def topsort_dfs(graph: Graph):
 
 def test():
     from ..test import benchmark
-    from .factory import random_dag
     from .connectivity import strong_connected_tarjan
+    from .factory import random_dag
     benchmark(
         [
             (

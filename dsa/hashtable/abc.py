@@ -1,5 +1,5 @@
-from abc import ABC, abstractmethod
-from enum import Enum
+import abc
+import enum
 
 # prime numbers near to the 2**powers for power range of [1, 32]
 PRIMES = (
@@ -9,7 +9,7 @@ PRIMES = (
 )
 
 
-class Prober(Enum):
+class Prober(enum.Enum):
     """
     Open Addressing probe strategies.
     - `'threshold'` contains the default and max load threshold for the hashtable for the probe function.
@@ -59,7 +59,7 @@ class Entry:
         self.value = value
 
 
-class Hashtable(ABC):
+class Hashtable(abc.ABC):
     """
     Abstract base class for hashtables.
     This class provides fields used in common hashtables, which are `table`, `load_threshold`, `capacity` and `size`
@@ -114,7 +114,7 @@ class Hashtable(ABC):
         for key, value in entries:
             self.put(key, value)
 
-    @abstractmethod
+    @abc.abstractmethod
     def entries(self):
         """
         Return a generator for hashtable keys and values.
@@ -160,7 +160,7 @@ class Hashtable(ABC):
         """
         return self._size == 0
 
-    @abstractmethod
+    @abc.abstractmethod
     def put(self, key, /, value=None):
         """
         Insert a new entry containing `key` and `value` in the hashtable.
@@ -178,7 +178,7 @@ class Hashtable(ABC):
         """
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def take(self, key):
         """
         Remove from the entry containing `key` from the hashtable and return its value.
@@ -193,7 +193,7 @@ class Hashtable(ABC):
         """
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def get(self, key):
         """
         Retrieve the value associated with `key`.

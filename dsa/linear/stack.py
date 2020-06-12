@@ -55,8 +55,8 @@ class Stack(Linear):
 
 
 def test():
+    import collections
     from ..test import benchmark, match
-    from collections import deque
     s = Stack()
     match([
         (s.push, [0], None),
@@ -94,7 +94,7 @@ def test():
             l.pop()
 
     def test_native_deque(count: int):
-        d = deque()
+        d = collections.deque()
         for i in range(count):
             d.append(i)
         for i in range(count):

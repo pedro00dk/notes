@@ -58,8 +58,8 @@ class Queue(Linear):
 
 
 def test():
+    import collections
     from ..test import benchmark, match
-    from collections import deque
     q = Queue()
     match([
         (q.offer, [0], None),
@@ -97,7 +97,7 @@ def test():
             l.pop(0)
 
     def test_native_deque(count: int):
-        d = deque()
+        d = collections.deque()
         for i in range(count):
             d.append(i)
         for i in range(count):

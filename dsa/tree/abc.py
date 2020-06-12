@@ -1,6 +1,5 @@
-from abc import ABC, abstractmethod
-
-from ..linear.queue import Queue
+import abc
+import collections
 
 
 class Node:
@@ -8,7 +7,6 @@ class Node:
     Base Node class for trees.
     """
 
-    @abstractmethod
     def __init__(self, key, /, value=None):
         self.key = key
         self.value = value
@@ -16,7 +14,7 @@ class Node:
         self.right = None
 
 
-class Tree(ABC):
+class Tree(abc.ABC):
     """
     Abstract base class for binary trees.
     This class provides basic fields used in common tree data structures, which are `root` and `size`
@@ -116,15 +114,16 @@ class Tree(ABC):
 
         > `return: Generator<(Node, int)>`: generator of nodes and depths
         """
-        queue = Queue()
-        queue.offer((node, depth))
-        while not queue.empty():
-            node, depth = queue.poll()
+        queue = collections.deque()
+        queue.append((node, depth))
+
+        while len(queue) > 0:
+            node, depth = queue.popleft()
             if node is None:
                 continue
             yield node, depth
-            queue.offer((node.left, depth + 1))
-            queue.offer((node.right, depth + 1))
+            queue.append((node.left, depth + 1))
+            queue.append((node.right, depth + 1))
 
     def _traverse(self, /, mode='in'):
         """
@@ -167,7 +166,7 @@ class Tree(ABC):
         """
         return self._size == 0
 
-    @abstractmethod
+    @abc.abstractmethod
     def put(self, key, /, value=None):
         """
         Insert a new entry containing `key` and `value` in the tree.
@@ -183,7 +182,7 @@ class Tree(ABC):
         """
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def take(self, key):
         """
         Remove from the entry containing `key` from the tree and return its value.

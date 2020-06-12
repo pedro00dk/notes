@@ -1,13 +1,13 @@
-from abc import ABC, abstractmethod
+import abc
 
 
-class Heap:
+class Heap(abc.ABC):
     """
     Abstract base class for heaps.
     This class provides basic fields used in common heap data structures, which are `heap` and `comparator`
     """
 
-    @abstractmethod
+    @abc.abstractmethod
     def __init__(self, /, data: list = None, comparator='max'):
         """
         > complexity: check tree implementations
@@ -35,7 +35,7 @@ class Heap:
         """
         return len(self._heap) == 0
 
-    @abstractmethod
+    @abc.abstractmethod
     def offer(self, value):
         """
         Insert `value` in the heap.
@@ -47,7 +47,7 @@ class Heap:
         """
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def poll(self):
         """
         Delete the value at the top of the heap.

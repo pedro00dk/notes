@@ -189,8 +189,8 @@ class LinkedList(Linear):
 
 
 def test():
+    import collections
     from ..test import benchmark, match
-    from collections import deque
     l = LinkedList()
     match([
         (l.push, [2, 0], None),
@@ -233,7 +233,7 @@ def test():
             l.pop(0)
 
     def test_native_deque(count: int):
-        d = deque()
+        d = collections.deque()
         for i in range(count):
             d.append(i)
         for i in range(count // 2):

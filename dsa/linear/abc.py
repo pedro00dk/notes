@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+import abc
 
 
 class Node:
@@ -11,13 +11,13 @@ class Node:
         self.next = next
 
 
-class Linear(ABC):
+class Linear(abc.ABC):
     """
     Abstract base class for linear data structures.
     This class provides basic fields used in common linear data structures, which are `head`, `tail` and `size`
     """
 
-    @abstractmethod
+    @abc.abstractmethod
     def __init__(self):
         self._head = self._tail = None
         self._size = 0

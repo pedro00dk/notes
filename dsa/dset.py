@@ -1,6 +1,3 @@
-from .hashtable.oa_hashtable import OAHashtable
-
-
 class DisjointSet:
     """
     Disjoint Set implementation.
@@ -136,35 +133,35 @@ class HashDisjointSet:
     """
 
     def __init__(self):
+        self._table = {}
         self._disjoint_set = DisjointSet()
-        self._hashtable = OAHashtable()
         self.sets = self._disjoint_set.sets
 
     def __len__(self):
         return len(self._disjoint_set)
 
     def __str__(self):
-        return f'Hash Disjoint Set {{\n{self._disjoint_set}\n{self._hashtable}\n}}'
+        return f'Hash Disjoint Set {{\n{self._disjoint_set}\n{self._table}\n}}'
 
     def set_size(self, key):
-        return self._disjoint_set.set_size(self._hashtable.get(key))
+        return self._disjoint_set.set_size(self._table[key])
 
     def make_set(self, key):
         try:
-            return self._hashtable.get(key)
+            return self._table[key]
         except:
             inner_key = self._disjoint_set.make_set()
-            self._hashtable.put(key, inner_key)
+            self._table[key] = inner_key
             return inner_key
 
     def find(self, key):
-        return self._disjoint_set.find(self._hashtable.get(key))
+        return self._disjoint_set.find(self._table[key])
 
     def union(self, key_a, key_b):
-        return self._disjoint_set.union(self._hashtable.get(key_a), self._hashtable.get(key_b))
+        return self._disjoint_set.union(self._table[key_a], self._table[key_b])
 
     def connected(self, key_a, key_b):
-        return self._disjoint_set.connected(self._hashtable.get(key_a), self._hashtable.get(key_b))
+        return self._disjoint_set.connected(self._table[key_a], self._table[key_b])
 
 
 def test():

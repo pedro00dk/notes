@@ -1,4 +1,4 @@
-from ..linear.queue import Queue
+import collections
 
 
 class Vertex:
@@ -129,10 +129,10 @@ class Graph:
         > `return: Generator<(Vertex, Vertex, Edge, int, bool, bool)>`: generator of vertices, parents, edges, depth,
             if yielded before (always `True` in this algorithm), and if is a back edge
         """
-        queue = Queue()
-        queue.offer((id, None, None, 0))
-        while not queue.empty():
-            id, parent, edge, depth = queue.poll()
+        queue = collections.deque()
+        queue.append((id, None, None, 0))
+        while len(queue):
+            id, parent, edge, depth = queue.popleft()
             vertex = self._vertices[id]
             if visited[id]:
                 if yield_back and edge is not None:
@@ -141,7 +141,7 @@ class Graph:
             yield vertex, parent, edge, depth, True, False
             visited[id] = True
             for edge in self._edges[id]:
-                queue.offer((edge._target, vertex, edge, depth + 1))
+                queue.append((edge._target, vertex, edge, depth + 1))
 
     def traverse(self, id, mode='depth', /, visited: list = None, yield_before=True, yield_after=False, yield_back=False):
         """

@@ -4,21 +4,21 @@ def test():
     from .oa_hashtable import OAHashtable
     from .sc_hashtable import SCHashtable
 
-    def test_oa_hashtable(entries: int, prober: Prober):
+    def test_oa_hashtable(entries: list, prober: Prober):
         h = OAHashtable(prober)
         for i in entries:
             h.put(i)
         for i in entries:
             h.take(i)
 
-    def test_sc_hashtable(entries: int, prober: Prober):
+    def test_sc_hashtable(entries: list, prober: Prober):
         h = SCHashtable(prober)
         for i in entries:
             h.put(i)
         for i in entries:
             h.take(i)
 
-    def test_native_dict(entries: int):
+    def test_native_dict(entries: list):
         d = dict()
         for i in entries:
             d[i] = None
@@ -57,6 +57,7 @@ def test():
             )
         ],
         test_input_iter=(),
+        bench_size_iter=(1, 10, 100, 1000, 10000),
         bench_input=lambda s, r: [str(i) for i in range(s)],
         test_print_input=False,
         test_print_output=False

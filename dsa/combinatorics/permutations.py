@@ -127,8 +127,8 @@ def permutations_heap_itr(items: list):
 
 
 def test():
-    from ..test import benchmark
     import itertools
+    from ..test import benchmark
     benchmark(
         [
             ('         count', lambda n: f'P({n}, {n}) = {permutations_count(n)}'),

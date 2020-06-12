@@ -117,9 +117,9 @@ def combinations_itr(items: list, k: int):
 
 
 def test():
-    from ..test import benchmark
     import math
     import itertools
+    from ..test import benchmark
     benchmark(
         [
             ('count recursive', lambda args: f'C({args[0]}, {args[1]}) = {combinations_count_rec(*args)}'),

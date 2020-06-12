@@ -1,6 +1,6 @@
+import collections
+
 from ..dset import DisjointSet
-from ..linear.queue import Queue
-from ..linear.stack import Stack
 from .graph import Graph
 
 
@@ -32,10 +32,10 @@ def connected_traverse(graph: Graph, /, mode='depth'):
                 dfs(edge._target, group)
 
     def bfs(id: int, group: list):
-        queue = Queue()
-        queue.offer(id)
-        while not queue.empty():
-            id = queue.poll()
+        queue = collections.deque()
+        queue.append(id)
+        while len(queue) > 0:
+            id = queue.popleft()
             group.append(graph.get_vertex(id))
             visited[id] = True
             for edge in graph.edges(id):
@@ -104,7 +104,7 @@ def biconnected_tarjan(graph: Graph):
     order = [None] * graph.vertices_count()  # also used to encode visited (None)
     low = [None] * graph.vertices_count()
     parent = [None] * graph.vertices_count()
-    stack = Stack()
+    stack = collections.deque()
 
     articulations = set()
     groups = []
@@ -117,7 +117,7 @@ def biconnected_tarjan(graph: Graph):
             if order[edge._target] is None:  # not visited
                 parent[edge._target] = id
                 children += 1
-                stack.push(edge)
+                stack.append(edge)
                 dfs(edge._target)
                 low[id] = min(low[id], low[edge._target])
                 if parent[id] is None and children > 1 or parent[id] is not None and low[edge._target] >= order[id]:
@@ -133,12 +133,12 @@ def biconnected_tarjan(graph: Graph):
                     groups.append([graph.get_vertex(v) for v in group])
             elif parent[id] != edge._target and low[id] > order[edge._target]:
                 low[id] = min(low[id], low[edge._target])
-                stack.push(edge)
+                stack.append(edge)
 
     for id in range(graph.vertices_count()):
         if order[id] is None:
             dfs(id)
-        while not stack.empty():
+        while len(stack) > 0:
             stack.pop()
 
     return ([graph.get_vertex(v) for v in articulations], groups)
@@ -163,13 +163,13 @@ def strong_connected_tarjan(graph: Graph):
     next_order = [0]
     order = [None] * graph.vertices_count()  # also used to encode visited and stacked (None, -1)
     low = [None] * graph.vertices_count()
-    stack = Stack()
+    stack = collections.deque()
     groups = []
 
     def dfs(id: int):
         order[id] = low[id] = next_order[0]
         next_order[0] += 1
-        stack.push(id)
+        stack.append(id)
         for edge in graph.edges(id):
             if order[edge._target] is None:  # not visited
                 dfs(edge._target)
@@ -205,14 +205,14 @@ def strong_connected_kosaraju(graph: Graph):
     > `return: Vertex[][]`: list containing vertex groups
     """
     visited = [False] * graph.vertices_count()
-    stack = Stack()
+    stack = collections.deque()
 
     def dfs_stack(id: int):
         visited[id] = True
         for edge in graph.edges(id):
             if not visited[edge._target]:
                 dfs_stack(edge._target)
-        stack.push(id)
+        stack.append(id)
 
     def dfs_group(id: int, group: list):
         group.append(graph.get_vertex(id))
@@ -230,7 +230,7 @@ def strong_connected_kosaraju(graph: Graph):
     visited = [False] * graph.vertices_count()
     groups = []
 
-    while not stack.empty():
+    while len(stack) > 0:
         id = stack.pop()
         if visited[id]:
             continue

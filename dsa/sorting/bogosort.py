@@ -1,6 +1,5 @@
-from random import shuffle
-
-from ..combinatorics.permutations import permutations_cycle
+import itertools
+import random
 
 
 def bogosort_random(array: list):
@@ -17,7 +16,7 @@ def bogosort_random(array: list):
     > `return: typeof(array)`: `array` sorted
     """
     while any(array[i] > array[i + 1] for i in range(len(array) - 1)):
-        shuffle(array)
+        random.shuffle(array)
     return array
 
 
@@ -34,7 +33,7 @@ def bogosort_deterministic(array: list):
 
     > `return: typeof(array)`: `array` sorted
     """
-    for permutation in permutations_cycle(array):
+    for permutation in itertools.permutations(array):
         if any(permutation[i] > permutation[i + 1] for i in range(len(permutation) - 1)):
             continue
         break

@@ -18,8 +18,8 @@ def sift_up(heap: list, i: int, comparator):
     - `comparator: (<T>, <T>) -> int`: a min comparator to check values (smaller values go to the top)
     """
     while (parent := (i - 1) // 2) >= 0 and comparator(heap[i], heap[parent]) < 0:
-        heap[i], heap[parent]=heap[parent], heap[i]
-        i=parent
+        heap[i], heap[parent] = heap[parent], heap[i]
+        i = parent
 
 
 def sift_down(heap: list, i: int, comparator, /, length: int = None):
@@ -68,7 +68,7 @@ def heapify_top_down(heap: list, comparator, /, length: int = None):
     - `comparator: (<T>, <T>) -> int`: a min comparator to check values (smaller values go to the top)
     - `length: int? = len(heap)`: limit the length of the heap
     """
-    length=length if length is not None else len(heap)
+    length = length if length is not None else len(heap)
     for i in range(1, length):
         sift_up(heap, i, comparator)
 
@@ -89,7 +89,7 @@ def heapify_bottom_up(heap: list, comparator, /, length: int = None):
     - `comparator: (<T>, <T>) -> int`: a min comparator to check values (smaller values go to the top)
     - `length: int? = len(heap)`: limit the length of the heap
     """
-    length=length if length is not None else len(heap)
+    length = length if length is not None else len(heap)
     for i in range((length - 2) // 2, -1, -1):
         sift_down(heap, i, comparator, length)
 
@@ -132,10 +132,10 @@ class BHeap(Heap):
         """
         if len(self._heap) == 0:
             raise IndexError('empty heap')
-        value=self._heap[0]
-        replacement=self._heap.pop()
+        value = self._heap[0]
+        replacement = self._heap.pop()
         if len(self._heap) > 0:
-            self._heap[0]=replacement
+            self._heap[0] = replacement
             sift_down(self._heap, 0, self._comparator)
         return value
 
@@ -143,7 +143,7 @@ class BHeap(Heap):
 def test():
     import random
     from ..test import match
-    h=BHeap(random.sample([i for i in range(10)], 10), 'min')
+    h = BHeap(random.sample([i for i in range(10)], 10), 'min')
     match([
         (print, [h], None),
         (h.offer, [10], None),
