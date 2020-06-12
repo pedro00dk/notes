@@ -158,6 +158,7 @@ Space complexity is available in the algorithms files.
         - connected depth first search **- O(v + e)**
         - connected breadth first search **- O(v + e)**
         - connected disjoint set **- O(v + e)**
+        - tarjan's articulation points and biconnected components **- O(v + e)**
     -   any graph
         - tarjan's strongly connected components **- O(v + e)**
         - kosaraju's strongly connected components **- O(v + e)**

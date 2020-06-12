@@ -84,7 +84,67 @@ def connected_disjoint_set(graph: Graph):
     return groups
 
 
-def tarjan_scc(graph: Graph):
+def biconnected_tarjan(graph: Graph):
+    """
+    Tarjan's and Hopcroft's Biconnected Components algorithm.
+    `graph` must be undirected, otherwise, the algorithm can not assure the groups are biconnected.
+
+    > complexity:
+    - time: `O(v + e)`
+    - space: `O(v)`
+
+    > parameters:
+    - `graph: Graph`: graph to search groups
+
+    > `return: (Vertex[], Vertex[][])`: tuple containing articulation points and biconnected groups
+    """
+    if not graph.is_undirected():
+        raise Exception('connected algorithm only works with undirected graphs')
+    next_order = [0]
+    order = [None] * graph.vertices_count()  # also used to encode visited (None)
+    low = [None] * graph.vertices_count()
+    parent = [None] * graph.vertices_count()
+    stack = Stack()
+
+    articulations = set()
+    groups = []
+
+    def dfs(id: int):
+        order[id] = low[id] = next_order[0]
+        next_order[0] += 1
+        children = 0
+        for edge in graph.edges(id):
+            if order[edge._target] is None:  # not visited
+                parent[edge._target] = id
+                children += 1
+                stack.push(edge)
+                dfs(edge._target)
+                low[id] = min(low[id], low[edge._target])
+                if parent[id] is None and children > 1 or parent[id] is not None and low[edge._target] >= order[id]:
+                    articulations.add(id)
+                    target = edge._target
+                    group = set()
+                    while True:
+                        edge = stack.pop()
+                        group.add(edge._source)
+                        group.add(edge._target)
+                        if edge._source == id and edge._target == target:
+                            break
+                    groups.append([graph.get_vertex(v) for v in group])
+            elif parent[id] != edge._target and low[id] > order[edge._target]:
+                low[id] = min(low[id], low[edge._target])
+                stack.push(edge)
+
+    for id in range(graph.vertices_count()):
+        if order[id] is None:
+            dfs(id)
+        while not stack.empty():
+            stack.pop()
+
+    return ([graph.get_vertex(v) for v in articulations], groups)
+
+
+def strong_connected_tarjan(graph: Graph):
     """
     Tarjan's Strongly Connected Components algorithm.
 
@@ -123,13 +183,12 @@ def tarjan_scc(graph: Graph):
             groups.append(group)
 
     for id in range(graph.vertices_count()):
-        if order[id]:
-            continue
-        dfs(id)
+        if order[id] is None:
+            dfs(id)
     return groups
 
 
-def kosaraju_scc(graph: Graph):
+def strong_connected_kosaraju(graph: Graph):
     """
     Kosraju's Strongly Connected Components algorithm.
 
@@ -196,19 +255,21 @@ def test():
                 lambda graph: [[vertex._id for vertex in group] for group in connected_disjoint_set(graph)]
             ),
             (
-                '    tarjan strong connected',
-                lambda graph: [[vertex._id for vertex in group] for group in tarjan_scc(graph)]
+                '         biconnected trajan',
+                lambda graph: [[vertex._id for vertex in group] for group in biconnected_tarjan(graph)[1]]
             ),
             (
-                '  kosaraju strong connected',
-                lambda graph: [[vertex._id for vertex in group] for group in kosaraju_scc(graph)]
+                '    strong connected tarjan',
+                lambda graph: [[vertex._id for vertex in group] for group in strong_connected_tarjan(graph)]
+            ),
+            (
+                '  strong connected kosaraju',
+                lambda graph: [[vertex._id for vertex in group] for group in strong_connected_kosaraju(graph)]
             )
         ],
-        loads=[connected_traverse],
         test_input_iter=(factory.random_undirected(i, 0.1) for i in (5, 10, 15, 20)),
         bench_size_iter=(1, 10, 100, 1000),
         bench_input=lambda s, r: factory.random_undirected(s, 0.05),
-        bench_tries=50
     )
 
 
