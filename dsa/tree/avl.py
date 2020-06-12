@@ -8,7 +8,10 @@ class AVLNode(Node):
 
     def __init__(self, key, /, value=None):
         super().__init__(key, value)
-        self.balance = 0
+        self.height = 1
+
+    def balance(self):
+        return (self.right.height if self.right is not None else 0) - (self.left.height if self.left is not None else 0)
 
 
 class AVL(Tree):
@@ -21,7 +24,7 @@ class AVL(Tree):
         > parameters:
         - `rank: int? = 2`: tree rank, must be > 1. If 2, the behavior is the same as an default AVL tree
         """
-        super().__init__(lambda node, depth: f'b:{node.balance} # {node.key}: {node.value}')
+        super().__init__(lambda node, depth: f'b:{node.balance()} # {node.key}: {node.value}')
         self._rank = rank
 
     def put(self, key, /, value=None):
@@ -32,26 +35,27 @@ class AVL(Tree):
         - time: `O(log(n))`
         - space: `O(log(n))`
         """
+        old_value = [None]
+
         def rec(key, value, node: AVLNode):
             if node is None:
-                node, growth, old_value = AVLNode(key, value), 1, None
+                node = AVLNode(key, value)
                 self._size += 1
-            elif key < node.key:
-                node.left, child_growth, old_value = rec(key, value, node.left)
-                previous_balance = node.balance
-                node.balance -= child_growth
-                growth = max(0, abs(node.balance) - abs(previous_balance))
+                return node
+            if key < node.key:
+                node.left = rec(key, value, node.left)
+                node.height = max(node.height, node.left.height + 1)
             elif key > node.key:
-                node.right, child_growth, old_value = rec(key, value, node.right)
-                previous_balance = node.balance
-                node.balance += child_growth
-                growth = max(0, abs(node.balance) - abs(previous_balance))
+                node.right = rec(key, value, node.right)
+                node.height = max(node.height, node.right.height + 1)
             else:
-                node.key, node.value, growth, old_value = key, value, 0, node.value
-            return (*self._rotate(node, growth), old_value)
+                old_value[0] = node.value
+                node.key, node.value = key, value
+            balance = node.balance()
+            return node if abs(balance) < self._rank else self._rotate(node, balance)
 
-        self._root, growth, old_value = rec(key, value, self._root)
-        return old_value
+        self._root = rec(key, value, self._root)
+        return old_value[0]
 
     def take(self, key):
         """
@@ -61,19 +65,23 @@ class AVL(Tree):
         - time: `O(log(n))`
         - space: `O(log(n))`
         """
+        value = [None]
+
         def rec(key, node: AVLNode):
             if node is None:
                 raise KeyError(f'key ({key}) not found')
-            elif key < node.key:
-                node.left, child_growth, value = rec(key, node.left)
-                previous_balance = node.balance
-                node.balance -= child_growth
-                growth = -min(0, abs(node.balance) - abs(previous_balance))
+            if key < node.key:
+                node.left = rec(key, node.left)
+                node.height = max(
+                    node.left.height if node.left is not None else 0,
+                    node.right.height if node.right is not None else 0
+                ) + 1
             elif key > node.key:
-                node.right, child_growth, value = rec(key, node.right)
-                previous_balance = node.balance
-                node.balance += child_growth
-                growth = -min(0, abs(node.balance) - abs(previous_balance))
+                node.right = rec(key, node.right)
+                node.height = max(
+                    node.left.height if node.left is not None else 0,
+                    node.right.height if node.right is not None else 0
+                ) + 1
             elif node.left is not None and node.right is not None:
                 successor = node.right
                 while successor.left is not None:
@@ -82,17 +90,20 @@ class AVL(Tree):
                 node.key, successor.key = dummy_key, node.key
                 node.value, successor.value = successor.value, node.value
                 current_node = node
-                node, growth, value = rec(key, node)
+                node = rec(key, node)
                 current_node.key = successor_key
             else:
-                node, growth, value = node.left if node.right is None else node.right, -1, node.value
+                value[0] = node.value
+                node = node.left if node.right is None else node.right
                 self._size -= 1
-            return (*self._rotate(node, growth), value)
+                return node
+            balance = node.balance()
+            return node if abs(balance) < self._rank else self._rotate(node, balance)
 
-        self._root, growth, value = rec(key, self._root)
-        return value
+        self._root = rec(key, self._root)
+        return value[0]
 
-    def _rotate(self, node: Node, growth: int):
+    def _rotate(self, node: Node, balance: int):
         """
         Check if `node` needs rotation.
 
@@ -102,23 +113,19 @@ class AVL(Tree):
 
         > parameters:
         - `node: Node`: node to check for rotations
-        - `growth: int`: current tree growth
+        - `balance: int`: node balance (to prevent recomputation)
 
-        > `return: (Node, int)`: the top node and tree growth after `Node` rotation
+        > `return: Node`: rotated subtree root
         """
-        if node is not None and node.balance <= -self._rank:
-            if node.left.balance > 0:
-                node, rotation_growth = self._rotate_left(node.left)
-                growth += rotation_growth
-            node, rotation_growth = self._rotate_right(node)
-            growth += rotation_growth
-        elif node is not None and node.balance >= self._rank:
-            if node.right.balance < 0:
-                node, rotation_growth = self._rotate_right(node.right)
-                growth += rotation_growth
-            node, rotation_growth = self._rotate_left(node)
-            growth += rotation_growth
-        return node, growth
+        if balance <= -self._rank:
+            if node.left.balance() > 0:
+                node.left = self._rotate_left(node.left)
+            node = self._rotate_right(node)
+        elif balance >= self._rank:
+            if node.right.balance() < 0:
+                node.right = self._rotate_right(node.right)
+            node = self._rotate_left(node)
+        return node
 
     def _rotate_left(self, node: AVLNode):
         """
@@ -142,52 +149,8 @@ class AVL(Tree):
         - `H(b*) = max(H(a*), H(rr)) + 1`
         - `B(b*) = H(a*) - H(rr))`
 
-        However, this implementation computes `B(c*)` and `B(n*)` only the balances of the children.
-        Calculating `B(a*)` (balance of `a` after rotation):
-        - 1: `B(a*) = H(rl) - H(l))`
-        - 2: `B(a) = H(b) - H(l)`
-
-        subtracting 2 from 1:
-        - 3: `B(a*) - B(a) = H(rl) - H(l) - (H(b) - H(l)) = H(rl) - H(l) - H(b) + H(l)`
-        - 4: `B(a*) - B(a) = H(rl) - H(b)`
-
-        expanding `H(b)` from 4:
-        - 5: `B(a*) - B(a) = H(rl) - (max(H(rl), H(rr)) + 1) = H(rl) - max(H(rl), H(rr)) - 1`
-        - 6: `B(a*) - B(a) = -1 - max(H(rl), H(rr)) + H(rl)`
-        - 7: `B(a*) - B(a) = -1 - (max(H(rl), H(rr)) - H(rl))`
-
-        since `max(x, y) - z == max(x-z, y-z)`, from 7:
-        - 8: `B(a*) - B(a) = -1 - max(H(rl) - H(rl), H(rr) - H(rl)`
-        - 9: `B(a*) - B(a) = -1 - max(0, H(rr) - H(rl)`
-
-        since `H(rr) - H(rl) == B(b)`, from 9:
-        - 10: `B(a*) - B(a) = -1 - max(0, B(b)`
-
-        adding `B(a)` in both sides in 10:
-        - 11: `B(a*) = B(a) - 1 - max(B(b), 0)` <<<< `B(a*)` in terms of previous balances only
-
-        Calculating `B(b*)` (balance of `b` after rotation):
-        - 12: `B(b*) = H(rr) - H(a*)`
-        - 13: `B(b) = H(rr) - H(rl)`
-
-        subtracting 12 from 13:
-        - 14: `B(b*) - B(b) = H(rr) - H(a*) - (H(rr) - H(rl)) = H(rr) - H(a*) - H(rr) + H(rl)`
-        - 15: `B(b*) - B(b) = H(rl) - H(a*)`
-
-        expanding `H(a*)` from 15:
-        - 16: `B(b*) - B(b) = H(rl) - (max(H(l), H(rl)) + 1) = H(rl) - max(H(l), H(rl)) - 1`
-        - 17: `B(b*) - B(b) = -1 - max(H(l), H(rl)) + H(rl)`
-        - 18: `B(b*) - B(b) = -1 - (max(H(l), H(rl)) - H(rl))`
-
-        since `max(x, y) - z == max(x-z, y-z)`, from 18:
-        - 19: `B(b*) - B(b) = -1 - max(H(l)-H(rl), H(rl)-H(rl))`
-        - 20: `B(b*) - B(b) = -1 - max(H(l)-H(rl), 0)`
-
-        since `H(rl) - H(l) == B(a*)` so `H(l) - H(rl) == -B(a*)`, from 20:
-        - 21: `B(b*) - B(b) = -1 - max(-B(a*), 0)`
-
-        since `-max(-x, -y) == min(x, y)`, from 21:
-        - 22: `B(b*) - B(b) = -1 + min(B(a*), 0)` <<<< `B(b*)` in terms of previous balances and `B(a*)`
+        There is a strategy for updating balances in rotations based on previous balances.
+        However, it is more complicated to update after `take` operations when the tree shrinks.
 
         > complexity:
         - time: `O(1)`
@@ -196,15 +159,17 @@ class AVL(Tree):
         > parameters:
         - `node: Node`: node to check for rotations
 
-        > `return: (Node, int)`: the top node and tree growth after `Node` rotation
+        > `return: Node`: rotated subtree root
         """
         child = node.right
         node.right = child.left
         child.left = node
-        growth = -1 if node.balance >= 2 else 0 if node.balance == 1 else 1
-        node.balance = node.balance - 1 - max(child.balance, 0)
-        child.balance = child.balance - 1 + min(node.balance, 0)
-        return child, growth
+        node.height = max(
+            node.left.height if node.left is not None else 0,
+            node.right.height if node.right is not None else 0
+        ) + 1
+        child.height = max(node.height, child.right.height if child.right is not None else 0) + 1
+        return child
 
     def _rotate_right(self, node: AVLNode):
         """
@@ -230,15 +195,17 @@ class AVL(Tree):
         > parameters:
         - `node: Node`: node to check for rotations
 
-        > `return: (Node, int)`: the top node and tree growth after `Node` rotation
+        > `return: Node`: rotated subtree root
         """
         child = node.left
         node.left = child.right
         child.right = node
-        growth = -1 if node.balance <= -2 else 0 if node.balance == -1 else 1
-        node.balance = node.balance + 1 - min(child.balance, 0)
-        child.balance = child.balance + 1 + max(node.balance, 0)
-        return child, growth
+        node.height = max(
+            node.left.height if node.left is not None else 0,
+            node.right.height if node.right is not None else 0
+        ) + 1
+        child.height = max(node.height, child.left.height if child.left is not None else 0) + 1
+        return child
 
 
 def test():
