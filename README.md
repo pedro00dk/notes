@@ -21,8 +21,8 @@ $ python -m dsa.tree.avl
 
 ---
 
-The time complexity in **big-O** notation is shown beside the algorithms names.
-Space complexity is available in the algorithms files.
+The time complexity in **big-O** notation is shown beside algorithms names.
+Space complexity is available in algorithms files.
 
 ---
 
@@ -91,6 +91,7 @@ Space complexity is available in the algorithms files.
     -   [red-black tree](./dsa/tree/rbt.py)
         -   put **- O(log(n))**
         -   take **- O(log(n))**
+    -   [benchmark](./dsa/tree/benchmark.py)
 -   [heap (base class)](./dsa/heap/abc.py)
     -   peek **- O(1)**
     -   [binary heap](./dsa/heap/heap.py)
@@ -109,6 +110,7 @@ Space complexity is available in the algorithms files.
         -   init **- O(n)**
         -   offer **- O(k\*log(n,k))**
         -   poll **- O(k\*log(n,k))**
+    -   [benchmark](./dsa/heap/benchmark.py)
 -   [disjoint set](./dsa/dset.py)
     -   implemented:
         -   Numeric keys disjoint set
@@ -137,6 +139,7 @@ Space complexity is available in the algorithms files.
     -   contains value **- O(n)**
     -   [open addressing hashtable](./dsa/hashtable/oa_hashtable.py)
     -   [sequence chaining hashtable](./dsa/hashtable/oa_hashtable.py)
+    -   [benchmark](./dsa/hashtable/benchmark.py)
 -   [graph (adjacency list)](./dsa/graph/graph.py) _- see graph theory algorithms section_
     -   [factory](./dsa/graph/factory.py)
         -   complete
