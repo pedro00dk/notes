@@ -147,6 +147,9 @@ def biconnected_tarjan(graph: Graph):
 def strong_connected_tarjan(graph: Graph):
     """
     Tarjan's Strongly Connected Components algorithm.
+    Tarjan's algorithm can also be used for topological sorting.
+    If the graph being processed is a directed acyclic graph, each group will contain a single vertex and groups will be
+    in a reverse topological order.
 
     > complexity:
     - time: `O(v + e)`

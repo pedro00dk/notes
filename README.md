@@ -166,6 +166,7 @@ Space complexity is available in the algorithms files.
 -   [topological sorting](./dsa/graph/topsort.py)
     -   khan **- O(v + e)**
     -   depth first search based **- O(v + e)**
+    -   strongly connected tarjan _(from connectivity algorithms, used as topsort algorithm)_ **- O(v + e)**
 
 ## Enumeration Combinatorics
 

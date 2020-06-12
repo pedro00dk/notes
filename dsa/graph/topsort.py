@@ -80,15 +80,20 @@ def topsort_dfs(graph: Graph):
 def test():
     from ..test import benchmark
     from . import factory
+    from . import connectivity
     benchmark(
         [
             (
-                '    topological sort khan',
+                '  topological sort khan',
                 lambda graph: [vertex._id for vertex in topsort_khan(graph)]
             ),
             (
-                '     topological sort dfs',
+                '   topological sort dfs',
                 lambda graph: [vertex._id for vertex in topsort_dfs(graph)]
+            ),
+            (
+                'topological sort tarjan',
+                lambda graph: [*reversed([group[0]._id for group in connectivity.strong_connected_tarjan(graph)])]
             )
         ],
         test_input_iter=(factory.random_dag() for i in range(5)),
