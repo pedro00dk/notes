@@ -58,7 +58,7 @@ class BST(Tree):
             node.key, node.value = successor.key, successor.value
             node = successor
         if parent is None:
-            self._root = None
+            self._root = node.left if node.left is not None else node.right
         elif parent.left == node:
             parent.left = node.left if node.left is not None else node.right
         elif parent.right == node:
