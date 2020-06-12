@@ -90,11 +90,12 @@ def test():
             (' recursive', factorial_rec),
             ('iteractive', factorial_itr),
             ('  stirling', factorial_stirling),
-            (' ramanujan', factorial_ramanujan)
+            (' ramanujan', factorial_ramanujan),
+            ('    native', math.factorial)
 
         ],
         test_input_iter=(0, 1, 5, 10, 20, 30, 40, 50),
-        bench_size_iter=range(0, 51, 10),
+        bench_size_iter=range(0, 101, 10),
         bench_input=lambda s, r: s,
         bench_tries=100000
     )

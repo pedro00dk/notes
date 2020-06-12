@@ -118,17 +118,20 @@ def combinations_itr(items: list, k: int):
 
 def test():
     from ..test import benchmark
+    import math
+    import itertools
     benchmark(
         [
             ('count recursive', lambda args: f'C({args[0]}, {args[1]}) = {combinations_count_rec(*args)}'),
             ('  count default', lambda args: f'C({args[0]}, {args[1]}) = {combinations_count_def(*args)}'),
+            ('   count native', lambda args: f'C({args[0]}, {args[1]}) = {math.comb(*args)}'),
             ('      recursive', lambda args: [*combinations_rec([*range(args[0])], args[1])]),
-            ('      iterative', lambda args: [*combinations_itr([*range(args[0])], args[1])])
+            ('      iterative', lambda args: [*combinations_itr([*range(args[0])], args[1])]),
+            ('         native', lambda args: [*itertools.combinations([*range(args[0])], args[1])])
         ],
         test_input_iter=((5, 2), (0, 0), (2, 0), (2, 1), (4, 3), (6, 2), (6, 5), (8, 6), (6, 3)),
-        bench_size_iter=range(16),
-        bench_input=lambda s, r: (s, s // 2),
-        bench_tries=100
+        bench_size_iter=range(20),
+        bench_input=lambda s, r: (s, s // 2)
     )
 
 

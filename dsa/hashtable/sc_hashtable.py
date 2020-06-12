@@ -51,9 +51,7 @@ class SCHashtable(Hashtable):
         """
         if self._size / self._capacity >= self._load_threshold:
             self._rebuild()
-            print('rebuild')
         hash_, index, entry = self._find(key)
-        print('put', key, index)
         parent = None
         node = entry
         while node is not None and key != node.key:
@@ -76,9 +74,7 @@ class SCHashtable(Hashtable):
         hash_, index, entry = self._find(key)
         parent = None
         node = entry
-        print('take', key, index)
         while node is not None and key != node.key:
-            print(node.key, '', end='')
             parent = node
             node = node.next
         if node is None:
@@ -88,7 +84,6 @@ class SCHashtable(Hashtable):
         else:
             parent.next = node.next
         self._size -= 1
-        print('\n\n')
         return node.value
 
     def get(self, key):

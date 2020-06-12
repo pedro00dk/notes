@@ -128,15 +128,17 @@ def permutations_heap_itr(items: list):
 
 def test():
     from ..test import benchmark
+    import itertools
     benchmark(
         [
             ('         count', lambda n: f'P({n}, {n}) = {permutations_count(n)}'),
             ('        cycles', lambda n: [*permutations_cycle([*range(n)])]),
             ('heap recursive', lambda n: [*permutations_heap_rec([*range(n)])]),
             ('heap iterative', lambda n: [*permutations_heap_itr([*range(n)])]),
+            ('        native', lambda n: [*itertools.permutations([*range(n)])]),
         ],
-        test_input_iter=range(6),
-        bench_size_iter=range(9),
+        test_input_iter=range(5),
+        bench_size_iter=range(10),
         bench_input=lambda s, r: s,
         bench_tries=100
     )

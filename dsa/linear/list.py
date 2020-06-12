@@ -189,7 +189,8 @@ class LinkedList(Linear):
 
 
 def test():
-    from ..test import match
+    from ..test import benchmark, match
+    from collections import deque
     l = LinkedList()
     match([
         (l.push, [2, 0], None),
@@ -214,6 +215,43 @@ def test():
         (l.index, [2], 2),
         (print, [l], None)
     ])
+
+    def test_linkedlist(count: int):
+        l = LinkedList()
+        for i in range(count):
+            l.push(i)
+        for i in range(count // 2):
+            l.pop()
+            l.pop(0)
+
+    def test_native_list(count: int):
+        l = list()
+        for i in range(count):
+            l.append(i)
+        for i in range(count // 2):
+            l.pop()
+            l.pop(0)
+
+    def test_native_deque(count: int):
+        d = deque()
+        for i in range(count):
+            d.append(i)
+        for i in range(count // 2):
+            d.pop()
+            d.popleft()
+
+    benchmark(
+        [
+            ('  linkedlist (insert then pop last first)', test_linkedlist),
+            (' native list (insert then pop last first)', test_native_list),
+            ('native deque (insert then pop last first)', test_native_deque)
+        ],
+        test_input_iter=(),
+        bench_size_iter=(1, 10, 100, 1000, 10000, 100000),
+        bench_input=lambda s, r: s,
+        test_print_input=False,
+        test_print_output=False
+    )
 
 
 if __name__ == '__main__':

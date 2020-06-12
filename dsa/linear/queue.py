@@ -58,7 +58,8 @@ class Queue(Linear):
 
 
 def test():
-    from ..test import match
+    from ..test import benchmark, match
+    from collections import deque
     q = Queue()
     match([
         (q.offer, [0], None),
@@ -80,6 +81,40 @@ def test():
         (q.poll, [], 5),
         (print, [q], None)
     ])
+
+    def test_queue(count: int):
+        q = Queue()
+        for i in range(count):
+            q.offer(i)
+        for i in range(count):
+            q.poll()
+
+    def test_native_list(count: int):
+        l = list()
+        for i in range(count):
+            l.append(i)
+        for i in range(count):
+            l.pop(0)
+
+    def test_native_deque(count: int):
+        d = deque()
+        for i in range(count):
+            d.append(i)
+        for i in range(count):
+            d.popleft()
+
+    benchmark(
+        [
+            ('       queue', test_queue),
+            (' native list', test_native_list),
+            ('native deque', test_native_deque)
+        ],
+        test_input_iter=(),
+        bench_size_iter=(1, 10, 100, 1000, 10000, 100000),
+        bench_input=lambda s, r: s,
+        test_print_input=False,
+        test_print_output=False
+    )
 
 
 if __name__ == '__main__':
