@@ -1,5 +1,4 @@
 from ..search.heap import Heap
-from .factory import *
 from .topsort import topological_sort
 
 

@@ -79,8 +79,8 @@ def topsort_dfs(graph: Graph):
 
 def test():
     from ..test import benchmark
-    from . import factory
-    from . import connectivity
+    from .factory import random_dag
+    from .connectivity import strong_connected_tarjan
     benchmark(
         [
             (
@@ -93,12 +93,12 @@ def test():
             ),
             (
                 'topological sort tarjan',
-                lambda graph: [*reversed([group[0]._id for group in connectivity.strong_connected_tarjan(graph)])]
+                lambda graph: [*reversed([group[0]._id for group in strong_connected_tarjan(graph)])]
             )
         ],
-        test_input_iter=(factory.random_dag() for i in range(5)),
+        test_input_iter=(random_dag() for i in range(5)),
         bench_size_iter=(1, 10, 100, 1000),
-        bench_input=lambda s, r: factory.random_dag((s // 20, s // 10), (5, 10))
+        bench_input=lambda s, r: random_dag((s // 20, s // 10), (5, 10))
     )
 
 
