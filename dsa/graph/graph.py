@@ -225,7 +225,7 @@ class Graph:
         """
         > `return: bool`: if all edges are directed
         """
-        return self._directed_edges == self._edges_length
+        return self._directed_edges == self._all_edges
 
     def has_directed_edges(self):
         """
@@ -303,6 +303,23 @@ class Graph:
         > `return: Edge()`: edge tuple list
         """
         return (*self._edges[id],)
+
+    def copy(self):
+        """
+        Return a copy of the graph.
+
+        > complexity:
+        - time: `O(v + e)`
+        - space: `O(v + e)`
+
+        > `return: Graph`: copy of the graph
+        """
+        graph = Graph()
+        for vertex in self.vertices():
+            graph.make_vertex(vertex.weight, vertex.data)
+        for edge in self.edges():
+            graph.make_edge(edge._source, edge._target, edge.length, edge.data, True)
+        return graph
 
     def transposed(self):
         """

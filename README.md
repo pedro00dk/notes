@@ -149,19 +149,23 @@ Space complexity is available in the algorithms files.
     -   traverse edges **O(v + e)**
     -   make vertex **O(1)**
     -   make edge **O(1)**
+    -   copy **O(v + e)**
     -   transpose **O(v + e)**
 
 ## Graph Theory
 
 -   [connectivity algorithms](./dsa/graph/connectivity.py)
-    - undirected graphs only
-        - connected depth first search **- O(v + e)**
-        - connected breadth first search **- O(v + e)**
-        - connected disjoint set **- O(v + e)**
-        - tarjan's articulation points and biconnected components **- O(v + e)**
+    -   undirected graphs only
+        -   connected depth first search **- O(v + e)**
+        -   connected breadth first search **- O(v + e)**
+        -   connected disjoint set **- O(v + e)**
+        -   biconnected and articulation tarjan **- O(v + e)**
     -   any graph
-        - tarjan's strongly connected components **- O(v + e)**
-        - kosaraju's strongly connected components **- O(v + e)**
+        -   strongly connected tarjan **- O(v + e)**
+        -   strongly connected kosaraju **- O(v + e)**
+-   [topological sorting](./dsa/graph/topsort.py)
+    -   khan **- O(v + e)**
+    -   depth first search based **- O(v + e)**
 
 ## Enumeration Combinatorics
 
