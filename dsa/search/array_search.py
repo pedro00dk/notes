@@ -150,7 +150,6 @@ def test():
         (exponential_search, [[0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8], 4),
         (exponential_search, [[1, 10, 100, 1000, 10000, 100000, 1000000], 10], 1)
     ])
-    # return
     benchmark(
         [
             ('       binary search', lambda array: binary_search(array, random.sample(array, 1)[0])),
@@ -163,6 +162,7 @@ def test():
 
         ],
         test_input_iter=(),
+        # skip zero size inputs because search algorithms raise exceptions
         bench_size_iter=(1, 10, 100, 1000, 10000, 100000),
         bench_input=lambda s, r: [*range(s)],
         bench_tries=100000

@@ -177,6 +177,7 @@ Space complexity is available in algorithms files.
     -   all graphs
         -   dijkstra single source **- O((v + e)\*log(v))**
         -   bellman ford single source **- O(v\*e)**
+        -   floyd warshall all pairs **- O(v\*\*3)**
 
 ## Enumeration Combinatorics
 

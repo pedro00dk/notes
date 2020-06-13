@@ -337,3 +337,20 @@ class Graph:
         for edge in self.edges():
             transposed_graph.make_edge(edge._target, edge._source, edge.length, edge.data, True)
         return transposed_graph
+
+    def adjacency_matrix(self):
+        """
+        Return the adjacency matrix of the graph containing edge lengths.
+
+        > complexity:
+        - time: `O(v**2 + e)`
+        - space: `O(v**2)`
+
+        > `return: (int | float)[][]`: graph adjacency matrix
+        """
+        matrix = [[float('inf')] * self.vertices_count() for i in range(self.vertices_count())]
+        for edge in self.edges():
+            matrix[edge._source][edge._target] = edge.length
+        for id in range(self.vertices_count()):
+            matrix[id][id] = 0
+        return matrix
