@@ -60,18 +60,17 @@ def topsort_dfs(graph: Graph):
     order = []
 
     def dfs(id):
-        if visited[id] == 2:  # visited
-            return
         if visited[id] == 1:  # temporary
             raise Exception('topological sort only works with directed acyclic graphs')
         visited[id] = 1
         for edge in graph.edges(id):
-            dfs(edge._target)
+            if visited[edge._target] != 2:  # not visited
+                dfs(edge._target)
         visited[id] = 2
         order.append(graph.get_vertex(id))
 
     for id in range(graph.vertices_count()):
-        if visited[id] != 2:  # unvisited or temporary
+        if visited[id] != 2:  # not visited or temporary
             dfs(id)
     order.reverse()
     return order
@@ -97,7 +96,7 @@ def test():
             )
         ],
         test_input_iter=(random_dag() for i in range(5)),
-        bench_size_iter=(1, 10, 100, 1000),
+        bench_size_iter=(0, 1, 10, 100, 1000),
         bench_input=lambda s, r: random_dag((s // 20, s // 10), (5, 10))
     )
 

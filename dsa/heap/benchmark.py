@@ -22,7 +22,7 @@ def test():
             ('k-ary heap (k=16)', lambda data: test_kheap([*data], 16))
         ],
         test_input_iter=(),
-        bench_size_iter=(1, 10, 100, 1000, 10000),
+        bench_size_iter=(0, 1, 10, 100, 1000, 10000),
         bench_input=lambda s, r: [*range(s)],
         test_print_input=False,
         test_print_output=False

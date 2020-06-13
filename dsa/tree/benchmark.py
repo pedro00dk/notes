@@ -42,7 +42,7 @@ def test():
             ('    red-black tree', test_rbt)
         ],
         test_input_iter=(),
-        bench_size_iter=(1, 10, 100, 1000, 10000),
+        bench_size_iter=(0, 1, 10, 100, 1000, 10000),
         bench_input=lambda s, r: random.sample([*range(s)], s),
         bench_tries=1,
         bench_repeats=100,
@@ -58,7 +58,7 @@ def test():
             ('    red-black tree', test_rbt)
         ],
         test_input_iter=(),
-        bench_size_iter=(1, 10, 100, 1000, 10000),
+        bench_size_iter=(0, 1, 10, 100, 1000, 10000),
         bench_input=lambda s, r: [*range(s)],
         bench_tries=1,
         bench_repeats=100,

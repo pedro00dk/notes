@@ -107,7 +107,7 @@ def test():
             ('native deque', test_native_deque)
         ],
         test_input_iter=(),
-        bench_size_iter=(1, 10, 100, 1000, 10000, 100000),
+        bench_size_iter=(0, 1, 10, 100, 1000, 10000, 100000),
         bench_input=lambda s, r: s,
         test_print_input=False,
         test_print_output=False
