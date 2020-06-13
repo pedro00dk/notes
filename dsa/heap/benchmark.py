@@ -1,4 +1,5 @@
 def test():
+    import heapq
     from ..test import benchmark
     from .heap import BHeap
     from .kheap import KHeap
@@ -12,6 +13,12 @@ def test():
         h = KHeap(data, 'max', k)
         for i in range(len(data)):
             h.poll()
+    
+    def test_native_heap(data: list):
+        h = data
+        heapq.heapify(h)
+        for i in range(len(data)):
+            heapq.heappop(h)
 
     benchmark(
         [
@@ -19,7 +26,8 @@ def test():
             (' k-ary heap (k=2)', lambda data: test_kheap([*data], 2)),
             (' k-ary heap (k=4)', lambda data: test_kheap([*data], 4)),
             (' k-ary heap (k=8)', lambda data: test_kheap([*data], 8)),
-            ('k-ary heap (k=16)', lambda data: test_kheap([*data], 16))
+            ('k-ary heap (k=16)', lambda data: test_kheap([*data], 16)),
+            ('      native heap', lambda data: test_native_heap([*data]))
         ],
         test_input_iter=(),
         bench_size_iter=(0, 1, 10, 100, 1000, 10000),
