@@ -139,8 +139,7 @@ def test():
         ],
         test_input_iter=range(5),
         bench_size_iter=range(10),
-        bench_input=lambda s, r: s,
-        bench_tries=100
+        bench_input=lambda s, r: s
     )
 
 

@@ -39,7 +39,7 @@ def test():
             ('binary search tree', test_bst),
             ('    avl tree (r=2)', test_avl_r2),
             ('    avl tree (r=4)', test_avl_r4),
-            # ('    red-black tree', test_rbt) # TODO fix red-black tree
+            ('    red-black tree', test_rbt)
         ],
         test_input_iter=(),
         bench_size_iter=(1, 10, 100, 1000, 10000),
@@ -47,8 +47,7 @@ def test():
         bench_tries=1,
         bench_repeats=100,
         test_print_input=False,
-        test_print_output=False,
-
+        test_print_output=False
     )
     print('sequential insertions')
     benchmark(
@@ -56,7 +55,7 @@ def test():
             ('binary search tree', test_bst),
             ('    avl tree (r=2)', test_avl_r2),
             ('    avl tree (r=4)', test_avl_r4),
-            # ('    red-black tree', test_rbt) # TODO fix red-black tree
+            ('    red-black tree', test_rbt)
         ],
         test_input_iter=(),
         bench_size_iter=(1, 10, 100, 1000, 10000),
@@ -64,7 +63,7 @@ def test():
         bench_tries=1,
         bench_repeats=100,
         test_print_input=False,
-        test_print_output=False,
+        test_print_output=False
     )
 
 

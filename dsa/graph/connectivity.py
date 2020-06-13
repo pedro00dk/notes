@@ -272,7 +272,7 @@ def test():
         ],
         test_input_iter=(random_undirected(i, 0.1) for i in (5, 10, 15, 20)),
         bench_size_iter=(1, 10, 100, 1000),
-        bench_input=lambda s, r: random_undirected(s, 0.05),
+        bench_input=lambda s, r: random_undirected(s, 0.05)
     )
 
 

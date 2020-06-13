@@ -49,6 +49,19 @@ class RBT(Tree):
             return old_value
 
     def _put_fix(self, created: RBTNode):
+        """
+        Fix red black properties of the tree.
+        `created` node color must be red.
+
+        > complexity:
+        - time: `O(log(n))`
+        - space: `O(1)`
+
+        > parameters:
+        - `created: RBTNode`: the created node
+
+        > `return: RBTNode`: tree root node
+        """
         node = created
         while self._red(parent := self._parent(node)):
             uncle = self._uncle(node)
@@ -58,18 +71,19 @@ class RBT(Tree):
                 grand_parent.red = True
                 node = grand_parent
                 continue
+            if node == parent.right and parent == grand_parent.left:
+                self._rotate_left(parent)
+                node, parent = parent, node
+            elif node == parent.left and parent == grand_parent.right:
+                self._rotate_right(parent)
+                node, parent = parent, node
             if node == parent.right:
-                if parent == grand_parent.left:
-                    parent = self._rotate_left(parent)
-                    node = parent.left
-                grand_parent = self._rotate_left(grand_parent)
+                self._rotate_left(grand_parent)
             elif node == parent.left:
-                if parent == grand_parent.right:
-                    parent = self._rotate_right(parent)
-                    node = parent.right
-                grand_parent = self._rotate_right(grand_parent)
-            grand_parent.red = False
-            grand_parent.left.red = grand_parent.right.red = True
+                self._rotate_right(grand_parent)
+            grand_parent.red = True
+            parent.red = False
+            node = parent
             break
         root = self._top(node)
         root.red = False
@@ -92,11 +106,12 @@ class RBT(Tree):
             successor = node.right
             while successor.left is not None:
                 successor = successor.left
-            node.key, successor.key = successor.key, node.key
-            node.value, successor.value = successor.value, node.value
+            node.key, node.value, successor.value = successor.key, successor.value, node.value
             node = successor
         if node.parent is None:
-            child = self._root = None
+            child = self._root = node.left if node.left is not None else node.right
+            if child is not None:
+                self._root.parent = None
         elif node.parent.left == node:
             child = node.parent.left = node.left if node.left is not None else node.right
             if child is not None:
@@ -109,53 +124,74 @@ class RBT(Tree):
         self._root = self._take_fix(node, child)
         return node.value
 
-    def _take_fix(self, deleted: RBTNode, replacer: RBTNode):
+    def _take_fix(self, deleted: RBTNode, replacement: RBTNode):
+        """
+        Fix red black properties of the tree.
+        The fix only works if the `deleted` node had 0 or 1 non null child.
+
+        > complexity:
+        - time: `O(log(n))`
+        - space: `O(1)`
+
+        > parameters:
+        - `deleted: RBTNode`: the deleted node
+        - `replacement: RBTNode`: the only non null child of deleted node (or null if `deleted` had no non null child)
+
+        > `return: RBTNode`: tree root node
+        """
+
         if self._red(deleted):
             return self._root
-        if self._red(replacer):
-            replacer.red = False
+        if self._red(replacement):
+            replacement.red = False
             return self._root
-        node = replacer
+        node = replacement
         while (parent := self._parent(node)) is not None:
             sibling = self._sibling(node)
             if self._red(sibling):
                 sibling.red = False
                 parent.red = True
-                if node == node.parent.left:
+                if node == parent.left:
                     self._rotate_left(parent)
-                    sibling = parent.right
                 else:
                     self._rotate_right(parent)
-                    sibling = parent.left
-            if self._blk(parent) and self._blk(sibling) and sibling is not None and \
+                sibling = self._sibling(node)
+            if self._blk(node.parent) and sibling is not None and self._blk(sibling) and \
                     self._blk(sibling.left) and self._blk(sibling.right):
                 sibling.red = True
                 node = parent
                 continue
-            if self._red(parent) and self._blk(sibling) and sibling is not None and \
+            if self._red(node.parent) and sibling is not None and self._blk(sibling) and \
                     self._blk(sibling.left) and self._blk(sibling.right):
                 sibling.red = True
                 parent.red = False
                 break
-            if self._blk(sibling) and sibling is not None:
+            if self._blk(parent) and sibling is not None and self._blk(sibling):
                 if node == parent.left and self._red(sibling.left) and self._blk(sibling.right):
+                    self._rotate_right(sibling)
                     sibling.red = True
-                    sibling.left.red = False
-                    sibling = self._rotate_right(sibling)
-                elif node == parent.right and self._blk(sibling.left) and self._left(sibling.right):
+                    sibling.parent.red = False
+                elif node == parent.right and self._blk(sibling.left) and self._red(sibling.right):
+                    self._rotate_left(sibling)
                     sibling.red = True
-                    sibling.right.red = False
-                    sibling = self._rotate_left(sibling)
-            sibling.red = parent.red
-            parent.red = False
-            if node == parent.left:
-                sibling.right.red = False
-                self._rotate_left(parent)
-            else:
-                sibling.left.red = False
-                self._rotate_right(parent)
+                    sibling.parent.red = False
+                sibling = self._sibling(node)
+            if sibling is not None and self._blk(sibling):
+                if node == parent.left and self._red(sibling.right):
+                    self._rotate_left(parent)
+                    sibling.red = parent.red
+                    parent.red = sibling.right.red = False
+                elif node == parent.right and self._red(sibling.left):
+                    self._rotate_right(parent)
+                    sibling.red = parent.red
+                    parent.red = sibling.left.red = False
             break
         return self._top(node if node is not None else deleted)
+
+    def _top(self, node: RBTNode):
+        while node.parent is not None:
+            node = node.parent
+        return node
 
     def _red(self, node: RBTNode):
         return node is not None and node.red
@@ -163,29 +199,18 @@ class RBT(Tree):
     def _blk(self, node: RBTNode):
         return node is None or not node.red
 
-    def _left(self, node: RBTNode):
-        return node.left if node is not None else None
-
-    def _right(self, node: RBTNode):
-        return node.right if node is not None else None
-
     def _parent(self, node: RBTNode):
         return node.parent if node is not None else None
-
-    def _grand_parent(self, node: RBTNode):
-        return self._parent(self._parent(node))
 
     def _sibling(self, node: RBTNode):
         parent = self._parent(node)
         return None if node is None or parent is None else parent.left if node == parent.right else parent.right
 
+    def _grand_parent(self, node: RBTNode):
+        return self._parent(self._parent(node))
+
     def _uncle(self, node: RBTNode):
         return self._sibling(self._parent(node))
-
-    def _top(self, node: RBTNode):
-        while (parent := self._parent(node)) is not None:
-            node = parent
-        return node
 
     def _rotate_left(self, node: RBTNode):
         """
