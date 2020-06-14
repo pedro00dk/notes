@@ -14,7 +14,7 @@ def bucketsort(array: list, /, k: int = None, subsort=None):
     > parameters:
     - `array: (int | float)[]`: array to be sorted
     - `k: int? = len(array)`: number of buckets
-    - `subsort: ((int | float)[] -> (int | float)[])? = insertionsort`: algorithm to sort buckets
+    - `subsort: ((int | float)[] => (int | float)[])? = insertionsort`: algorithm to sort buckets
 
     > `return: typeof(array)`: `array` sorted
     """

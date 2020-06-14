@@ -16,7 +16,7 @@ def sift_up(heap: list, k: int, i: int, comparator):
     - `heap: <T>[]`: array containing heap structure
     - `k: int`: heap arity
     - `i: int`: index of value to sift up
-    - `comparator: (<T>, <T>) -> int`: a min comparator to check values (smaller values go to the top)
+    - `comparator: (<T>, <T>) => int`: a min comparator to check values (smaller values go to the top)
     """
     while (parent := (i - 1) // k) >= 0 and comparator(heap[i], heap[parent]) < 0:
         heap[i], heap[parent] = heap[parent], heap[i]
@@ -38,7 +38,7 @@ def sift_down(heap: list, k: int, i: int, comparator, /, length: int = None):
     - `heap: <T>[]`: array containing heap structure
     - `k: int`: heap arity
     - `i: int`: index of value to sift up
-    - `comparator: (<T>, <T>) -> int`: a min comparator to check values (smaller values go to the top)
+    - `comparator: (<T>, <T>) => int`: a min comparator to check values (smaller values go to the top)
     - `length: int? = len(heap)`: limit the length of the heap
     """
     length = length if length is not None else len(heap)
@@ -73,7 +73,7 @@ def heapify_top_down(heap: list, k: int, comparator, /, length: int = None):
     > parameters:
     - `heap: <T>[]`: array containing heap structure
     - `k: int`: heap arity
-    - `comparator: (<T>, <T>) -> int`: a min comparator to check values (smaller values go to the top)
+    - `comparator: (<T>, <T>) => int`: a min comparator to check values (smaller values go to the top)
     - `length: int? = len(heap)`: limit the length of the heap
     """
     length = length if length is not None else len(heap)
@@ -95,7 +95,7 @@ def heapify_bottom_up(heap: list, k: int, comparator, /, length: int = None):
     > parameters:
     - `heap: <T>[]`: array containing heap structure
     - `k: int`: heap arity
-    - `comparator: (<T>, <T>) -> int`: a min comparator to check values (smaller values go to the top)
+    - `comparator: (<T>, <T>) => int`: a min comparator to check values (smaller values go to the top)
     - `length: int? = len(heap)`: limit the length of the heap
     """
     length = length if length is not None else len(heap)

@@ -13,7 +13,7 @@ def binary_search(array: list, key, /, comparator=lambda a, b: a - b, left: int 
     > parameters:
     - `array: <T>[]`: array to search `key`
     - `key: <T>`: key to be search in `array`
-    - `comparator: (<T>, <T>) -> int`: comparator for `<T>` type values
+    - `comparator: (<T>, <T>) => int`: comparator for `<T>` type values
     - `left: int? = 0`: starting index to search
     - `right: int? = len(array)`: ending index to search
 
@@ -46,7 +46,7 @@ def k_ary_search(array: list, key, /, k=4, comparator=(lambda a, b: a - b), left
     - `array: <T>[]`: array to search `key`
     - `key: <T>`: key to be search in `array`
     - `k: int? = 2`: number of buckets to subdivide search
-    - `comparator: ((<T>, <T>) -> int)? = lambda a, b: a - b`: comparator for `<T>` type values
+    - `comparator: ((<T>, <T>) => int)? = lambda a, b: a - b`: comparator for `<T>` type values
     - `left: int? = 0`: starting index to search
     - `right: int? = len(array)`: ending index to search
 
@@ -85,7 +85,7 @@ def interpolation_search(array: list, key, /, comparator=lambda a, b: a - b, lef
     - `array: <T>[]`: array to search `key`
     - `key: <T>`: key to be search in `array`
     - `k: int? = 2`: number of buckets to subdivide search
-    - `comparator: ((<T>, <T>) -> int)? = lambda a, b: a - b`: comparator for `<T>` type values
+    - `comparator: ((<T>, <T>) => int)? = lambda a, b: a - b`: comparator for `<T>` type values
     - `left: int? = 0`: starting index to search
     - `right: int? = len(array)`: ending index to search
 
@@ -119,7 +119,7 @@ def exponential_search(array: list, key, /, comparator=lambda a, b: a - b, left:
     > parameters:
     - `array: <T>[]`: array to search `key`
     - `key: <T>`: key to be search in `array`
-    - `comparator: ((<T>, <T>) -> int)? = lambda a, b: a - b`: comparator for `<T>` type values
+    - `comparator: ((<T>, <T>) => int)? = lambda a, b: a - b`: comparator for `<T>` type values
     - `left: int? = 0`: starting index to search
     - `right: int? = len(array)`: ending index to search
 

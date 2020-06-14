@@ -24,7 +24,7 @@ class Tree(abc.ABC):
     def __init__(self, printer):
         """
         > parameters:
-        - `printer: (Node, int) -> str`: function to print a tree node info from the node object and its depth
+        - `printer: (Node, int) => str`: function to print a tree node info from the node object and its depth
         """
         self._root = None
         self._size = 0

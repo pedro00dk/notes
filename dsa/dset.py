@@ -22,7 +22,7 @@ class DisjointSet:
 
     def __str__(self):
         lines = '\n'.join(
-            [f'{i} -> {self._sets[i]} # rank: {self._ranks[i]} size: {self._sizes[i]}' for i in range(len(self._sets))]
+            [f'{i} => {self._sets[i]} # rank: {self._ranks[i]} size: {self._sizes[i]}' for i in range(len(self._sets))]
         )
         return f'DisjointSet [\n{lines}\n]'
 
