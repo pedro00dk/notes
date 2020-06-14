@@ -66,10 +66,10 @@ def sslp_dag(graph: Graph, start: int):
     return distances
 
 
-def sssp_dijkstra(graph: Graph, start: int, /, end: int = None, ignore_negative_edges=False, ignore_negative_exceptions=False):
+def sssp_dijkstra(graph: Graph, start: int, /, end: int = None):
     """
     Dijkstra single source shortest path algorithm.
-    Dijkstra does not support graphs with negative edge lengths (except if the graph is directed acyclic).
+    Dijkstra does not support graphs with negative edge lengths (except directed acyclic graphs).
 
     > complexity:
     - time: `O((v + e)*log(v))`
@@ -79,10 +79,6 @@ def sssp_dijkstra(graph: Graph, start: int, /, end: int = None, ignore_negative_
     - `graph: Graph`: graph to compute single source shortest path
     - `start: int`: vertex to compute distances from
     - `end: int? = None`: vertex to stop computation
-    - `ignore_negative_edges: bool? = False`: skip edge with negative weight
-    - `ignore_negative_exceptions: bool? = False`: prevent raising exception if negative edge is found, the algorithm
-        may get stuck in an infinity loop if there is a cycle with negative length, this option can be enabled for
-        direct acyclic graphs
 
     > `return: (int | float, int)[]`: distances array containing distances to `start` and `parent` 
     """
@@ -99,11 +95,6 @@ def sssp_dijkstra(graph: Graph, start: int, /, end: int = None, ignore_negative_
         if vertex_id == end:
             break
         for edge in graph.edges(vertex_id):
-            if edge.length < 0:
-                if ignore_negative_edges:
-                    continue
-                if not ignore_negative_exceptions:
-                    raise Exception('unsupported negative edge length')
             target_distance = vertex_distance + edge.length
             if target_distance < distances[edge._target][0]:
                 distances[edge._target] = (target_distance, vertex_id)
@@ -111,7 +102,7 @@ def sssp_dijkstra(graph: Graph, start: int, /, end: int = None, ignore_negative_
     return distances
 
 
-def sssp_dijkstra_opt(graph: Graph, start: int, /, end: int = None, ignore_negative_edges=False, ignore_negative_exceptions=False):
+def sssp_dijkstra_opt(graph: Graph, start: int, /, end: int = None):
     """
     Check base dijkstra algorithm for documentation.
 
@@ -138,11 +129,6 @@ def sssp_dijkstra_opt(graph: Graph, start: int, /, end: int = None, ignore_negat
         for edge in graph.edges(vertex_id):
             if visited[edge._target]:
                 continue
-            if edge.length < 0:
-                if ignore_negative_edges:
-                    continue
-                if not ignore_negative_exceptions:
-                    raise Exception('unsupported negative edge length')
             target_distance = vertex_distance + edge.length
             if target_distance < distances[edge._target][0]:
                 distances[edge._target] = (target_distance, vertex_id)
@@ -275,14 +261,14 @@ def test():
         [
             ('single source shortest path', lambda graph: sssp_dag(graph, 0)),
             ('single source longuest path', lambda graph: sslp_dag(graph, 0)),
-            ('              dijkstra sssp', lambda graph: sssp_dijkstra(graph, 0, ignore_negative_exceptions=True)),
-            ('          dijkstra opt sssp', lambda graph: sssp_dijkstra_opt(graph, 0, ignore_negative_exceptions=True)),
+            ('              dijkstra sssp', lambda graph: sssp_dijkstra(graph, 0)),
+            ('          dijkstra opt sssp', lambda graph: sssp_dijkstra_opt(graph, 0)),
             ('          bellman ford sssp', lambda graph: sssp_bellman_ford(graph, 0)),
             ('        floyd warshall apsp', lambda graph: apsp_floyd_warshall(graph)[0][0])
         ],
         test_input_iter=(random_dag(el_range=(-10, 15)) for i in range(3)),
         bench_size_iter=(1, 10, 100),
-        bench_input=lambda s, r: random_dag((s // 4, s if s < 3 else s // 3), (3, 4), el_range=(-10, 15))
+        bench_input=lambda s, r: random_dag((s // 4, s if s <= 3 else s // 3), (3, 4), el_range=(-10, 15))
     )
     print('random undirected graphs')
     benchmark(
