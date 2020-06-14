@@ -13,7 +13,7 @@ def insertionsort(array: list):
     > parameters:
     - `array: (int | float)[]`: array to be sorted
 
-    > `return: typeof(array)`: `array` sorted
+    > `return: (int | float)[]`: `array` sorted
     """
     for i in range(1, len(array)):
         key = array[i]

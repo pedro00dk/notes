@@ -192,7 +192,7 @@ Space complexity is available in algorithms files.
     -   ramanujan's factorial approximation **- O(1)**
 -   [permutations](./dsa/combinatorics/permutations.py)
     -   permutations count **- O(n)**
-    -   permutations using permutation cycles **- O(n\*\*k) -> O(n!) when k --> n**
+    -   permutations using permutation cycles **- O(n\*\*k) => O(n!) when k ~ n**
     -   permutations heap algorithm recursive **- O(n!)**
     -   permutations heap algorithm iterative **- O(n!)**
 -   [combinatorics](./dsa/combinatorics/combinations.py)

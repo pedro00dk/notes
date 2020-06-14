@@ -13,7 +13,7 @@ def bogosort_random(array: list):
     > parameters:
     - `array: (int | float)[]`: array to be sorted
 
-    > `return: typeof(array)`: `array` sorted
+    > `return: (int | float)[]`: `array` sorted
     """
     while any(array[i] > array[i + 1] for i in range(len(array) - 1)):
         random.shuffle(array)
@@ -31,7 +31,7 @@ def bogosort_deterministic(array: list):
     > parameters:
     - `array: (int | float)[]`: array to be sorted
 
-    > `return: typeof(array)`: `array` sorted
+    > `return: (int | float)[]`: `array` sorted
     """
     for permutation in itertools.permutations(array):
         if any(permutation[i] > permutation[i + 1] for i in range(len(permutation) - 1)):

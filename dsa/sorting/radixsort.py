@@ -25,7 +25,7 @@ def radixsort_lsd(array: list, /, power=4):
     - `array: int[]`: array to be sorted
     - `power: int? = 4`: the amount of bits to use as radix
 
-    > `return: typeof(array)`: `array` sorted
+    > `return: int[]`: `array` sorted
     """
     if len(array) == 0:
         return array
@@ -95,7 +95,7 @@ def radixsort_msd(array: list, /, power=4):
     - `array: int[]`: array to be sorted
     - `power: int? = 4`: the amount of bits to use as radix
 
-    > `return: typeof(array)`: `array` sorted
+    > `return: int[]`: `array` sorted
     """
     if len(array) == 0:
         return array

@@ -9,7 +9,7 @@ def mergesort(array: list):
     > parameters:
     - `array: (int | float)[]`: array to be sorted
 
-    > `return: typeof(array)`: `array` sorted
+    > `return: (int | float)[]`: `array` sorted
     """
     def rec(array: list, left: int, right: int, temp: list):
         center = (left + right) // 2

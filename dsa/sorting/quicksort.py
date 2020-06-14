@@ -14,7 +14,7 @@ def quicksort_hoare(array: list):
     > parameters:
     - `array: (int | float)[]`: array to be sorted
 
-    > `return: typeof(array)`: `array` sorted
+    > `return: (int | float)[]`: `array` sorted
     """
     def rec(array: list, left: int, right: int):
         if left >= right:
@@ -51,7 +51,7 @@ def quicksort_lomuto(array: list):
     > parameters:
     - `array: (int | float)[]`: array to be sorted
 
-    > `return: typeof(array)`: `array` sorted
+    > `return: (int | float)[]`: `array` sorted
     """
     def rec(array: list, left: int, right: int):
         if left >= right:
@@ -83,7 +83,7 @@ def quicksort_dual_pivot(array: list):
     > parameters:
     - `array: (int | float)[]`: array to be sorted
 
-    > `return: typeof(array)`: `array` sorted
+    > `return: (int | float)[]`: `array` sorted
     """
     def rec(array: list, left: int, right: int):
         if left >= right:

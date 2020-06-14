@@ -30,7 +30,7 @@ def shellsort(array: list, gapgen=Gap.Ciura2001):
     - `array: (int | float)[]`: array to be sorted
     - `gapgen: ((int, int) => int)? = Gap.Ciura2001`: gap generation algorithm
 
-    > `return: typeof(array)`: `array` sorted
+    > `return: (int | float)[]`: `array` sorted
     """
     n = len(array)
     gaps = []

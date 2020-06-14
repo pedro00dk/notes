@@ -9,7 +9,7 @@ def bubblesort(array: list):
     > parameters:
     - `array: (int | float)[]`: array to be sorted
 
-    > `return: typeof(array)`: `array` sorted
+    > `return: (int | float)[]`: `array` sorted
     """
     for i in range(len(array) - 1, -1, -1):
         for j in range(0, i):

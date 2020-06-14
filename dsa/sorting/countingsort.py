@@ -11,7 +11,7 @@ def countingsort(array: list):
     > parameters:
     - `array: int[]`: array to be sorted
 
-    > `return: typeof(array)`: `array` sorted
+    > `return: int[]`: `array` sorted
     """
     if len(array) == 0:
         return array
