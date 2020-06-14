@@ -22,25 +22,25 @@ def connected_traverse(graph: Graph, /, mode='depth'):
     if not graph.is_undirected():
         raise Exception('connected algorithm only works with undirected graphs')
     visited = [False] * graph.vertices_count()
-    groups = []
+    components = []
 
-    def dfs(id: int, group: list):
-        group.append(graph.get_vertex(id))
+    def dfs(id: int, component: list):
+        component.append(graph.get_vertex(id))
         visited[id] = True
         for edge in graph.edges(id):
             if not visited[edge._target]:
-                dfs(edge._target, group)
+                dfs(edge._target, component)
 
-    def bfs(id: int, group: list):
+    def bfs(id: int, component: list):
         queue = collections.deque()
         queue.append(id)
         while len(queue) > 0:
             id = queue.popleft()
-            group.append(graph.get_vertex(id))
+            component.append(graph.get_vertex(id))
             visited[id] = True
             for edge in graph.edges(id):
                 if not visited[edge._target]:
-                    dfs(edge._target, group)
+                    dfs(edge._target, component)
 
     traversal = dfs if mode == 'depth' else bfs
 
@@ -49,8 +49,8 @@ def connected_traverse(graph: Graph, /, mode='depth'):
             continue
         group = []
         traversal(id, group)
-        groups.append(group)
-    return groups
+        components.append(group)
+    return components
 
 
 def connected_disjoint_set(graph: Graph):
@@ -72,16 +72,16 @@ def connected_disjoint_set(graph: Graph):
     disjoint_set = DisjointSet(graph.vertices_count())
     for edge in graph.edges():
         disjoint_set.union(edge._source, edge._target)
-    groups = [[] for i in range(disjoint_set.sets())]
+    components = [[] for i in range(disjoint_set.sets())]
     index = 0
     indices = {}
     for id in range(graph.vertices_count()):
-        group = disjoint_set.find(id)
-        if group not in indices:
-            indices[group] = index
+        component = disjoint_set.find(id)
+        if component not in indices:
+            indices[component] = index
             index += 1
-        groups[indices[group]].append(graph.get_vertex(id))
-    return groups
+        components[indices[component]].append(graph.get_vertex(id))
+    return components
 
 
 def biconnected_tarjan(graph: Graph):
@@ -96,52 +96,52 @@ def biconnected_tarjan(graph: Graph):
     > parameters:
     - `graph: Graph`: graph to search groups
 
-    > `return: (Vertex[], Vertex[][])`: tuple containing articulation points and biconnected groups
+    > `return: (Vertex[], Edge[], Vertex[][])`: tuple containing articulations, bridges and biconnected groups
     """
     if not graph.is_undirected():
         raise Exception('connected algorithm only works with undirected graphs')
     next_order = [0]
-    order = [None] * graph.vertices_count()  # also used to encode visited (None)
+    order = [None] * graph.vertices_count()  # also encode visited (order[id] is not none)
     low = [None] * graph.vertices_count()
-    parent = [None] * graph.vertices_count()
     stack = collections.deque()
-
     articulations = set()
-    groups = []
+    bridges = []
+    components = []
 
-    def dfs(id: int):
+    def dfs(id: int, parent: int):
         order[id] = low[id] = next_order[0]
         next_order[0] += 1
         children = 0
         for edge in graph.edges(id):
             if order[edge._target] is None:  # not visited
-                parent[edge._target] = id
                 children += 1
                 stack.append(edge)
-                dfs(edge._target)
+                dfs(edge._target, id)
                 low[id] = min(low[id], low[edge._target])
-                if parent[id] is None and children > 1 or parent[id] is not None and low[edge._target] >= order[id]:
-                    articulations.add(id)
+                if parent is None and children > 1 or \
+                        parent is not None and order[id] <= low[edge._target]:  # component found
+                    if order[id] < low[edge._target]:  # bridge found
+                        bridges.append(edge)
+                    articulations.add(id)  # articulations comming from bridges or cycles
                     target = edge._target
-                    group = set()
+                    component = set()
                     while True:
                         edge = stack.pop()
-                        group.add(edge._source)
-                        group.add(edge._target)
+                        component.add(edge._source)
+                        component.add(edge._target)
                         if edge._source == id and edge._target == target:
                             break
-                    groups.append([graph.get_vertex(v) for v in group])
-            elif parent[id] != edge._target and low[id] > order[edge._target]:
+                    components.append([graph.get_vertex(v) for v in component])
+            elif parent != edge._target and low[id] > order[edge._target]:
                 low[id] = min(low[id], low[edge._target])
                 stack.append(edge)
 
     for id in range(graph.vertices_count()):
         if order[id] is None:
-            dfs(id)
-        while len(stack) > 0:
-            stack.pop()
+            dfs(id, None)
+        stack.clear()
 
-    return ([graph.get_vertex(v) for v in articulations], groups)
+    return ([graph.get_vertex(v) for v in articulations], bridges, components)
 
 
 def strong_connected_tarjan(graph: Graph):
@@ -161,10 +161,10 @@ def strong_connected_tarjan(graph: Graph):
     > `return: Vertex[][]`: list containing vertex groups
     """
     next_order = [0]
-    order = [None] * graph.vertices_count()  # also used to encode visited and stacked (None, -1)
+    order = [None] * graph.vertices_count()  # also encode visited and stacked (order[id] is not None, order[id] != - 1)
     low = [None] * graph.vertices_count()
     stack = collections.deque()
-    groups = []
+    components = []
 
     def dfs(id: int):
         order[id] = low[id] = next_order[0]
@@ -173,22 +173,23 @@ def strong_connected_tarjan(graph: Graph):
         for edge in graph.edges(id):
             if order[edge._target] is None:  # not visited
                 dfs(edge._target)
-            if order[edge._target] != -1:  # stacked
+            if order[edge._target] != -1:  # stacked (can not be unvisited due to step above)
                 low[id] = min(low[id], low[edge._target])
-        if low[id] == order[id]:
-            group = []
-            while True:
-                nid = stack.pop()
-                order[nid] = -1
-                group.append(graph.get_vertex(nid))
-                if nid == id:
-                    break
-            groups.append(group)
+        if low[id] != order[id]:
+            return
+        component = []
+        while True:
+            vid = stack.pop()
+            order[vid] = -1
+            component.append(graph.get_vertex(vid))
+            if vid == id:
+                break
+        components.append(component)
 
     for id in range(graph.vertices_count()):
         if order[id] is None:
             dfs(id)
-    return groups
+    return components
 
 
 def strong_connected_kosaraju(graph: Graph):
@@ -214,12 +215,12 @@ def strong_connected_kosaraju(graph: Graph):
                 dfs_stack(edge._target)
         stack.append(id)
 
-    def dfs_group(id: int, group: list):
+    def dfs_component(id: int, group: list):
         group.append(graph.get_vertex(id))
         visited[id] = True
         for edge in graph.edges(id):
             if not visited[edge._target]:
-                dfs_group(edge._target, group)
+                dfs_component(edge._target, group)
 
     for id in range(graph.vertices_count()):
         if visited[id]:
@@ -228,46 +229,57 @@ def strong_connected_kosaraju(graph: Graph):
 
     transposed_graph = graph.transposed()
     visited = [False] * graph.vertices_count()
-    groups = []
+    components = []
 
     while len(stack) > 0:
         id = stack.pop()
         if visited[id]:
             continue
-        group = []
-        dfs_group(id, group)
-        groups.append(group)
-    return groups
+        component = []
+        dfs_component(id, component)
+        components.append(component)
+    return components
 
 
 def test():
     from ..test import benchmark
     from .factory import random_undirected
+
+    def test_biconnected_tarjan(graph):
+        articulations, bridges, components = biconnected_tarjan(graph)
+        return {
+            'articulations': [vertex._id for vertex in articulations],
+            'bridges': [(edge._source, edge._target) for edge in bridges],
+            'components': [[vertex._id for vertex in component] for component in components]
+        }
+
     benchmark(
         [
             (
                 '   connected traverse depth',
-                lambda graph: [[vertex._id for vertex in group] for group in connected_traverse(graph, mode='depth')]
+                lambda graph: [[vertex._id for vertex in component]
+                               for component in connected_traverse(graph, mode='depth')]
             ),
             (
                 ' connected traverse breadth',
-                lambda graph: [[vertex._id for vertex in group] for group in connected_traverse(graph, mode='breadth')]
+                lambda graph: [[vertex._id for vertex in component]
+                               for component in connected_traverse(graph, mode='breadth')]
             ),
             (
                 '     connected disjoint set',
-                lambda graph: [[vertex._id for vertex in group] for group in connected_disjoint_set(graph)]
+                lambda graph: [[vertex._id for vertex in component] for component in connected_disjoint_set(graph)]
             ),
             (
-                '         biconnected trajan',
-                lambda graph: [[vertex._id for vertex in group] for group in biconnected_tarjan(graph)[1]]
+                '         biconnected tarjan',
+                lambda graph: test_biconnected_tarjan(graph)
             ),
             (
                 '    strong connected tarjan',
-                lambda graph: [[vertex._id for vertex in group] for group in strong_connected_tarjan(graph)]
+                lambda graph: [[vertex._id for vertex in component] for component in strong_connected_tarjan(graph)]
             ),
             (
                 '  strong connected kosaraju',
-                lambda graph: [[vertex._id for vertex in group] for group in strong_connected_kosaraju(graph)]
+                lambda graph: [[vertex._id for vertex in component] for component in strong_connected_kosaraju(graph)]
             )
         ],
         test_input_iter=(random_undirected(i, 0.1) for i in (5, 10, 15, 20)),
