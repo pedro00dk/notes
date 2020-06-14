@@ -9,7 +9,7 @@ class BST(Tree):
     def __init__(self):
         super().__init__(lambda node, depth: f'{node.key}: {node.value}')
 
-    def put(self, key, /, value=None):
+    def put(self, key, /, value=None, replacer=None):
         """
         Check abstract class for documentation.
 
@@ -31,7 +31,8 @@ class BST(Tree):
                 parent.right = Node(key, value)
             self._size += 1
         else:
-            node.key, node.value, old_value = key, value, node.value
+            old_value = node.value
+            node.key, node.value = key, replacer(value, node.value) if replacer is not None else value
             return old_value
 
     def take(self, key):

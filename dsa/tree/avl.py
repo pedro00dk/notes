@@ -27,7 +27,7 @@ class AVL(Tree):
         super().__init__(lambda node, depth: f'b:{node.balance()} # {node.key}: {node.value}')
         self._rank = rank
 
-    def put(self, key, /, value=None):
+    def put(self, key, /, value=None, replacer=None):
         """
         Check abstract class for documentation.
 
@@ -50,7 +50,7 @@ class AVL(Tree):
                 node.height = max(node.height, node.right.height + 1)
             else:
                 old_value[0] = node.value
-                node.key, node.value = key, value
+                node.key, node.value = key, replacer(value, node.value) if replacer is not None else value
             balance = node.balance()
             return node if abs(balance) < self._rank else self._rotate(node, balance)
 

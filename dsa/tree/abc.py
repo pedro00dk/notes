@@ -167,7 +167,7 @@ class Tree(abc.ABC):
         return self._size == 0
 
     @abc.abstractmethod
-    def put(self, key, /, value=None):
+    def put(self, key, /, value=None, replacer=None):
         """
         Insert a new entry containing `key` and `value` in the tree.
         If `key` already exists, then, `value` is replaced.
@@ -177,6 +177,9 @@ class Tree(abc.ABC):
         > parameters:
         - `key: int | float`: key of the entry
         - `value: any? = None`: value of the entry
+        - `replacer: ((any, any) => any)? = None`: function to run if `key` already exists, the function parametes are
+            the new and old values respectively, the return is the new value, if `None` the old value is simply replaced
+            with the new one
 
         > `return: any`: `None` if it is a new key, otherwise the previous value associated with `key`
         """
