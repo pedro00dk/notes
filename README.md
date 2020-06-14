@@ -37,6 +37,10 @@ Space complexity is available in algorithms files.
     -   quicksort Hoare's partition **- average: O(n\*log(n)), worst: O(n\*\*2)**
     -   quicksort Lomuto's partition **- average: O(n\*log(n)), worst: O(n\*\*2)**
     -   quicksort dual pivot partition **- average: O(n\*log(n)), worst: O(n\*\*2)**
+-   [treesort](./dsa/sorting/treesort.py) _see data structures trees section_ **- O(n\*O(tree.put))**
+    -   bstsort **- average: O(n\*log(n)), worst: O(n\*\*2)**
+    -   avlsort **- O(n\*log(n))**
+    -   rbtsort **- O(n\*log(n))**
 -   [shellsort](./dsa/sorting/shellsort.py) **- O(n \* (log(n)/log(log(n)))\*\*2), for all gaps**
     -   shellsort gap Shell1959 **- O(n\*\*2)**
     -   shellsort gap FrankLazarus1960 **- O(n\*\*(3/2))**
