@@ -56,13 +56,15 @@ class OAHashtable(Hashtable):
         Check abstract class for documentation.
         """
         if self._size / self._capacity >= self._load_threshold:
-            self._rebuild()
+            self._rebuild(True)
         hash_, index, entry = self._find(key, True)
         if entry is None or entry.deleted:
             self._size += 1
         self._table[index] = OAEntry(hash_, key, value)
 
     def take(self, key):
+        if self._size / self._capacity < self._load_threshold / 4:
+            self._rebuild(False)
         hash_, index, entry = self._find(key, False)
         if entry is None:
             raise KeyError(f'key ({key}) not found')

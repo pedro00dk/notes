@@ -76,8 +76,8 @@ class Hashtable(abc.ABC):
             max(0.1, load_threshold if load_threshold is not None else self._prober.value['threshold'][0]),
             self._prober.value['threshold'][1]
         )
-        self._capacity = self._prober.value['capacity'](0, 0)
-        self._capacity_index = 1
+        self._capacity_index = 0
+        self._capacity = self._prober.value['capacity'](0, self._capacity_index)
         self._probe = self._prober.value['probe']
         self._table = [None] * self._capacity
         self._size = 0
@@ -92,23 +92,27 @@ class Hashtable(abc.ABC):
     def __iter__(self):
         return self.entries()
 
-    def _rebuild(self):
+    def _rebuild(self, increase: bool):
         """
-        Rebuild the hashtable to increase the internal capacity.
-        This function should be used when the load factor surpass the allowed limit.
+        Rebuild the hashtable to increase or decrease the internal capacity.
+        This function should be used when the load factor reaches or surpass the allowed limit threshold, or when the
+        load factor becomes smaller than the limit threshold divided by a factor greater then 2 (the factor is up to the
+        hashtable implementation, 4 is recommended).
         This function relies on the `entries` (and consequently `__iter__`) generators continue using the old table
         while the new is being rebuilt.
 
         > complexity:
         - time: `O(n)`
         - space: `O(n)`
-        > 
+
+        > parameters:
+        - `increase: bool`: if table should increase or decrease size
         """
         entries = iter(self)  # generator obtained before updating _table
         first = next(entries)  # start generator before updating references to ensure reference loads
         self._size = 0
+        self._capacity_index += 1 if increase else -1
         self._capacity = self._prober.value['capacity'](self._capacity, self._capacity_index)
-        self._capacity_index += 1
         self._table = [None] * self._capacity
         self.put(*first)
         for key, value in entries:
@@ -186,8 +190,8 @@ class Hashtable(abc.ABC):
         > complexity: check subclass implementations
 
         > complexity:
-        - time: `O(1)`
-        - space: `O(1)`
+        - time: `O(1)` amortized
+        - space: `O(1)` amortized
 
         > `return: any`: value associated with `key`
         """

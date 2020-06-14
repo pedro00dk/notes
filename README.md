@@ -133,7 +133,7 @@ Space complexity is available in algorithms files.
         -   Quadratic Triangular Probing
     -   traversal **- O(n)**
     -   put **- O(1) amortized**
-    -   take **- O(1)**
+    -   take **- O(1) amortized**
     -   get **- O(1)**
     -   contains key **O(1)**
     -   contains value **- O(n)**
@@ -162,7 +162,7 @@ Space complexity is available in algorithms files.
         -   connected depth first search **- O(v + e)**
         -   connected breadth first search **- O(v + e)**
         -   connected disjoint set **- O(v + e)**
-        -   biconnected and articulation tarjan **- O(v + e)**
+        -   articulations, bridges and biconnected tarjan **- O(v + e)**
     -   all graphs
         -   strongly connected tarjan **- O(v + e)**
         -   strongly connected kosaraju **- O(v + e)**
@@ -175,9 +175,9 @@ Space complexity is available in algorithms files.
         -   single source **- O(v + e)**
         -   single source (longest) **- O(v + e)**
     -   all graphs
-        -   dijkstra single source **- O((v + e)\*log(v))**
-        -   bellman ford single source **- O(v\*e)**
-        -   floyd warshall all pairs **- O(v\*\*3)**
+        -   single source dijkstra **- O((v + e)\*log(v))**
+        -   single source bellman ford **- O(v\*e)**
+        -   all pairs floyd warshall **- O(v\*\*3)**
 
 ## Enumeration Combinatorics
 

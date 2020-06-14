@@ -50,7 +50,7 @@ class SCHashtable(Hashtable):
         Check abstract class for documentation.
         """
         if self._size / self._capacity >= self._load_threshold:
-            self._rebuild()
+            self._rebuild(True)
         hash_, index, entry = self._find(key)
         parent = None
         node = entry
@@ -71,6 +71,8 @@ class SCHashtable(Hashtable):
         """
         Check abstract class for documentation.
         """
+        if self._size / self._capacity < self._load_threshold / 4:
+            self._rebuild(False)
         hash_, index, entry = self._find(key)
         parent = None
         node = entry
