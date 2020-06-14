@@ -154,7 +154,7 @@ class Tree(abc.ABC):
         > parameters:
         - `mode: str? = `'in'`: traversal mode, one of `'pre', 'in', 'post', 'breadth'`
 
-        > `return: Generator<((int | float), any, int)>`: generator of nodes and depths
+        > `return: Generator<(int | float, any, int)>`: generator of nodes and depths
         """
         return ((node.key, node.value, depth) for node, depth in self._traverse(mode))
 
@@ -175,7 +175,7 @@ class Tree(abc.ABC):
         > complexity: check subclass implementations
 
         > parameters:
-        - `key: (int | float)`: key of the entry
+        - `key: int | float`: key of the entry
         - `value: any? = None`: value of the entry
 
         > `return: any`: `None` if it is a new key, otherwise the previous value associated with `key`
@@ -190,7 +190,7 @@ class Tree(abc.ABC):
         > complexity: check subclass implementations
 
         > parameters:
-        - `key: (int | float)`: key of the entry
+        - `key: int | float`: key of the entry
 
         > `return: any`: value associated with `key`
         """
@@ -205,7 +205,7 @@ class Tree(abc.ABC):
         - space: `O(1)`
 
         > parameters:
-        - `key: (int | float)`: key of value to retrieve
+        - `key: int | float`: key of value to retrieve
 
         > `return: any`: value associated with `key`
         """
@@ -225,7 +225,7 @@ class Tree(abc.ABC):
         - space: `O(log(n))`
 
         > parameters:
-        - `key: (int | float)`: key to check
+        - `key: int | float`: key to check
 
         > `return: bool`: if `key` exists
         """
@@ -295,7 +295,7 @@ class Tree(abc.ABC):
         - space: `O(n)` or `O(log(n))` for balanced trees
 
         > parameters:
-        - `key: (int | float)`: key of value to retrieve ancestor
+        - `key: int | float`: key of value to retrieve ancestor
 
         > `return: (int | float, any)`: key and value ancestor of `key`
         """
@@ -326,7 +326,7 @@ class Tree(abc.ABC):
         - space: `O(n)` or `O(log(n))` for balanced trees
 
         > parameters:
-        - `key: (int | float)`: key of value to retrieve ancestor
+        - `key: int | float`: key of value to retrieve ancestor
 
         > `return: (int | float, any)`: key and value successor of `key`
         """

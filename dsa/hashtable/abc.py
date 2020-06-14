@@ -207,7 +207,7 @@ class Hashtable(abc.ABC):
         - space: `O(1)`
 
         > parameters:
-        - `key: (int | float)`: key of value to retrieve
+        - `key: int | float`: key of value to retrieve
 
         > `return: any`: value associated with `key`
         """

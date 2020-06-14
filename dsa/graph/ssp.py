@@ -245,7 +245,7 @@ def floyd_warshall_rebuild_path(distances: list, parents: list, start: int, end:
     - `start: int`: vertex to compute distances from
     - `end: int`: vertex to stop computation
 
-    > `return: ((int | float), int[])`: distance from `start` to `end` and the path between them,
+    > `return: (int | float, int[])`: distance from `start` to `end` and the path between them,
     if path is empty, then there is no path between `start` and `end`,
     or if path is `None`, there is a negative cycle between `start` and `end`
     """
