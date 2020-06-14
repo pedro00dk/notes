@@ -14,6 +14,8 @@ class SCEntryNode(Entry):
 class SCHashtable(Hashtable):
     """
     Sequence chaining Hashtable implementation.
+    Probers have minimal impact in sequence chaining performance, if probers produce the same index for `trie = 0`,
+    the only change is the capacity and threshold limits. 
     """
 
     def _find(self, key):
