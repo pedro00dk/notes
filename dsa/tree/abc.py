@@ -252,3 +252,97 @@ class Tree(abc.ABC):
             if value == node_value:
                 return True
         return False
+
+    def minimum(self):
+        """
+        Retrieve smallest key and value in the tree.
+        Return `None` if the tree is empty.
+
+        > complexity:
+        - time: `O(n)` or `O(log(n))` for balanced trees
+        - space: `O(1)`
+
+        > `return: (int | float, any)`: minimum key and its value
+        """
+        node = self._root
+        while node is not None and node.left is not None:
+            node = node.left
+        return (node.key, node.value) if node is not None else None
+
+    def maximum(self):
+        """
+        Retrieve greatest key and value in the tree.
+        Return `None` if the tree is empty.
+
+        > complexity:
+        - time: `O(n)` or `O(log(n))` for balanced trees
+        - space: `O(1)`
+
+        > `return: (int | float, any)`: maximum key and its value
+        """
+        node = self._root
+        while node is not None and node.right is not None:
+            node = node.right
+        return (node.key, node.value) if node is not None else None
+
+    def ancestor(self, key):
+        """
+        Retrieve the ancestor of `key`.
+        If `key` is the tree `min`, then `None` is returned.
+
+        > complexity:
+        - time: `O(n)` or `O(log(n))` for balanced trees
+        - space: `O(n)` or `O(log(n))` for balanced trees
+
+        > parameters:
+        - `key: (int | float)`: key of value to retrieve ancestor
+
+        > `return: (int | float, any)`: key and value ancestor of `key`
+        """
+        parents = []
+        node = self._root
+        while node is not None and key != node.key:
+            parents.append(node)
+            node = node.left if key < node.key else node.right
+        if node is None:
+            raise KeyError(f'key ({key}) not found')
+        ancestor = None
+        if node.left is not None:
+            ancestor = node.left
+            while ancestor.right is not None:
+                ancestor = ancestor.right
+            return ancestor.key, ancestor.value
+        for parent in reversed(parents):
+            if parent.key < key:
+                return parent.key, parent.value
+
+    def successor(self, key):
+        """
+        Retrieve the successor of `key`.
+        If `key` is the tree `max`, then `None` is returned.
+
+        > complexity:
+        - time: `O(n)` or `O(log(n))` for balanced trees
+        - space: `O(n)` or `O(log(n))` for balanced trees
+
+        > parameters:
+        - `key: (int | float)`: key of value to retrieve ancestor
+
+        > `return: (int | float, any)`: key and value successor of `key`
+        """
+        parents = []
+        node = self._root
+        while node is not None and key != node.key:
+            parents.append(node)
+            node = node.left if key < node.key else node.right
+        if node is None:
+            raise KeyError(f'key ({key}) not found')
+        ancestor = None
+        if node.right is not None:
+            ancestor = node.right
+            while ancestor.left is not None:
+                ancestor = ancestor.left
+            return ancestor.key, ancestor.value
+        for parent in reversed(parents):
+            if parent.key > key:
+                return parent.key, parent.value

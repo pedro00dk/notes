@@ -82,6 +82,10 @@ Space complexity is available in algorithms files.
     -   get **- average or balanced trees: O(log(n)), worst: O(n)**
     -   contains key **- average or balanced trees: O(log(n)), worst: O(n)**
     -   contains value **- O(n)**
+    -   ancestor **- average or balanced trees: O(log(n)), worst: O(n)**
+    -   successor **- average or balanced trees: O(log(n)), worst: O(n)**
+    -   minimum **- average or balanced trees: O(log(n)), worst: O(n)**
+    -   maximum **- average or balanced trees: O(log(n)), worst: O(n)**
     -   [binary search tree](./dsa/tree/bst.py)
         -   put **- average: O(log(n)), worst: O(n)**
         -   take **- average: O(log(n)), worst: O(n)**
