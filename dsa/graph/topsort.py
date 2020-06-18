@@ -28,7 +28,7 @@ def topsort_khan(graph: Graph):
     order = []
     while len(root_vertices) > 0:
         id = root_vertices.pop()
-        order.append(graph.get_vertex(id))
+        order.append(id)
         for edge in graph.edges(id):
             if edge._target is None:  # removed edge
                 continue
@@ -67,7 +67,7 @@ def topsort_dfs(graph: Graph):
             if visited[edge._target] != 2:  # not visited
                 dfs(edge._target)
         visited[id] = 2
-        order.append(graph.get_vertex(id))
+        order.append(id)
 
     for id in range(graph.vertices_count()):
         if visited[id] != 2:  # not visited or temporary
@@ -82,18 +82,9 @@ def test():
     from .factory import random_dag
     benchmark(
         [
-            (
-                '  topological sort khan',
-                lambda graph: [vertex._id for vertex in topsort_khan(graph)]
-            ),
-            (
-                '   topological sort dfs',
-                lambda graph: [vertex._id for vertex in topsort_dfs(graph)]
-            ),
-            (
-                'topological sort tarjan',
-                lambda graph: [*reversed([group[0]._id for group in strong_connected_tarjan(graph)])]
-            )
+            ('  topological sort khan', topsort_khan),
+            ('   topological sort dfs', topsort_dfs),
+            ('topological sort tarjan', lambda graph: [*reversed([v for v, in strong_connected_tarjan(graph)])])
         ],
         test_input_iter=(random_dag() for i in range(5)),
         bench_size_iter=(0, 1, 10, 100, 1000),

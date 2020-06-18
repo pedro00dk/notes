@@ -24,12 +24,12 @@ def sssp_dag(graph: Graph, start: int):
         raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
     distances = [(float('inf'), None)] * graph.vertices_count()
     distances[start] = (0, None)
-    for vertex in topsort_dfs(graph):
-        vertex_distance, parent = distances[vertex._id]
-        for edge in graph.edges(vertex._id):
+    for id in topsort_dfs(graph):
+        vertex_distance, parent = distances[id]
+        for edge in graph.edges(id):
             target_distance = vertex_distance + edge.length
             if target_distance < distances[edge._target][0]:
-                distances[edge._target] = (target_distance, vertex._id)
+                distances[edge._target] = (target_distance, id)
     return distances
 
 
@@ -53,12 +53,12 @@ def sslp_dag(graph: Graph, start: int):
         raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
     distances = [(float('inf'), None)] * graph.vertices_count()
     distances[start] = (0, None)
-    for vertex in topsort_dfs(graph):
-        vertex_distance, parent = distances[vertex._id]
-        for edge in graph.edges(vertex._id):
+    for id in topsort_dfs(graph):
+        vertex_distance, parent = distances[id]
+        for edge in graph.edges(id):
             target_distance = vertex_distance - edge.length  # negate edge length
             if target_distance < distances[edge._target][0]:
-                distances[edge._target] = (target_distance, vertex._id)
+                distances[edge._target] = (target_distance, id)
     inf = float('inf')
     for i in range(len(distances)):
         distance, parent = distances[i]
@@ -86,7 +86,7 @@ def sssp_dijkstra(graph: Graph, start: int, /, end: int = None):
         return []
     if start < 0 or start >= graph.vertices_count() or end is not None and (end < 0 or end > graph.vertices_count()):
         raise IndexError(f'start ({start}) or end ({end}) vertices out of range [0, {graph.vertices_count()})')
-    distances = [(float('inf'), None)] * len(graph)
+    distances = [(float('inf'), None)] * graph.vertices_count()
     distances[start] = (0, None)
     heap = []
     heapq.heappush(heap, (0, start))
@@ -259,24 +259,24 @@ def test():
     print('random directed acyclic graphs')
     benchmark(
         [
-            ('single source shortest path', lambda graph: sssp_dag(graph, 0)),
-            ('single source longuest path', lambda graph: sslp_dag(graph, 0)),
-            ('              dijkstra sssp', lambda graph: sssp_dijkstra(graph, 0)),
-            ('          dijkstra opt sssp', lambda graph: sssp_dijkstra_opt(graph, 0)),
-            ('          bellman ford sssp', lambda graph: sssp_bellman_ford(graph, 0)),
-            ('        floyd warshall apsp', lambda graph: apsp_floyd_warshall(graph)[0][0])
+            ('                sssp dag', lambda graph: sssp_dag(graph, 0)),
+            ('                sslp dag', lambda graph: sslp_dag(graph, 0)),
+            ('           sssp dijkstra', lambda graph: sssp_dijkstra(graph, 0)),
+            ('       sssp dijkstra opt', lambda graph: sssp_dijkstra_opt(graph, 0)),
+            ('       sssp bellman ford', lambda graph: sssp_bellman_ford(graph, 0)),
+            ('apsp floyd warshall apsp', lambda graph: apsp_floyd_warshall(graph)[0][0])
         ],
         test_input_iter=(random_dag(el_range=(-10, 15)) for i in range(3)),
         bench_size_iter=(1, 10, 100),
-        bench_input=lambda s, r: random_dag((s // 4, s if s <= 3 else s // 3), (3, 4), el_range=(-10, 15))
+        bench_input=lambda s, r: random_dag((s // 3, s if s <= 3 else s // 2), (3, 4), el_range=(-10, 15))
     )
     print('random undirected graphs')
     benchmark(
         [
-            ('              dijkstra sssp', lambda graph: sssp_dijkstra(graph, 0)),
-            ('          dijkstra opt sssp', lambda graph: sssp_dijkstra_opt(graph, 0)),
-            ('          bellman ford sssp', lambda graph: sssp_bellman_ford(graph, 0)),
-            ('        floyd warshall apsp', lambda graph: apsp_floyd_warshall(graph)[0][0])
+            ('           sssp dijkstra', lambda graph: sssp_dijkstra(graph, 0)),
+            ('       sssp dijkstra opt', lambda graph: sssp_dijkstra_opt(graph, 0)),
+            ('       sssp bellman ford', lambda graph: sssp_bellman_ford(graph, 0)),
+            ('apsp floyd warshall apsp', lambda graph: apsp_floyd_warshall(graph)[0][0])
         ],
         test_input_iter=(random_undirected(10, el_range=(1, 10)) for i in range(3)),
         bench_size_iter=(1, 10, 100),
@@ -285,10 +285,10 @@ def test():
     print('random directed graphs')
     benchmark(
         [
-            ('              dijkstra sssp', lambda graph: sssp_dijkstra(graph, 0)),
-            ('          dijkstra opt sssp', lambda graph: sssp_dijkstra_opt(graph, 0)),
-            ('          bellman ford sssp', lambda graph: sssp_bellman_ford(graph, 0)),
-            ('        floyd warshall apsp', lambda graph: apsp_floyd_warshall(graph)[0][0])
+            ('           sssp dijkstra', lambda graph: sssp_dijkstra(graph, 0)),
+            ('       sssp dijkstra opt', lambda graph: sssp_dijkstra_opt(graph, 0)),
+            ('       sssp bellman ford', lambda graph: sssp_bellman_ford(graph, 0)),
+            ('apsp floyd warshall apsp', lambda graph: apsp_floyd_warshall(graph)[0][0])
         ],
         test_input_iter=(random_directed(10, el_range=(1, 10)) for i in range(3)),
         bench_size_iter=(1, 10, 100),
