@@ -12,7 +12,7 @@ def factorial_rec(n: int):
     ```
 
     > optimizations:
-    - skip the `n == 1` and `n == 0` recursive steps because `1! == 1` and `0! == 1`
+    - skip `n == 1` and `n == 0` steps because `1! == 1` and `0! == 1`
 
     > complexity:
     - time: `O(n)`
@@ -56,7 +56,7 @@ def factorial_stirling(n: float):
     Stirling's factorial approximation.
 
     > complexity:
-    - time: `O(1)` (float exponentiation is constant, `pow` and `**` use float exponentiation only if operands are float)
+    - time: `O(1)`
     - space: `O(1)`
 
     > parameters:
@@ -72,7 +72,7 @@ def factorial_ramanujan(n: float):
     Ramanujan's factorial approximation. Much more precise than Stirling's.
 
     > complexity:
-    - time: `O(1)` (float exponentiation is constant, `pow` and `**` use float exponentiation only if operands are float)
+    - time: `O(1)`
     - space: `O(1)`
 
     > parameters:

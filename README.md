@@ -204,6 +204,8 @@ Space complexity is available in algorithms files.
     -   combinations count **- O(n)**
     -   combinations recursive **- O(n choose k)**
     -   combinations iterative **- O(n choose k)**
+    -   bit combinations recursive range **- O(n choose k)**
+    -   bit combinations recursive branch **- O(n choose k)**
 
 ## Searching Algorithms
 
