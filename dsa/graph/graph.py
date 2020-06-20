@@ -343,7 +343,7 @@ class Graph:
         Return the adjacency matrix of the graph containing edge lengths.
 
         > complexity:
-        - time: `O(v**2 + e)`
+        - time: `O(v**2)`
         - space: `O(v**2)`
 
         > parameters:
