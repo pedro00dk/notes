@@ -179,8 +179,8 @@ Space complexity is available in algorithms files.
     -   khan **- O(v + e)**
     -   depth first search based **- O(v + e)**
     -   strongly connected tarjan _(from connectivity algorithms, used as topsort algorithm)_ **- O(v + e)**
--   paths
-    -   [shortest path](./dsa/graph/ssp.py)
+-   [path finding](./dsa/graph/path)
+    -   [shortest path](./dsa/graph/path/ssp.py)
         -   directed acyclic graphs
             -   single source **- O(v + e)**
             -   single source (longest) **- O(v + e)**
@@ -188,7 +188,7 @@ Space complexity is available in algorithms files.
             -   single source dijkstra **- O((v + e)\*log(v))**
             -   single source bellman ford **- O(v\*e)**
             -   all pairs floyd warshall **- O(v\*\*3)**
-    -   [traveling salesman problem (complete graphs)](./dsa/graph/tsp.py)
+    -   [traveling salesman problem](./dsa/graph/path/tsp.py)
         -   brute force **- O(v!)**
         -   held-karp dynamic programming bitset **- O((2\*\*v)\*(v\*\*2))**
         -   held-karp dynamic programming hashset **- O((2\*\*v)\*(v\*\*2))**

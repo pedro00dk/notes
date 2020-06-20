@@ -1,6 +1,6 @@
 import itertools
 
-from .graph import Graph
+from ..graph import Graph
 
 
 def tsp_brute_force(graph: Graph, /, start=0):
@@ -239,8 +239,8 @@ def tsp_nearest_heighbor(graph: Graph, /, start=0):
 
 
 def test():
-    from ..test import benchmark
-    from .factory import complete
+    from ...test import benchmark
+    from ..factory import complete
     benchmark(
         [
             ('                tsp brute force', tsp_brute_force),

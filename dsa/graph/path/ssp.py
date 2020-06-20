@@ -1,7 +1,7 @@
 import heapq
 
-from .graph import Graph
-from .topsort import topsort_dfs
+from ..graph import Graph
+from ..topsort import topsort_dfs
 
 
 def sssp_dag(graph: Graph, start: int):
@@ -254,8 +254,8 @@ def floyd_warshall_rebuild_path(distances: list, parents: list, start: int, end:
 
 
 def test():
-    from ..test import benchmark
-    from .factory import random_undirected, random_directed, random_dag
+    from ...test import benchmark
+    from ..factory import random_undirected, random_directed, random_dag
     # skip zero size inputs because in all benchmarks because of floyd warshall array accesses
     print('random directed acyclic graphs')
     benchmark(

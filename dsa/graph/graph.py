@@ -143,7 +143,7 @@ class Graph:
             for edge in self._edges[id]:
                 queue.append((edge._target, vertex, edge, depth + 1))
 
-    def traverse(self, id, mode='depth', /, visited: list = None, yield_before=True, yield_after=False, yield_back=False):
+    def traverse(self, id: int, mode='depth', /, visited: list = None, yield_before=True, yield_after=False, yield_back=False):
         """
         Return a generator for graph traversals.
         This implementation must not be used to implement other algorithms because of the performance impact of
@@ -193,9 +193,7 @@ class Graph:
 
         > `return: Generator<(int, float, any)>`: generator of vertices ids which contains the edge, lengths and data
         """
-        if id is not None:
-            return iter(self._edges[id])
-        return (edge for vertex_edges in self._edges for edge in vertex_edges)
+        return (edge for vertex_edges in self._edges for edge in vertex_edges) if id is None else iter(self._edges[id])
 
     def vertices_count(self):
         """
@@ -203,11 +201,14 @@ class Graph:
         """
         return len(self._vertices)
 
-    def edges_count(self):
+    def edges_count(self, id: int = None):
         """
+        > parameters:
+        - `id: int? = None`: id of the vertex to get edge count, if `None`, get all edges count
+
         > `return: int`: number of edges (undirected edges count as 2 edges)
         """
-        return self._all_edges
+        return self._all_edges if id is None else len(self._edges[id])
 
     def unique_edges_count(self):
         """

@@ -30,10 +30,10 @@ def topsort_khan(graph: Graph):
         v = root_vertices.pop()
         order.append(v)
         for edge in graph.edges(v):
-            if edge._target is None:  # removed edge
+            if edge.data == True:  # removed edge
                 continue
             target = edge._target
-            edge._target = None  # remove edge
+            edge.data = True  # remove edge
             incoming_edges[target] -= 1  # decrease edge count
             total_edges -= 1
             if incoming_edges[target] == 0:
