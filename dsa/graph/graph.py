@@ -338,7 +338,7 @@ class Graph:
             transposed_graph.make_edge(edge._target, edge._source, edge.length, edge.data, True)
         return transposed_graph
 
-    def adjacency_matrix(self):
+    def adjacency_matrix(self, /, absent_edge_length=float('inf')):
         """
         Return the adjacency matrix of the graph containing edge lengths.
 
@@ -346,11 +346,14 @@ class Graph:
         - time: `O(v**2 + e)`
         - space: `O(v**2)`
 
+        > parameters:
+        - `absent_edge_length: (int | float)? = float('inf')`: length to use in non existent edges
+
         > `return: (int | float)[][]`: graph adjacency matrix
         """
-        matrix = [[float('inf')] * self.vertices_count() for i in range(self.vertices_count())]
+        matrix = [[absent_edge_length] * self.vertices_count() for i in range(self.vertices_count())]
         for edge in self.edges():
             matrix[edge._source][edge._target] = edge.length
         for id in range(self.vertices_count()):
-            matrix[id][id] = 0
+            matrix[id][id] = matrix[id][id] if matrix[id][id] != absent_edge_length else 0
         return matrix
