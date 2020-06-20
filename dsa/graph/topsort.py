@@ -24,12 +24,12 @@ def topsort_khan(graph: Graph):
     for edge in graph.edges():
         incoming_edges[edge._target] += 1
         total_edges += 1
-    root_vertices = [id for id, count in enumerate(incoming_edges) if count == 0]
+    root_vertices = [v for v, count in enumerate(incoming_edges) if count == 0]
     order = []
     while len(root_vertices) > 0:
-        id = root_vertices.pop()
-        order.append(id)
-        for edge in graph.edges(id):
+        v = root_vertices.pop()
+        order.append(v)
+        for edge in graph.edges(v):
             if edge._target is None:  # removed edge
                 continue
             target = edge._target
@@ -59,19 +59,19 @@ def topsort_dfs(graph: Graph):
     visited = [0] * graph.vertices_count()  # 0: unvisited, 1: temporary, 2: visited
     order = []
 
-    def dfs(id):
-        if visited[id] == 1:  # temporary
+    def dfs(v: int):
+        if visited[v] == 1:  # temporary
             raise Exception('topological sort only works with directed acyclic graphs')
-        visited[id] = 1
-        for edge in graph.edges(id):
+        visited[v] = 1
+        for edge in graph.edges(v):
             if visited[edge._target] != 2:  # not visited
                 dfs(edge._target)
-        visited[id] = 2
-        order.append(id)
+        visited[v] = 2
+        order.append(v)
 
-    for id in range(graph.vertices_count()):
-        if visited[id] != 2:  # not visited or temporary
-            dfs(id)
+    for v in range(graph.vertices_count()):
+        if visited[v] != 2:  # not visited or temporary
+            dfs(v)
     order.reverse()
     return order
 

@@ -24,12 +24,12 @@ def sssp_dag(graph: Graph, start: int):
         raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
     distances = [(float('inf'), None)] * graph.vertices_count()
     distances[start] = (0, None)
-    for id in topsort_dfs(graph):
-        vertex_distance, parent = distances[id]
-        for edge in graph.edges(id):
+    for v in topsort_dfs(graph):
+        vertex_distance, parent = distances[v]
+        for edge in graph.edges(v):
             target_distance = vertex_distance + edge.length
             if target_distance < distances[edge._target][0]:
-                distances[edge._target] = (target_distance, id)
+                distances[edge._target] = (target_distance, v)
     return distances
 
 
@@ -53,12 +53,12 @@ def sslp_dag(graph: Graph, start: int):
         raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
     distances = [(float('inf'), None)] * graph.vertices_count()
     distances[start] = (0, None)
-    for id in topsort_dfs(graph):
-        vertex_distance, parent = distances[id]
-        for edge in graph.edges(id):
+    for v in topsort_dfs(graph):
+        vertex_distance, parent = distances[v]
+        for edge in graph.edges(v):
             target_distance = vertex_distance - edge.length  # negate edge length
             if target_distance < distances[edge._target][0]:
-                distances[edge._target] = (target_distance, id)
+                distances[edge._target] = (target_distance, v)
     inf = float('inf')
     for i in range(len(distances)):
         distance, parent = distances[i]
@@ -91,13 +91,13 @@ def sssp_dijkstra(graph: Graph, start: int, /, end: int = None):
     heap = []
     heapq.heappush(heap, (0, start))
     while len(heap) > 0:
-        vertex_distance, vertex_id = heapq.heappop(heap)
-        if vertex_id == end:
+        distance, v = heapq.heappop(heap)
+        if v == end:
             break
-        for edge in graph.edges(vertex_id):
-            target_distance = vertex_distance + edge.length
+        for edge in graph.edges(v):
+            target_distance = distance + edge.length
             if target_distance < distances[edge._target][0]:
-                distances[edge._target] = (target_distance, vertex_id)
+                distances[edge._target] = (target_distance, v)
                 heapq.heappush(heap, (target_distance, edge._target))
     return distances
 
@@ -120,18 +120,18 @@ def sssp_dijkstra_opt(graph: Graph, start: int, /, end: int = None):
     heap = []
     heapq.heappush(heap, (0, start))
     while len(heap) > 0:
-        vertex_distance, vertex_id = heapq.heappop(heap)
-        if vertex_id == end:
+        distance, v = heapq.heappop(heap)
+        if v == end:
             break
-        visited[vertex_id] = True
-        if vertex_distance > distances[vertex_id][0]:
+        visited[v] = True
+        if distance > distances[v][0]:
             continue
-        for edge in graph.edges(vertex_id):
+        for edge in graph.edges(v):
             if visited[edge._target]:
                 continue
-            target_distance = vertex_distance + edge.length
+            target_distance = distance + edge.length
             if target_distance < distances[edge._target][0]:
-                distances[edge._target] = (target_distance, vertex_id)
+                distances[edge._target] = (target_distance, v)
                 heapq.heappush(heap, (target_distance, edge._target))
     return distances
 
@@ -187,10 +187,11 @@ def apsp_floyd_warshall(graph: Graph, /, check_negative_cycles=True):
         distances[i][j] contains the shortest distances from the vertex i to a vertex,
         parents contains the parents for each pair path (see `floyd_warshall_rebuild_path`)
     """
-    inf = float('inf')
     if graph.vertices_count() == 0:
         return ([], [])
-    distances = graph.adjacency_matrix()
+    inf = float('inf')
+    matrix = graph.adjacency_matrix()
+    distances = matrix
     parents = [[None] * graph.vertices_count() for i in range(graph.vertices_count())]
     for i in range(graph.vertices_count()):
         for j in range(graph.vertices_count()):
@@ -268,7 +269,7 @@ def test():
         ],
         test_input_iter=(random_dag(el_range=(-10, 15)) for i in range(3)),
         bench_size_iter=(1, 10, 100),
-        bench_input=lambda s, r: random_dag((s // 3, s if s <= 3 else s // 2), (3, 4), el_range=(-10, 15))
+        bench_input=lambda s, r: random_dag((max(s // 4, 1), max(s // 3, 1)), (3, 4), el_range=(-10, 15))
     )
     print('random undirected graphs')
     benchmark(
