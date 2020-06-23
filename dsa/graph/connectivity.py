@@ -159,7 +159,7 @@ def strong_connected_tarjan(graph: Graph):
     > `return: int[][]`: list containing strongly connected vertices ids
     """
     next_order = [0]
-    order = [None] * graph.vertices_count()  # also encode visited and stacked (order[id] is not None, order[id] != - 1)
+    order = [None] * graph.vertices_count()  # also encode visited and stacked (order[v] is not None, order[v] != - 1)
     low = [None] * graph.vertices_count()
     stack = collections.deque()
     components = []

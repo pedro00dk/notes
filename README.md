@@ -1,4 +1,4 @@
-# Data Structures and Algorithms
+# Notes - Data Structures and Algorithms
 
 Small collection of algorithms and data structures implementations in Python.
 
@@ -192,7 +192,7 @@ Space complexity is available in algorithms files.
         -   brute force **- O(v!)**
         -   held-karp dynamic programming bitset **- O((2\*\*v)\*(v\*\*2))**
         -   held-karp dynamic programming hashset **- O((2\*\*v)\*(v\*\*2))**
-        -   nearest neighbors **- O((v\*\*2)**
+        -   nearest neighbors (heuristic) **- O((v\*\*2)**
 
 ## Enumeration Combinatorics
 

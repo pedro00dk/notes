@@ -6,6 +6,7 @@ from ..graph import Graph
 def tsp_brute_force(graph: Graph, /, start=0):
     """
     Traveling Salesman Problem brute force implementation.
+    If `graph` is not complete and a path is not found, infinity is returned as distance and the path is invalid.
 
     > optimizations:
     - remove `start` vertex from permutations because it is fixed, this reduces the complexity from `O((v + 1)!)`
@@ -42,6 +43,8 @@ def tsp_brute_force(graph: Graph, /, start=0):
 def tsp_held_karp_bitset(graph: Graph, /, start=0):
     """
     Held-Karp Traveling Salesman Problem implementation (dynamic programming).
+    If `graph` is not complete and a path is not found, infinity is returned as distance and the path is invalid.
+
     This implementation is based on bitsets, where a set of vertices is represented by a single number.
     Ex.: (little endian) 100110 --> 1  1  0  1  0  1 --> (1, 5) (1, 4) (0, 3) (1, 2) (0, 1) (1, 0) --> (0, 2, 4, 5).
     In python, this implementation only becomes faster for large values of `v` (> 15).
@@ -128,6 +131,8 @@ def tsp_held_karp_bitset(graph: Graph, /, start=0):
 def tsp_held_karp_hashset(graph: Graph, /, start=0):
     """
     Held-Karp Traveling Salesman Problem implementation (dynamic programming).
+    If `graph` is not complete and a path is not found, infinity is returned as distance and the path is invalid.
+
     This implementation is based on hashsets, where a set of vertices is represented by a frozenset.
 
     > complexity:
@@ -196,8 +201,10 @@ def tsp_held_karp_hashset(graph: Graph, /, start=0):
 
 def tsp_nearest_heighbor(graph: Graph, /, start=0):
     """
-    Held-Karp Traveling Salesman Problem implementation (dynamic programming).
-    This implementation is based on hashsets, where a set of vertices is represented by a frozenset.
+    Nearest neighbors Traveling Salesman Problem implementation (heuristic).
+    If graph is not complete and a path is not found, infinity is returned as distance and the path is invalid.
+
+    This implementation may not produce optmal results.
 
     > complexity:
     - time: `O((2**v)*(v**2))`
@@ -231,7 +238,7 @@ def tsp_nearest_heighbor(graph: Graph, /, start=0):
                     best_target = edge._target
         distance += best_distance
         if distance == float('inf'):
-            raise Exception('path not found, graph is not complete')
+            break
         path.append(best_target)
         visited[best_target] = True
     path.pop()
