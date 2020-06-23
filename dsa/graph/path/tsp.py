@@ -26,7 +26,7 @@ def tsp_brute_force(graph: Graph, /, start=0):
     if start < 0 or start >= graph.vertices_count():
         raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
     matrix = graph.adjacency_matrix()
-    vertices = [id for id in range(graph.vertices_count()) if id != start]
+    vertices = [v for v in range(graph.vertices_count()) if v != start]
     best_distance = float('inf')
     best_path = ()
     for permutation in itertools.permutations(vertices):

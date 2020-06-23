@@ -48,7 +48,7 @@ def test():
                 lambda entries: test_sc_hashtable(entries, Prober.QUADRATIC_PRIME)
             ),
             (
-                'sequence chaining hashtable (quedratic triangular)',
+                'sequence chaining hashtable (quadratic triangular)',
                 lambda entries: test_sc_hashtable(entries, Prober.QUADRATIC_TRIANGULAR)
             ),
             (

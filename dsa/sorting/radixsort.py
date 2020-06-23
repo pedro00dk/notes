@@ -53,7 +53,8 @@ def radixsort_lsd(array: list, /, block: int = None):
             output[frequencies[masked] - 1] = value
             frequencies[masked] -= 1
 
-    min_value, max_value = min(array), max(array)
+    min_value = min(array)
+    max_value = max(array)
     value_range = max_value - min_value + 1
     block = max(block if block is not None else math.ceil(math.log2(max(len(array), 1))), 1)
     base = 2**block
@@ -140,7 +141,8 @@ def radixsort_msd(array: list, /, block: int = 4):
             if next_first < next_last:
                 rec(input, output, next_first, next_last, base, block, word_remaining, min_value)
 
-    min_value, max_value = min(array), max(array)
+    min_value = min(array)
+    max_value = max(array)
     value_range = max_value - min_value + 1
     block = max(block if block is not None else math.ceil(math.log2(max(len(array), 1))), 1)
     base = 2**block

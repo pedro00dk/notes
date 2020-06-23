@@ -15,7 +15,8 @@ def countingsort(array: list):
     """
     if len(array) == 0:
         return array
-    min_value, max_value = min(array), max(array)
+    min_value = min(array)
+    max_value = max(array)
     value_range = max_value - min_value + 1
     frequencies = [0] * value_range
     for value in array:

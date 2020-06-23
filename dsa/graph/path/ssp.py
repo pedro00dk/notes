@@ -16,7 +16,7 @@ def sssp_dag(graph: Graph, start: int):
     - `graph: Graph`: graph to compute single source shortest path
     - `start: int`: vertex to compute distances from
 
-    > `return: (int | float, int)[]`: distances array containing distances to `start` and `parent` 
+    > `return: (int | float, int)[]`: distances array containing distances to `start` and `parent`
     """
     if graph.vertices_count() == 0:
         return []

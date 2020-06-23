@@ -182,7 +182,8 @@ class LinkedList(Linear):
         > time: `O(n)`
         > space: `O(1)`
         """
-        self._head, self._tail, node = self._tail, self._head, self._head
+        node = self.head
+        self._head, self._tail = self._tail, self._head
         for i in range(self._size):
             node.prev, node.next = node.next, node.prev
             node = node.prev

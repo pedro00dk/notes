@@ -20,7 +20,8 @@ def quicksort_hoare(array: list):
         if left >= right:
             return
         pivot = array[(left + right) // 2]
-        left_index, right_index = left, right
+        left_index = left
+        right_index = right
         while True:
             while array[left_index] < pivot:
                 left_index += 1
@@ -95,8 +96,11 @@ def quicksort_dual_pivot(array: list):
             array[left_pivot_index], array[right_pivot_index] = array[right_pivot_index], array[left_pivot_index]
         array[left], array[left_pivot_index] = array[left_pivot_index], array[left]
         array[right], array[right_pivot_index] = array[right_pivot_index], array[right]
-        left_pivot, right_pivot = array[left], array[right]
-        left_index, center_index, right_index = left + 1, left + 1, right - 1
+        left_pivot = array[left]
+        right_pivot = array[right]
+        left_index = left + 1
+        center_index = left + 1
+        right_index = right - 1
         while center_index <= right_index:
             if array[center_index] < left_pivot:
                 array[left_index], array[center_index] = array[center_index], array[left_index]

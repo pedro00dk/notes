@@ -86,7 +86,8 @@ class AVL(Tree):
                 successor = node.right
                 while successor.left is not None:
                     successor = successor.left
-                successor_key, dummy_key = successor.key, node.left.key
+                successor_key = successor.key
+                dummy_key = node.left.key
                 node.key, successor.key = dummy_key, node.key
                 node.value, successor.value = successor.value, node.value
                 current_node = node

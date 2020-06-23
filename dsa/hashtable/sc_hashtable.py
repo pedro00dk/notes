@@ -66,7 +66,8 @@ class SCHashtable(Hashtable):
                 parent.next = SCEntryNode(hash_, key, value)
             self._size += 1
         else:
-            node.key, node.value, old_value = key, value, node.value
+            old_value = node.value
+            node.key, node.value = key, value
             return old_value
 
     def take(self, key):

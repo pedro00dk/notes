@@ -46,7 +46,8 @@ def permutations_cycle(items: list, /, k: int = None):
     if n == 0 or k <= 0 or k > n:
         yield ()
         return
-    cycles, indices = [*range(k)], [*range(n)]
+    cycles = [*range(k)]
+    indices = [*range(n)]
     yield (*(items[j] for j in indices[:k]),)
     while True:
         for i in range(k - 1, -1, -1):

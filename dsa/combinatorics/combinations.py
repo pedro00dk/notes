@@ -145,7 +145,7 @@ def bit_combinations_rec_range(n: int, k: int):
 def bit_combinations_rec_branch(n: int, k: int):
     """
     Recursive implementation of bit combinations generator.
-    Implementation based on seting or unseting bit at `at` position anb branching to the next possition.
+    Implementation based on seting or unseting bit at `at` position and branching to the next position.
     Recursion depth goes up to `n`.
     This implementation is slightly slower than the range based.
 

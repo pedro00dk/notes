@@ -18,7 +18,9 @@ def mergesort(array: list):
             rec(array, center + 1, right, temp)
         for i in range(left, right + 1):
             temp[i] = array[i]
-        left_index, right_index, i = left, center + 1, left
+        left_index = left
+        right_index = center + 1
+        i = left
         while left_index <= center and right_index <= right:
             if temp[left_index] <= temp[right_index]:
                 array[i] = temp[left_index]

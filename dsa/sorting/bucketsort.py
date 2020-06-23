@@ -22,7 +22,8 @@ def bucketsort(array: list, /, k: int = None, subsort=None):
         return array
     k = max(k if k is not None else len(array), 1)
     subsort = subsort if subsort is not None else insertionsort
-    min_value, max_value = min(array), max(array)
+    min_value = min(array)
+    max_value = max(array)
     value_range = max_value - min_value + 1
     buckets = [[] for i in range(k)]
     for value in array:

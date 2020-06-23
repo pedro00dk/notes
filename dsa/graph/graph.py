@@ -70,7 +70,7 @@ class Graph:
     def __iter__(self):
         return self.vertices()
 
-    def _depth(self, id: int, visited: list, /, yield_before=True, yield_after=False, yield_back=False, *, parent=None, edge=None):
+    def _depth(self, v: int, visited: list, /, yield_before=True, yield_after=False, yield_back=False, *, parent=None, edge=None):
         """
         Return a generator for Depth First Search traversals.
         This implementation must not be used to implement other algorithms because of the performance impact of
@@ -81,7 +81,7 @@ class Graph:
         - space: `O(v)`
 
         > parameters:
-        - `id: int`: root vertex id
+        - `v: int`: root vertex id
         - `visited: bool[]`: list of visited vertices
         - `yield_before: bool? = True`: yield vertices before yield all its children
         - `yield_after: bool? = False`: yield vertices after yield all its children
@@ -93,8 +93,8 @@ class Graph:
         > `return: Generator<(Vertex, Vertex, Edge, int, bool, bool)>`: generator of vertices, parents, edges, depth,
             if yielded before (`True`, otherwise `False`), and if is a back edge
         """
-        vertex = self._vertices[id]
-        if visited[id]:
+        vertex = self._vertices[v]
+        if visited[v]:
             if yield_back and edge is not None:
                 if yield_before:
                     yield vertex, parent, edge
@@ -103,15 +103,15 @@ class Graph:
             return
         if yield_before:
             yield vertex, parent, edge
-        visited[id] = True
-        for edge in self._edges[id]:
+        visited[v] = True
+        for edge in self._edges[v]:
             yield from self._depth(
                 edge._target, visited, yield_before, yield_after, yield_back, parent=vertex, edge=edge
             )
         if yield_after:
             yield vertex, parent, edge
 
-    def _breadth(self, id: int, visited: list, /, yield_back=False):
+    def _breadth(self, v: int, visited: list, /, yield_back=False):
         """
         Return a generator for Breadth First Search traversals.
         This implementation must not be used to implement other algorithms because of the performance impact of
@@ -122,7 +122,7 @@ class Graph:
         - space: `O(v)`
 
         > parameters:
-        - `id: int`: root vertex id
+        - `v: int`: root vertex id
         - `visited: bool[]`: list of visited vertices
         - `yield_back: bool? = False`: yield edges that point to already visited vertices
 
@@ -130,20 +130,20 @@ class Graph:
             if yielded before (always `True` in this algorithm), and if is a back edge
         """
         queue = collections.deque()
-        queue.append((id, None, None, 0))
+        queue.append((v, None, None, 0))
         while len(queue):
-            id, parent, edge, depth = queue.popleft()
-            vertex = self._vertices[id]
-            if visited[id]:
+            v, parent, edge, depth = queue.popleft()
+            vertex = self._vertices[v]
+            if visited[v]:
                 if yield_back and edge is not None:
                     yield vertex, parent, edge, depth, True
                 continue
             yield vertex, parent, edge, depth, True, False
-            visited[id] = True
-            for edge in self._edges[id]:
+            visited[v] = True
+            for edge in self._edges[v]:
                 queue.append((edge._target, vertex, edge, depth + 1))
 
-    def traverse(self, id: int, mode='depth', /, visited: list = None, yield_before=True, yield_after=False, yield_back=False):
+    def traverse(self, v: int, mode='depth', /, visited: list = None, yield_before=True, yield_after=False, yield_back=False):
         """
         Return a generator for graph traversals.
         This implementation must not be used to implement other algorithms because of the performance impact of
@@ -154,7 +154,7 @@ class Graph:
         - space: `O(v)`
 
         > parameters:
-        - `id: int`: root vertex id
+        - `v: int`: root vertex id
         - `mode: 'depth' | 'breadth'`: traversal mode
         - `visited: bool[]? = [False] * self.vertices_count()`: list of visited vertices
         - `yield_before: bool? = True`: yield vertices before yield all its children (only for `mode == 'depth'`)
@@ -165,8 +165,8 @@ class Graph:
             if yielded before (`True`, otherwise `False`), and if is a back edge
         """
         visited = visited if visited is not None else [False] * self.vertices_count()
-        return self._depth(id, visited, yield_before, yield_after, yield_back) if mode == 'depth' else \
-            self._breadth(id, visited, yield_back)
+        return self._depth(v, visited, yield_before, yield_after, yield_back) if mode == 'depth' else \
+            self._breadth(v, visited, yield_back)
 
     def vertices(self):
         """
@@ -180,7 +180,7 @@ class Graph:
         """
         return iter(self._vertices)
 
-    def edges(self, /, id: int = None):
+    def edges(self, /, v: int = None):
         """
         Return a generator to traverse through graph edges.
 
@@ -189,11 +189,11 @@ class Graph:
         - space: `O(1)`
 
         > parameters:
-        - `id: int? = None`: id of the vertex to traverse, if `None`, traverse through edges os all vertices
+        - `v: int? = None`: id of the vertex to traverse, if `None`, traverse through edges os all vertices
 
         > `return: Generator<(int, float, any)>`: generator of vertices ids which contains the edge, lengths and data
         """
-        return (edge for vertex_edges in self._edges for edge in vertex_edges) if id is None else iter(self._edges[id])
+        return (edge for vertex_edges in self._edges for edge in vertex_edges) if v is None else iter(self._edges[v])
 
     def vertices_count(self):
         """
@@ -201,14 +201,14 @@ class Graph:
         """
         return len(self._vertices)
 
-    def edges_count(self, id: int = None):
+    def edges_count(self, v: int = None):
         """
         > parameters:
-        - `id: int? = None`: id of the vertex to get edge count, if `None`, get all edges count
+        - `v: int? = None`: id of the vertex to get edge count, if `None`, get all edges count
 
         > `return: int`: number of edges (undirected edges count as 2 edges)
         """
-        return self._all_edges if id is None else len(self._edges[id])
+        return self._all_edges if v is None else len(self._edges[v])
 
     def unique_edges_count(self):
         """
@@ -283,27 +283,27 @@ class Graph:
             self._edges[target].append(back_edge)
         return edge if directed else (edge, back_edge)
 
-    def get_vertex(self, id: int):
+    def get_vertex(self, v: int):
         """
-        Return the vertex object associated with `id`.
+        Return the vertex object associated with `v`.
 
         > parameters:
-        - `id: int`: vertex id
+        - `v: int`: vertex id
 
         > `return: Vertex`: vertex
         """
-        return self._vertices[id]
+        return self._vertices[v]
 
-    def get_edges(self, id: int):
+    def get_edges(self, v: int):
         """
-        Return the edge tuple list of the vertex associated with `id`.
+        Return the edge tuple list of the vertex associated with `v`.
 
         > parameters:
-        - `id: int`: vertex id
+        - `v: int`: vertex id
 
         > `return: Edge()`: edge tuple list
         """
-        return (*self._edges[id],)
+        return (*self._edges[v],)
 
     def copy(self):
         """
@@ -355,6 +355,6 @@ class Graph:
         matrix = [[absent_edge_length] * self.vertices_count() for i in range(self.vertices_count())]
         for edge in self.edges():
             matrix[edge._source][edge._target] = edge.length
-        for id in range(self.vertices_count()):
-            matrix[id][id] = matrix[id][id] if matrix[id][id] != absent_edge_length else 0
+        for v in range(self.vertices_count()):
+            matrix[v][v] = matrix[v][v] if matrix[v][v] != absent_edge_length else 0
         return matrix
