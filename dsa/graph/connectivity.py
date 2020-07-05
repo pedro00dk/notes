@@ -85,7 +85,7 @@ def connected_disjoint_set(graph: Graph):
 
 def biconnected_tarjan(graph: Graph):
     """
-    Tarjan's and Hopcroft's Biconnected Components algorithm.
+    Tarjan and Hopcroft biconnected components algorithm.
     `graph` must be undirected, otherwise, the algorithm can not assure the components are biconnected.
 
     > complexity:
@@ -144,7 +144,7 @@ def biconnected_tarjan(graph: Graph):
 
 def strong_connected_tarjan(graph: Graph):
     """
-    Tarjan's Strongly Connected Components algorithm.
+    Tarjan strongly connected components algorithm.
     Tarjan's algorithm can also be used for topological sorting.
     If the graph being processed is a directed acyclic graph, each component will contain a single vertex and components
     will be in a reverse topological order.
@@ -192,7 +192,7 @@ def strong_connected_tarjan(graph: Graph):
 
 def strong_connected_kosaraju(graph: Graph):
     """
-    Kosraju's Strongly Connected Components algorithm.
+    Kosaraju strongly connected components algorithm.
 
     > complexity:
     - time: `O(v + e)`

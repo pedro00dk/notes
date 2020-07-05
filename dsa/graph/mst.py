@@ -6,7 +6,7 @@ from .graph import Graph
 
 def mst_prim(graph: Graph):
     """
-    Prim's minimum spanning tree algorithm.
+    Prim minimum spanning tree algorithm.
 
     > complexity:
     - time: `O(e*log(e)) ~> O(e*log(v))`
@@ -46,7 +46,7 @@ def mst_prim(graph: Graph):
 
 def mst_kruskal(graph: Graph):
     """
-    Kruskal's minimum spanning tree algorithm.
+    Kruskal minimum spanning tree algorithm.
 
     > complexity:
     - time: `O(e*log(e)) ~> O(e*log(v))`
@@ -80,7 +80,7 @@ def mst_kruskal(graph: Graph):
 
 def mst_boruvka(graph: Graph):
     """
-    Boruvka's minimum spanning tree algorithm.
+    Boruvka minimum spanning tree algorithm.
 
     > complexity:
     - time: `O((v + e)*log(v)) ~> O(e*log(v))`

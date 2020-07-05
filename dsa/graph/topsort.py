@@ -3,7 +3,7 @@ from .graph import Graph
 
 def topsort_khan(graph: Graph):
     """
-    Khan's topological sort algorithm.
+    Khan topological sort algorithm.
     This implementation has some tweaks due to graph data structure limitations
     - Khan's algorithm require graph mutation (a copy of the graph is created to apply the algorithm)
     - graph does not support edge removal, a hack is used this (set `edge._target = None`)
