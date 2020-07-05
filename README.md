@@ -199,6 +199,12 @@ Space complexity is available in algorithms files.
         -   held-karp bitset **- O((2\*\*v)\*(v\*\*2))**
         -   held-karp hashset **- O((2\*\*v)\*(v\*\*2))**
         -   nearest neighbors (heuristic) **- O((v\*\*2)**
+    -   [eulerian cycle/path](./dsa/graph/path/euler.py)
+        -   undirected graphs
+            -   fleury **- O(e\*\*2)**
+            -   hierholzer **- O(v + e)**
+        -   directed graphs
+            -   hierholzer **- O(v + e)**
 
 ## Enumeration Combinatorics
 
