@@ -72,7 +72,7 @@ def sssp_dijkstra(graph: Graph, start: int, /, end: int = None):
     Dijkstra does not support graphs with negative edge lengths (except directed acyclic graphs).
 
     > complexity:
-    - time: `O((v + e)*log(v))`
+    - time: `O((v + e)*log(v)) ~> O(e*log(v))`
     - space: `O(v + e)`
 
     > parameters:
@@ -265,7 +265,7 @@ def test():
             ('           sssp dijkstra', lambda graph: sssp_dijkstra(graph, 0)),
             ('       sssp dijkstra opt', lambda graph: sssp_dijkstra_opt(graph, 0)),
             ('       sssp bellman ford', lambda graph: sssp_bellman_ford(graph, 0)),
-            ('apsp floyd warshall apsp', lambda graph: apsp_floyd_warshall(graph)[0][0])
+            ('     apsp floyd warshall', lambda graph: apsp_floyd_warshall(graph)[0][0])
         ],
         test_input_iter=(random_dag(el_range=(-10, 15)) for i in range(3)),
         bench_size_iter=(1, 10, 100),
@@ -277,7 +277,7 @@ def test():
             ('           sssp dijkstra', lambda graph: sssp_dijkstra(graph, 0)),
             ('       sssp dijkstra opt', lambda graph: sssp_dijkstra_opt(graph, 0)),
             ('       sssp bellman ford', lambda graph: sssp_bellman_ford(graph, 0)),
-            ('apsp floyd warshall apsp', lambda graph: apsp_floyd_warshall(graph)[0][0])
+            ('     floyd warshall apsp', lambda graph: apsp_floyd_warshall(graph)[0][0])
         ],
         test_input_iter=(random_undirected(10, el_range=(1, 10)) for i in range(3)),
         bench_size_iter=(1, 10, 100),
@@ -289,7 +289,7 @@ def test():
             ('           sssp dijkstra', lambda graph: sssp_dijkstra(graph, 0)),
             ('       sssp dijkstra opt', lambda graph: sssp_dijkstra_opt(graph, 0)),
             ('       sssp bellman ford', lambda graph: sssp_bellman_ford(graph, 0)),
-            ('apsp floyd warshall apsp', lambda graph: apsp_floyd_warshall(graph)[0][0])
+            ('     floyd warshall apsp', lambda graph: apsp_floyd_warshall(graph)[0][0])
         ],
         test_input_iter=(random_directed(10, el_range=(1, 10)) for i in range(3)),
         bench_size_iter=(1, 10, 100),

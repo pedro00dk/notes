@@ -166,7 +166,11 @@ Space complexity is available in algorithms files.
 
 ## Graph Theory
 
--   [connectivity algorithms](./dsa/graph/connectivity.py)
+-   [minimum spanning tree](./dsa/graph/mst.py)
+    -   prim **- O(e\*log(e)) ~> O(e\*log(v))**
+    -   kruskal **- O(e\*log(e)) ~> O(e\*log(v))**
+    -   boruvka **- O((v + e)\*log(v)) ~> O(e\*log(v))**
+-   [connectivity](./dsa/graph/connectivity.py)
     -   undirected graphs
         -   connected depth first search **- O(v + e)**
         -   connected breadth first search **- O(v + e)**
@@ -185,7 +189,7 @@ Space complexity is available in algorithms files.
             -   single source **- O(v + e)**
             -   single source (longest) **- O(v + e)**
         -   all graphs
-            -   single source dijkstra **- O((v + e)\*log(v))**
+            -   single source dijkstra **- O((v + e)\*log(v)) ~> O(e\*log(v))**
             -   single source bellman ford **- O(v\*e)**
             -   all pairs floyd warshall **- O(v\*\*3)**
     -   [traveling salesman problem](./dsa/graph/path/tsp.py)
@@ -203,7 +207,7 @@ Space complexity is available in algorithms files.
     -   ramanujan's factorial approximation **- O(1)**
 -   [permutations](./dsa/combinatorics/permutations.py)
     -   permutations count **- O(n)**
-    -   permutations using permutation cycles **- O(n\*\*k) => O(n!) when k ~ n**
+    -   permutations using permutation cycles **- O(n\*\*k) ~> O(n!) when k ~ n**
     -   permutations heap algorithm recursive **- O(n!)**
     -   permutations heap algorithm iterative **- O(n!)**
 -   [combinatorics](./dsa/combinatorics/combinations.py)

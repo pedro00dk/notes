@@ -6,16 +6,16 @@ from .graph import Graph
 
 def complete(vertices=5, vw_range=(1, 1), el_range=(1, 1)):
     graph = Graph()
-    for vertex in range(vertices):
+    for v in range(vertices):
         graph.make_vertex(weight=random.randint(*vw_range))
-        for target in range(0, vertex):
-            graph.make_edge(vertex, target, length=random.randint(*el_range))
+        for target in range(0, v):
+            graph.make_edge(v, target, length=random.randint(*el_range))
     return graph
 
 
 def random_undirected(vertices=5, density=0.5, vw_range=(1, 1), el_range=(1, 1)):
     graph = Graph()
-    for vertex in range(vertices):
+    for v in range(vertices):
         graph.make_vertex(weight=random.randint(*vw_range))
     edges = round(min(max(0, density), 1) * vertices * (vertices - 1) / 2)
     for source, target in random.sample([*itertools.combinations([*range(vertices)], 2)], edges):
@@ -25,7 +25,7 @@ def random_undirected(vertices=5, density=0.5, vw_range=(1, 1), el_range=(1, 1))
 
 def random_directed(vertices=5, density=0.5, vw_range=(1, 1), el_range=(1, 1)):
     graph = Graph()
-    for vertex in range(vertices):
+    for v in range(vertices):
         graph.make_vertex(weight=random.randint(*vw_range))
     edges = round(min(max(0, density), 1) * vertices * (vertices - 1))
     for source, target in random.sample([*itertools.permutations([*range(vertices)], 2)], edges):
