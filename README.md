@@ -181,7 +181,7 @@ Space complexity is available in algorithms files.
         -   strongly connected kosaraju **- O(v + e)**
 -   [topological sorting](./dsa/graph/topsort.py)
     -   khan **- O(v + e)**
-    -   depth first search based **- O(v + e)**
+    -   depth first search **- O(v + e)**
     -   strongly connected tarjan _(from connectivity algorithms, used as topsort algorithm)_ **- O(v + e)**
 -   [path finding](./dsa/graph/path)
     -   [shortest path](./dsa/graph/path/ssp.py)
@@ -194,8 +194,8 @@ Space complexity is available in algorithms files.
             -   all pairs floyd warshall **- O(v\*\*3)**
     -   [traveling salesman problem](./dsa/graph/path/tsp.py)
         -   brute force **- O(v!)**
-        -   held-karp dynamic programming bitset **- O((2\*\*v)\*(v\*\*2))**
-        -   held-karp dynamic programming hashset **- O((2\*\*v)\*(v\*\*2))**
+        -   held-karp bitset **- O((2\*\*v)\*(v\*\*2))**
+        -   held-karp hashset **- O((2\*\*v)\*(v\*\*2))**
         -   nearest neighbors (heuristic) **- O((v\*\*2)**
 
 ## Enumeration Combinatorics

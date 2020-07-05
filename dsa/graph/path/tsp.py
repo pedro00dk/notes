@@ -250,10 +250,10 @@ def test():
     from ..factory import complete
     benchmark(
         [
-            ('                tsp brute force', tsp_brute_force),
-            (' tsp dynamic programming bitset', tsp_held_karp_bitset),
-            ('tsp dynamic programming hashset', tsp_held_karp_hashset),
-            ('           tsp nearest neighbor', tsp_nearest_heighbor)
+            ('     tsp brute force', tsp_brute_force),
+            ('          tsp bitset', tsp_held_karp_bitset),
+            ('         tsp hashset', tsp_held_karp_hashset),
+            ('tsp nearest neighbor', tsp_nearest_heighbor)
         ],
         test_input_iter=(complete(i, el_range=(-5, 10)) for i in (2, 4, 6)),
         bench_size_iter=range(0, 11),
@@ -262,9 +262,9 @@ def test():
     print('without brute force algorithm')
     benchmark(
         [
-            (' tsp dynamic programming bitset', tsp_held_karp_bitset),
-            ('tsp dynamic programming hashset', tsp_held_karp_hashset),
-            ('           tsp nearest neighbor', tsp_nearest_heighbor)
+            ('          tsp bitset', tsp_held_karp_bitset),
+            ('         tsp hashset', tsp_held_karp_hashset),
+            ('tsp nearest neighbor', tsp_nearest_heighbor)
         ],
         test_input_iter=(),
         bench_size_iter=range(11, 15),
@@ -273,7 +273,7 @@ def test():
     print('only heuristic algorithms')
     benchmark(
         [
-            ('           tsp nearest neighbor', tsp_nearest_heighbor)
+            ('tsp nearest neighbor', tsp_nearest_heighbor)
         ],
         test_input_iter=(),
         bench_size_iter=(25, 50, 100, 250, 500),
