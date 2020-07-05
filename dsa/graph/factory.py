@@ -33,6 +33,42 @@ def random_directed(vertices=5, density=0.5, vw_range=(1, 1), el_range=(1, 1)):
     return graph
 
 
+def random_undirected_paired(vertices=5, density=0.5, cycle=True, vw_range=(1, 1), el_range=(1, 1)):
+    # paired means all vertices have even degree
+    # unrepeated edges and full vertex coverage are not guaranteed
+    graph = Graph()
+    for v in range(vertices):
+        graph.make_vertex(weight=random.randint(*vw_range))
+    edges = round(min(max(0, density), 1) * vertices * (vertices - 1) / 2)
+    source = 0
+    target = 0
+    for i in range(edges):
+        target = random.randint(0, vertices - 1)
+        graph.make_edge(source, target, length=random.randint(*el_range), directed=False)
+        source = target
+    if cycle and vertices > 0:
+        graph.make_edge(source, 0, length=random.randint(*el_range), directed=False)
+    return graph
+
+
+def random_directed_paired(vertices=5, density=0.5, cycle=True, vw_range=(1, 1), el_range=(1, 1)):
+    # paired means all vertices have even degree
+    # unrepeated edges and full vertex coverage are not guaranteed
+    graph = Graph()
+    for v in range(vertices):
+        graph.make_vertex(weight=random.randint(*vw_range))
+    edges = round(min(max(0, density), 1) * vertices * (vertices - 1))
+    source = 0
+    target = 0
+    for i in range(edges):
+        target = random.randint(0, vertices - 1)
+        graph.make_edge(source, target, length=random.randint(*el_range), directed=True)
+        source = target
+    if cycle and vertices > 0:
+        graph.make_edge(source, 0, length=random.randint(*el_range), directed=True)
+    return graph
+
+
 def random_dag(ranks_range=(3, 5), vertices_range=(1, 5), probability=0.5, vw_range=(1, 1), el_range=(1, 1)):
     graph = Graph()
     ranks = random.randint(*ranks_range)

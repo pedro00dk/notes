@@ -153,6 +153,8 @@ Space complexity is available in algorithms files.
         -   complete
         -   random undirected
         -   random directed
+        -   random undirected paired _(all vertices have even degree)_
+        -   random directed paired _(all vertices have out-degree - in-degree = 0)_
         -   random directed acyclic
     -   traverse depth **O(v + e)**
     -   traverse breadth **O(v + e)**
