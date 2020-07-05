@@ -24,7 +24,8 @@ class Vertex:
 class Edge:
     """
     Directed edge container implementation.
-    `_source` and `_target` properties must not be modified.
+    `_source`, `_target` and `_opposite` properties must not be modified.
+    `_opposite is a reference to the back edge if the edge is undirected`.
     The user can access and change edge `length` and `data`.
     """
 
@@ -38,6 +39,7 @@ class Edge:
         """
         self._source = source
         self._target = target
+        self._opposite = None
         self.length = length
         self.data = data
 
@@ -214,7 +216,7 @@ class Graph:
         """
         > `return: int`: number of edges (undirected edges count as 1 edge)
         """
-        return (self._all_Edges - self._directed_edges) / 2 + self._directed_edges
+        return (self._all_edges - self._directed_edges) / 2 + self._directed_edges
 
     def is_undirected(self):
         """
@@ -281,6 +283,8 @@ class Graph:
         if not directed:
             back_edge = Edge(target, source, length, data)
             self._edges[target].append(back_edge)
+            edge._opposite = back_edge
+            back_edge._opposite = edge
         return edge if directed else (edge, back_edge)
 
     def get_vertex(self, v: int):
@@ -294,20 +298,22 @@ class Graph:
         """
         return self._vertices[v]
 
-    def get_edges(self, v: int):
+    def get_edges(self, v: int = None):
         """
-        Return the edge tuple list of the vertex associated with `v`.
+        Return the edge tuple list of the vertex associated with `v` or all edges if `v is None`.
 
         > parameters:
         - `v: int`: vertex id
+        - `v: int? = None`: vertex id, if `None` get all edges
 
         > `return: Edge()`: edge tuple list
         """
-        return (*self._edges[v],)
+        return (*self.edges(v),)
 
     def copy(self):
         """
         Return a copy of the graph.
+        Edges may be in a different order.
 
         > complexity:
         - time: `O(v + e)`
@@ -316,15 +322,22 @@ class Graph:
         > `return: Graph`: copy of the graph
         """
         graph = Graph()
+        visited_edges = set()
         for vertex in self.vertices():
             graph.make_vertex(vertex.weight, vertex.data)
         for edge in self.edges():
-            graph.make_edge(edge._source, edge._target, edge.length, edge.data, True)
+            edge_id = id(edge)
+            if edge_id in visited_edges:
+                continue
+            graph.make_edge(edge._source, edge._target, edge.length, edge.data, edge._opposite is None)
+            visited_edges.add(edge_id)
+            visited_edges.add(id(edge._opposite))
         return graph
 
     def transposed(self):
         """
         Return a copy of the graph with edges transposed.
+        Edges may be in a different order.
 
         > complexity:
         - time: `O(v + e)`
@@ -333,13 +346,19 @@ class Graph:
         > `return: Graph`: transposed copy of the graph
         """
         transposed_graph = Graph()
+        visited_edges = set()
         for vertex in self.vertices():
             transposed_graph.make_vertex(vertex.weight, vertex.data)
         for edge in self.edges():
-            transposed_graph.make_edge(edge._target, edge._source, edge.length, edge.data, True)
+            edge_id = id(edge)
+            if edge_id in visited_edges:
+                continue
+            transposed_graph.make_edge(edge._target, edge._source, edge.length, edge.data, edge._opposite is None)
+            visited_edges.add(edge_id)
+            visited_edges.add(id(edge._opposite))
         return transposed_graph
 
-    def adjacency_matrix(self, /, absent_edge_length=float('inf')):
+    def adjacency_matrix(self, /, absent_edge_length=float('inf'), tiebreak=min):
         """
         Return the adjacency matrix of the graph containing edge lengths.
 
@@ -349,12 +368,16 @@ class Graph:
 
         > parameters:
         - `absent_edge_length: (int | float)? = float('inf')`: length to use in non existent edges
+        - `tiebreak: (int | float, int | float) => (int | float)? = min`: function used to choose a length if there is
+            more than one edge with the same source and target
 
         > `return: (int | float)[][]`: graph adjacency matrix
         """
         matrix = [[absent_edge_length] * self.vertices_count() for i in range(self.vertices_count())]
         for edge in self.edges():
-            matrix[edge._source][edge._target] = edge.length
+            matrix[edge._source][edge._target] = edge.length \
+                if matrix[edge._source][edge._target] == absent_edge_length \
+                else tiebreak(edge._length, matrix[edge._source][edge._target])
         for v in range(self.vertices_count()):
             matrix[v][v] = matrix[v][v] if matrix[v][v] != absent_edge_length else 0
         return matrix
