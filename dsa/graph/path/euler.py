@@ -177,7 +177,7 @@ def directed_hierholzer(graph: Graph):
 
     # if graph.vertices_count() > 0:
     #     dfs(start_vertex)
-    
+
     # iterative implementation using a stack
     stack = [start_vertex]
     while len(stack) > 0:
@@ -196,10 +196,10 @@ def directed_hierholzer(graph: Graph):
 def test():
     import sys
     from ...test import benchmark
-    from ..factory import random_undirected_paired, random_directed_paired
+    from ..factory import random_directed_paired, random_undirected_paired
     # stack size too short for fleury recursion steps + connected recursion steps
     sys.setrecursionlimit(5000)
-    print('undirected graph algorithms')
+    print('undirected graphs')
     benchmark(
         [
             ('    undirected fleury', lambda graph: undirected_fleury(graph.copy())),
@@ -209,7 +209,7 @@ def test():
         bench_size_iter=(0, 1, 10, 100),
         bench_input=(lambda s, r: random_undirected_paired(s))
     )
-    print('directed graph algorithms')
+    print('directed graphs')
     benchmark(
         [('directed hierholzer', lambda graph: directed_hierholzer(graph.copy()))],
         test_input_iter=(random_directed_paired(i) for i in (5, 10, 15, 20)),

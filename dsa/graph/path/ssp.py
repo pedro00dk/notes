@@ -255,9 +255,9 @@ def floyd_warshall_rebuild_path(distances: list, parents: list, start: int, end:
 
 def test():
     from ...test import benchmark
-    from ..factory import random_undirected, random_directed, random_dag
+    from ..factory import random_dag, random_directed, random_undirected
     # skip zero size inputs because in all benchmarks because of floyd warshall array accesses
-    print('random directed acyclic graphs')
+    print('directed acyclic graphs')
     benchmark(
         [
             ('                sssp dag', lambda graph: sssp_dag(graph, 0)),
@@ -271,7 +271,7 @@ def test():
         bench_size_iter=(1, 10, 100),
         bench_input=lambda s, r: random_dag((max(s // 4, 1), max(s // 3, 1)), (3, 4), el_range=(-10, 15))
     )
-    print('random undirected graphs')
+    print('undirected graphs')
     benchmark(
         [
             ('           sssp dijkstra', lambda graph: sssp_dijkstra(graph, 0)),
@@ -283,7 +283,7 @@ def test():
         bench_size_iter=(1, 10, 100),
         bench_input=lambda s, r: random_undirected(s, el_range=(1, 10))
     )
-    print('random directed graphs')
+    print('directed graphs')
     benchmark(
         [
             ('           sssp dijkstra', lambda graph: sssp_dijkstra(graph, 0)),

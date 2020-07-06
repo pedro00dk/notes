@@ -5,7 +5,7 @@ from ..graph import Graph
 
 def tsp_brute_force(graph: Graph, /, start=0):
     """
-    Traveling Salesman Problem brute force implementation.
+    Brute force traveling salesman problem implementation.
     If `graph` is not complete and a path is not found, infinity is returned as distance and the path is invalid.
 
     > optimizations:
@@ -42,7 +42,7 @@ def tsp_brute_force(graph: Graph, /, start=0):
 
 def tsp_held_karp_bitset(graph: Graph, /, start=0):
     """
-    Held-Karp Traveling Salesman Problem implementation (dynamic programming).
+    Held-Karp traveling salesman problem implementation (dynamic programming).
     If `graph` is not complete and a path is not found, infinity is returned as distance and the path is invalid.
 
     This implementation is based on bitsets, where a set of vertices is represented by a single number.
@@ -63,7 +63,7 @@ def tsp_held_karp_bitset(graph: Graph, /, start=0):
 
     > `return: (int | float, int[])`: the best distance and best path
     """
-    if graph.vertices_count() < 2:
+    if graph.vertices_count() == 0:
         return None, ()
     if start < 0 or start >= graph.vertices_count():
         raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
@@ -104,7 +104,7 @@ def tsp_held_karp_bitset(graph: Graph, /, start=0):
 
     # get best distance from subset containing all vertices except start, to start
     final_subset = (1 << graph.vertices_count()) - 1 ^ (1 << start)
-    best_distance = float('inf')
+    best_distance = float('inf') if final_subset != 0 else 0   # 0 means graph contains only one vertex
     best_parent = None
     for u in range(graph.vertices_count()):
         if u == start:
@@ -115,11 +115,11 @@ def tsp_held_karp_bitset(graph: Graph, /, start=0):
             best_parent = u
     paths[start][final_subset] = (best_distance, best_parent)
 
-    # get best path from subset containing all vertices except start, to start
+    # get best path from subset containing all vertices except start
     parent = best_parent
     subset = final_subset
     best_path = []
-    while parent != start:
+    while parent is not None and parent != start:  # parent is none if graph contains only one vertex
         best_path.append(parent)
         subset ^= (1 << parent)
         parent = paths[parent][subset][1]
@@ -130,7 +130,7 @@ def tsp_held_karp_bitset(graph: Graph, /, start=0):
 
 def tsp_held_karp_hashset(graph: Graph, /, start=0):
     """
-    Held-Karp Traveling Salesman Problem implementation (dynamic programming).
+    Held-Karp traveling salesman problem implementation (dynamic programming).
     If `graph` is not complete and a path is not found, infinity is returned as distance and the path is invalid.
 
     This implementation is based on hashsets, where a set of vertices is represented by a frozenset.
@@ -145,7 +145,7 @@ def tsp_held_karp_hashset(graph: Graph, /, start=0):
 
     > `return: (int | float, int[])`: the best distance and best path
     """
-    if graph.vertices_count() < 2:
+    if graph.vertices_count() == 0:
         return None, ()
     if start < 0 or start >= graph.vertices_count():
         raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
@@ -177,7 +177,7 @@ def tsp_held_karp_hashset(graph: Graph, /, start=0):
 
     # get best distance from subset containing all vertices except start, to start
     final_subset = frozenset(range(graph.vertices_count())).difference((start,))
-    best_distance = float('inf')
+    best_distance = float('inf') if len(final_subset) else 0  # 0 means graph contains only one vertex
     best_parent = None
     for u in final_subset:
         target_distance = paths[(u, final_subset.difference((u,)))][0] + matrix[u][start]
@@ -186,11 +186,11 @@ def tsp_held_karp_hashset(graph: Graph, /, start=0):
             best_parent = u
     paths[(start, final_subset)] = (best_distance, best_parent)
 
-    # get best path from subset containing all vertices except start, to start
+    # get best path from subset containing all vertices except start
     parent = best_parent
     subset = final_subset
     best_path = []
-    while parent != start:
+    while parent is not None and parent != start:  # parent is none if graph contains only one vertex
         best_path.append(parent)
         subset = subset.difference((parent,))
         parent = paths[(parent, subset)][1]
@@ -201,7 +201,7 @@ def tsp_held_karp_hashset(graph: Graph, /, start=0):
 
 def tsp_nearest_heighbor(graph: Graph, /, start=0):
     """
-    Nearest neighbors Traveling Salesman Problem implementation (heuristic).
+    Nearest neighbors traveling salesman problem implementation (heuristic).
     If graph is not complete and a path is not found, infinity is returned as distance and the path is invalid.
 
     This implementation may not produce optmal results.
@@ -216,7 +216,7 @@ def tsp_nearest_heighbor(graph: Graph, /, start=0):
 
     > `return: (int | float, int[])`: the best distance and best path
     """
-    if graph.vertices_count() < 2:
+    if graph.vertices_count() == 0:
         return None, ()
     if start < 0 or start >= graph.vertices_count():
         raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
@@ -248,6 +248,7 @@ def tsp_nearest_heighbor(graph: Graph, /, start=0):
 def test():
     from ...test import benchmark
     from ..factory import complete
+    print('all algorithms')
     benchmark(
         [
             ('     tsp brute force', tsp_brute_force),
@@ -255,11 +256,11 @@ def test():
             ('         tsp hashset', tsp_held_karp_hashset),
             ('tsp nearest neighbor', tsp_nearest_heighbor)
         ],
-        test_input_iter=(complete(i, el_range=(-5, 10)) for i in (2, 4, 6)),
-        bench_size_iter=range(0, 11),
-        bench_input=lambda s, r: complete(s, el_range=(-10, 100))
+        test_input_iter=(complete(i, el_range=(0, 10)) for i in (2, 4, 6)),
+        bench_size_iter=range(11),
+        bench_input=lambda s, r: complete(s, el_range=(0, 100))
     )
-    print('without brute force algorithm')
+    print('without brute force')
     benchmark(
         [
             ('          tsp bitset', tsp_held_karp_bitset),
@@ -268,16 +269,16 @@ def test():
         ],
         test_input_iter=(),
         bench_size_iter=range(11, 15),
-        bench_input=lambda s, r: complete(s, el_range=(-10, 100))
+        bench_input=lambda s, r: complete(s, el_range=(0, 100))
     )
-    print('only heuristic algorithms')
+    print('only heuristics')
     benchmark(
         [
             ('tsp nearest neighbor', tsp_nearest_heighbor)
         ],
         test_input_iter=(),
         bench_size_iter=(25, 50, 100, 250, 500),
-        bench_input=lambda s, r: complete(s, el_range=(-10, 100))
+        bench_input=lambda s, r: complete(s, el_range=(0, 100))
     )
 
 

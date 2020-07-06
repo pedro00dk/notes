@@ -240,12 +240,13 @@ def strong_connected_kosaraju(graph: Graph):
 
 def test():
     from ..test import benchmark
-    from .factory import random_undirected
+    from .factory import random_directed, random_undirected
 
     def test_biconnected_tarjan(graph):
         articulations, bridges, components = biconnected_tarjan(graph)
         return {'articulations': articulations, 'bridges': bridges, 'components': components}
 
+    print('undirected graphs')
     benchmark(
         [
             ('   connected traverse depth', lambda graph: connected_traverse(graph, mode='depth')),
@@ -258,6 +259,16 @@ def test():
         test_input_iter=(random_undirected(i, 0.1) for i in (5, 10, 15, 20)),
         bench_size_iter=(0, 1, 10, 100, 1000),
         bench_input=lambda s, r: random_undirected(s, 0.05)
+    )
+    print('directed graphs')
+    benchmark(
+        [
+            ('    strong connected tarjan', strong_connected_tarjan),
+            ('  strong connected kosaraju', strong_connected_kosaraju)
+        ],
+        test_input_iter=(random_directed(i, 0.1) for i in (5, 10, 15, 20)),
+        bench_size_iter=(0, 1, 10, 100, 1000),
+        bench_input=lambda s, r: random_directed(s, 0.05)
     )
 
 
