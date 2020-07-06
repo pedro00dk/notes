@@ -22,10 +22,10 @@ class AVL(Tree):
     def __init__(self, /, rank=2):
         """
         > parameters:
-        - `rank: int? = 2`: tree rank, must be > 1. If 2, the behavior is the same as an default AVL tree
+        - `rank: int? = 2`: tree rank, if < 2, the value is clamped.
         """
         super().__init__(lambda node, depth: f'b:{node.balance()} # {node.key}: {node.value}')
-        self._rank = rank
+        self._rank = max(rank, 2)
 
     def put(self, key, /, value=None, replacer=None):
         """
