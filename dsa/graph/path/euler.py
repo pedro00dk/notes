@@ -66,7 +66,7 @@ def undirected_fleury(graph: Graph):
 def undirected_hierholzer(graph: Graph):
     """
     Hierholzer eulerian path algorithm for undirected graphs.
-    Td maintain asymptotic complexities, the undirected implementation mutates graph edges `data` property to mark back
+    To maintain asymptotic complexities, the undirected implementation mutates graph edges `data` property to mark back
     edges as visited, preventing a graph copy.
 
     > complexity:
