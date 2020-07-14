@@ -40,7 +40,7 @@ class Tree(abc.ABC):
     def __iter__(self):
         return self.traverse()
 
-    def _pre(self, node: Node, depth=0):
+    def _pre(self, node: Node, /, *, depth=0):
         """
         Return a generator for tree pre-order traversals.
 
@@ -114,16 +114,17 @@ class Tree(abc.ABC):
 
         > `return: Generator<(Node, int)>`: generator of nodes and depths
         """
+        if node is None:
+            return
         queue = collections.deque()
         queue.append((node, depth))
-
         while len(queue) > 0:
             node, depth = queue.popleft()
-            if node is None:
-                continue
             yield node, depth
-            queue.append((node.left, depth + 1))
-            queue.append((node.right, depth + 1))
+            if node.left is not None:
+                queue.append((node.left, depth + 1))
+            if node.right is not None:
+                queue.append((node.right, depth + 1))
 
     def _traverse(self, /, mode='in'):
         """
