@@ -35,7 +35,7 @@ class AVL(Tree):
         - time: `O(log(n))`
         - space: `O(log(n))`
         """
-        old_value = [None]
+        old_value = None
 
         def rec(key, value, node: AVLNode):
             if node is None:
@@ -49,13 +49,14 @@ class AVL(Tree):
                 node.right = rec(key, value, node.right)
                 node.height = max(node.height, node.right.height + 1)
             else:
-                old_value[0] = node.value
+                nonlocal old_value
+                old_value = node.value
                 node.key, node.value = key, replacer(value, node.value) if replacer is not None else value
             balance = node.balance()
             return node if abs(balance) < self._rank else self._rotate(node, balance)
 
         self._root = rec(key, value, self._root)
-        return old_value[0]
+        return old_value
 
     def take(self, key):
         """
@@ -65,7 +66,7 @@ class AVL(Tree):
         - time: `O(log(n))`
         - space: `O(log(n))`
         """
-        value = [None]
+        value = None
 
         def rec(key, node: AVLNode):
             if node is None:
@@ -94,7 +95,8 @@ class AVL(Tree):
                 node = rec(key, node)
                 current_node.key = successor_key
             else:
-                value[0] = node.value
+                nonlocal value
+                value = node.value
                 node = node.left if node.right is None else node.right
                 self._size -= 1
                 return node
@@ -102,7 +104,7 @@ class AVL(Tree):
             return node if abs(balance) < self._rank else self._rotate(node, balance)
 
         self._root = rec(key, self._root)
-        return value[0]
+        return value
 
     def _rotate(self, node: Node, balance: int):
         """

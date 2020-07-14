@@ -102,7 +102,7 @@ class RBT(Tree):
         while node is not None and key != node.key:
             node = node.left if key < node.key else node.right
         if node is None:
-            raise KeyError('not found')
+            raise KeyError(f'key ({key}) not found')
         if node.left is not None and node.right is not None:
             successor = node.right
             while successor.left is not None:

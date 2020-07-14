@@ -50,7 +50,6 @@ def shellsort(array: list, gapgen=Gap.Ciura2001):
             else:
                 break
         gaps.reverse()
-
     for gap in reversed(gaps):
         for i in range(gap, n):
             key = array[i]
