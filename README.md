@@ -146,7 +146,7 @@ Space complexity is available in algorithms files.
     -   contains key **O(1)**
     -   contains value **- O(n)**
     -   [open addressing hashtable](./dsa/hashtable/oa_hashtable.py)
-    -   [sequence chaining hashtable](./dsa/hashtable/oa_hashtable.py)
+    -   [sequence chaining hashtable](./dsa/hashtable/sc_hashtable.py)
     -   [benchmark](./dsa/hashtable/benchmark.py)
 -   [graph (adjacency list)](./dsa/graph/graph.py) _- see graph theory algorithms section_
     -   [factory](./dsa/graph/factory.py)
