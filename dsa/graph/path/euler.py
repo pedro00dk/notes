@@ -6,7 +6,8 @@ from ..graph import Graph
 
 def undirected_fleury(graph: Graph):
     """
-    Fleury eulerian path algorithm for directed graphs.
+    Fleury eulerian path algorithm for undirected graphs.
+    This algorithm mutates the graph to preserve asymptotic complexities (`edge.data` and `edge._target` fields).
 
     > complexity:
     - time: `O(e**2)`
@@ -15,59 +16,53 @@ def undirected_fleury(graph: Graph):
     > parameters:
     - `graph: Graph`: graph to find eulerian path
 
-    > `return: (int[], bool)`: path of vertices ids or `None` if a path is not found, and if the path is a cycle
+    > `return: (int(), bool)`: path of vertices and if is a cycle, or `None` if graph does not have a path
     """
     if graph.vertices_count() == 0:
-        return (), None
+        return None
     if not graph.is_undirected():
-        raise Exception('undirected eulerian path algorithm only works with undirected graphs')
-    edges = [0] * graph.vertices_count()
-    for edge in graph.edges():
-        if edge.data == 1:  # 1 means count visited
-            continue
-        edges[edge._target] += 1
-        edges[edge._source] += 1
-        edge.data = edge._opposite.data = 1
-    odd_vertices = []
-    for v in range(graph.vertices_count()):
-        if edges[v] % 2 != 0:
-            odd_vertices.append(v)
+        raise Exception('graph must be undirected')
+    remaining_edges = [graph.edges_count(v) for v in range(graph.vertices_count())]
+    odd_vertices = [v for v, edges in enumerate(remaining_edges) if edges % 2 != 0]
     if len(odd_vertices) > 2:
-        return None, False
-    start_vertex = odd_vertices[0] if len(odd_vertices) > 0 else 0
+        return None
+    start = odd_vertices[0] if len(odd_vertices) > 0 else 0
     path = []
-    starting_connected_groups = sum(int(len(component) > 1) for component in connected_traverse(graph))
-
-    def dfs(v: int):
+    connected_components = len(connected_traverse(graph))
+    v = start
+    while True:
         path.append(v)
-        while edges[v] > 0:
-            e = edges[v] = edges[v] - 1
-            edge = graph._edges[v][e]  # direct access to graph edges to avoid creating copies of arrays
-            edge_target = edge._target
-            # graph does not support vertex or edge deletion, simulate delete by creating an edge loop
-            # since connectivity algorithms are also used edge loops are created to disconnect vertices
-            if edge.data == 2:
+        for edge in graph.edges(v):
+            if edge.data is not None:
                 continue
-            edge._target = v
-            edge._opposite._target = edge_target
-            connected_groups = sum(int(len(component) > 1) for component in connected_traverse(graph))
-            if connected_groups > starting_connected_groups:
-                edge._target = edge_target
-                edge._opposite._target = v
+            target = edge._target
+            edge._target = edge._source  # graph does not support edge deletion, loops are used to disconnect edges
+            edge._opposite._target = edge._opposite._source
+            remaining_edges[v] -= 1
+            remaining_edges[target] -= 1
+            remaining_connected_components = len(connected_traverse(graph))
+            if remaining_connected_components > connected_components and remaining_edges[v] > 0:
+                edge._target = edge._opposite._source
+                edge._opposite._target = edge._source
+                remaining_edges[v] += 1
+                remaining_edges[target] += 1
                 continue
-            edge.data = edge._opposite.data = 2
-            dfs(edge_target)
+            connected_components = remaining_connected_components
+            edge.data = edge._opposite.data = True
+            v = target
+            break
+        else:
+            break
+    return ((*path,), path[0] == path[-1]) if len(path) == graph.unique_edges_count() + 1 else None
 
-    if graph.vertices_count() > 0:
-        dfs(start_vertex)
-    return ((*path,), len(odd_vertices) == 0) if len(path) == graph.unique_edges_count() + 1 else (None, False)
 
-
-def undirected_hierholzer(graph: Graph):
+def undirected_hierholzer(graph: Graph, /, recursive=False):
     """
     Hierholzer eulerian path algorithm for undirected graphs.
-    To maintain asymptotic complexities, the undirected implementation mutates graph edges `data` property to mark back
-    edges as visited, preventing a graph copy.
+    This algorithm mutates the graph to preserve asymptotic complexities (`edge.data` field).
+    This algorithm is naturally recursive, but the recursion depth can be too deep, which may a stack overflow or
+    segmentation fault if the recursion depth is extended.
+    Due to this, a iterative version is used by default.
 
     > complexity:
     - time: `O(v + e)`
@@ -75,64 +70,54 @@ def undirected_hierholzer(graph: Graph):
 
     > parameters:
     - `graph: Graph`: graph to find eulerian path
+    - `recursive: bool? = False`: use the default recursive version of the algorithm
 
-    > `return: (int[], bool)`: path of vertices ids or `None` if a path is not found, and if the path is a cycle
+    > `return: (int(), bool)`: path of vertices and if is a cycle, or `None` if graph does not have a path
     """
     if graph.vertices_count() == 0:
-        return (), None
+        return None
     if not graph.is_undirected():
-        raise Exception('undirected eulerian path algorithm only works with undirected graphs')
-    edges = [0] * graph.vertices_count()
-    for edge in graph.edges():
-        if edge.data == 1:  # 1 means count visited
-            continue
-        edges[edge._target] += 1
-        edges[edge._source] += 1
-        edge.data = edge._opposite.data = 1
-    odd_vertices = []
-    for v in range(graph.vertices_count()):
-        if edges[v] % 2 != 0:
-            odd_vertices.append(v)
+        raise Exception('graph must be undirected')
+    remaining_edges = [graph.edges_count(v) for v in range(graph.vertices_count())]
+    odd_vertices = [v for v, edges in enumerate(remaining_edges) if edges % 2 != 0]
     if len(odd_vertices) > 2:
-        return None, False
-    start_vertex = odd_vertices[0] if len(odd_vertices) > 0 else 0
+        return None
+    start = odd_vertices[0] if len(odd_vertices) > 0 else 0
     path = collections.deque()
-
-    # # recursive implementation gets too deep, causing a stack overflow
-    # def dfs(v: int):
-    #     while edges[v] > 0:
-    #         e = edges[v] = edges[v] - 1
-    #         edge = graph._edges[v][e]  # direct access to graph edges to avoid creating copies of arrays
-    #         if edge.data == 2:  # 2 means dfs visited
-    #             continue
-    #         edge.data = edge._opposite.data = 2
-    #         dfs(edge._target)
-    #     path.appendleft(v)
-
-    # if graph.vertices_count() > 0:
-    #     dfs(start_vertex)
-
-    # iterative implementation using a stack
-    stack = [start_vertex]
-    while len(stack) > 0:
-        v = stack[-1]
-        if edges[v] > 0:
-            e = edges[v] = edges[v] - 1
-            edge = graph._edges[v][e]  # direct access to graph edges to avoid creating copies of arrays
-            if edge.data == 2:  # 2 means dfs visited
+    if recursive:
+        def dfs(v: int):
+            while remaining_edges[v] > 0:
+                e = remaining_edges[v] = remaining_edges[v] - 1
+                edge = graph._edges[v][e]  # direct access to graph edges to avoid creating copies of arrays
+                if edge.data == True:
+                    continue
+                edge.data = edge._opposite.data = True
+                dfs(edge._target)
+            path.appendleft(v)
+        dfs(start)
+    else:
+        stack = [start]
+        while len(stack) > 0:
+            v = stack[-1]
+            if remaining_edges[v] > 0:
+                e = remaining_edges[v] = remaining_edges[v] - 1
+                edge = graph._edges[v][e]  # direct access to graph edges to avoid creating copies of arrays
+                if edge.data == True:
+                    continue
+                edge.data = edge._opposite.data = True
+                stack.append(edge._target)
                 continue
-            edge.data = edge._opposite.data = 2
-            stack.append(edge._target)
-            continue
-        path.appendleft(v)
-        stack.pop()
-
-    return ((*path,), len(odd_vertices) == 0) if len(path) == graph.unique_edges_count() + 1 else (None, False)
+            path.appendleft(v)
+            stack.pop()
+    return ((*path,), path[0] == path[-1]) if len(path) == graph.unique_edges_count() + 1 else None
 
 
-def directed_hierholzer(graph: Graph):
+def directed_hierholzer(graph: Graph, /, recursive=False):
     """
     Hierholzer eulerian path algorithm for directed graphs.
+    This algorithm is naturally recursive, but the recursion depth can be too deep, which may a stack overflow or
+    segmentation fault if the recursion depth is extended.
+    Due to this, a iterative version is used by default.
 
     > complexity:
     - time: `O(v + e)`
@@ -140,13 +125,14 @@ def directed_hierholzer(graph: Graph):
 
     > parameters:
     - `graph: Graph`: graph to find eulerian path
+    - `recursive: bool? = False`: use the default recursive version of the algorithm
 
-    > `return: (int[], bool)`: path of vertices ids or `None` if a path is not found, and if the path is a cycle
+    > `return: (int(), bool)`: path of vertices and if is a cycle, or `None` if graph does not have a path
     """
     if graph.vertices_count() == 0:
-        return (), None
+        return None
     if not graph.is_directed():
-        raise Exception('directed eulerian path algorithm only works with directed graphs')
+        raise Exception('graph must be directed')
     incoming_edges = [0] * graph.vertices_count()
     outcoming_edges = [0] * graph.vertices_count()
     for edge in graph.edges():
@@ -155,55 +141,49 @@ def directed_hierholzer(graph: Graph):
     start_vertices = []
     end_vertices = []
     for v in range(graph.vertices_count()):
-        edge_delta = outcoming_edges[v] - incoming_edges[v]
-        if abs(edge_delta) > 1:
-            return None, False
-        elif edge_delta == 1:
-            start_vertices.append(v)
-        elif edge_delta == -1:
-            end_vertices.append(v)
-    if not (len(start_vertices) == 0 and len(end_vertices) == 0 or len(start_vertices) == 1 and len(end_vertices) == 1):
-        return None, False
-    start_vertex = start_vertices[0] if len(start_vertices) > 0 else 0
-    path = collections.deque()
-
-    # # recursive implementation gets too deep, causing a stack overflow
-    # def dfs(v: int):
-    #     while outcoming_edges[v] > 0:
-    #         e = outcoming_edges[v] = outcoming_edges[v] - 1
-    #         edge = graph._edges[v][e]  # direct access to graph edges to avoid creating copies of arrays
-    #         dfs(edge._target)
-    #     path.appendleft(v)
-
-    # if graph.vertices_count() > 0:
-    #     dfs(start_vertex)
-
-    # iterative implementation using a stack
-    stack = [start_vertex]
-    while len(stack) > 0:
-        v = stack[-1]
-        if outcoming_edges[v] > 0:
-            e = outcoming_edges[v] = outcoming_edges[v] - 1
-            edge = graph._edges[v][e]  # direct access to graph edges to avoid creating copies of arrays
-            stack.append(edge._target)
+        delta = outcoming_edges[v] - incoming_edges[v]
+        if delta == 0:
             continue
-        path.appendleft(v)
-        stack.pop()
-
-    return ((*path,), len(start_vertices) == 0) if len(path) == graph.edges_count() + 1 else (None, False)
+        if abs(delta) > 1:
+            return None
+        (start_vertices if delta == 1 else end_vertices).append(v)
+    if len(start_vertices) not in (0, 1) or len(start_vertices) != len(end_vertices):
+        return None
+    start = start_vertices[0] if len(start_vertices) > 0 else 0
+    path = collections.deque()
+    if recursive:
+        def dfs(v: int):
+            while outcoming_edges[v] > 0:
+                e = outcoming_edges[v] = outcoming_edges[v] - 1
+                edge = graph._edges[v][e]  # direct access to graph edges to avoid creating copies of arrays
+                dfs(edge._target)
+            path.appendleft(v)
+        dfs(start)
+    else:
+        stack = [start]
+        while len(stack) > 0:
+            v = stack[-1]
+            if outcoming_edges[v] > 0:
+                e = outcoming_edges[v] = outcoming_edges[v] - 1
+                edge = graph._edges[v][e]  # direct access to graph edges to avoid creating copies of arrays
+                stack.append(edge._target)
+                continue
+            path.appendleft(v)
+            stack.pop()
+    return ((*path,), path[0] == path[-1]) if len(path) == graph.edges_count() + 1 else None
 
 
 def test():
     import sys
     from ...test import benchmark
     from ..factory import random_directed_paired, random_undirected_paired
-    # stack size too short for fleury recursion steps + connected recursion steps
-    sys.setrecursionlimit(5000)
+    sys.setrecursionlimit(10000)
     print('undirected graphs')
     benchmark(
         [
-            ('    undirected fleury', lambda graph: undirected_fleury(graph.copy())),
-            ('undirected hierholzer', lambda graph: undirected_hierholzer(graph.copy()))
+            ('              undirected fleury', lambda graph: undirected_fleury(graph.copy())),
+            ('undirected hierholzer recursive', lambda graph: undirected_hierholzer(graph.copy(), True)),
+            ('undirected hierholzer iterative', lambda graph: undirected_hierholzer(graph.copy(), False))
         ],
         test_input_iter=(random_undirected_paired(i) for i in (5, 10, 15, 20)),
         bench_size_iter=(0, 1, 10, 100),
@@ -211,9 +191,12 @@ def test():
     )
     print('directed graphs')
     benchmark(
-        [('directed hierholzer', lambda graph: directed_hierholzer(graph.copy()))],
+        [
+            ('directed hierholzer recursive', lambda graph: directed_hierholzer(graph, True)),
+            ('directed hierholzer iterative', lambda graph: directed_hierholzer(graph, False))
+        ],
         test_input_iter=(random_directed_paired(i) for i in (5, 10, 15, 20)),
-        bench_size_iter=(0, 1, 10, 100, 1000),
+        bench_size_iter=(0, 1, 10, 100),
         bench_input=(lambda s, r: random_directed_paired(s))
     )
 
