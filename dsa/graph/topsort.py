@@ -4,10 +4,7 @@ from .graph import Graph
 def topsort_khan(graph: Graph):
     """
     Khan topological sort algorithm.
-    This implementation has some tweaks due to graph data structure limitations
-    - Khan's algorithm require graph mutation (a copy of the graph is created to apply the algorithm)
-    - graph does not support edge removal, a hack is used this (set `edge._target = None`)
-    - graph does not provide info on root vertices and vertices amount of incoming edges (edges are counted beforehand)
+    This implementation mutates the graph to preserve asymptotic complexities (`edge._target` field).
 
     > complexity:
     - time: `O(v + e)`
@@ -18,7 +15,8 @@ def topsort_khan(graph: Graph):
 
     > `return: Vertex[]`: topological order
     """
-    graph = graph.copy()  # copy needed because graph is be mutated
+    if not graph.is_directed():
+        raise Exception('graph must be directed')
     incoming_edges = [0] * graph.vertices_count()
     total_edges = 0
     for edge in graph.edges():
@@ -30,16 +28,15 @@ def topsort_khan(graph: Graph):
         v = root_vertices.pop()
         order.append(v)
         for edge in graph.edges(v):
-            if edge.data == True:  # removed edge
+            if edge.data == True:  # graph does not support edge deletion, edge.data == True indicates edge deletion
                 continue
-            target = edge._target
-            edge.data = True  # remove edge
-            incoming_edges[target] -= 1  # decrease edge count
+            edge.data = True
+            incoming_edges[edge._target] -= 1
             total_edges -= 1
-            if incoming_edges[target] == 0:
-                root_vertices.append(target)
+            if incoming_edges[edge._target] == 0:
+                root_vertices.append(edge._target)
     if total_edges > 0:
-        raise Exception('topological sort only works with directed acyclic graphs')
+        raise Exception('graph must be acyclic')
     return order
 
 
@@ -56,21 +53,23 @@ def topsort_dfs(graph: Graph):
 
     > `return: Vertex[]`: topological order
     """
-    visited = [0] * graph.vertices_count()  # 0: unvisited, 1: temporary, 2: visited
+    if not graph.is_directed():
+        raise Exception('graph must be directed')
+    visited = [0] * graph.vertices_count()  # 0: unvisited, 1: visited, 2: all children visited
     order = []
 
     def dfs(v: int):
-        if visited[v] == 1:  # temporary
-            raise Exception('topological sort only works with directed acyclic graphs')
+        if visited[v] == 1:  # visited
+            raise Exception('graph must be acyclic')
         visited[v] = 1
         for edge in graph.edges(v):
-            if visited[edge._target] != 2:  # not visited
+            if visited[edge._target] != 2:  # not all children visited
                 dfs(edge._target)
         visited[v] = 2
         order.append(v)
 
     for v in range(graph.vertices_count()):
-        if visited[v] != 2:  # not visited or temporary
+        if visited[v] != 2:  # not all children visited
             dfs(v)
     order.reverse()
     return order
@@ -82,7 +81,7 @@ def test():
     from .factory import random_dag
     benchmark(
         [
-            ('  topological sort khan', topsort_khan),
+            ('  topological sort khan', lambda graph: topsort_khan(graph.copy())),
             ('   topological sort dfs', topsort_dfs),
             ('topological sort tarjan', lambda graph: [*reversed([v for v, in strong_connected_tarjan(graph)])])
         ],
