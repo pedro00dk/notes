@@ -16,7 +16,7 @@ def undirected_fleury(graph: Graph):
     > parameters:
     - `graph: Graph`: graph to find eulerian path
 
-    > `return: (int(), bool)`: path of vertices and if is a cycle, or `None` if graph does not have a path
+    > `return: (bool, int())`: if path is a cycle and the vertices, or `None` if graph does not have a path
     """
     if graph.vertices_count() == 0:
         raise Exception('graph must contain at least 1 vertex')
@@ -53,7 +53,7 @@ def undirected_fleury(graph: Graph):
             break
         else:
             break
-    return ((*path,), path[0] == path[-1]) if len(path) == graph.unique_edges_count() + 1 else None
+    return (path[0] == path[-1], (*path,)) if len(path) == graph.unique_edges_count() + 1 else None
 
 
 def undirected_hierholzer(graph: Graph, /, recursive=False):
@@ -72,7 +72,7 @@ def undirected_hierholzer(graph: Graph, /, recursive=False):
     - `graph: Graph`: graph to find eulerian path
     - `recursive: bool? = False`: use the default recursive version of the algorithm
 
-    > `return: (int(), bool)`: path of vertices and if is a cycle, or `None` if graph does not have a path
+    > `return: (bool, int())`: if path is a cycle and the vertices, or `None` if graph does not have a path
     """
     if graph.vertices_count() == 0:
         raise Exception('graph must contain at least 1 vertex')
@@ -109,7 +109,7 @@ def undirected_hierholzer(graph: Graph, /, recursive=False):
                 continue
             path.appendleft(v)
             stack.pop()
-    return ((*path,), path[0] == path[-1]) if len(path) == graph.unique_edges_count() + 1 else None
+    return (path[0] == path[-1], (*path,)) if len(path) == graph.unique_edges_count() + 1 else None
 
 
 def directed_hierholzer(graph: Graph, /, recursive=False):
@@ -127,7 +127,7 @@ def directed_hierholzer(graph: Graph, /, recursive=False):
     - `graph: Graph`: graph to find eulerian path
     - `recursive: bool? = False`: use the default recursive version of the algorithm
 
-    > `return: (int(), bool)`: path of vertices and if is a cycle, or `None` if graph does not have a path
+    > `return: (bool, int())`: if path is a cycle and the vertices, or `None` if graph does not have a path
     """
     if graph.vertices_count() == 0:
         raise Exception('graph must contain at least 1 vertex')
@@ -170,7 +170,7 @@ def directed_hierholzer(graph: Graph, /, recursive=False):
                 continue
             path.appendleft(v)
             stack.pop()
-    return ((*path,), path[0] == path[-1]) if len(path) == graph.edges_count() + 1 else None
+    return (path[0] == path[-1], (*path,)) if len(path) == graph.edges_count() + 1 else None
 
 
 def test():

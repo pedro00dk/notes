@@ -14,14 +14,11 @@ def hamiltonian_cycle(graph: Graph, tsp_algorithm):
 
     > parameters:
     - `graph: Graph`: graph to find cycle
-    - `tsp_algorithm: Graph => (int(), int | float)`: a tsp algorithm
+    - `tsp_algorithm: Graph => (int | float, int())`: a tsp algorithm
 
     > `return: int()`: the cycle if it exists or `None` otherwise or if graph is empty
     """
-    itinerary = tsp_algorithm(graph)
-    if itinerary is None:
-        return None
-    path, distance = itinerary
+    distance, path = tsp_algorithm(graph)
     return path if distance != float('inf') else None
 
 
@@ -37,14 +34,11 @@ def hamiltonian_path(graph: Graph, tsp_algorithm):
 
     > parameters:
     - `graph: Graph`: graph to find path
-    - `tsp_algorithm: Graph => (int(), int | float)`: a tsp algorithm
+    - `tsp_algorithm: Graph => (int | float, int())`: a tsp algorithm
 
     > `return: int()`: the path if it exists or `None` otherwise or if graph is empty
     """
-    itinerary = tsp_algorithm(graph)
-    if itinerary is None:
-        return None
-    path, distance = itinerary
+    distance, path = tsp_algorithm(graph)
     if distance != float('inf'):
         return path
     matrix = graph.adjacency_matrix()

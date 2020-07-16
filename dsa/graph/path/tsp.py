@@ -20,7 +20,7 @@ def tsp_brute_force(graph: Graph, /, start=0):
     - `graph: Graph`: graph to find itinerary
     - `start: int? = 0`: start vertex
 
-    > `return: (int(), int | float)`: the best distance and best path, or `None` if graph is empty
+    > `return: (int | float, int())`: the best distance and best path
     """
     if graph.vertices_count() == 0:
         raise Exception('graph must contain at least 1 vertex')
@@ -38,7 +38,7 @@ def tsp_brute_force(graph: Graph, /, start=0):
             continue
         distance = permutation_distance
         path = permutation
-    return (start, *(path if graph.vertices_count() > 1 else ())), distance
+    return distance, (start, *(path if graph.vertices_count() > 1 else ()))
 
 
 def tsp_held_karp_bitset(graph: Graph, /, start=0):
@@ -62,7 +62,7 @@ def tsp_held_karp_bitset(graph: Graph, /, start=0):
     - `graph: Graph`: graph to find itinerary
     - `start: int? = 0`: start vertex
 
-    > `return: (int(), int | float)`: the best distance and best path, or `None` if graph is empty
+    > `return: (int | float, int())`: the best distance and best path
     """
     if graph.vertices_count() == 0:
         raise Exception('graph must contain at least 1 vertex')
@@ -125,7 +125,7 @@ def tsp_held_karp_bitset(graph: Graph, /, start=0):
         parent = paths[parent][subset][1]
     path.append(start)
 
-    return (*reversed(path),), distance
+    return distance, (*reversed(path),)
 
 
 def tsp_held_karp_hashset(graph: Graph, /, start=0):
@@ -143,7 +143,7 @@ def tsp_held_karp_hashset(graph: Graph, /, start=0):
     - `graph: Graph`: graph to find itinerary (must be complete)
     - `start: int? = 0`: start vertex
 
-    > `return: (int(), int | float)`: the best distance and best path, or `None` if graph is empty
+    > `return: (int | float, int())`: the best distance and best path
     """
     if graph.vertices_count() == 0:
         raise Exception('graph must contain at least 1 vertex')
@@ -196,7 +196,7 @@ def tsp_held_karp_hashset(graph: Graph, /, start=0):
         parent = paths[(parent, subset)][1]
     path.append(start)
 
-    return (*reversed(path),), distance
+    return distance, (*reversed(path),)
 
 
 def tsp_nearest_heighbor(graph: Graph, /, start=0):
@@ -214,7 +214,7 @@ def tsp_nearest_heighbor(graph: Graph, /, start=0):
     - `graph: Graph`: graph to find itinerary (must be complete)
     - `start: int? = 0`: start vertex
 
-    > `return: (int(), int | float)`: the best distance and best path, or `None` if graph is empty (heuristic)
+    > `return: (int | float, int())`: the best distance and best path (heuristic)
     """
     if graph.vertices_count() == 0:
         raise Exception('graph must contain at least 1 vertex')
@@ -236,7 +236,7 @@ def tsp_nearest_heighbor(graph: Graph, /, start=0):
         path.append(best_target)
         visited[best_target] = True
     distance += min(edge.length for edge in graph.edges(path[-1]) if edge._target == start) if len(path) > 1 else 0
-    return (*path,), distance
+    return distance, (*path,)
 
 
 def test():
