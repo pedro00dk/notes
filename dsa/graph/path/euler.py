@@ -182,8 +182,8 @@ def test():
     benchmark(
         [
             ('              undirected fleury', lambda graph: undirected_fleury(graph.copy())),
-            ('undirected hierholzer recursive', lambda graph: undirected_hierholzer(graph.copy(), True)),
-            ('undirected hierholzer iterative', lambda graph: undirected_hierholzer(graph.copy(), False))
+            ('undirected hierholzer recursive', lambda graph: undirected_hierholzer(graph, True)),
+            ('undirected hierholzer iterative', lambda graph: undirected_hierholzer(graph, False))
         ],
         test_input_iter=(random_undirected_paired(i) for i in (5, 10, 15, 20)),
         bench_size_iter=(1, 10, 100),
