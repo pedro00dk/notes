@@ -18,8 +18,6 @@ def sssp_dag(graph: Graph, start: int):
 
     > `return: (int | float, int)[]`: distances array containing distances to `start` and `parent`
     """
-    if graph.vertices_count() == 0:
-        return []
     if start < 0 or start >= graph.vertices_count():
         raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
     distances = [(float('inf'), None)] * graph.vertices_count()
@@ -47,8 +45,6 @@ def sslp_dag(graph: Graph, start: int):
 
     > `return: (int | float, int)[]`: distances array containing distances to `start` and `parent` 
     """
-    if graph.vertices_count() == 0:
-        return []
     if start < 0 or start >= graph.vertices_count():
         raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
     distances = [(float('inf'), None)] * graph.vertices_count()
@@ -56,20 +52,17 @@ def sslp_dag(graph: Graph, start: int):
     for v in topsort_dfs(graph):
         vertex_distance, parent = distances[v]
         for edge in graph.edges(v):
-            target_distance = vertex_distance - edge.length  # negate edge length
+            target_distance = vertex_distance - edge.length
             if target_distance < distances[edge._target][0]:
                 distances[edge._target] = (target_distance, v)
-    inf = float('inf')
-    for i in range(len(distances)):
-        distance, parent = distances[i]
-        distances[i] = (-distance if distance < inf else inf, parent)
+    distances[:] = ((-distance if distance < float('inf') else float('inf'), parent) for distance, parent in distances)
     return distances
 
 
 def sssp_dijkstra(graph: Graph, start: int, /, end: int = None):
     """
     Dijkstra single source shortest path algorithm.
-    Dijkstra does not support graphs with negative edge lengths (except directed acyclic graphs).
+    Dijkstra does not support graphs with negative edge lengths (except if the graph does not contain negative cycles).
 
     > complexity:
     - time: `O((v + e)*log(v)) ~> O(e*log(v))`
@@ -82,10 +75,8 @@ def sssp_dijkstra(graph: Graph, start: int, /, end: int = None):
 
     > `return: (int | float, int)[]`: distances array containing distances to `start` and `parent` 
     """
-    if graph.vertices_count() == 0:
-        return []
     if start < 0 or start >= graph.vertices_count() or end is not None and (end < 0 or end > graph.vertices_count()):
-        raise IndexError(f'start ({start}) or end ({end}) vertices out of range [0, {graph.vertices_count()})')
+        raise IndexError(f'start ({start}) or end ({end}) vertex out of range [0, {graph.vertices_count()})')
     distances = [(float('inf'), None)] * graph.vertices_count()
     distances[start] = (0, None)
     heap = []
@@ -110,10 +101,8 @@ def sssp_dijkstra_opt(graph: Graph, start: int, /, end: int = None):
     - use `visited´ array to avoid checking already visited edges
     - skip stale heap pairs by checking against current distance before iterating through edges
     """
-    if graph.vertices_count() == 0:
-        return []
     if start < 0 or start >= graph.vertices_count() or end is not None and (end < 0 or end > graph.vertices_count()):
-        raise IndexError(f'start ({start}) or end ({end}) vertices out of range [0, {graph.vertices_count()})')
+        raise IndexError(f'start ({start}) or end ({end}) vertex out of range [0, {graph.vertices_count()})')
     visited = [False] * graph.vertices_count()
     distances = [(float('inf'), None)] * graph.vertices_count()
     distances[start] = (0, None)
@@ -121,9 +110,9 @@ def sssp_dijkstra_opt(graph: Graph, start: int, /, end: int = None):
     heapq.heappush(heap, (0, start))
     while len(heap) > 0:
         distance, v = heapq.heappop(heap)
+        visited[v] = True
         if v == end:
             break
-        visited[v] = True
         if distance > distances[v][0]:
             continue
         for edge in graph.edges(v):
@@ -237,7 +226,7 @@ def floyd_warshall_rebuild_path(distances: list, parents: list, start: int, end:
     or if path is `None`, there is a negative cycle between `start` and `end`
     """
     if start < 0 or start >= len(distances) or end is not None and end < 0 or end > len(distances):
-        raise IndexError(f'start ({start}) or end ({end}) vertices out of range [0, {len(distances)})')
+        raise IndexError(f'start ({start}) or end ({end}) vertex out of range [0, {len(distances)})')
     path = []
     if distances[start][end] == float('inf'):
         return path
@@ -256,16 +245,15 @@ def floyd_warshall_rebuild_path(distances: list, parents: list, start: int, end:
 def test():
     from ...test import benchmark
     from ..factory import random_dag, random_directed, random_undirected
-    # skip zero size inputs because in all benchmarks because of floyd warshall array accesses
     print('directed acyclic graphs')
     benchmark(
         [
-            ('                sssp dag', lambda graph: sssp_dag(graph, 0)),
-            ('                sslp dag', lambda graph: sslp_dag(graph, 0)),
-            ('           sssp dijkstra', lambda graph: sssp_dijkstra(graph, 0)),
-            ('       sssp dijkstra opt', lambda graph: sssp_dijkstra_opt(graph, 0)),
-            ('       sssp bellman ford', lambda graph: sssp_bellman_ford(graph, 0)),
-            ('     apsp floyd warshall', lambda graph: apsp_floyd_warshall(graph)[0][0])
+            ('           sssp dag', lambda graph: sssp_dag(graph, 0)),
+            ('           sslp dag', lambda graph: sslp_dag(graph, 0)),
+            ('      sssp dijkstra', lambda graph: sssp_dijkstra(graph, 0)),
+            ('  sssp dijkstra opt', lambda graph: sssp_dijkstra_opt(graph, 0)),
+            ('  sssp bellman ford', lambda graph: sssp_bellman_ford(graph, 0)),
+            ('apsp floyd warshall', lambda graph: apsp_floyd_warshall(graph)[0][0])
         ],
         test_input_iter=(random_dag(el_range=(-10, 15)) for i in range(3)),
         bench_size_iter=(1, 10, 100),
@@ -274,10 +262,10 @@ def test():
     print('undirected graphs')
     benchmark(
         [
-            ('           sssp dijkstra', lambda graph: sssp_dijkstra(graph, 0)),
-            ('       sssp dijkstra opt', lambda graph: sssp_dijkstra_opt(graph, 0)),
-            ('       sssp bellman ford', lambda graph: sssp_bellman_ford(graph, 0)),
-            ('     apsp floyd warshall', lambda graph: apsp_floyd_warshall(graph)[0][0])
+            ('      sssp dijkstra', lambda graph: sssp_dijkstra(graph, 0)),
+            ('  sssp dijkstra opt', lambda graph: sssp_dijkstra_opt(graph, 0)),
+            ('  sssp bellman ford', lambda graph: sssp_bellman_ford(graph, 0)),
+            ('apsp floyd warshall', lambda graph: apsp_floyd_warshall(graph)[0][0])
         ],
         test_input_iter=(random_undirected(10, el_range=(1, 10)) for i in range(3)),
         bench_size_iter=(1, 10, 100),
@@ -286,10 +274,10 @@ def test():
     print('directed graphs')
     benchmark(
         [
-            ('           sssp dijkstra', lambda graph: sssp_dijkstra(graph, 0)),
-            ('       sssp dijkstra opt', lambda graph: sssp_dijkstra_opt(graph, 0)),
-            ('       sssp bellman ford', lambda graph: sssp_bellman_ford(graph, 0)),
-            ('     apsp floyd warshall', lambda graph: apsp_floyd_warshall(graph)[0][0])
+            ('      sssp dijkstra', lambda graph: sssp_dijkstra(graph, 0)),
+            ('  sssp dijkstra opt', lambda graph: sssp_dijkstra_opt(graph, 0)),
+            ('  sssp bellman ford', lambda graph: sssp_bellman_ford(graph, 0)),
+            ('apsp floyd warshall', lambda graph: apsp_floyd_warshall(graph)[0][0])
         ],
         test_input_iter=(random_directed(10, el_range=(1, 10)) for i in range(3)),
         bench_size_iter=(1, 10, 100),
