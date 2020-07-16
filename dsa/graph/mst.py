@@ -15,33 +15,31 @@ def mst_prim(graph: Graph):
     > parameters:
     - `graph: Graph`: graph to find tree
 
-    > `return: (int | float, (int, int, int | float)[])`: the best distance and the tree edges (source, target, length)
+    > `return: (int | float, (int, int, int | float)[])`: tree cost and edges (source, target, length), or `None` if the
+        graph contains more than one connected component
     """
     if not graph.is_undirected():
-        raise Exception('minimum spanning tree algorithm only works with undirected graphs')
-    if graph.vertices_count() < 2:
-        return None, ()
-    start = 0
-    tree_cost = 0
-    tree_edges = []
+        raise Exception('graph must be undirected')
+    cost = 0
+    edges = []
     visited = [False] * graph.vertices_count()
     heap = []
-    for edge in graph.edges(start):
-        # nan is used to exploit heapq impl by stopping comparisons before the edge object (all nan comps return false)
-        heapq.heappush(heap, (edge.length, float('nan'), edge))
-    visited[start] = True
-    while len(heap) > 0 and len(tree_edges) < graph.vertices_count() - 1:
-        length, _, edge = heapq.heappop(heap)
+    for edge in graph.edges(0) if graph.vertices_count() > 0 else ():
+        heapq.heappush(heap, (edge.length, float('nan'), edge))  # exploit heapq impl with NaN, stopping comparisons
+    if graph.vertices_count() > 0:
+        visited[0] = True
+    while len(heap) > 0 and len(edges) < graph.vertices_count() - 1:
+        _, _, edge = heapq.heappop(heap)
         if visited[edge._target]:
             continue
-        tree_edges.append(edge)
-        tree_cost += length
+        visited[edge._target] = True
+        cost += edge.length
+        edges.append(edge)
         for edge in graph.edges(edge._target):
             if not visited[edge._target]:
                 heapq.heappush(heap, (edge.length, float('nan'), edge))
-        visited[edge._source] = True
-    return (tree_cost, (*((edge._source, edge._target, edge.length) for edge in tree_edges),)) \
-        if len(tree_edges) == graph.vertices_count() - 1 else (None, ())
+    return (cost, (*((edge._source, edge._target, edge.length) for edge in edges),)) \
+        if len(edges) == graph.vertices_count() - 1 else None
 
 
 def mst_kruskal(graph: Graph):
@@ -55,27 +53,28 @@ def mst_kruskal(graph: Graph):
     > parameters:
     - `graph: Graph`: graph to find tree
 
-    > `return: (int | float, (int, int, int | float)[])`: the best distance and the tree edges (source, target, length)
+    > `return: (int | float, (int, int, int | float)[])`: tree cost and edges (source, target, length), or `None` if the
+        graph contains more than one connected component
     """
     if not graph.is_undirected():
-        raise Exception('minimum spanning tree algorithm only works with undirected graphs')
+        raise Exception('graph must be undirected')
     if graph.vertices_count() < 2:
         return None, ()
-    tree_cost = 0
-    tree_edges = []
+    cost = 0
+    edges = []
     sorted_edges = [*graph.edges()]
     sorted_edges.sort(key=lambda edge: edge.length)
     disjoint_set = DisjointSet(graph.vertices_count())
     for edge in sorted_edges:
-        if len(tree_edges) == graph.vertices_count() - 1:
+        if len(edges) == graph.vertices_count() - 1:
             break
         if disjoint_set.connected(edge._source, edge._target):
             continue
-        tree_edges.append(edge)
-        tree_cost += edge.length
+        cost += edge.length
+        edges.append(edge)
         disjoint_set.union(edge._source, edge._target)
-    return (tree_cost, (*((edge._source, edge._target, edge.length) for edge in tree_edges),)) \
-        if len(tree_edges) == graph.vertices_count() - 1 else (None, ())
+    return (cost, (*((edge._source, edge._target, edge.length) for edge in edges),)) \
+        if len(edges) == graph.vertices_count() - 1 else None
 
 
 def mst_boruvka(graph: Graph):
@@ -89,14 +88,15 @@ def mst_boruvka(graph: Graph):
     > parameters:
     - `graph: Graph`: graph to find tree
 
-    > `return: (int | float, (int, int, int | float)[])`: the best distance and the tree edges (source, target, length)
+    > `return: (int | float, (int, int, int | float)[])`: tree cost and edges (source, target, length), or `None` if the
+        graph contains more than one connected component
     """
     if not graph.is_undirected():
-        raise Exception('minimum spanning tree algorithm only works with undirected graphs')
+        raise Exception('graph must be undirected')
     if graph.vertices_count() < 2:
         return None, ()
-    tree_cost = 0
-    tree_edges = []
+    cost = 0
+    edges = []
     disjoint_set = DisjointSet(graph.vertices_count())
     shortest_edges = [None] * graph.vertices_count()
     while disjoint_set.sets() > 1:
@@ -113,12 +113,12 @@ def mst_boruvka(graph: Graph):
             shortest_edge = shortest_edges[v]
             if shortest_edge is None or disjoint_set.connected(shortest_edge._source, shortest_edge._target):
                 continue
-            tree_edges.append(shortest_edge)
-            tree_cost += shortest_edge.length
+            edges.append(shortest_edge)
+            cost += shortest_edge.length
             disjoint_set.union(shortest_edge._source, shortest_edge._target)
         shortest_edges = [None] * graph.vertices_count()
-    return (tree_cost, (*((edge._source, edge._target, edge.length) for edge in tree_edges),)) \
-        if len(tree_edges) == graph.vertices_count() - 1 else (None, ())
+    return (cost, (*((edge._source, edge._target, edge.length) for edge in edges),)) \
+        if len(edges) == graph.vertices_count() - 1 else None
 
 
 def test():
@@ -126,7 +126,7 @@ def test():
     from .factory import complete
     benchmark(
         [
-            ('  mst prim', mst_prim),
+            ('   mst prim', mst_prim),
             ('mst kruskal', mst_kruskal),
             ('mst boruvka', mst_boruvka)
         ],
