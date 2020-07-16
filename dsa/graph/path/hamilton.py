@@ -14,11 +14,14 @@ def hamiltonian_cycle(graph: Graph, tsp_algorithm):
 
     > parameters:
     - `graph: Graph`: graph to find cycle
-    - `tsp_algorithm: Graph => int()`: a tsp algorithm
+    - `tsp_algorithm: Graph => (int(), int | float)`: a tsp algorithm
 
-    > `return: int()`: the cycle if it exists or None otherwise
+    > `return: int()`: the cycle if it exists or `None` otherwise or if graph is empty
     """
-    distance, path = tsp_brute_force(graph)
+    itinerary = tsp_algorithm(graph)
+    if itinerary is None:
+        return None
+    path, distance = itinerary
     return path if distance != float('inf') else None
 
 
@@ -26,7 +29,7 @@ def hamiltonian_path(graph: Graph, tsp_algorithm):
     """
     Hamiltonian path algorithm based on traveling salesman algorithm.
     To find a path, a tsp algorithm is used.
-    If `tsp_algorithm` result distance is not infinity or contains at most 1 infinity edge, then a path exists.
+    If `tsp_algorithm` result distance is not infinity or contains at most 1one infinity edge, then a path exists.
 
     > complexity:
     - time: O(tsp_algorithm)
@@ -34,11 +37,14 @@ def hamiltonian_path(graph: Graph, tsp_algorithm):
 
     > parameters:
     - `graph: Graph`: graph to find path
-    - `tsp_algorithm: Graph => int()`: a tsp algorithm
+    - `tsp_algorithm: Graph => (int(), int | float)`: a tsp algorithm
 
-    > `return: int()`: the path if it exists or None otherwise
+    > `return: int()`: the path if it exists or `None` otherwise or if graph is empty
     """
-    distance, path = tsp_brute_force(graph)
+    itinerary = tsp_algorithm(graph)
+    if itinerary is None:
+        return None
+    path, distance = itinerary
     if distance != float('inf'):
         return path
     matrix = graph.adjacency_matrix()
