@@ -141,8 +141,8 @@ def sssp_bellman_ford(graph: Graph, start: int, /, check_negative_cycles=True):
 
     > `return: (int | float, int)[]`: distances array containing distances to `start` and `parent` 
     """
-    if graph.vertices_count() == 0:
-        return []
+    if start < 0 or start >= graph.vertices_count():
+        raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
     distances = [(float('inf'), None)] * graph.vertices_count()
     distances[start] = (0, None)
     for i in range(graph.vertices_count() - 1):
@@ -177,7 +177,7 @@ def apsp_floyd_warshall(graph: Graph, /, check_negative_cycles=True):
         parents contains the parents for each pair path (see `floyd_warshall_rebuild_path`)
     """
     if graph.vertices_count() == 0:
-        return ([], [])
+        raise Exception('graph must contain at least 1 vertex')
     inf = float('inf')
     matrix = graph.adjacency_matrix()
     distances = matrix

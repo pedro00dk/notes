@@ -19,7 +19,7 @@ def undirected_fleury(graph: Graph):
     > `return: (int(), bool)`: path of vertices and if is a cycle, or `None` if graph does not have a path
     """
     if graph.vertices_count() == 0:
-        return None
+        raise Exception('graph must contain at least 1 vertex')
     if not graph.is_undirected():
         raise Exception('graph must be undirected')
     remaining_edges = [graph.edges_count(v) for v in range(graph.vertices_count())]
@@ -75,7 +75,7 @@ def undirected_hierholzer(graph: Graph, /, recursive=False):
     > `return: (int(), bool)`: path of vertices and if is a cycle, or `None` if graph does not have a path
     """
     if graph.vertices_count() == 0:
-        return None
+        raise Exception('graph must contain at least 1 vertex')
     if not graph.is_undirected():
         raise Exception('graph must be undirected')
     remaining_edges = [graph.edges_count(v) for v in range(graph.vertices_count())]
@@ -130,7 +130,7 @@ def directed_hierholzer(graph: Graph, /, recursive=False):
     > `return: (int(), bool)`: path of vertices and if is a cycle, or `None` if graph does not have a path
     """
     if graph.vertices_count() == 0:
-        return None
+        raise Exception('graph must contain at least 1 vertex')
     if not graph.is_directed():
         raise Exception('graph must be directed')
     incoming_edges = [0] * graph.vertices_count()
@@ -186,7 +186,7 @@ def test():
             ('undirected hierholzer iterative', lambda graph: undirected_hierholzer(graph.copy(), False))
         ],
         test_input_iter=(random_undirected_paired(i) for i in (5, 10, 15, 20)),
-        bench_size_iter=(0, 1, 10, 100),
+        bench_size_iter=(1, 10, 100),
         bench_input=(lambda s, r: random_undirected_paired(s))
     )
     print('directed graphs')
@@ -196,7 +196,7 @@ def test():
             ('directed hierholzer iterative', lambda graph: directed_hierholzer(graph, False))
         ],
         test_input_iter=(random_directed_paired(i) for i in (5, 10, 15, 20)),
-        bench_size_iter=(0, 1, 10, 100),
+        bench_size_iter=(1, 10, 100),
         bench_input=(lambda s, r: random_directed_paired(s))
     )
 

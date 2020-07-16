@@ -68,7 +68,7 @@ def test():
             ('     hamiltonina path > tsp hashset', lambda graph: hamiltonian_path(graph, tsp_held_karp_hashset))
         ],
         test_input_iter=(random_undirected(i, density=0.8) for i in (2, 3, 4, 5, 6, 7)),
-        bench_size_iter=range(0, 11),
+        bench_size_iter=range(1, 11),
         bench_input=lambda s, r: random_undirected(s)
     )
 

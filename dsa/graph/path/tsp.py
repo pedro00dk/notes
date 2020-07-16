@@ -23,7 +23,7 @@ def tsp_brute_force(graph: Graph, /, start=0):
     > `return: (int(), int | float)`: the best distance and best path, or `None` if graph is empty
     """
     if graph.vertices_count() == 0:
-        return None
+        raise Exception('graph must contain at least 1 vertex')
     if start < 0 or start >= graph.vertices_count():
         raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
     matrix = graph.adjacency_matrix()
@@ -65,7 +65,7 @@ def tsp_held_karp_bitset(graph: Graph, /, start=0):
     > `return: (int(), int | float)`: the best distance and best path, or `None` if graph is empty
     """
     if graph.vertices_count() == 0:
-        return None
+        raise Exception('graph must contain at least 1 vertex')
     if start < 0 or start >= graph.vertices_count():
         raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
     matrix = graph.adjacency_matrix()
@@ -146,7 +146,7 @@ def tsp_held_karp_hashset(graph: Graph, /, start=0):
     > `return: (int(), int | float)`: the best distance and best path, or `None` if graph is empty
     """
     if graph.vertices_count() == 0:
-        return None, ()
+        raise Exception('graph must contain at least 1 vertex')
     if start < 0 or start >= graph.vertices_count():
         raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
     matrix = graph.adjacency_matrix()
@@ -217,7 +217,7 @@ def tsp_nearest_heighbor(graph: Graph, /, start=0):
     > `return: (int(), int | float)`: the best distance and best path, or `None` if graph is empty (heuristic)
     """
     if graph.vertices_count() == 0:
-        return None
+        raise Exception('graph must contain at least 1 vertex')
     if start < 0 or start >= graph.vertices_count():
         raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
     visited = [False] * graph.vertices_count()
@@ -251,7 +251,7 @@ def test():
             ('tsp nearest neighbor', tsp_nearest_heighbor)
         ],
         test_input_iter=(complete(i, el_range=(0, 10)) for i in (2, 4, 6)),
-        bench_size_iter=range(11),
+        bench_size_iter=range(1, 11),
         bench_input=lambda s, r: complete(s, el_range=(0, 100))
     )
     print('without brute force')
