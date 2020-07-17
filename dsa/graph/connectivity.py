@@ -1,4 +1,5 @@
 import collections
+import itertools
 
 from ..dset import DisjointSet
 from .graph import Graph
@@ -20,7 +21,7 @@ def connected_traverse(graph: Graph, /, mode='depth'):
     > `return: int[][]`: list containing connected vertices ids
     """
     if not graph.is_undirected():
-        raise Exception('connected algorithm only works with undirected graphs')
+        raise Exception('graph must be undirected')
     visited = [False] * graph.vertices_count()
     components = []
 
@@ -34,13 +35,14 @@ def connected_traverse(graph: Graph, /, mode='depth'):
     def bfs(v: int, component: list):
         queue = collections.deque()
         queue.append(v)
+        visited[v] = True
         while len(queue) > 0:
             v = queue.popleft()
             component.append(v)
-            visited[v] = True
             for edge in graph.edges(v):
                 if not visited[edge._target]:
-                    dfs(edge._target, component)
+                    queue.append(edge._target)
+                    visited[edge._target] = True
 
     traversal = dfs if mode == 'depth' else bfs
     for v in range(graph.vertices_count()):
@@ -67,7 +69,7 @@ def connected_disjoint_set(graph: Graph):
     > `return: int[][]`: list containing connected vertices ids
     """
     if not graph.is_undirected():
-        raise Exception('connected algorithm only works with undirected graphs')
+        raise Exception('graph must be undirected')
     disjoint_set = DisjointSet(graph.vertices_count())
     for edge in graph.edges():
         disjoint_set.union(edge._source, edge._target)
@@ -85,8 +87,13 @@ def connected_disjoint_set(graph: Graph):
 
 def biconnected_tarjan(graph: Graph):
     """
-    Tarjan and Hopcroft biconnected components algorithm.
+    Tarjan and Hopcroft bridges, articulations and biconnected components algorithm.
     `graph` must be undirected, otherwise, the algorithm can not assure the components are biconnected.
+
+    Note that brides are not directly correlated to articulations and biconnected components.
+    Removing a bridge will disconnect a biconnected component of size 2 only.
+    Removing an articulation from a biconnected component of size 2 will not, because the remaining vertex is
+    "connected" with an empty set of vertices.
 
     > complexity:
     - time: `O(v + e)`
@@ -95,58 +102,56 @@ def biconnected_tarjan(graph: Graph):
     > parameters:
     - `graph: Graph`: graph to search components
 
-    > `return: (int[], (int, int), int[][])`: tuple containing articulations, bridges and biconnected components
+    > `return: ((int, int)[], int[], (int, int)[][])`: tuple containing bridges, articulations and edges of biconnected
+        components
     """
     if not graph.is_undirected():
-        raise Exception('connected algorithm only works with undirected graphs')
-    next_order = [0]
-    order = [None] * graph.vertices_count()  # also encode visited (order[v] is not none)
+        raise Exception('graph must be undirected')
+    next_order = 0
+    order = [None] * graph.vertices_count()  # also encode visited (order[v] is not None)
     low = [None] * graph.vertices_count()
-    stack = collections.deque()
+    stack = []
     articulations = set()
     bridges = []
     components = []
 
     def dfs(v: int, parent: int):
-        order[v] = low[v] = next_order[0]
-        next_order[0] += 1
+        nonlocal next_order
+        order[v] = low[v] = next_order
+        next_order += 1
         children = 0
         for edge in graph.edges(v):
-            if order[edge._target] is None:  # not visited
-                children += 1
-                stack.append(edge)
-                dfs(edge._target, v)
-                low[v] = min(low[v], low[edge._target])
-                if parent is None and children > 1 or \
-                        parent is not None and order[v] <= low[edge._target]:  # component found
-                    if order[v] < low[edge._target]:  # bridge found
-                        bridges.append((edge._source, edge._target))
-                    articulations.add(v)  # articulations comming from bridges or cycles
-                    target = edge._target
-                    component = set()
-                    while True:
-                        edge = stack.pop()
-                        component.add(edge._source)
-                        component.add(edge._target)
-                        if edge._source == v and edge._target == target:
-                            break
-                    components.append(component)
-            elif parent != edge._target and low[v] > order[edge._target]:
-                low[v] = min(low[v], low[edge._target])
-                stack.append(edge)
+            if edge._target == parent:
+                continue
+            edge_tuple = (edge._source, edge._target)
+            if order[edge._target] is not None:  # visited
+                if low[v] > order[edge._target]:
+                    low[v] = order[edge._target]
+                    stack.append(edge_tuple)
+                continue
+            stack.append(edge_tuple)
+            dfs(edge._target, v)  # not visited
+            children += 1
+            low[v] = min(low[v], low[edge._target])
+            if order[v] <= low[edge._target]:
+                if order[v] < low[edge._target]:
+                    bridges.append(edge_tuple)
+                if parent is not None or children >= 2:
+                    articulations.add(v)
+                components.append([edge_tuple, *itertools.takewhile(lambda e: e != edge_tuple, reversed(stack))])
+                del stack[-len(components[-1]):]
 
     for v in range(graph.vertices_count()):
         if order[v] is None:
             dfs(v, None)
-        stack.clear()
-    return (articulations, bridges, components)
+    return (bridges, [*articulations], components)
 
 
 def strong_connected_tarjan(graph: Graph):
     """
     Tarjan strongly connected components algorithm.
-    Tarjan's algorithm can also be used for topological sorting.
-    If the graph being processed is a directed acyclic graph, each component will contain a single vertex and components
+    This algorithm can also be used for topological sorting.
+    If the graph being processed is directed and acyclic, each component will contain a single vertex and components
     will be in a reverse topological order.
 
     > complexity:
@@ -156,17 +161,20 @@ def strong_connected_tarjan(graph: Graph):
     > parameters:
     - `graph: Graph`: graph to search components
 
-    > `return: int[][]`: list containing strongly connected vertices ids
+    > `return: int[][]`: list containing strongly connected components
     """
-    next_order = [0]
-    order = [None] * graph.vertices_count()  # also encode visited and stacked (order[v] is not None, order[v] != - 1)
+    if not graph.is_directed():
+        raise Exception('graph must be directed')
+    next_order = 0
+    order = [None] * graph.vertices_count()  # also encode visited (order[v] is not None) and stacked (order[v] != - 1)
     low = [None] * graph.vertices_count()
-    stack = collections.deque()
+    stack = []
     components = []
 
     def dfs(v: int):
-        order[v] = low[v] = next_order[0]
-        next_order[0] += 1
+        nonlocal next_order
+        order[v] = low[v] = next_order
+        next_order += 1
         stack.append(v)
         for edge in graph.edges(v):
             if order[edge._target] is None:  # not visited
@@ -175,14 +183,10 @@ def strong_connected_tarjan(graph: Graph):
                 low[v] = min(low[v], low[edge._target])
         if low[v] != order[v]:
             return
-        component = []
-        while True:
-            u = stack.pop()
+        components.append([v, *itertools.takewhile(lambda u: u != v, reversed(stack))])
+        del stack[-len(components[-1]):]
+        for u in components[-1]:
             order[u] = -1
-            component.append(u)
-            if u == v:
-                break
-        components.append(component)
 
     for v in range(graph.vertices_count()):
         if order[v] is None:
@@ -203,8 +207,10 @@ def strong_connected_kosaraju(graph: Graph):
 
     > `return: int[][]`: list containing strongly connected vertices ids
     """
+    if not graph.is_directed():
+        raise Exception('graph must be directed')
     visited = [False] * graph.vertices_count()
-    stack = collections.deque()
+    stack = []
 
     def dfs_stack(v: int):
         visited[v] = True
@@ -213,13 +219,6 @@ def strong_connected_kosaraju(graph: Graph):
                 dfs_stack(edge._target)
         stack.append(v)
 
-    def dfs_component(v: int, component: list):
-        component.append(v)
-        visited[v] = True
-        for edge in graph.edges(v):
-            if not visited[edge._target]:
-                dfs_component(edge._target, component)
-
     for v in range(graph.vertices_count()):
         if visited[v]:
             continue
@@ -227,6 +226,14 @@ def strong_connected_kosaraju(graph: Graph):
 
     transposed_graph = graph.transposed()
     visited = [False] * graph.vertices_count()
+
+    def dfs_component(v: int, component: list):
+        visited[v] = True
+        component.append(v)
+        for edge in transposed_graph.edges(v):
+            if not visited[edge._target]:
+                dfs_component(edge._target, component)
+
     components = []
     while len(stack) > 0:
         v = stack.pop()
@@ -242,29 +249,31 @@ def test():
     from ..test import benchmark
     from .factory import random_directed, random_undirected
 
-    def test_biconnected_tarjan(graph):
-        articulations, bridges, components = biconnected_tarjan(graph)
-        return {'articulations': articulations, 'bridges': bridges, 'components': components}
+    def test_biconnected_tarjan(graph: Graph):
+        bridges, articulations, components = biconnected_tarjan(graph)
+        return {
+            'components': [(*set(v for e in c for v in e),) for c in components],
+            'articulations': articulations,
+            'bridges': bridges,
+        }
 
     print('undirected graphs')
     benchmark(
         [
-            ('   connected traverse depth', lambda graph: connected_traverse(graph, mode='depth')),
-            (' connected traverse breadth', lambda graph: connected_traverse(graph, mode='breadth')),
-            ('     connected disjoint set', connected_disjoint_set),
-            ('         biconnected tarjan', test_biconnected_tarjan),
-            ('    strong connected tarjan', strong_connected_tarjan),
-            ('  strong connected kosaraju', strong_connected_kosaraju)
+            ('  connected traverse depth', lambda graph: connected_traverse(graph, mode='depth')),
+            ('connected traverse breadth', lambda graph: connected_traverse(graph, mode='breadth')),
+            ('    connected disjoint set', connected_disjoint_set),
+            ('        biconnected tarjan', test_biconnected_tarjan)
         ],
-        test_input_iter=(random_undirected(i, 0.1) for i in (5, 10, 15, 20)),
+        test_input_iter=(random_undirected(7, 0.3) for i in (5, 10, 15, 20)),
         bench_size_iter=(0, 1, 10, 100, 1000),
         bench_input=lambda s, r: random_undirected(s, 0.05)
     )
     print('directed graphs')
     benchmark(
         [
-            ('    strong connected tarjan', strong_connected_tarjan),
-            ('  strong connected kosaraju', strong_connected_kosaraju)
+            ('  strong connected tarjan', strong_connected_tarjan),
+            ('strong connected kosaraju', strong_connected_kosaraju)
         ],
         test_input_iter=(random_directed(i, 0.1) for i in (5, 10, 15, 20)),
         bench_size_iter=(0, 1, 10, 100, 1000),
