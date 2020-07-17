@@ -74,11 +74,11 @@ def k_ary_search(array: list, key, /, k=4, comparator=(lambda a, b: a - b), left
 def interpolation_search(array: list, key, /, comparator=lambda a, b: a - b, left: int = None, right: int = None):
     """
     Interpolation search algorithm.
-    Faster than binary search for uniformly distributed arrays.
     Require `array` to be sorted based on `comparator`.
+    Faster than binary search for uniformly distributed arrays.
 
     > complexity:
-    - time: `O(log(i))` where `i` is `key` index
+    - time: `O(log(log(n))) uniformly distributed arrays, worst: O(n)`
     - space: `O(1)`
 
     > parameters:
@@ -113,7 +113,7 @@ def exponential_search(array: list, key, /, comparator=lambda a, b: a - b, left:
     Require `array` to be sorted based on `comparator`.
 
     > complexity:
-    - time: `O(log(log(n))) uniformly distributed arrays, worst: O(n)`
+    - time: `O(log(i))` where `i` is `key` index
     - space: `O(1)`
 
     > parameters:
