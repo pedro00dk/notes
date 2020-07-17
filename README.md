@@ -185,6 +185,7 @@ Space complexity is available in algorithms files.
     -   khan **- O(v + e)**
     -   depth first search **- O(v + e)**
     -   strongly connected tarjan _(from connectivity algorithms, used as topsort algorithm)_ **- O(v + e)**
+    -   strongly connected kosaraju _(from connectivity algorithms, used as topsort algorithm)_ **- O(v + e)**
 -   [path finding](./dsa/graph/path)
     -   [shortest path](./dsa/graph/path/ssp.py)
         -   directed acyclic graphs

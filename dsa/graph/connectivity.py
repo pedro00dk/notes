@@ -152,7 +152,7 @@ def strong_connected_tarjan(graph: Graph):
     Tarjan strongly connected components algorithm.
     This algorithm can also be used for topological sorting.
     If the graph being processed is directed and acyclic, each component will contain a single vertex and components
-    will be in a reverse topological order.
+    will be in a reverse topological order. (Kosaraju's outputs in normal order)
 
     > complexity:
     - time: `O(v + e)`
@@ -197,6 +197,9 @@ def strong_connected_tarjan(graph: Graph):
 def strong_connected_kosaraju(graph: Graph):
     """
     Kosaraju strongly connected components algorithm.
+    This algorithm can also be used for topological sorting.
+    If the graph being processed is directed and acyclic, each component will contain a single vertex and components
+    will be in topological order. (Tarjan's outputs in reversed order)
 
     > complexity:
     - time: `O(v + e)`

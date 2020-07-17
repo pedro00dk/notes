@@ -77,13 +77,14 @@ def topsort_dfs(graph: Graph):
 
 def test():
     from ..test import benchmark
-    from .connectivity import strong_connected_tarjan
+    from .connectivity import strong_connected_kosaraju, strong_connected_tarjan
     from .factory import random_dag
     benchmark(
         [
-            ('  topological sort khan', lambda graph: topsort_khan(graph.copy())),
-            ('   topological sort dfs', topsort_dfs),
-            ('topological sort tarjan', lambda graph: [*reversed([v for v, in strong_connected_tarjan(graph)])])
+            ('    topological sort khan', lambda graph: topsort_khan(graph.copy())),
+            ('     topological sort dfs', topsort_dfs),
+            ('  topological sort tarjan', lambda graph: [*reversed([v for v, in strong_connected_tarjan(graph)])]),
+            ('topological sort kosaraju', lambda graph: [v for v, in strong_connected_kosaraju(graph)])
         ],
         test_input_iter=(random_dag() for i in range(5)),
         bench_size_iter=(0, 1, 10, 100, 1000),
