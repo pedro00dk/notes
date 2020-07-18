@@ -40,49 +40,78 @@ def random_undirected_paired(vertices=5, density=0.5, cycle=True, vw_range=(1, 1
     for v in range(vertices):
         graph.make_vertex(weight=random.randint(*vw_range))
     edges = round(min(max(0, density), 1) * vertices * (vertices - 1) / 2)
-    source = 0
+    current = 0
     target = 0
     for i in range(edges):
         target = random.randint(0, vertices - 1)
-        graph.make_edge(source, target, length=random.randint(*el_range), directed=False)
-        source = target
+        graph.make_edge(current, target, length=random.randint(*el_range), directed=False)
+        current = target
     if cycle and vertices > 0:
-        graph.make_edge(source, 0, length=random.randint(*el_range), directed=False)
+        graph.make_edge(current, 0, length=random.randint(*el_range), directed=False)
     return graph
 
 
 def random_directed_paired(vertices=5, density=0.5, cycle=True, vw_range=(1, 1), el_range=(1, 1)):
-    # paired means all vertices have even degree
+    # paired means all vertices have out_degree - in_degree = 0
     # unrepeated edges and full vertex coverage are not guaranteed
     graph = Graph()
     for v in range(vertices):
         graph.make_vertex(weight=random.randint(*vw_range))
     edges = round(min(max(0, density), 1) * vertices * (vertices - 1))
-    source = 0
+    current = 0
     target = 0
     for i in range(edges):
         target = random.randint(0, vertices - 1)
-        graph.make_edge(source, target, length=random.randint(*el_range), directed=True)
-        source = target
+        graph.make_edge(current, target, length=random.randint(*el_range), directed=True)
+        current = target
     if cycle and vertices > 0:
-        graph.make_edge(source, 0, length=random.randint(*el_range), directed=True)
+        graph.make_edge(current, 0, length=random.randint(*el_range), directed=True)
     return graph
 
 
 def random_dag(ranks_range=(3, 5), vertices_range=(1, 5), probability=0.5, vw_range=(1, 1), el_range=(1, 1)):
     graph = Graph()
+    previous_vertices = []
     ranks = random.randint(*ranks_range)
-    previous_vertices = 0
     for rank in range(ranks):
-        vertices = random.randint(*vertices_range)
-        for vertice in range(previous_vertices, vertices + previous_vertices):
-            graph.make_vertex(weight=random.randint(*vw_range))
-        for previous in range(previous_vertices):
-            for vertice in range(previous_vertices, vertices + previous_vertices):
+        rank_vertices_count = random.randint(*vertices_range)
+        rank_vertices = [graph.make_vertex()._id for _ in range(rank_vertices_count)]
+        for previous_vertex in previous_vertices:
+            for rank_vertex in rank_vertices:
                 if random.random() < probability:
-                    graph.make_edge(previous, vertice, length=random.randint(*el_range), directed=True)
-        previous_vertices += vertices
+                    graph.make_edge(previous_vertex, rank_vertex, length=random.randint(*el_range), directed=True)
+        previous_vertices.extend(rank_vertices)
     return graph
+
+
+def random_flow(ranks_range=(3, 5), vertices_range=(1, 5), parent_probability=0.9, sibling_probability=0.2, ancestor_probability=0.1, el_range=(1, 1)):
+    graph = Graph()
+    ranks_vertices = []
+    ranks = random.randint(*ranks_range)
+    for rank in range(ranks + 2):
+        if rank == 0:
+            ranks_vertices.append([graph.make_vertex()._id])
+            continue
+        rank_vertices_count = random.randint(*vertices_range) if rank < ranks + 1 else 1
+        rank_vertices = [graph.make_vertex()._id for _ in range(rank_vertices_count)]
+        for rank_vertex in rank_vertices:
+            first = True
+            # link with parents
+            for previous_vertex in random.sample(ranks_vertices[-1], len(ranks_vertices[-1])):
+                if first or random.random() < parent_probability:
+                    graph.make_edge(previous_vertex, rank_vertex, length=random.randint(*el_range), directed=True)
+                first = False
+            # link with siblings
+            for sibling_vertex in rank_vertices:
+                if rank_vertex != sibling_vertex and random.random() < parent_probability:
+                    graph.make_edge(sibling_vertex, rank_vertex, length=random.randint(*el_range), directed=True)
+            # link with ancestors
+            for previous_rank_vertices in ranks_vertices[1:-1]:
+                for ancestor_vertex in previous_rank_vertices:
+                    if random.random() < ancestor_probability:
+                        graph.make_edge(ancestor_vertex, rank_vertex, length=random.randint(*el_range), directed=True)
+        ranks_vertices.append(rank_vertices)
+    return graph, 0, graph.vertices_count() - 1
 
 
 def test():

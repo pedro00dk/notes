@@ -156,6 +156,7 @@ Space complexity is available in algorithms files.
         -   random undirected paired _(all vertices have even degree)_
         -   random directed paired _(all vertices have out-degree - in-degree = 0)_
         -   random directed acyclic
+        -   random flow _(for max-flow/min-cut)_
     -   traverse depth **O(v + e)**
     -   traverse breadth **O(v + e)**
     -   traverse vertices **O(v)**
@@ -212,6 +213,12 @@ Space complexity is available in algorithms files.
         -   brute force _(from traveling salesman, used as hamiltonian path algorithm)_ **- O(v!)**
         -   held-karp bitset _(from traveling salesman, used as hamiltonian path algorithm)_ **- O((2\*\*v)\*(v\*\*2))**
         -   held-karp hashset _(from traveling salesman, used as hamiltonian path algorithm)_ **- O((2\*\*v)\*(v\*\*2))**
+-   [max-flow/min-cut](./dsa/graph/path)
+    -   ford fulkerson
+        -   depth first search **- O(f\*e)**
+        -   edmonds karp **- O(v\*e\*\*2)**
+        -   depth first search with capacity scaling **- O(e\*\*2\*log(u))**
+        -   dinic **- O(v\*\*2\*e)**
 
 ## Enumeration Combinatorics
 
@@ -239,4 +246,4 @@ Space complexity is available in algorithms files.
     -   binary search **- O(log(n))**
     -   k-ary search **- O(k\*log(n,k))**
     -   interpolation search **- O(log(log(n))) uniformly distributed arrays, worst: O(n)**
-    -   exponential search **- O(log(i)) where i is key index**
+    -   exponential search **- O(log(i))**
