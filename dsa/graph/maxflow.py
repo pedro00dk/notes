@@ -16,7 +16,7 @@ def edge_capacity(edge: Edge):
     return edge.length - edge.data
 
 
-def augment_path(edge: Edge, flow):
+def augment_edge(edge: Edge, flow):
     """
     Increase the used capacity in the received edge, decreasing it on the opposite edge.
     The edge maximum capacity is stored in the edge `length` property.
@@ -71,7 +71,7 @@ def pathfinder_dfs(flow_graph: Graph, source: int, sink: int):
             )
             if bottleneck <= 0:
                 continue
-            augment_path(edge, bottleneck)
+            augment_edge(edge, bottleneck)
             return bottleneck, True
         return 0, False
 
@@ -107,7 +107,7 @@ def pathfinder_edmonds_karp(flow_graph: Graph, source: int, sink: int):
         > `return: (int | float, bool)`: the bottleneck of the found augmenting path and if should keep finding paths
         """
         queue = collections.deque()
-        edges = [None] * flow_graph.vertices_count()
+        parent_edges = [None] * flow_graph.vertices_count()
         visited[v] = visited_marker
         queue.append(v)
         while len(queue) > 0:
@@ -116,19 +116,19 @@ def pathfinder_edmonds_karp(flow_graph: Graph, source: int, sink: int):
                 if edge_capacity(edge) <= 0 or visited[edge._target] == visited_marker:
                     continue
                 visited[edge._target] = visited_marker
-                edges[edge._target] = edge
+                parent_edges[edge._target] = edge
                 queue.append(edge._target)
-        if edges[sink] is None:
+        if parent_edges[sink] is None:
             return 0, False
         bottleneck = flow
-        edge = edges[sink]
+        edge = parent_edges[sink]
         while edge is not None:
             bottleneck = min(bottleneck, edge_capacity(edge))
-            edge = edges[edge._source]
-        edge = edges[sink]
+            edge = parent_edges[edge._source]
+        edge = parent_edges[sink]
         while edge is not None:
-            augment_path(edge, bottleneck)
-            edge = edges[edge._source]
+            augment_edge(edge, bottleneck)
+            edge = parent_edges[edge._source]
         return bottleneck, True
 
     return find_augmenting_path
@@ -186,7 +186,7 @@ def pathfinder_dfs_capacity_scaling(flow_graph: Graph, source: int, sink: int):
             )
             if bottleneck <= 0:
                 continue
-            augment_path(edge, bottleneck)
+            augment_edge(edge, bottleneck)
             return bottleneck, True
         if v == source:
             delta /= 2
@@ -259,7 +259,7 @@ def pathfinder_dinic(flow_graph: Graph, source: int, sink: int):
             )
             if bottleneck <= 0:
                 continue
-            augment_path(edge, bottleneck)
+            augment_edge(edge, bottleneck)
             return bottleneck, True
         if v == source:
             build_level_graph()
@@ -276,6 +276,7 @@ def maxflow_ford_fulkerson(graph: Graph, /, source=0, sink: int = None, pathfind
     residual edges.
     This algorithm accepts different pathfiding functions, which are strategies for finding augmenting paths and pushing
     flow through edges.
+    THe minium cut is collected from the residual graph after pushing flow.
 
     > complexity: (check path finding functions)
 
@@ -286,7 +287,7 @@ def maxflow_ford_fulkerson(graph: Graph, /, source=0, sink: int = None, pathfind
     - `pathfinder: ((Graph, int, int) => (Graph, int, int, int | float, int[], int) => (int | float, bool))? =
         pathfinder_dfs`: function that returns for another function for finding augmenting paths (see documentation)
 
-    > `return: (int | float, int())`: graph maxflow and mincut
+    > `return: (int | float, (int, int, int | float)[])`: maxflow and edges in the mincut (source, target, capacity)
     """
     if not graph.is_directed():
         raise Exception('graph must be directed')
@@ -307,7 +308,25 @@ def maxflow_ford_fulkerson(graph: Graph, /, source=0, sink: int = None, pathfind
         visited_marker += 1
         if not keep:
             break
-    return maxflow
+    mincut = []
+    visited_marker = visited[source]
+    queue = collections.deque()
+    queue.append(source)
+    visited[source] = visited_marker
+    while len(queue) > 0:
+        v = queue.popleft()
+        for edge in flow_graph.edges(v):
+            if visited[edge._target] == visited_marker or edge_capacity(edge) <= 0:
+                continue
+            queue.append(edge._target)
+            visited[edge._target] = visited_marker
+    for v, marker in enumerate(visited):
+        if marker != visited_marker:
+            continue
+        for edge in graph.edges(v):
+            if visited[edge._target] != visited_marker:
+                mincut.append((edge._source, edge._target, edge.length))
+    return maxflow, mincut
 
 
 def test():
@@ -335,7 +354,7 @@ def test():
         test_input_iter=(
             random_flow((i, i), (i, i), ancestor_probability=0, el_range=(10, 20))[0] for i in (2, 3, 4, 5)
         ),
-        bench_size_iter=(0, 1, 10, 100, 1000),
+        bench_size_iter=(0, 1, 10, 100),
         bench_input=(lambda s, r: random_flow((s // 20, s // 10), (5, 10), el_range=(10, 20))[0])
     )
 
