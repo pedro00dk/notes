@@ -182,7 +182,7 @@ class LinkedList(Linear):
         > time: `O(n)`
         > space: `O(1)`
         """
-        node = self.head
+        node = self._head
         self._head, self._tail = self._tail, self._head
         for i in range(self._size):
             node.prev, node.next = node.next, node.prev
@@ -194,27 +194,27 @@ def test():
     from ..test import benchmark, match
     l = LinkedList()
     match([
-        (l.push, [2, 0], None),
-        (l.push, [1, 0], None),
-        (l.push, [0, 0], None),
-        (l.push, [5], None),
-        (l.push, [6], None),
-        (l.push, [7], None),
-        (l.push, [3, 3], None),
-        (l.push, [4, 4], None),
-        (print, [l], None),
-        (l.get, [6], 6),
-        (l.get, [2], 2),
-        (l.pop, [4], 4),
-        (l.pop, [3], 3),
-        (print, [l], None),
-        (l.pop, [], 7),
-        (l.pop, [0], 0),
-        (print, [l], None),
-        (l.reverse, [], None),
-        (l.index, [5], 1),
-        (l.index, [2], 2),
-        (print, [l], None)
+        (l.push, (2, 0)),
+        (l.push, (1, 0)),
+        (l.push, (0, 0)),
+        (l.push, (5,)),
+        (l.push, (6,)),
+        (l.push, (7,)),
+        (l.push, (3, 3,)),
+        (l.push, (4, 4,)),
+        (print, (l,)),
+        (l.get, (6,), 6),
+        (l.get, (2,), 2),
+        (l.pop, (4,), 4),
+        (l.pop, (3,), 3),
+        (print, (l,)),
+        (l.pop, (), 7),
+        (l.pop, (0,), 0),
+        (print, (l,)),
+        (l.reverse, ()),
+        (l.index, (5,), 1),
+        (l.index, (2,), 2),
+        (print, (l,))
     ])
 
     def test_linkedlist(count: int):

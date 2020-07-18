@@ -213,42 +213,25 @@ class AVL(Tree):
 
 def test():
     from ..test import match
-    t = AVL()
-    print('rank 2 tree')
-    match([
-        (t.put, [-15, -1000], None),
-        (t.put, [-10], None),
-        (t.put, [-5], None),
-        (t.put, [0], None),
-        (t.put, [5, 1000], None),
-        (t.put, [10], None),
-        (t.put, [15], None),
-        (t.get, [5], 1000),
-        (t.get, [-15], -1000),
-        (print, [t], None),
-        (t.take, [0], None),
-        (t.take, [-10], None),
-        (t.take, [-15], -1000),
-        (print, [t], None)
-    ])
-    t3 = AVL(rank=3)
-    print('rank 3 tree')
-    match([
-        (t3.put, [-15, -1000], None),
-        (t3.put, [-10], None),
-        (t3.put, [-5], None),
-        (t3.put, [0], None),
-        (t3.put, [5, 1000], None),
-        (t3.put, [10], None),
-        (t3.put, [15], None),
-        (t3.get, [5], 1000),
-        (t3.get, [-15], -1000),
-        (print, [t3], None),
-        (t3.take, [0], None),
-        (t3.take, [-10], None),
-        (t3.take, [-15], -1000),
-        (print, [t3], None)
-    ])
+    for i in (2, 3, 4):
+        print(f'rank {i} tree')
+        t = AVL(i)
+        match([
+            (t.put, (-15, -1000)),
+            (t.put, (-10,)),
+            (t.put, (-5,)),
+            (t.put, (0,)),
+            (t.put, (5, 1000)),
+            (t.put, (10,)),
+            (t.put, (15,)),
+            (t.get, (5,), 1000),
+            (t.get, (-15,), -1000),
+            (print, (t,)),
+            (t.take, (0,)),
+            (t.take, (-10,)),
+            (t.take, (-15,), -1000),
+            (print, (t,))
+        ])
     for key, value, depth in t.traverse('pre'):
         print(key, end=' ')
     print()

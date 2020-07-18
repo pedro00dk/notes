@@ -3,20 +3,24 @@ import time
 import timeit
 
 
-def match(
-    operations  # (function, args, expected result)[]
-):
-    for action, args, expected in operations:
-        result = action(*args)
-        correct = result == expected
-        if action.__name__ == 'print':
+def match(operations: list):
+    """
+    Match operations and expected results.
+    If the builtin `print` function is passed
+
+    > parameters:
+    - `operations: (any => any, any[], any?)`: function to check, arguments and expected result, which is optional
+    """
+    for action, arguments, *expected in operations:
+        result = action(*arguments)
+        if action == print:
             print()
             continue
         print(
             action.__name__,
-            '  args: ', ', '.join(str(arg) for arg in args),
+            f'  args: {", ".join(str(arg) for arg in arguments)}',
             f'result: {result}' if result is not None else '',
-            f'expected: {expected}' if not correct else ''
+            f'expected: {expected[0]}' if len(expected) > 0 and result != expected[0] else ''
         )
 
 

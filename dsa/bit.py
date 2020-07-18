@@ -117,22 +117,22 @@ def test():
     from .test import match
     bit = BIT([3, 4, -2, 7, 3, 11, 5, -8, -9, 2, 4, -8])
     match([
-        (print, [bit], None),
-        (bit.sum_range, [0, 1], 7),
-        (bit.sum_range, [0, 2], 5),
-        (bit.sum_range, [5, 7], 8),
-        (bit.sum_range, [8, 10], -3),
-        (bit.sum_range, [11, 11], -8),
-        (print, [bit], None),
-        (bit.add, [0, 10], None),
-        (bit.set, [5, -10], None),
-        (bit.add, [10, 10], None),
-        (print, [bit], None),
-        (bit.sum_range, [0, 1], 17),
-        (bit.sum_range, [0, 2], 15),
-        (bit.sum_range, [5, 7], -13),
-        (bit.sum_range, [8, 10], 7),
-        (bit.sum_range, [11, 11], -8)
+        (print, (bit,)),
+        (bit.sum_range, (0, 1), 7),
+        (bit.sum_range, (0, 2), 5),
+        (bit.sum_range, (5, 7), 8),
+        (bit.sum_range, (8, 10), -3),
+        (bit.sum_range, (11, 11), -8),
+        (print, (bit,)),
+        (bit.add, [0, 10]),
+        (bit.set, [5, -10]),
+        (bit.add, [10, 10]),
+        (print, (bit,)),
+        (bit.sum_range, (0, 1), 17),
+        (bit.sum_range, (0, 2), 15),
+        (bit.sum_range, (5, 7), -13),
+        (bit.sum_range, (8, 10), 7),
+        (bit.sum_range, (11, 11), -8)
     ])
 
 

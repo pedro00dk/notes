@@ -264,22 +264,20 @@ def test():
     from ..test import match
     t = RBT()
     match([
-        (t.put, [-15, -1000], None),
-        (t.put, [-10], None),
-        (t.put, [-5], None),
-        (t.put, [0], None),
-        (t.put, [5, 1000], None),
-        (t.put, [10], None),
-        (t.put, [15], None),
-        (t.get, [5], 1000),
-        (t.get, [-15], -1000),
-        (print, [t], True),
-        (t.take, [0], None),
-        (print, [t], True),
-        (t.take, [-10], None),
-        (print, [t], True),
-        (t.take, [-15], -1000),
-        (print, [t], None)
+        (t.put, (-15, -1000)),
+        (t.put, (-10,)),
+        (t.put, (-5,)),
+        (t.put, (0,)),
+        (t.put, (5, 1000)),
+        (t.put, (10,)),
+        (t.put, (15,)),
+        (t.get, (5,), 1000),
+        (t.get, (-15,), -1000),
+        (print, (t,)),
+        (t.take, (0,)),
+        (t.take, (-10,)),
+        (t.take, (-15,), -1000),
+        (print, (t,))
     ])
     for key, value, depth in t.traverse('pre'):
         print(key, end=' ')

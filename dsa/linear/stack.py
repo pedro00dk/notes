@@ -59,24 +59,24 @@ def test():
     from ..test import benchmark, match
     s = Stack()
     match([
-        (s.push, [0], None),
-        (s.push, [1], None),
-        (s.push, [2], None),
-        (s.push, [3], None),
-        (s.push, [4], None),
-        (s.push, [5], None),
-        (print, [s], None),
-        (s.pop, [], 5),
-        (s.pop, [], 4),
-        (s.peek, [], 3),
-        (print, [s], None),
-        (s.pop, [], 3),
-        (s.pop, [], 2),
-        (s.peek, [], 1),
-        (print, [s], None),
-        (s.pop, [], 1),
-        (s.pop, [], 0),
-        (print, [s], None)
+        (s.push, (0,)),
+        (s.push, (1,)),
+        (s.push, (2,)),
+        (s.push, (3,)),
+        (s.push, (4,)),
+        (s.push, (5,)),
+        (print, (s,)),
+        (s.pop, (), 5),
+        (s.pop, (), 4),
+        (s.peek, (), 3),
+        (print, (s,)),
+        (s.pop, (), 3),
+        (s.pop, (), 2),
+        (s.peek, (), 1),
+        (print, (s,)),
+        (s.pop, (), 1),
+        (s.pop, (), 0),
+        (print, (s,))
     ])
 
     def test_stack(count: int):

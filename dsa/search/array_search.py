@@ -137,18 +137,18 @@ def test():
     import random
     from ..test import benchmark, match
     match([
-        (binary_search, [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6], 6),
-        (binary_search, [[0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8], 4),
-        (binary_search, [[1, 10, 100, 1000, 10000, 100000, 1000000], 10], 1),
-        (k_ary_search, [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6, 2], 6),
-        (k_ary_search, [[0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8, 4], 4),
-        (k_ary_search, [[1, 10, 100, 1000, 10000, 100000, 1000000], 10, 8], 1),
-        (interpolation_search, [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6], 6),
-        (interpolation_search, [[0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8], 4),
-        (interpolation_search, [[1, 10, 100, 1000, 10000, 100000, 1000000], 10], 1),
-        (exponential_search, [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6], 6),
-        (exponential_search, [[0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8], 4),
-        (exponential_search, [[1, 10, 100, 1000, 10000, 100000, 1000000], 10], 1)
+        (binary_search, ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6), 6),
+        (binary_search, ([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8), 4),
+        (binary_search, ([1, 10, 100, 1000, 10000, 100000, 1000000], 10), 1),
+        (k_ary_search, ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6, 2), 6),
+        (k_ary_search, ([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8, 4), 4),
+        (k_ary_search, ([1, 10, 100, 1000, 10000, 100000, 1000000], 10, 8), 1),
+        (interpolation_search, ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6), 6),
+        (interpolation_search, ([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8), 4),
+        (interpolation_search, ([1, 10, 100, 1000, 10000, 100000, 1000000], 10), 1),
+        (exponential_search, ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6), 6),
+        (exponential_search, ([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8), 4),
+        (exponential_search, ([1, 10, 100, 1000, 10000, 100000, 1000000], 10), 1)
     ])
     benchmark(
         [
@@ -162,7 +162,6 @@ def test():
 
         ],
         test_input_iter=(),
-        # skip zero size inputs because search algorithms raise exceptions
         bench_size_iter=(1, 10, 100, 1000, 10000, 100000),
         bench_input=lambda s, r: [*range(s)],
         bench_tries=100000

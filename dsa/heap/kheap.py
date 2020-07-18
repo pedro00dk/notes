@@ -158,26 +158,26 @@ def test():
     from ..test import match
     h = KHeap(random.sample([i for i in range(10)], 10), 'min', 4)
     match([
-        (print, [h], None),
-        (h.offer, [10], None),
-        (h.offer, [11], None),
-        (h.offer, [12], None),
-        (h.offer, [13], None),
-        (h.offer, [14], None),
-        (h.offer, [15], None),
-        (print, [h], None),
-        (h.poll, [], 0),
-        (h.poll, [], 1),
-        (print, [h], None),
-        (h.poll, [], 2),
-        (h.poll, [], 3),
-        (h.poll, [], 4),
-        (print, [h], None),
-        (h.poll, [], 5),
-        (h.poll, [], 6),
-        (h.poll, [], 7),
-        (h.poll, [], 8),
-        (print, [h], None)
+        (print, (h,)),
+        (h.offer, (10,)),
+        (h.offer, (11,)),
+        (h.offer, (12,)),
+        (h.offer, (13,)),
+        (h.offer, (14,)),
+        (h.offer, (15,)),
+        (print, (h,)),
+        (h.poll, (), 0),
+        (h.poll, (), 1),
+        (print, (h,)),
+        (h.poll, (), 2),
+        (h.poll, (), 3),
+        (h.poll, (), 4),
+        (print, (h,)),
+        (h.poll, (), 5),
+        (h.poll, (), 6),
+        (h.poll, (), 7),
+        (h.poll, (), 8),
+        (print, (h,))
     ])
 
 

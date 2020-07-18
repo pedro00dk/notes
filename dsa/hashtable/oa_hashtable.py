@@ -87,10 +87,10 @@ def test():
     for prober in Prober:
         h = OAHashtable(prober)
         match([
-            *((h.put, [str(i), i * 2], None) for i in random.sample([i for i in range(100)], 100)),
-            (print, [h], None),
-            *((h.take, [str(i)], i * 2) for i in random.sample([i for i in range(100)], 100) if i % 3 == 0),
-            (print, [h], None)
+            *((h.put, (str(i), i * 2), None) for i in random.sample([i for i in range(100)], 100)),
+            (print, (h,)),
+            *((h.take, (str(i),), i * 2) for i in random.sample([i for i in range(100)], 100) if i % 3 == 0),
+            (print, (h,))
         ])
 
 
