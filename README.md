@@ -1,22 +1,24 @@
 # Notes - Data Structures and Algorithms
 
-Small collection of algorithms and data structures implementations in Python.
+Collection of data structures and algorithms implemented in Python.
 
-Any file of this project must be run as a module:
+The minimum python version required is 3.8.
+Scripts of this project must be run as a module:
 
 ```shell
 cd <project-root>
 $ python -m dsa.<module>.<file> # without .py
 
+$ # examples:
 $ python -m dsa.sorting.quicksort
 $ python -m dsa.tree.avl
+$ python -m dsa.graph.path.ssp
 ```
 
 #### Notes
 
--   I use type hints only in functions parameters, and only the simple ones.
--   Although I use simple type hints in functions, when commenting, I use a combination of python _primitives_ (`str`, `int`, `float`, etc) and typescript complex types and operators (`|`, `&`, `typeof`, `[]`, `{}`, etc), and generics (`<T extends any>`, etc), and extra syntax for tuples `(T,)`, `(<T>, <U>)` and `<T>()`.
--   Some functions such as default functions (`__len__`, `__str__`, etc) and simple functions are not commented.
+-   Functions have basic type hints, the docstring contains a better specification of parameters and return value types.
+-   A combination of python basic types (`str`, `int`, `float`, etc) and typescript type operators (`|`, `&`, `typeof`, `[]`, `{}`, etc), generics (`<T extends any>`, etc), and extra syntax for tuples `(T,)`, `(<T>, <U>)`, `<T>()` is used to specify types.
 -   The `n` value in most asymptotic complexity descriptions refer to the main input size, which may be an array or string size, the absolute value of a numeric parameter, the size of a data structure, etc. Other complexity variables are usually described in the comments or in the code.
 
 ---
@@ -179,7 +181,7 @@ Space complexity is available in algorithms files.
         -   connected breadth first search **- O(v + e)**
         -   connected disjoint set **- O(v + e)**
         -   articulations, bridges and biconnected tarjan **- O(v + e)**
-    -   all graphs
+    -   directed graphs
         -   strongly connected tarjan **- O(v + e)**
         -   strongly connected kosaraju **- O(v + e)**
 -   [topological sorting](./dsa/graph/topsort.py)
@@ -198,9 +200,9 @@ Space complexity is available in algorithms files.
             -   all pairs floyd warshall **- O(v\*\*3)**
     -   [traveling salesman problem](./dsa/graph/path/tsp.py)
         -   brute force **- O(v!)**
-        -   held-karp bitset **- O((2\*\*v)\*(v\*\*2))**
-        -   held-karp hashset **- O((2\*\*v)\*(v\*\*2))**
-        -   nearest neighbors (heuristic) **- O((v\*\*2)**
+        -   held-karp bitset **- O(2\*\*v\*v\*\*2)**
+        -   held-karp hashset **- O(2\*\*v\*v\*\*2)**
+        -   nearest neighbors (heuristic) **- O(v\*\*2)**
     -   [eulerian cycle/path](./dsa/graph/path/euler.py)
         -   undirected graphs
             -   fleury **- O(e\*\*2)**
@@ -211,8 +213,8 @@ Space complexity is available in algorithms files.
             -   hierholzer iterative **- O(v + e)**
     -   [hamiltonian cycle/path](./dsa/graph/path/hamilton.py)
         -   brute force _(from traveling salesman, used as hamiltonian path algorithm)_ **- O(v!)**
-        -   held-karp bitset _(from traveling salesman, used as hamiltonian path algorithm)_ **- O((2\*\*v)\*(v\*\*2))**
-        -   held-karp hashset _(from traveling salesman, used as hamiltonian path algorithm)_ **- O((2\*\*v)\*(v\*\*2))**
+        -   held-karp bitset _(from traveling salesman, used as hamiltonian path algorithm)_ **- O(2\*\*v\*v\*\*2)**
+        -   held-karp hashset _(from traveling salesman, used as hamiltonian path algorithm)_ **- O(2\*\*v\*v\*\*2)**
 -   [max-flow/min-cut](./dsa/graph/path)
     -   ford fulkerson
         -   depth first search **- O(f\*e)**
