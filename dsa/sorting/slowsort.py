@@ -30,7 +30,7 @@ def slowsort(array: list):
 
 def test():
     from ..test import sort_benchmark
-    sort_benchmark([('slowsort', slowsort)], bench_size_iter=(0, 1, 10, 100, 1000))
+    sort_benchmark([('slowsort', slowsort)], bench_sizes=(0, 1, 10, 100, 1000))
 
 
 if __name__ == '__main__':

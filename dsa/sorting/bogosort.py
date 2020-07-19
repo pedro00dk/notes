@@ -49,8 +49,8 @@ def test():
             ('bogosort deterministic', bogosort_deterministic),
         ],
         test_size=5,
-        bench_size_iter=(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
-        bench_repeats=10
+        bench_sizes=(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+        bench_repeat=10
     )
 
 

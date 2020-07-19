@@ -59,25 +59,24 @@ def benchmark(algorithms, /, *, input_str=str, output_str=str, test_inputs, benc
         print()
 
 
-def sort_benchmark(
-    algorithms,
-    /, *,
-    loads=None,
-    test_size=20,  # input size for test arrays
-    bench_size_iter=(0, 1, 10, 100, 1000, 10000),
-    bench_repeats=100,
-    value_range=lambda s: (0, s**2)  # value ranges for benchmake inputs
-):
-    test_input_iter = [
-        [], [0], [*range(test_size)], [*range(test_size - 1, -1, -1)], random.sample([*range(test_size)], test_size)
-    ]
-    bench_input = lambda s, r: [random.randint(*value_range(s)) for _ in range(s)]
+def sort_benchmark(algorithms, /, *, test_size=20, bench_sizes=(0, 1, 10, 100, 1000, 10000), bench_repeat=100, value_range=lambda s: (0, s**2)):
+    """
+    Helper benchmarking function for sorting algorithms.
+
+    > parameters:
+    - `algorithms: (str, (int | float)[] => (int | float)[])()`: list of labels and algorithms to benchmark
+    - `test_size: int? = 20`: size of array to use in testing
+    - `bench_sizes: iter<int>? = (0, 1, 10, 100, 1000, 10000)`: list of elements that identify benchmark input sizes
+    - `bench_repeat: int? = 100`: number of times to run the benchmark (each repeat generates a new input)
+    - `value_ramge: int => (int, int)`: function that takes input sizes and return min and max allowed values in array
+    -
+    """
     benchmark(
         algorithms,
-        loads=loads,
-        test_input_iter=test_input_iter,
-        bench_size_iter=bench_size_iter,
-        bench_repeats=bench_repeats,
-        bench_tries=1,
-        bench_input=bench_input
+        test_inputs=(
+            [], [0], [*range(test_size)], [*range(test_size - 1, -1, -1)], random.sample([*range(test_size)], test_size)
+        ),
+        bench_sizes=bench_sizes,
+        bench_repeat=bench_repeat,
+        bench_input=lambda s: [random.randint(*value_range(s)) for _ in range(s)]
     )

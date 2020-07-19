@@ -7,6 +7,15 @@ class Gap(enum.Enum):
     Functions to be used in the shellsort algorithm to create gap sequences.
     Enum functions are directly bound to values, meaning it is not necessary to access the `value` field, which does not
     even exist for functions.
+
+    > all gap functions accept the following parameters:
+    - `n: int`: the array size
+    - `k: int`: the current gap size (must start at 1)
+
+    Gap functions may produce increasing or decresing gap sizes.
+    Increasing sequences stop when the gap is greater than `n` of two equal gaps where generated.
+    Decreasing sequences stop at 1.
+
     """
     Shell1959 = lambda n, k: max(n / (2 * k), 1)                                  # O(n**2)
     FrankLazarus1960 = lambda n, k: 2 * math.floor(n / 2**k) + 1                  # O(n**(3/2))
@@ -17,6 +26,24 @@ class Gap(enum.Enum):
     Tokuda1992 = lambda n, k: math.ceil((1 / 5) * (9 * (9 / 4) ** (k - 1) - 4))   # unknown
     Ciura2001 = lambda n, k: (1, 4, 10, 23, 57, 132, 301, 701)[min(k - 1, 7)]     # unknown
 
+    @staticmethod
+    def gap(array: list, gapgen):
+        n = len(array)
+        gaps = [int(gapgen(n, 1))]
+        if gaps[0] > 1:
+            for k in range(2, n + 3):
+                gap = int(gapgen(n, k))
+                gaps.append(gap)
+                if gap == 1:
+                    break
+        else:
+            for k in range(2, n + 3):
+                gap = int(gapgen(n, k))
+                if gap >= n or gap == gaps[-1]:
+                    break
+                gaps.append(gap)
+            gaps.reverse()
+        return gaps
 
 def shellsort(array: list, gapgen=Gap.Ciura2001):
     """
@@ -32,26 +59,9 @@ def shellsort(array: list, gapgen=Gap.Ciura2001):
 
     > `return: (int | float)[]`: `array` sorted
     """
-    n = len(array)
-    gaps = []
-    first_gap = int(gapgen(n, 1))
-    gaps.append(first_gap)
-    if first_gap > 1:
-        for k in range(2, n + 3):
-            gap = int(gapgen(n, k))
-            gaps.append(gap)
-            if gap == 1:
-                break
-    else:
-        for k in range(2, n + 3):
-            gap = int(gapgen(n, k))
-            if gap < n and gap != gaps[-1]:
-                gaps.append(gap)
-            else:
-                break
-        gaps.reverse()
-    for gap in reversed(gaps):
-        for i in range(gap, n):
+    gaps = Gap.gap(array, gapgen)
+    for gap in gaps:
+        for i in range(gap, len(array)):
             key = array[i]
             j = i - gap
             while j >= 0 and array[j] > key:
@@ -74,7 +84,7 @@ def test():
             ('           shellsort Tokuda1992', lambda array: shellsort(array, gapgen=Gap.Tokuda1992)),
             ('            shellsort Ciura2001', lambda array: shellsort(array, gapgen=Gap.Ciura2001))
         ],
-        bench_size_iter=(0, 1, 10, 100, 1000)
+        bench_sizes=(0, 1, 10, 100, 1000)
     )
 
 
