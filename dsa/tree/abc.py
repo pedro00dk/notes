@@ -52,7 +52,7 @@ class Tree(abc.ABC):
         - `node: Node`: root node for traversal
         - `INTERNAL depth: int? = 0`: base depth
 
-        > `return: Generator<(Node, int)>`: generator of nodes and depths
+        > `return: iter<(Node, int)>`: iterator of nodes and depths
         """
         if node is None:
             return
@@ -72,7 +72,7 @@ class Tree(abc.ABC):
         - `node: Node`: root node for traversal
         - `INTERNAL depth: int? = 0`: base depth
 
-        > `return: Generator<(Node, int)>`: generator of nodes and depths
+        > `return: iter<(Node, int)>`: iterator of nodes and depths
         """
         if node is None:
             return
@@ -92,7 +92,7 @@ class Tree(abc.ABC):
         - `node: Node`: root node for traversal
         - `INTERNAL depth: int? = 0`: base depth
 
-        > `return: Generator<(Node, int)>`: generator of nodes and depths
+        > `return: iter<(Node, int)>`: iterator of nodes and depths
         """
         if node is None:
             return
@@ -112,7 +112,7 @@ class Tree(abc.ABC):
         - `node: Node`: root node for traversal
         - `INTERNAL depth: int? = 0`: base depth
 
-        > `return: Generator<(Node, int)>`: generator of nodes and depths
+        > `return: iter<(Node, int)>`: iterator of nodes and depths
         """
         if node is None:
             return
@@ -137,7 +137,7 @@ class Tree(abc.ABC):
         > parameters:
         - `mode: str? = `'in'`: traversal mode, one of `'pre', 'in', 'post', 'breadth'`
 
-        > `return: Generator<(Node, int)>`: generator of nodes and depths
+        > `return: iter<(Node, int)>`: iterator of nodes and depths
         """
         return self._pre(self._root) if mode == 'pre' else \
             self._in(self._root) if mode == 'in' else \
@@ -155,7 +155,7 @@ class Tree(abc.ABC):
         > parameters:
         - `mode: str? = `'in'`: traversal mode, one of `'pre', 'in', 'post', 'breadth'`
 
-        > `return: Generator<(int | float, any, int)>`: generator of nodes and depths
+        > `return: iter<(int | float, any, int)>`: iterator of nodes and depths
         """
         return ((node.key, node.value, depth) for node, depth in self._traverse(mode))
 

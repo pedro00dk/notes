@@ -4,7 +4,7 @@ import math
 
 class Gap(enum.Enum):
     """
-    Gap generator functions to be used in the shellsort algorithm.
+    Functions to be used in the shellsort algorithm to create gap sequences.
     Enum functions are directly bound to values, meaning it is not necessary to access the `value` field, which does not
     even exist for functions.
     """

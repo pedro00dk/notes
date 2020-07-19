@@ -161,9 +161,10 @@ def test():
             ('  exponential_search', lambda array: exponential_search(array, random.sample(array, 1)[0]))
 
         ],
-        test_input_iter=(),
-        bench_size_iter=(1, 10, 100, 1000, 10000, 100000),
-        bench_input=lambda s, r: [*range(s)],
+        test_inputs=(),
+        bench_sizes=(1, 10, 100, 1000, 10000, 100000),
+        bench_input=lambda s: [*range(s)],
+        bench_repeat=1,
         bench_tries=100000
     )
 

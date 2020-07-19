@@ -250,9 +250,9 @@ def test():
             ('         tsp hashset', tsp_held_karp_hashset),
             ('tsp nearest neighbor', tsp_nearest_heighbor)
         ],
-        test_input_iter=(complete(i, el_range=(0, 10)) for i in (2, 4, 6)),
-        bench_size_iter=range(1, 11),
-        bench_input=lambda s, r: complete(s, el_range=(0, 100))
+        test_inputs=(complete(i, el_range=(0, 10)) for i in (2, 4, 6)),
+        bench_sizes=range(1, 11),
+        bench_input=lambda s: complete(s, el_range=(0, 100))
     )
     print('without brute force')
     benchmark(
@@ -261,18 +261,18 @@ def test():
             ('         tsp hashset', tsp_held_karp_hashset),
             ('tsp nearest neighbor', tsp_nearest_heighbor)
         ],
-        test_input_iter=(),
-        bench_size_iter=range(11, 15),
-        bench_input=lambda s, r: complete(s, el_range=(0, 100))
+        test_inputs=(),
+        bench_sizes=range(11, 15),
+        bench_input=lambda s: complete(s, el_range=(0, 100))
     )
     print('only heuristics')
     benchmark(
         [
             ('tsp nearest neighbor', tsp_nearest_heighbor)
         ],
-        test_input_iter=(),
-        bench_size_iter=(25, 50, 100, 250, 500),
-        bench_input=lambda s, r: complete(s, el_range=(0, 100))
+        test_inputs=(),
+        bench_sizes=(25, 50, 100, 250, 500),
+        bench_input=lambda s: complete(s, el_range=(0, 100))
     )
 
 

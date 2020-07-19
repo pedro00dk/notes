@@ -268,9 +268,9 @@ def test():
             ('    connected disjoint set', connected_disjoint_set),
             ('        biconnected tarjan', test_biconnected_tarjan)
         ],
-        test_input_iter=(random_undirected(7, 0.3) for i in (5, 10, 15, 20)),
-        bench_size_iter=(0, 1, 10, 100, 1000),
-        bench_input=lambda s, r: random_undirected(s, 0.05)
+        test_inputs=(random_undirected(i, 0.1) for i in (5, 10, 15, 20)),
+        bench_sizes=(0, 1, 10, 100, 1000),
+        bench_input=lambda s: random_undirected(s, 0.05)
     )
     print('directed graphs')
     benchmark(
@@ -278,9 +278,9 @@ def test():
             ('  strong connected tarjan', strong_connected_tarjan),
             ('strong connected kosaraju', strong_connected_kosaraju)
         ],
-        test_input_iter=(random_directed(i, 0.1) for i in (5, 10, 15, 20)),
-        bench_size_iter=(0, 1, 10, 100, 1000),
-        bench_input=lambda s, r: random_directed(s, 0.05)
+        test_inputs=(random_directed(i, 0.1) for i in (5, 10, 15, 20)),
+        bench_sizes=(0, 1, 10, 100, 1000),
+        bench_input=lambda s: random_directed(s, 0.05)
     )
 
 

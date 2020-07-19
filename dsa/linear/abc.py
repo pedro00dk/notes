@@ -47,7 +47,7 @@ class Linear(abc.ABC):
         """
         Return a generator for the structure nodes.
 
-        > `return: Generator<Node>`: generator of structure nodes
+        > `return: iter<Node>`: iterator of structure nodes
         """
         node = self._head
         while node is not None:
@@ -58,7 +58,7 @@ class Linear(abc.ABC):
         """
         Return a generator for the structure values.
 
-        > `return: Generator<any>`: generator of structure values
+        > `return: iter<any>`: iterator of structure values
         """
         return (node.value for node in self._nodes())
 

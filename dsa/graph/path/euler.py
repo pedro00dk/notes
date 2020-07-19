@@ -182,12 +182,12 @@ def test():
     benchmark(
         [
             ('              undirected fleury', lambda graph: undirected_fleury(graph.copy())),
-            ('undirected hierholzer recursive', lambda graph: undirected_hierholzer(graph, True)),
-            ('undirected hierholzer iterative', lambda graph: undirected_hierholzer(graph, False))
+            ('undirected hierholzer recursive', lambda graph: undirected_hierholzer(graph.copy(), True)),
+            ('undirected hierholzer iterative', lambda graph: undirected_hierholzer(graph.copy(), False))
         ],
-        test_input_iter=(random_undirected_paired(i) for i in (5, 10, 15, 20)),
-        bench_size_iter=(1, 10, 100),
-        bench_input=(lambda s, r: random_undirected_paired(s))
+        test_inputs=(random_undirected_paired(i) for i in (5, 10, 15, 20)),
+        bench_sizes=(1, 10, 100),
+        bench_input=(lambda s: random_undirected_paired(s))
     )
     print('directed graphs')
     benchmark(
@@ -195,9 +195,9 @@ def test():
             ('directed hierholzer recursive', lambda graph: directed_hierholzer(graph, True)),
             ('directed hierholzer iterative', lambda graph: directed_hierholzer(graph, False))
         ],
-        test_input_iter=(random_directed_paired(i) for i in (5, 10, 15, 20)),
-        bench_size_iter=(1, 10, 100),
-        bench_input=(lambda s, r: random_directed_paired(s))
+        test_inputs=(random_directed_paired(i) for i in (5, 10, 15, 20)),
+        bench_sizes=(1, 10, 100),
+        bench_input=(lambda s: random_directed_paired(s))
     )
 
 

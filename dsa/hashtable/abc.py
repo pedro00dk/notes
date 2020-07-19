@@ -98,7 +98,7 @@ class Hashtable(abc.ABC):
         This function should be used when the load factor reaches or surpass the allowed limit threshold, or when the
         load factor becomes smaller than the limit threshold divided by a factor greater then 2 (the factor is up to the
         hashtable implementation, 4 is recommended).
-        This function relies on the `entries` (and consequently `__iter__`) generators continue using the old table
+        This function relies on the `entries` (and consequently `__iter__`) iterators to continue using the old table
         while the new is being rebuilt.
 
         > complexity:
@@ -108,8 +108,8 @@ class Hashtable(abc.ABC):
         > parameters:
         - `increase: bool`: if table should increase or decrease size
         """
-        entries = iter(self)  # generator obtained before updating _table
-        first = next(entries)  # start generator before updating references to ensure reference loads
+        entries = iter(self)  # iterator obtained before updating _table
+        first = next(entries)  # start iterator before updating references to ensure reference loads
         self._size = 0
         self._capacity_index += 1 if increase else -1
         self._capacity = self._prober.value['capacity'](self._capacity, self._capacity_index)
@@ -121,38 +121,38 @@ class Hashtable(abc.ABC):
     @abc.abstractmethod
     def entries(self):
         """
-        Return a generator for hashtable keys and values.
-        The generator must continue yielding entries from the hashtable correctly even it is being rebuilt.
+        Return a iterator for hashtable keys and values.
+        The iterator must continue yielding entries from the hashtable correctly even it is being rebuilt.
 
         > complexity:
         - time: `O(n)`
         - space: `O(1)`
 
-        > `return: Generator<(any, any)>`: generator of keys and values
+        > `return: iter<(any, any)>`: iterator of keys and values
         """
         pass
 
     def keys(self):
         """
-        Return a generator for hashtable keys.
+        Return a iterator for hashtable keys.
 
         > complexity:
         - time: `O(n)`
         - space: `O(1)`
 
-        > `return: Generator<(any, any)>`: generator of keys
+        > `return: iter<(any, any)>`: iterator of keys
         """
         return (key for key, value in self.entries())
 
     def values(self):
         """
-        Return a generator for hashtable values.
+        Return a iterator for hashtable values.
 
         > complexity:
         - time: `O(n)`
         - space: `O(1)`
 
-        > `return: Generator<(any, any)>`: generator of values
+        > `return: iter<(any, any)>`: iterator of values
         """
         return (value for key, value in self.entries())
 

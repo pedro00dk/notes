@@ -58,8 +58,6 @@ def mst_kruskal(graph: Graph):
     """
     if not graph.is_undirected():
         raise Exception('graph must be undirected')
-    if graph.vertices_count() < 2:
-        return None, ()
     cost = 0
     edges = []
     sorted_edges = [*graph.edges()]
@@ -93,13 +91,13 @@ def mst_boruvka(graph: Graph):
     """
     if not graph.is_undirected():
         raise Exception('graph must be undirected')
-    if graph.vertices_count() < 2:
-        return None, ()
     cost = 0
     edges = []
     disjoint_set = DisjointSet(graph.vertices_count())
     shortest_edges = [None] * graph.vertices_count()
-    while disjoint_set.sets() > 1:
+    found_union = True
+    while disjoint_set.sets() > 1 and found_union:
+        found_union = False
         for edge in graph.edges():
             if disjoint_set.connected(edge._source, edge._target):
                 continue
@@ -116,6 +114,7 @@ def mst_boruvka(graph: Graph):
             edges.append(shortest_edge)
             cost += shortest_edge.length
             disjoint_set.union(shortest_edge._source, shortest_edge._target)
+            found_union = True
         shortest_edges = [None] * graph.vertices_count()
     return (cost, (*((edge._source, edge._target, edge.length) for edge in edges),)) \
         if len(edges) == graph.vertices_count() - 1 else None
@@ -130,9 +129,9 @@ def test():
             ('mst kruskal', mst_kruskal),
             ('mst boruvka', mst_boruvka)
         ],
-        test_input_iter=(complete(i, el_range=(0, 100)) for i in (5, 10, 15, 20)),
-        bench_size_iter=(0, 1, 10, 100, 1000),
-        bench_input=(lambda s, r: complete(s, el_range=(0, 100)))
+        test_inputs=(complete(i, el_range=(0, 100)) for i in (5, 10, 15, 20)),
+        bench_sizes=(0, 1, 10, 100),
+        bench_input=(lambda s: complete(s, el_range=(0, 100)))
     )
 
 

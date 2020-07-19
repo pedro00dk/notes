@@ -44,14 +44,14 @@ Space complexity is available in algorithms files.
     -   avlsort **- O(n\*log(n))**
     -   rbtsort **- O(n\*log(n))**
 -   [shellsort](./dsa/sorting/shellsort.py) **- O(n \* (log(n)/log(log(n)))\*\*2), for all gaps**
-    -   shellsort gap Shell1959 **- O(n\*\*2)**
-    -   shellsort gap FrankLazarus1960 **- O(n\*\*(3/2))**
-    -   shellsort gap Hibbard1963 **- O(n\*\*(3/2))**
-    -   shellsort gap PapernovStasevich1965 **- O(n\*\*(3/2))**
-    -   shellsort gap Knuth1973 **- O(n\*\*(3/2))**
-    -   shellsort gap Sedgewick1982 **- O(n\*\*(4/3))**
-    -   shellsort gap Tokuda1992 **- unknown**
-    -   shellsort gap Ciura2001 **- unknown**
+    -   Shell1959 **- O(n\*\*2)**
+    -   FrankLazarus1960 **- O(n\*\*(3/2))**
+    -   Hibbard1963 **- O(n\*\*(3/2))**
+    -   PapernovStasevich1965 **- O(n\*\*(3/2))**
+    -   Knuth1973 **- O(n\*\*(3/2))**
+    -   Sedgewick1982 **- O(n\*\*(4/3))**
+    -   Tokuda1992 **- unknown**
+    -   Ciura2001 **- unknown**
 -   [countingsort](./dsa/sorting/countingsort.py) **- O(n + k)**
 -   [bucketsort](./dsa/sorting/bucketsort.py) **- average: O(n + (n\*\*2/k) + k), worst O(n\*\*2), best: O(n)**
 -   [radixsort](./dsa/sorting/radixsort.py)
@@ -230,17 +230,15 @@ Space complexity is available in algorithms files.
     -   stirling's factorial approximation **- O(1)**
     -   ramanujan's factorial approximation **- O(1)**
 -   [permutations](./dsa/combinatorics/permutations.py)
-    -   permutations count **- O(n)**
-    -   permutations using permutation cycles **- O(n\*\*k) ~> O(n!) when k ~ n**
-    -   permutations heap algorithm recursive **- O(n!)**
-    -   permutations heap algorithm iterative **- O(n!)**
+    -   count permutations **- O(n)**
+    -   permutations cycles **- O(n\*\*k) ~> O(n!) when k ~ n**
+    -   permutations heap **- O(n!)**
 -   [combinatorics](./dsa/combinatorics/combinations.py)
-    -   combinations count recursive **- O(min(n\*\*k, n\*\*(n-k)))**
-    -   combinations count **- O(n)**
-    -   combinations recursive **- O(n choose k)**
-    -   combinations iterative **- O(n choose k)**
-    -   bit combinations recursive range **- O(n choose k)**
-    -   bit combinations recursive branch **- O(n choose k)**
+    -   count combinations recursive **- O(min(n\*\*k, n\*\*(n-k)))**
+    -   count combinations iterative **- O(n)**
+    -   combinations **- O(n choose k)**
+    -   bit combinations range **- O(n choose k)**
+    -   bit combinations branch **- O(n choose k)**
 
 ## Searching Algorithms
 

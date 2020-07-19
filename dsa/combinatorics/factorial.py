@@ -87,16 +87,17 @@ def test():
     from ..test import benchmark
     benchmark(
         [
-            (' recursive', factorial_rec),
-            ('iteractive', factorial_itr),
-            ('  stirling', factorial_stirling),
-            (' ramanujan', factorial_ramanujan),
-            ('    native', math.factorial)
+            ('factorial recursive', factorial_rec),
+            ('factorial iterative', factorial_itr),
+            (' factorial stirling', factorial_stirling),
+            ('factorial ramanujan', factorial_ramanujan),
+            ('   factorial native', math.factorial)
 
         ],
-        test_input_iter=(0, 1, 5, 10, 20, 30, 40, 50),
-        bench_size_iter=range(0, 101, 10),
-        bench_input=lambda s, r: s,
+        test_inputs=(0, 1, *range(2, 11, 2)),
+        bench_sizes=range(0, 101, 10),
+        bench_input=lambda s: s,
+        bench_repeat=1,
         bench_tries=100000
     )
 

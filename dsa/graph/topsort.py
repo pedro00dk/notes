@@ -86,9 +86,9 @@ def test():
             ('  topological sort tarjan', lambda graph: [*reversed([v for v, in strong_connected_tarjan(graph)])]),
             ('topological sort kosaraju', lambda graph: [v for v, in strong_connected_kosaraju(graph)])
         ],
-        test_input_iter=(random_dag() for i in range(5)),
-        bench_size_iter=(0, 1, 10, 100, 1000),
-        bench_input=lambda s, r: random_dag((s // 20, s // 10), (5, 10))
+        test_inputs=(random_dag() for i in range(5)),
+        bench_sizes=(0, 1, 10, 100),
+        bench_input=lambda s: random_dag((s // 10, s // 5), (5, 10))
     )
 
 

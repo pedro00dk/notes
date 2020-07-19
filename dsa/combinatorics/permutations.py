@@ -1,4 +1,4 @@
-def permutations_count(n: int, /, k: int = None):
+def count_permutations(n: int, /, k: int = None):
     """
     Count permutations of `k` size in `n` elements.
     ```
@@ -39,7 +39,7 @@ def permutations_cycle(items: list, /, k: int = None):
     - `items: any[]`: items to generate the permutations
     - `k: int = len(items)`: size of groups (k-cycle size)
 
-    > `return: Generator<any()>`: generator of `items` permutations of `k` size
+    > `return: iter<any()>`: iter of `items` permutations of `k` size
     """
     n = len(items)
     k = k if k is not None else n
@@ -63,7 +63,7 @@ def permutations_cycle(items: list, /, k: int = None):
             break
 
 
-def permutations_heap_rec(items: list):
+def permutations_heap(items: list):
     """
     Heap algorithm for generating permutations of items.
     This algorithm minimizes the amount of swaps in the list of items.
@@ -75,7 +75,7 @@ def permutations_heap_rec(items: list):
     > parameters:
     - `items: any[]`: items to generate the permutations
 
-    > `return: Generator<any()>`: generator of `items` permutations
+    > `return: iter<any()>`: iter of `items` permutations
     """
     n = len(items)
     if n == 0:
@@ -86,61 +86,32 @@ def permutations_heap_rec(items: list):
         if k == 1:
             yield (*items,)
             return
-        yield from rec(items, k=k - 1)
+        yield from rec(items, k - 1)
         for i in range(k - 1):
             swap_index = i if i % 2 == 0 else 0
             items[swap_index], items[k - 1] = items[k - 1], items[swap_index]
-            yield from rec(items, k=k - 1)
+            yield from rec(items, k - 1)
 
     yield from rec(items, len(items))
 
 
-def permutations_heap_itr(items: list):
-    """
-    Iterative version of the permutation_heap algorithm.
-
-    > complexity:
-    - time: `O(n!)`
-    - space: `O(n! * n)` or `O(n)` if permutations are not stored
-
-    > parameters:
-    - `items: any[]`: elements to generate the permutations
-
-    > `return: Generator<any()>`: generator of `items` permutations
-    """
-    n = len(items)
-    if n == 0:
-        yield ()
-        return
-    k = 0
-    i = [0] * n
-    yield (*items,)
-    while k < n:
-        if i[k] >= k:
-            i[k] = 0
-            k += 1
-            continue
-        swap_index = i[k] if i[k] % 2 == 0 else 0
-        items[swap_index], items[k] = items[k], items[swap_index]
-        yield (*items,)
-        i[k] += 1
-        k = 0
-
-
 def test():
     import itertools
+    import math
     from ..test import benchmark
     benchmark(
         [
-            ('         count', lambda n: f'P({n}, {n}) = {permutations_count(n)}'),
-            ('        cycles', lambda n: [*permutations_cycle([*range(n)])]),
-            ('heap recursive', lambda n: [*permutations_heap_rec([*range(n)])]),
-            ('heap iterative', lambda n: [*permutations_heap_itr([*range(n)])]),
-            ('        native', lambda n: [*itertools.permutations([*range(n)])]),
+            ('        count permutations', lambda n: count_permutations(n, n)),
+            (' count permutations native', lambda n: math.perm(n, n)),
+            ('       permutations cycles', lambda n: [*permutations_cycle([*range(n)])]),
+            ('         permutations heap', lambda n: [*permutations_heap([*range(n)])]),
+            ('       permutations native', lambda n: [*itertools.permutations(range(n))]),
         ],
-        test_input_iter=range(5),
-        bench_size_iter=range(10),
-        bench_input=lambda s, r: s
+        test_inputs=range(5),
+        bench_sizes=(0, 1, *range(2, 11, 2)),
+        bench_input=lambda s: s,
+        bench_repeat=1,
+        bench_tries=100,
     )
 
 

@@ -255,9 +255,9 @@ def test():
             ('  sssp bellman ford', lambda graph: sssp_bellman_ford(graph, 0)),
             ('apsp floyd warshall', lambda graph: apsp_floyd_warshall(graph)[0][0])
         ],
-        test_input_iter=(random_dag(el_range=(-10, 15)) for i in range(3)),
-        bench_size_iter=(1, 10, 100),
-        bench_input=lambda s, r: random_dag((max(s // 4, 1), max(s // 3, 1)), (3, 4), el_range=(-10, 15))
+        test_inputs=(random_dag(el_range=(-10, 15)) for i in range(3)),
+        bench_sizes=(1, 10, 100),
+        bench_input=lambda s: random_dag((max(s // 4, 1), max(s // 3, 1)), (3, 4), el_range=(-10, 15))
     )
     print('undirected graphs')
     benchmark(
@@ -267,9 +267,9 @@ def test():
             ('  sssp bellman ford', lambda graph: sssp_bellman_ford(graph, 0)),
             ('apsp floyd warshall', lambda graph: apsp_floyd_warshall(graph)[0][0])
         ],
-        test_input_iter=(random_undirected(10, el_range=(1, 10)) for i in range(3)),
-        bench_size_iter=(1, 10, 100),
-        bench_input=lambda s, r: random_undirected(s, el_range=(1, 10))
+        test_inputs=(random_undirected(10, el_range=(1, 10)) for i in range(3)),
+        bench_sizes=(1, 10, 100),
+        bench_input=lambda s: random_undirected(s, el_range=(1, 10))
     )
     print('directed graphs')
     benchmark(
@@ -279,9 +279,9 @@ def test():
             ('  sssp bellman ford', lambda graph: sssp_bellman_ford(graph, 0)),
             ('apsp floyd warshall', lambda graph: apsp_floyd_warshall(graph)[0][0])
         ],
-        test_input_iter=(random_directed(10, el_range=(1, 10)) for i in range(3)),
-        bench_size_iter=(1, 10, 100),
-        bench_input=lambda s, r: random_undirected(s, el_range=(1, 10))
+        test_inputs=(random_directed(10, el_range=(1, 10)) for i in range(3)),
+        bench_sizes=(1, 10, 100),
+        bench_input=lambda s: random_undirected(s, el_range=(1, 10))
     )
 
 

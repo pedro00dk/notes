@@ -243,15 +243,13 @@ def test():
 
     benchmark(
         [
-            ('  linkedlist (insert then pop last first)', test_linkedlist),
-            (' native list (insert then pop last first)', test_native_list),
-            ('native deque (insert then pop last first)', test_native_deque)
+            ('  linkedlist', test_linkedlist),
+            (' native list', test_native_list),
+            ('native deque', test_native_deque)
         ],
-        test_input_iter=(),
-        bench_size_iter=(0, 1, 10, 100, 1000, 10000, 100000),
-        bench_input=lambda s, r: s,
-        test_print_input=False,
-        test_print_output=False
+        test_inputs=(),
+        bench_sizes=(0, 1, 10, 100, 1000, 10000, 100000),
+        bench_input=lambda s: s
     )
 
 

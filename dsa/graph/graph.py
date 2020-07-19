@@ -90,7 +90,7 @@ class Graph:
         - `INTERNAL edge: Edge? = None`: the edge from `parent` to the next vertex
         - `INTERNAL depth: int? = 0`: base depth
 
-        > `return: Generator<(Vertex, Vertex, Edge, int)>`: generator of vertices, parents, edges and depth
+        > `return: iter<(Vertex, Vertex, Edge, int)>`: iterator of vertices, parents, edges and depth
         """
         vertex = self._vertices[v]
         yield vertex, parent, edge, depth
@@ -116,7 +116,7 @@ class Graph:
         - `visited: bool[]`: list of visited vertices
         - `yield_back: bool? = False`: yield edges that point to already visited vertices
 
-        > `return: Generator<(Vertex, Vertex, Edge, int)>`: generator of vertices, parents, edges and depth
+        > `return: iter<(Vertex, Vertex, Edge, int)>`: iterator of vertices, parents, edges and depth
         """
         queue = collections.deque()
         queue.append((v, None, None, 0))
@@ -148,7 +148,7 @@ class Graph:
         - `visited: bool[]? = [False] * self.vertices_count()`: list of visited vertices
         - `yield_back: bool? = False`: yield edges that point to already visited vertices
 
-        > `return: Generator<(Vertex, Vertex, Edge, int)>`: generator of vertices, parents, edges and depth
+        > `return: iter<(Vertex, Vertex, Edge, int)>`: iterator of vertices, parents, edges and depth
         """
         visited = visited if visited is not None else [False] * self.vertices_count()
         return self._depth(v, visited, yield_before, yield_after, yield_back) if mode == 'depth' else \
@@ -156,19 +156,19 @@ class Graph:
 
     def vertices(self):
         """
-        Return a generator to traverse through graph vertices.
+        Return a iterator to traverse through graph vertices.
 
         > complexity:
         - time: `O(v)`
         - space: `O(1)`
 
-        > `return: Generator<Vertex>`: generator of vertices
+        > `return: iter<Vertex>`: iterator of vertices
         """
         return iter(self._vertices)
 
     def edges(self, /, v: int = None):
         """
-        Return a generator to traverse through graph edges.
+        Return a iterator to traverse through graph edges.
 
         > complexity:
         - time: `O(v + e)`
@@ -177,7 +177,7 @@ class Graph:
         > parameters:
         - `v: int? = None`: id of the vertex to traverse, if `None`, traverse through edges os all vertices
 
-        > `return: Generator<Edge>`: generator of edges
+        > `return: iter<Edge>`: iterator of edges
         """
         return (edge for vertex_edges in self._edges for edge in vertex_edges) if v is None else iter(self._edges[v])
 

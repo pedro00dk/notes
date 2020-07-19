@@ -309,7 +309,6 @@ def maxflow_ford_fulkerson(graph: Graph, /, source=0, sink: int = None, pathfind
         if not keep:
             break
     mincut = []
-    visited_marker = visited[source]
     queue = collections.deque()
     queue.append(source)
     visited[source] = visited_marker
@@ -351,11 +350,11 @@ def test():
                 lambda graph: maxflow_ford_fulkerson(graph.copy(), pathfinder=pathfinder_dinic)
             )
         ],
-        test_input_iter=(
-            random_flow((i, i), (i, i), ancestor_probability=0, el_range=(10, 20))[0] for i in (2, 3, 4, 5)
+        test_inputs=(
+            random_flow((i, i), (i // 2, i // 2), ancestor_probability=0, el_range=(10, 50))[0] for i in (2, 3, 4, 5)
         ),
-        bench_size_iter=(0, 1, 10, 100),
-        bench_input=(lambda s, r: random_flow((s // 20, s // 10), (5, 10), el_range=(10, 20))[0])
+        bench_sizes=(0, 1, 10, 100),
+        bench_input=lambda s: random_flow((s // 10, s // 5), (5, 10), el_range=(10, 50))[0],
     )
 
 
