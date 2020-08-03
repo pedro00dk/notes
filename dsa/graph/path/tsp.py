@@ -240,7 +240,7 @@ def tsp_nearest_heighbor(graph: Graph, /, start=0):
 
 
 def test():
-    from ...test import benchmark
+    from ...test import benchmark, heuristic_approximation
     from ..factory import complete
 
     def save_cost(algorithm, input, costs):
@@ -253,9 +253,9 @@ def test():
     print('all algorithms')
     benchmark(
         [
-            ('     tsp brute force', tsp_brute_force),
+            ('     tsp brute force', lambda g: save_cost(tsp_brute_force, g, optimal_costs)),
             ('          tsp bitset', tsp_held_karp_bitset),
-            ('         tsp hashset', lambda g: save_cost(tsp_held_karp_hashset, g, optimal_costs)),
+            ('         tsp hashset', tsp_held_karp_hashset),
             ('tsp nearest neighbor', lambda g: save_cost(tsp_nearest_heighbor, g, nearest_neighbor_costs))
         ],
         test_inputs=(complete(i, el_range=(0, 10)) for i in (2, 4, 6)),
@@ -265,8 +265,8 @@ def test():
     print('without brute force')
     benchmark(
         [
-            ('          tsp bitset', tsp_held_karp_bitset),
-            ('         tsp hashset', lambda g: save_cost(tsp_held_karp_hashset, g, optimal_costs)),
+            ('          tsp bitset', lambda g: save_cost(tsp_held_karp_bitset, g, optimal_costs)),
+            ('         tsp hashset', tsp_held_karp_hashset),
             ('tsp nearest neighbor', lambda g: save_cost(tsp_nearest_heighbor, g, nearest_neighbor_costs))
         ],
         test_inputs=(),
@@ -282,11 +282,7 @@ def test():
         bench_sizes=(20, 50, 100),
         bench_input=lambda s: complete(s, el_range=(0, 100))
     )
-    nearest_neighbor_approximations = sum(
-        max(nn, 1) / max(opt, 1) for opt, nn in zip(optimal_costs, nearest_neighbor_costs)
-    )
-    nearest_neighbor_approximations_average = nearest_neighbor_approximations / len(optimal_costs)
-    print('nearest neighbor approximations average:', nearest_neighbor_approximations_average)
+    heuristic_approximation('nearest neighbors', optimal_costs, nearest_neighbor_costs)
 
 
 if __name__ == '__main__':
