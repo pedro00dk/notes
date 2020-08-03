@@ -351,7 +351,7 @@ class Graph:
         - space: `O(v**2)`
 
         > parameters:
-        - `absent_edge_length: (int | float)? = float('inf')`: length to use in non existent edges
+        - `absent_edge_length: (int | float)? = float('inf')`: length to use for absent edges
         - `tiebreak: (int | float, int | float) => (int | float)? = min`: function used to choose a length if there is
             more than one edge with the same source and target
 

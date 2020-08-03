@@ -3,7 +3,7 @@ import itertools
 from ..graph import Graph
 
 
-def tsp_brute_force(graph: Graph, /, start=0):
+def tsp_brute_force(graph: Graph, /, start=0, absent_edge_length=float('inf')):
     """
     Brute force traveling salesman problem implementation.
     If `graph` is not complete and a path is not found, infinity is returned as distance and the path is invalid.
@@ -19,6 +19,9 @@ def tsp_brute_force(graph: Graph, /, start=0):
     > parameters:
     - `graph: Graph`: graph to find itinerary
     - `start: int? = 0`: start vertex
+    - `absent_edge_length: (int | float)? = float('inf')`: length to use for absent edges, usually this algorithm is
+        used in complete graphs, but when used as a hamiltonian path algorithm, this value must not be infinity, this
+        allows finding paths with the minimal amount of absent edges.
 
     > `return: (int | float, int())`: the best distance and best path
     """
@@ -41,7 +44,7 @@ def tsp_brute_force(graph: Graph, /, start=0):
     return distance, (start, *(path if graph.vertices_count() > 1 else ()))
 
 
-def tsp_held_karp_bitset(graph: Graph, /, start=0):
+def tsp_held_karp_bitset(graph: Graph, /, start=0, absent_edge_length=float('inf')):
     """
     Held-Karp traveling salesman problem implementation.
     If `graph` is not complete and a path is not found, infinity is returned as distance and the path is invalid.
@@ -61,6 +64,9 @@ def tsp_held_karp_bitset(graph: Graph, /, start=0):
     > parameters:
     - `graph: Graph`: graph to find itinerary
     - `start: int? = 0`: start vertex
+    - `absent_edge_length: (int | float)? = float('inf')`: length to use for absent edges, usually this algorithm is
+        used in complete graphs, but when used as a hamiltonian path algorithm, this value must not be infinity, this
+        allows finding paths with the minimal amount of absent edges.
 
     > `return: (int | float, int())`: the best distance and best path
     """
@@ -128,7 +134,7 @@ def tsp_held_karp_bitset(graph: Graph, /, start=0):
     return distance, (*reversed(path),)
 
 
-def tsp_held_karp_hashset(graph: Graph, /, start=0):
+def tsp_held_karp_hashset(graph: Graph, /, start=0, absent_edge_length=float('inf')):
     """
     Held-Karp traveling salesman problem implementation.
     If `graph` is not complete and a path is not found, infinity is returned as distance and the path is invalid.
@@ -142,6 +148,9 @@ def tsp_held_karp_hashset(graph: Graph, /, start=0):
     > parameters:
     - `graph: Graph`: graph to find itinerary (must be complete)
     - `start: int? = 0`: start vertex
+    - `absent_edge_length: (int | float)? = float('inf')`: length to use for absent edges, usually this algorithm is
+        used in complete graphs, but when used as a hamiltonian path algorithm, this value must not be infinity, this
+        allows finding paths with the minimal amount of absent edges.
 
     > `return: (int | float, int())`: the best distance and best path
     """
