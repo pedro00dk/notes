@@ -215,12 +215,21 @@ Space complexity is available in algorithms files.
         -   brute force _(from traveling salesman, used as hamiltonian path algorithm)_ **- O(v!)**
         -   held-karp bitset _(from traveling salesman, used as hamiltonian path algorithm)_ **- O(2\*\*v\*v\*\*2)**
         -   held-karp hashset _(from traveling salesman, used as hamiltonian path algorithm)_ **- O(2\*\*v\*v\*\*2)**
--   [max-flow/min-cut](./dsa/graph/path)
+-   [max-flow/min-cut](./dsa/graph/maxflow)
     -   ford fulkerson
         -   depth first search **- O(f\*e)**
         -   edmonds karp **- O(v\*e\*\*2)**
         -   depth first search with capacity scaling **- O(e\*\*2\*log(u))**
         -   dinic **- O(v\*\*2\*e)**
+-   [cover](./dsa/graph/cover)
+    -   [vertex cover](./dsa/graph/cover/vertex.py)
+        -   brute force **- O(2\*\*k\*v\*e)**
+        -   greedy (heuristic) **- O(v + e)**
+        -   greedy double (heuristic) **- O(v + e)**
+        -   weighted brute force **- O(2\*\*n\*v\*e)**
+        -   weighted greedy (heuristic) **- O(v + e)**
+        -   weighted pricing method (heuristic) **- O(v + e)**
+        -   weighted pricing sorted method (heuristic) **- O(e\*log(e) + v)**
 
 ## Enumeration Combinatorics
 
