@@ -100,7 +100,7 @@ def weighted_vertex_cover_brute_force(graph: Graph):
     and then the number of vertices.
 
     > complexity:
-    - time: `O((2**n)*v*e)`
+    - time: `O((2**v)*v*e)`
     - space: `O(v + e)`
 
     > parameters:
