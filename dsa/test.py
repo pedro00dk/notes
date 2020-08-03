@@ -103,7 +103,7 @@ def heuristic_approximation(label: str, optimal_results: list, heuristic_results
     print('approximation of', label)
     print('     number of runs:', len(optimal_results))
     perfect_results = sum(1 for approximation in approximations if approximation == 1)
-    print('    perfect results:', perfect_results, f'{"%.2f" % (perfect_results / len(optimal_results))}%')
+    print('    perfect results:', perfect_results, f'{"%.2f" % (perfect_results / len(optimal_results) * 100)}%')
     print('            minimum:', min(approximations))
     print('            maximum:', max(approximations))
     print('            average:', sum(approximations) / len(approximations))
