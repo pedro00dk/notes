@@ -48,6 +48,7 @@ def benchmark(algorithms, /, *, input_str=str, output_str=str, test_inputs, benc
     for input in test_inputs:
         print("# input", input_str(input))
         for label, function in algorithms:
+            input = input if preprocess_input is None else preprocess_input(input)
             print(label, output_str(function(input)))
         print()
     print('### benchmark')
