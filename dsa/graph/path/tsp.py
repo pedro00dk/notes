@@ -253,10 +253,10 @@ def test():
     print('all algorithms')
     benchmark(
         [
-            ('     tsp brute force', lambda g: save_cost(tsp_brute_force, g, optimal_costs)),
+            ('     tsp brute force', lambda graph: save_cost(tsp_brute_force, graph, optimal_costs)),
             ('          tsp bitset', tsp_held_karp_bitset),
             ('         tsp hashset', tsp_held_karp_hashset),
-            ('tsp nearest neighbor', lambda g: save_cost(tsp_nearest_heighbor, g, nearest_neighbor_costs))
+            ('tsp nearest neighbor', lambda graph: save_cost(tsp_nearest_heighbor, graph, nearest_neighbor_costs))
         ],
         test_inputs=(complete(i, el_range=(0, 10)) for i in (2, 4, 6)),
         bench_sizes=range(1, 11),
@@ -265,9 +265,9 @@ def test():
     print('without brute force')
     benchmark(
         [
-            ('          tsp bitset', lambda g: save_cost(tsp_held_karp_bitset, g, optimal_costs)),
+            ('          tsp bitset', lambda graph: save_cost(tsp_held_karp_bitset, graph, optimal_costs)),
             ('         tsp hashset', tsp_held_karp_hashset),
-            ('tsp nearest neighbor', lambda g: save_cost(tsp_nearest_heighbor, g, nearest_neighbor_costs))
+            ('tsp nearest neighbor', lambda graph: save_cost(tsp_nearest_heighbor, graph, nearest_neighbor_costs))
         ],
         test_inputs=(),
         bench_sizes=range(11, 15),
