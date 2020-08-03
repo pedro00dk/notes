@@ -181,13 +181,14 @@ def test():
     print('undirected graphs')
     benchmark(
         [
-            ('              undirected fleury', lambda graph: undirected_fleury(graph.copy())),
-            ('undirected hierholzer recursive', lambda graph: undirected_hierholzer(graph.copy(), True)),
-            ('undirected hierholzer iterative', lambda graph: undirected_hierholzer(graph.copy(), False))
+            ('              undirected fleury', lambda graph: undirected_fleury(graph)),
+            ('undirected hierholzer recursive', lambda graph: undirected_hierholzer(graph, True)),
+            ('undirected hierholzer iterative', lambda graph: undirected_hierholzer(graph, False))
         ],
         test_inputs=(random_undirected_paired(i) for i in (5, 10, 15, 20)),
         bench_sizes=(1, 10, 100),
-        bench_input=(lambda s: random_undirected_paired(s))
+        bench_input=(lambda s: random_undirected_paired(s)),
+        preprocess_input=Graph.copy
     )
     print('directed graphs')
     benchmark(

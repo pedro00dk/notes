@@ -81,7 +81,7 @@ def test():
     from .factory import random_dag
     benchmark(
         [
-            ('    topological sort khan', lambda graph: topsort_khan(graph.copy())),
+            ('    topological sort khan', lambda graph: topsort_khan(graph))),
             ('     topological sort dfs', topsort_dfs),
             ('  topological sort tarjan', lambda graph: [*reversed([v for v, in strong_connected_tarjan(graph)])]),
             ('topological sort kosaraju', lambda graph: [v for v, in strong_connected_kosaraju(graph)])
@@ -89,6 +89,7 @@ def test():
         test_inputs=(random_dag() for i in range(5)),
         bench_sizes=(0, 1, 10, 100),
         bench_input=lambda s: random_dag((s // 10, s // 5), (5, 10))
+        preprocess_input=Graph.copy
     )
 
 

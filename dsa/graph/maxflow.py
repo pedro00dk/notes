@@ -336,19 +336,19 @@ def test():
         [
             (
                 '                 maxflow ford fulkerson dfs',
-                lambda graph: maxflow_ford_fulkerson(graph.copy(), pathfinder=pathfinder_dfs)
+                lambda graph: maxflow_ford_fulkerson(graph, pathfinder=pathfinder_dfs)
             ),
             (
                 '        maxflow ford fulkerson edmonds karp',
-                lambda graph: maxflow_ford_fulkerson(graph.copy(), pathfinder=pathfinder_edmonds_karp)
+                lambda graph: maxflow_ford_fulkerson(graph, pathfinder=pathfinder_edmonds_karp)
             ),
             (
                 'maxflow ford fulkerson dfs capacity scaling',
-                lambda graph: maxflow_ford_fulkerson(graph.copy(), pathfinder=pathfinder_dfs_capacity_scaling)
+                lambda graph: maxflow_ford_fulkerson(graph, pathfinder=pathfinder_dfs_capacity_scaling)
             ),
             (
                 '               maxflow ford fulkerson dinic',
-                lambda graph: maxflow_ford_fulkerson(graph.copy(), pathfinder=pathfinder_dinic)
+                lambda graph: maxflow_ford_fulkerson(graph, pathfinder=pathfinder_dinic)
             )
         ],
         test_inputs=(
@@ -356,6 +356,7 @@ def test():
         ),
         bench_sizes=(0, 1, 10, 100),
         bench_input=lambda s: random_flow((s // 10, s // 5), (5, 10), el_range=(10, 50))[0],
+        preprocess_input=Graph.copy
     )
 
 
