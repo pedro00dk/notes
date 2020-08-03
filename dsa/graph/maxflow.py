@@ -272,6 +272,7 @@ def pathfinder_dinic(flow_graph: Graph, source: int, sink: int):
 def maxflow_ford_fulkerson(graph: Graph, /, source=0, sink: int = None, pathfinder=pathfinder_dfs):
     """
     Ford Fulkerson maxflow/mincut algorithm.
+    This algorithm mutates the graph to implement optimizations (`edge.data` field).
     A flow graph is created as an undirected graph based on `graph`, containing the original directed edges plus
     residual edges.
     This algorithm accepts different pathfiding functions, which are strategies for finding augmenting paths and pushing

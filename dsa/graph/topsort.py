@@ -4,7 +4,7 @@ from .graph import Graph
 def topsort_khan(graph: Graph):
     """
     Khan topological sort algorithm.
-    This implementation mutates the graph to preserve asymptotic complexities (`edge._target` field).
+    This algorithm mutates the graph to preserve asymptotic complexities (`edge._target` field).
 
     > complexity:
     - time: `O(v + e)`
