@@ -48,8 +48,8 @@ def benchmark(algorithms, /, *, input_str=str, output_str=str, test_inputs, benc
     for input in test_inputs:
         print("# input", input_str(input))
         for label, function in algorithms:
-            input = input if preprocess_input is None else preprocess_input(input)
-            print(label, output_str(function(input)))
+            prep_input = input if preprocess_input is None else preprocess_input(input)
+            print(label, output_str(function(prep_input)))
         print()
     print('### benchmark')
     for size in bench_sizes:
@@ -58,8 +58,8 @@ def benchmark(algorithms, /, *, input_str=str, output_str=str, test_inputs, benc
         for label, function in algorithms:
             times = []
             for input in inputs:
-                input = input if preprocess_input is None else preprocess_input(input)
-                time = timeit.timeit(stmt='function(input)', globals={**globals(), **locals()}, number=bench_tries)
+                prep_input = input if preprocess_input is None else preprocess_input(input)
+                time = timeit.timeit(stmt='function(prep_input)', globals={**globals(), **locals()}, number=bench_tries)
                 times.append(time)
             print(label, sum(times))
         print()
