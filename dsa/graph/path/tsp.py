@@ -242,13 +242,21 @@ def tsp_nearest_heighbor(graph: Graph, /, start=0):
 def test():
     from ...test import benchmark
     from ..factory import complete
+
+    def save_cost(algorithm, input, costs):
+        result = algorithm(input)
+        costs.append(result[0])
+        return result
+
+    optimal_costs = []
+    nearest_neighbor_costs = []
     print('all algorithms')
     benchmark(
         [
             ('     tsp brute force', tsp_brute_force),
             ('          tsp bitset', tsp_held_karp_bitset),
-            ('         tsp hashset', tsp_held_karp_hashset),
-            ('tsp nearest neighbor', tsp_nearest_heighbor)
+            ('         tsp hashset', lambda g: save_cost(tsp_held_karp_hashset, g, optimal_costs)),
+            ('tsp nearest neighbor', lambda g: save_cost(tsp_nearest_heighbor, g, nearest_neighbor_costs))
         ],
         test_inputs=(complete(i, el_range=(0, 10)) for i in (2, 4, 6)),
         bench_sizes=range(1, 11),
@@ -258,8 +266,8 @@ def test():
     benchmark(
         [
             ('          tsp bitset', tsp_held_karp_bitset),
-            ('         tsp hashset', tsp_held_karp_hashset),
-            ('tsp nearest neighbor', tsp_nearest_heighbor)
+            ('         tsp hashset', lambda g: save_cost(tsp_held_karp_hashset, g, optimal_costs)),
+            ('tsp nearest neighbor', lambda g: save_cost(tsp_nearest_heighbor, g, nearest_neighbor_costs))
         ],
         test_inputs=(),
         bench_sizes=range(11, 15),
@@ -271,9 +279,14 @@ def test():
             ('tsp nearest neighbor', tsp_nearest_heighbor)
         ],
         test_inputs=(),
-        bench_sizes=(25, 50, 100, 250, 500),
+        bench_sizes=(20, 50, 100),
         bench_input=lambda s: complete(s, el_range=(0, 100))
     )
+    nearest_neighbor_approximations = sum(
+        max(nn, 1) / max(opt, 1) for opt, nn in zip(optimal_costs, nearest_neighbor_costs)
+    )
+    nearest_neighbor_approximations_average = nearest_neighbor_approximations / len(optimal_costs)
+    print('nearest neighbor approximations average:', nearest_neighbor_approximations_average)
 
 
 if __name__ == '__main__':

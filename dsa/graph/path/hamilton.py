@@ -14,7 +14,7 @@ def hamiltonian_cycle(graph: Graph, tsp_algorithm):
 
     > parameters:
     - `graph: Graph`: graph to find cycle
-    - `tsp_algorithm: Graph => (int | float, int())`: a tsp algorithm
+    - `tsp_algorithm: Graph => (int | float, int())`: a tsp algorithm, heuristics can not be used
 
     > `return: int()`: the cycle if it exists or `None` otherwise or if graph is empty
     """
@@ -34,7 +34,7 @@ def hamiltonian_path(graph: Graph, tsp_algorithm):
 
     > parameters:
     - `graph: Graph`: graph to find path
-    - `tsp_algorithm: Graph => (int | float, int())`: a tsp algorithm
+    - `tsp_algorithm: Graph => (int | float, int())`: a tsp algorithm, heuristics can not be used
 
     > `return: int()`: the path if it exists or `None` otherwise or if graph is empty
     """
