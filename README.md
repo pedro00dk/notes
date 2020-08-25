@@ -256,3 +256,19 @@ Space complexity is available in algorithms files.
     -   k-ary search **- O(k\*log(n,k))**
     -   interpolation search **- O(log(log(n))) uniformly distributed arrays, worst: O(n)**
     -   exponential search **- O(log(i))**
+
+---
+
+## TODO
+
+-   knapsack
+-   trees: b-tree
+-   linear programming: simplex
+-   graph: maximum matching, edge cover, facility location
+-   heaps: fibonacci heap, pairing heap
+-   encoding: base32, base64
+-   compression: lz77, lz78
+-   string search: brute force, boyer-moore, knuth-morris-pratt, shift-or, rabin-karp, sellers, ukkonen
+-   indexing: suffix array, suffix tree
+
+
