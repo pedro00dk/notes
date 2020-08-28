@@ -158,7 +158,7 @@ def test():
             ('  k-ary search (k=8)', lambda array: k_ary_search(array, random.sample(array, 1)[0], 8)),
             (' k-ary search (k=16)', lambda array: k_ary_search(array, random.sample(array, 1)[0], 16)),
             ('interpolation search', lambda array: interpolation_search(array, random.sample(array, 1)[0])),
-            ('  exponential_search', lambda array: exponential_search(array, random.sample(array, 1)[0]))
+            ('  exponential search', lambda array: exponential_search(array, random.sample(array, 1)[0]))
 
         ],
         test_inputs=(),

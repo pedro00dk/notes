@@ -147,7 +147,7 @@ def test():
             yield v
 
     benchmark(
-        (
+        [
             ('        count recursive', lambda args: count_combinations_rec(*args)),
             ('        count iterative', lambda args: count_combinations_itr(*args)),
             ('           count native', lambda args: math.comb(*args)),
@@ -156,7 +156,7 @@ def test():
             (' bit combinations range', lambda args: [*bit_combinations_range(*args)]),
             ('bit combinations branch', lambda args: [*bit_combinations_rec_branch(*args)]),
             ('bit combinations native', lambda args: [*test_bit_combinations_native(*args)])
-        ),
+        ],
         test_inputs=((5, 2), (0, 0), (2, 0), (2, 1), (4, 3), (6, 2), (6, 5), (8, 6), (6, 3)),
         bench_sizes=(0, 1, *range(2, 21, 2)),
         bench_input=lambda s: (s, s // 2),
