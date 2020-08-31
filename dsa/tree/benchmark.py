@@ -43,8 +43,9 @@ def test():
     benchmark(
         [
             ('binary search tree', test_bst),
-            ('    avl tree (r=2)', test_avl_r2),
-            ('    avl tree (r=4)', test_avl_r4),
+            ('   avl tree rank 2', lambda entries: test_avl(entries, 2)),
+            ('   avl tree rank 3', lambda entries: test_avl(entries, 3)),
+            ('   avl tree rank 4', lambda entries: test_avl(entries, 4)),
             ('    red-black tree', test_rbt)
         ],
         test_inputs=(),
