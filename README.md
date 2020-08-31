@@ -196,6 +196,7 @@ Space complexity is available in algorithms files.
             -   single source (longest) **- O(v + e)**
         -   all graphs
             -   single source dijkstra **- O(e\*log(v))**
+            -   single source dijkstra (optimized, visited + skip stale) **- O(e\*log(v))**
             -   single source bellman ford **- O(v\*e)**
             -   all pairs floyd warshall **- O(v<sup>3</sup>)**
     -   [traveling salesman problem](./dsa/graph/path/tsp.py)
@@ -251,11 +252,20 @@ Space complexity is available in algorithms files.
 
 ## Searching Algorithms
 
--   [array search](./dsa/linear/abc.pǛy)
+-   [array search](./dsa/search/array_search.py)
     -   binary search **- O(log(n))**
     -   k-ary search **- O(k\*log(n,k))**
     -   interpolation search **- O(log(log(n))) uniformly distributed arrays, worst: O(n)**
     -   exponential search **- O(log(i))**
+-   [string search](./dsa/search/string_search.py)
+    -   exact brute force **- O(n\*p)**
+    -   exact rabin karp **- O(n + p), worst: O(n\*p)**
+    -   exact knuth morris pratt **- O(n + p)**
+    -   exact baeza yates gonnet (shift-or) **- O(n + p)**
+    -   exact boyer moore **- O(n + p)**
+    -   exact boyer moore (optimized, extended bad char table) **- O(n + p)**
+    <!-- -   exact multi-pattern aho-corasick **- O(n + p)** -->
+
 
 ---
 
@@ -268,7 +278,7 @@ Space complexity is available in algorithms files.
 -   heaps: fibonacci heap, pairing heap
 -   encoding: base32, base64
 -   compression: lz77, lz78
--   string search: brute force, boyer-moore, knuth-morris-pratt, shift-or, rabin-karp, sellers, ukkonen
+-   string search: aho corasick, sellers, ukkonen
 -   indexing: suffix array, suffix tree
 
 
