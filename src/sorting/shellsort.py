@@ -15,16 +15,15 @@ class Gap(enum.Enum):
     Gap functions may produce increasing or decresing gap sizes.
     Increasing sequences stop when the gap is greater than `n` of two equal gaps where generated.
     Decreasing sequences stop at 1.
-
     """
-    Shell1959 = lambda n, k: max(n / (2 * k), 1)                                  # O(n**2)
-    FrankLazarus1960 = lambda n, k: 2 * math.floor(n / 2**k) + 1                  # O(n**(3/2))
-    Hibbard1963 = lambda n, k: 2**k - 1                                           # O(n**(3/2))
-    PapernovStasevich1965 = lambda n, k: 2**(k - 1) + 1 if k > 1 else 1           # O(n**(3/2))
-    Knuth1973 = lambda n, k: min((3**k - 1) // 2, math.ceil(n / 3))               # O(n**(3/2))
-    Sedgewick1982 = lambda n, k: 4**(k) - 1 + 3 * 2**(k - 2) + 1 if k > 1 else 1  # O(n**(4/3))
-    Tokuda1992 = lambda n, k: math.ceil((1 / 5) * (9 * (9 / 4) ** (k - 1) - 4))   # unknown
-    Ciura2001 = lambda n, k: (1, 4, 10, 23, 57, 132, 301, 701)[min(k - 1, 7)]     # unknown
+    SHELL1959 = lambda n, k: max(n / (2 * k), 1)                                  # O(n**2)
+    FRANKLAZARUS1960 = lambda n, k: 2 * math.floor(n / 2**k) + 1                  # O(n**(3/2))
+    HIBBARD1963 = lambda n, k: 2**k - 1                                           # O(n**(3/2))
+    PAPERNOV_STASEVICH1965 = lambda n, k: 2**(k - 1) + 1 if k > 1 else 1          # O(n**(3/2))
+    KNUTH1973 = lambda n, k: min((3**k - 1) // 2, math.ceil(n / 3))               # O(n**(3/2))
+    SEDGEWICK1982 = lambda n, k: 4**(k) - 1 + 3 * 2**(k - 2) + 1 if k > 1 else 1  # O(n**(4/3))
+    TOKUDA1992 = lambda n, k: math.ceil((1 / 5) * (9 * (9 / 4) ** (k - 1) - 4))   # unknown
+    CIURA2001 = lambda n, k: (1, 4, 10, 23, 57, 132, 301, 701)[min(k - 1, 7)]     # unknown
 
     @staticmethod
     def gap(array: list, gapgen):
@@ -45,7 +44,8 @@ class Gap(enum.Enum):
             gaps.reverse()
         return gaps
 
-def shellsort(array: list, gapgen=Gap.Ciura2001):
+
+def shellsort(array: list, gapgen=Gap.CIURA2001):
     """
     Shellsort implementation.
 
@@ -75,14 +75,14 @@ def test():
     from ..test import sort_benchmark
     sort_benchmark(
         [
-            ('            shellsort Shell1959', lambda array: shellsort(array, gapgen=Gap.Shell1959)),
-            ('     shellsort FrankLazarus1960', lambda array: shellsort(array, gapgen=Gap.FrankLazarus1960)),
-            ('          shellsort Hibbard1963', lambda array: shellsort(array, gapgen=Gap.Hibbard1963)),
-            ('shellsort PapernovStasevich1965', lambda array: shellsort(array, gapgen=Gap.PapernovStasevich1965)),
-            ('            shellsort Knuth1973', lambda array: shellsort(array, gapgen=Gap.Knuth1973)),
-            ('        shellsort Sedgewick1982', lambda array: shellsort(array, gapgen=Gap.Sedgewick1982)),
-            ('           shellsort Tokuda1992', lambda array: shellsort(array, gapgen=Gap.Tokuda1992)),
-            ('            shellsort Ciura2001', lambda array: shellsort(array, gapgen=Gap.Ciura2001))
+            ('             shellsort Shell 1959', lambda array: shellsort(array, gapgen=Gap.SHELL1959)),
+            ('      shellsort FrankLazarus 1960', lambda array: shellsort(array, gapgen=Gap.FRANKLAZARUS1960)),
+            ('           shellsort Hibbard 1963', lambda array: shellsort(array, gapgen=Gap.HIBBARD1963)),
+            ('shellsort Papernov Stasevich 1965', lambda array: shellsort(array, gapgen=Gap.PAPERNOV_STASEVICH1965)),
+            ('             shellsort Knuth 1973', lambda array: shellsort(array, gapgen=Gap.KNUTH1973)),
+            ('         shellsort Sedgewick 1982', lambda array: shellsort(array, gapgen=Gap.SEDGEWICK1982)),
+            ('            shellsort Tokuda 1992', lambda array: shellsort(array, gapgen=Gap.TOKUDA1992)),
+            ('             shellsort Ciura 2001', lambda array: shellsort(array, gapgen=Gap.CIURA2001))
         ],
         bench_sizes=(0, 1, 10, 100, 1000)
     )
