@@ -14,7 +14,7 @@ def read(*, file: str = None, filemap=None, string: str = None, byte: bytes = No
     If a file is provided, an immutable `mmap.mmap` is returned (works like `bytes` and `bytearray`).
     If a string or bytes is provided, a `bytes` is returned, strings are converted to bytes using `utf-8`.
 
-    `return: (mmap.mmap | bytes, () => void)`: buffer to access file, string or bytes, and a finalize function to close
+    `return: (bytes | mmap.mmap, () => void)`: buffer to access file, string or bytes, and a finalize function to close
         resources if any are open
     """
     if file is not None:
