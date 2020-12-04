@@ -268,23 +268,9 @@ Space complexity is available in algorithms files.
 ## Encoding and Compression
 
 -   [base encoding](./src/encoding/base.py)
-    -   base16 alphabets
-        -   hexadecimal **- O(n)**
-        -   hexadecimal lower case **- O(n)**
-    -   base32 alphabets
-        -   rfc4648 **- O(n)**
-        -   rfc2938 extended hexadecimal **- O(n)**
-        -   rfc2938 extended hexadecimal lowercase **- O(n)**
-        -   z **- O(n)**
-        -   crockford **- O(n)**
-        -   word safe **- O(n)**
-        -   geohash **- O(n)**
-    -   base64 alphabets
-        -   rfc4648 **- O(n)**
-        -   rfc4648 url safe **- O(n)**
-        -   rfc2045 mime **- O(n)**
-        -   rfc1421 pem **- O(n)**
-        -   rfc3501 imap **- O(n)**
+    -   base64 rfc4648 **- O(n)**
+    -   base32 rfc4648 **- O(n)**
+    -   base16 rfc4648 **- O(n)**
 
 ---
 
