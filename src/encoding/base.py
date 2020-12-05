@@ -87,6 +87,92 @@ def base_decode(data: bytes, alphabet=BASE64_ALPHABET, /, padding=True):
     return decoded
 
 
+# ascii85 and base85 alphabets
+ASCII85_ALPHABET = bytes(i for i in range(33, 118))
+BASE85_ALPHABET = b'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~'
+
+
+def _x85_encode(data: bytes, encoded: bytearray, alphabet: bytes, padding=False, fold_null: bytes = None, fold_space: bytes = None):
+    """
+    Helper encoder for both ascii85 and base85 algorithms.
+
+    > complexity:
+    - time: `O(n)`
+    - space: `O(n)`
+
+    > parameters:
+    - `data: bytes`: data to encode
+    - `encoded: bytearray`: buffer to write encoded data
+    - `alphabet: bytes`: ascii85 or base85 alphabet
+    - `padding: bool? = False`: add null padding to `data` (works differently from base64 or base32)
+    - `fold_null: bytes? = None`: fold four null bytes into `fold_null` byte, `fold_null` must not be in `alphabet`
+    - `fold_space: bytes? = None`: fold four space bytes into `fold_space`, `fold_space` must not be in `alphabet`
+    """
+    padding_size = (-len(data)) % 4
+    available_bytes = 0
+    for i in range(0, len(data), 4):
+        available_bytes = min(len(data) - i, 4)
+        word = int.from_bytes(data[i: i + 4], 'big') << (4 - available_bytes) * 8
+        if fold_null is not None and word == 0 and (available_bytes == 4 or padding):
+            encoded.extend(fold_null)
+            continue
+        if fold_space is not None and word == 0x202020:
+            encoded.extend(fold_space)
+            continue
+        encoded.append(alphabet[word // 85**4 % 85])
+        encoded.append(alphabet[word // 85**3 % 85])
+        encoded.append(alphabet[word // 85**2 % 85])
+        encoded.append(alphabet[word // 85**1 % 85])
+        encoded.append(alphabet[word // 85**0 % 85])
+    if not padding and 0 < available_bytes < 4:
+        pad_bytes = 5 - math.ceil(available_bytes * (5 / 4))
+        encoded[-pad_bytes:] = b''
+    return encoded
+
+
+def ascii85_encode(data: bytes, /, padding=False, fold_space=False, adobe=False):
+    """
+    Ascii85 encoding algorithm.
+    This algorithm always folds four null bytes, `fold_space` is optionally available.
+    `fold_space` is not compatible with standard `adobe` ascii85 decoders, but is encodeable by this implementation.
+    This implementation does not support line wrapping.
+
+    > complexity:
+    - time: `O(n)`
+    - space: `O(n)`
+
+    > parameters:
+    - `data: bytes`: data to encode
+    - `padding: bool? = False`: add null padding to `data` (works differently from base64 or base32)
+    - `fold_space: bool? = False`: fold four spaces into a single `b'y'` character
+    - `adobe: bool? = False`: Add adobe prefix `b'<~'` and suffix `b'~>'` to the encoded data
+    """
+    encoded = bytearray()
+    if adobe:
+        encoded.extend(b'<~')
+    result = _x85_encode(data, encoded, ASCII85_ALPHABET, padding, b'z', b'y' if fold_space else None)
+    if adobe:
+        encoded.extend(b'~>')
+    return result
+
+
+def base85_encode(data: bytes, /, padding=False):
+    """
+    Base85 encoding algorithm.
+    This algorithm is based on the git binary diffs.
+    This algorithm never folds null bytes of space bytes.
+
+    > complexity:
+    - time: `O(n)`
+    - space: `O(n)`
+
+    > parameters:
+    - `data: bytes`: data to encode
+    - `padding: bool? = False`: add null padding to `data` (works differently from base64 or base32)
+    """
+    return _x85_encode(data, bytearray(), BASE85_ALPHABET, padding)
+
+
 def test():
     import base64
     import random
@@ -111,6 +197,8 @@ def test():
             ('        base32', lambda data: test_base(data, BASE32_ALPHABET)),
             (' base32 exthex', lambda data: test_base(data, BASE32_EXTHEX_ALPHABET)),
             ('        base64', lambda data: test_base(data, BASE64_ALPHABET)),
+            ('       ascii85', lambda data: ascii85_encode(data)),
+            ('        base85', lambda data: base85_encode(data)),
             ('base64 urlsafe', lambda data: test_base(data, BASE64_URLSAFE_ALPHABET)),
             (' native base16', lambda data: test_native(data, base64.b16encode, base64.b16decode)),
             (' native base32', lambda data: test_native(data, base64.b32encode, base64.b32decode)),
