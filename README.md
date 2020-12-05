@@ -271,6 +271,9 @@ Space complexity is available in algorithms files.
     -   base64 rfc4648 **- O(n)**
     -   base32 rfc4648 **- O(n)**
     -   base16 rfc4648 **- O(n)**
+    -   ascii85 **- O(n)**
+    -   base85 rfc1924 **- O(n)**
+    -   base85 zeromq **- O(n)**
 
 ---
 
@@ -281,7 +284,6 @@ Space complexity is available in algorithms files.
 -   linear programming: simplex
 -   graph: maximum matching, edge cover, facility location
 -   heaps: fibonacci heap, pairing heap
--   encoding: base85
 -   compression: lz77, lz78
 -   string search: aho corasick, sellers, ukkonen
 -   indexing: suffix array, suffix tree
