@@ -30,15 +30,14 @@ def base_encode(data: bytes, alphabet=BASE64_ALPHABET, /, padding=True):
     bits = math.ceil(math.log2(len(alphabet)))
     decoded_word_bytes = bits // math.gcd(8, bits)
     encoded_word_bytes = decoded_word_bytes * 8 // bits
-    encode_mask = 2 ** bits - 1
     encoded = bytearray()
     cache = 0
     shift = 0
-    for char in data:
-        cache = cache << 8 | char
+    for byte in data:
+        cache = cache << 8 | byte
         shift += 8
         for shift in range(shift - bits, -1, -bits):
-            value = (cache >> shift) & encode_mask
+            value = cache >> shift
             cache ^= value << shift
             encoded.append(alphabet[value])
     if shift > 0:
@@ -66,26 +65,25 @@ def base_decode(data: bytes, alphabet=BASE64_ALPHABET, /, padding=True):
     > `return: bytes`: decoded data
     """
     decoder = [None] * 256
-    for i, char in enumerate(alphabet):
-        decoder[char] = i
+    for i, byte in enumerate(alphabet):
+        decoder[byte] = i
     bits = math.ceil(math.log2(len(alphabet)))
     encoded_word_bytes = 8 // math.gcd(8, bits)
     decoded_word_bytes = encoded_word_bytes * bits // 8
-    decode_mask = 2 ** 8 - 1
     decoded = bytearray()
     cache = 0
     shift = 0
     if padding and len(data) % encoded_word_bytes != 0:
         raise Exception('data must be padded')
     pad_size = 0
-    for pad_size, char in enumerate(memoryview(data)[::-1]):
-        if char != PADCHAR_ASCII:
+    for pad_size, byte in enumerate(memoryview(data)[::-1]):
+        if byte != PADCHAR_ASCII:
             break
-    for char in memoryview(data)[:-pad_size if pad_size > 0 else None]:
-        cache = (cache << bits) | decoder[char]
+    for byte in memoryview(data)[:-pad_size if pad_size > 0 else None]:
+        cache = (cache << bits) | decoder[byte]
         shift += bits
         for shift in range(shift - 8, -1, -8):
-            value = (cache >> shift) & decode_mask
+            value = cache >> shift
             cache ^= value << shift
             decoded.append(value)
     return decoded
@@ -160,26 +158,26 @@ def _x85_decode(data: bytes, start: int, end: int, decoded: bytearray, alphabet:
     > `return: bytes`: decoded data
     """
     decoder = [None] * 256
-    for i, char in enumerate(alphabet):
-        decoder[char] = i
+    for i, byte in enumerate(alphabet):
+        decoder[byte] = i
     unfold_null_ascii = ord(unfold_null) if unfold_null else None
     unfold_space_ascii = ord(unfold_space) if unfold_space else None
     cache = 0
     available_bytes = 0
-    for char in memoryview(data)[start:end]:
-        if char in skip:
+    for byte in memoryview(data)[start:end]:
+        if byte in skip:
             continue
-        if char == unfold_null_ascii:
+        if byte == unfold_null_ascii:
             if available_bytes > 0:
                 raise Exception('null folding character found inside word')
             decoded.extend(b'\0\0\0\0')
             continue
-        if char == unfold_space_ascii:
+        if byte == unfold_space_ascii:
             if available_bytes > 0:
                 raise Exception('space folding character found inside word')
             decoded.extend(b'\x20\x20\x20\x20')
             continue
-        cache = cache * 85 + decoder[char]
+        cache = cache * 85 + decoder[byte]
         available_bytes += 1
         if available_bytes < 5:
             continue
