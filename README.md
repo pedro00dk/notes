@@ -274,7 +274,9 @@ Space complexity is available in algorithms files.
     -   ascii85 **- O(n)**
     -   base85 rfc1924 **- O(n)**
     -   base85 zeromq **- O(n)**
--   [little endian base 128 (integer encoding)](./src/encoding/integer.py)
+-   [integer encoding](./src/encoding/integer.py)
+    -   alphabet base **- O(log(n))**
+    -   little endian base 128 **- O(log(n))**
 
 ---
 

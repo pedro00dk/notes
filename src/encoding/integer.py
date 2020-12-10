@@ -1,6 +1,56 @@
 import math
 
 
+# alphabets that can be used by alphabet_base_encode and alphabet_base_decode functions
+BINARY_ALPHABET = b'01'
+OCTAL_ALPHABET = b'0124567'
+DECIMAL_ALPHABET = b'012456789'
+HEXADECIMAL_ALPHABET = b'012456789ABCDEF'
+BASE255_ALPHABET = bytes([*range(10), *range(11, 256)])
+BASE256_ALPHABET = bytes(range(256))
+
+
+def alphabet_base_encode(value: int, alphabet: bytes, /, maximum: int = None):
+    """
+    Convert an integer `value` to any base defined by `alphabet`.
+    The result value follows big-endian order.
+
+    > parameters:
+    - `value: int`: value to convert
+    - `alphabet: bytes`: the base alphabet
+    - `maximum: int? = None`: the maximum value that `value` could be, can be used to compute fixed encoding size
+
+    > `return: bytearray`: the converted value
+    """
+    base = len(alphabet)
+    size = math.ceil(math.log(maximum if maximum is not None else value if value > 1 else base, base))
+    encoded = bytearray()
+    while value > 0:
+        encoded.insert(0, alphabet[value % base])
+        value //= base
+    encoded[:0] = (size - len(encoded)) * alphabet[0:1]
+    return encoded
+
+
+def alphabet_base_decode(encoded: bytes, alphabet: bytes):
+    """
+    Convert an `encoded` value using `alphabet` back the integer value.
+
+    > parameters:
+    - `encoded: bytes`: bytes to decoded
+    - `alphabet: bytes`: the base alphabet
+
+    > `return: int`: the decoded value
+    """
+    base = len(alphabet)
+    value = 0
+    power = 1
+    for byte in memoryview(encoded)[::-1]:
+        value += alphabet.index(byte) * power
+        power *= base
+    return value
+
+
 def little_endian_base_128_encode(value: int):
     """
     Little Endian Base 128 (LEB128) algorithm for integer encoding.
@@ -51,25 +101,51 @@ def test():
     import random
     from ..test import match
 
-    def test_encoder(value: int):
+    def test_alphabet_base(value: int, alphabet: bytes):
+        encoded = alphabet_base_encode(value, alphabet)
+        decoded = alphabet_base_decode(encoded, alphabet)
+        return decoded, len(encoded)
+
+    def test_leb128(value: int):
         encoded = little_endian_base_128_encode(value)
         decoded = little_endian_base_128_decode(encoded)
         return decoded, len(encoded)
 
     match(
         [
-            (test_encoder, (0,), (0, 1)),
-            (test_encoder, (1,), (1, 1)),
-            (test_encoder, (127,), (127, 1)),
-            (test_encoder, (128,), (128, 2)),
-            (test_encoder, (16383,), (16383, 2)),
-            (test_encoder, (16384,), (16384, 3)),
-            (test_encoder, (16383,), (16383, 2)),
-            (test_encoder, (16384,), (16384, 3)),
-            (test_encoder, (2097151,), (2097151, 3)),
-            (test_encoder, (2097152,), (2097152, 4)),
-            (test_encoder, (268435455,), (268435455, 4)),
-            (test_encoder, (268435456,), (268435456, 5)),
+            (test_alphabet_base, (0, OCTAL_ALPHABET), (0, 1)),
+            (test_alphabet_base, (1, OCTAL_ALPHABET), (1, 1)),
+            (test_alphabet_base, (127, OCTAL_ALPHABET), (127, 3)),
+            (test_alphabet_base, (128, OCTAL_ALPHABET), (128, 3)),
+            (test_alphabet_base, (16383, OCTAL_ALPHABET), (16383, 5)),
+            (test_alphabet_base, (16384, OCTAL_ALPHABET), (16384, 5)),
+            (test_alphabet_base, (2097151, OCTAL_ALPHABET), (2097151, 8)),
+            (test_alphabet_base, (2097152, OCTAL_ALPHABET), (2097152, 8)),
+            (test_alphabet_base, (268435455, OCTAL_ALPHABET), (268435455, 10)),
+            (test_alphabet_base, (268435456, OCTAL_ALPHABET), (268435456, 10)),
+            (test_alphabet_base, (0, BASE255_ALPHABET), (0, 1)),
+            (test_alphabet_base, (1, BASE255_ALPHABET), (1, 1)),
+            (test_alphabet_base, (127, BASE255_ALPHABET), (127, 1)),
+            (test_alphabet_base, (128, BASE255_ALPHABET), (128, 1)),
+            (test_alphabet_base, (16383, BASE255_ALPHABET), (16383, 2)),
+            (test_alphabet_base, (16384, BASE255_ALPHABET), (16384, 2)),
+            (test_alphabet_base, (2097151, BASE255_ALPHABET), (2097151, 3)),
+            (test_alphabet_base, (2097152, BASE255_ALPHABET), (2097152, 3)),
+            (test_alphabet_base, (268435455, BASE255_ALPHABET), (268435455, 4)),
+            (test_alphabet_base, (268435456, BASE255_ALPHABET), (268435456, 4)),
+
+            (test_leb128, (0,), (0, 1)),
+            (test_leb128, (1,), (1, 1)),
+            (test_leb128, (127,), (127, 1)),
+            (test_leb128, (128,), (128, 2)),
+            (test_leb128, (16383,), (16383, 2)),
+            (test_leb128, (16384,), (16384, 3)),
+            (test_leb128, (16383,), (16383, 2)),
+            (test_leb128, (16384,), (16384, 3)),
+            (test_leb128, (2097151,), (2097151, 3)),
+            (test_leb128, (2097152,), (2097152, 4)),
+            (test_leb128, (268435455,), (268435455, 4)),
+            (test_leb128, (268435456,), (268435456, 5)),
         ]
     )
 
