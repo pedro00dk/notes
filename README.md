@@ -267,16 +267,18 @@ Space complexity is available in algorithms files.
 
 ## Encoding and Compression
 
--   [base encoding (any byte sequence)](./src/encoding/base.py)
-    -   base64 rfc4648 **- O(n)**
-    -   base32 rfc4648 **- O(n)**
-    -   base16 rfc4648 **- O(n)**
-    -   ascii85 **- O(n)**
-    -   base85 rfc1924 **- O(n)**
-    -   base85 zeromq **- O(n)**
--   [integer encoding](./src/encoding/integer.py)
-    -   alphabet base **- O(log(n))**
-    -   little endian base 128 **- O(log(n))**
+-   [base coding](./src/encoding/base.py)
+    -   base64 rfc4648 (printable) **- O(n)**
+    -   base32 rfc4648 (printable) **- O(n)**
+    -   base16 rfc4648 (printable) **- O(n)**
+    -   ascii85 (printable) **- O(n)**
+    -   base85 rfc1924 (printable) **- O(n)**
+    -   base85 zeromq (printable) **- O(n)**
+-   [integer coding](./src/encoding/integer.py)
+    -   alphabet base (printable) **- O(log(n))**
+    -   little endian base 128 variable (non-printable, semi-compression) **- O(log(n))**
+-   [huffman coding](./src/encoding/huffman.py)
+    -   huffman coding (non-printable, compression) **- O(n)**
 
 ---
 
