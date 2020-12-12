@@ -96,6 +96,9 @@ def serialize_huffman_code(code: dict):
     """
     Serialize `code` into a bytearray.
     `code` must be canonical, otherwise the deserialization process will fail.
+    Two serialization strategies may be used depending on the alphabet length.
+    If there is less than 128 bytes in the alphabet, each byte is encoded together with its size.
+    If there is 128 or more bytes, all 256 bytes are encoded, but only their sizes.
 
     > parameters:
     - `code: {[byte: int]: (size: int, value: int)}`: the huffman code, it must be canonical
@@ -103,25 +106,35 @@ def serialize_huffman_code(code: dict):
     > `return: bytearray`: serialized code
     """
     serialized = bytearray()
-    serialized.append(len(code) - 1)  # alphabet size (-1 to fit a size 256 alphabet into 0-255)
-    for byte, (bitsize, value) in code.items():
-        serialized.append(byte)
-        serialized.append(bitsize)
+    length = len(code)
+    serialized.append(length - 1)  # -1 to fit a size 256 alphabet into 0-255
+    if length < 128:
+        for byte, (size, value) in code.items():
+            serialized.append(byte)
+            serialized.append(size)
+    else:
+        for byte in range(256):
+            size = code.get(byte, (0, 0))[0]
+            serialized.append(size)
     return serialized
 
 
 def deserialize_huffman_code(serialized: bytes):
     """
     Deserialize `serialized` into a canonical huffman code.
+    Two deserialization strategies may be used depending on the alphabet length, see serialize function.
 
     > parameters:
     - `serialized: bytearray`: serialized code
 
     > `return: {[byte: int]: (size: int, value: int)}`: a canonical huffman code
     """
-    size = serialized[0] + 1  # alphabet size (-1 to fit a size 256 alphabet into 0-255)
+    length = serialized[0] + 1  # -1 to fit a size 256 alphabet into 0-255
     serialized = memoryview(serialized)[1:]
-    partial_code = {serialized[i * 2]: (serialized[i * 2 + 1], None) for i in range(size)}
+    if length < 128:
+        partial_code = {serialized[i * 2]: (serialized[i * 2 + 1], None) for i in range(length)}
+    else:
+        partial_code = {i: (serialized[i], None) for i in range(256) if serialized[i] != 0}
     return canonized_huffman_code(partial_code)
 
 
@@ -138,6 +151,8 @@ def huffman_encode(data: bytes):
 
     > `return: bytes`: encoded data
     """
+    if len(data) == 0:
+        return data
     code = canonized_huffman_code(huffman_tree_to_code(huffman_tree(data)))
     encoded = serialize_huffman_code(code)
     encoded.extend(len(data).to_bytes(4, 'little'))
@@ -171,13 +186,15 @@ def huffman_decode(encoded: bytes):
 
     > `return: bytes`: decoded data
     """
+    if len(data) == 0:
+        return data
     code = deserialize_huffman_code(encoded)
     tree = huffman_code_to_tree(code)
-    encoded = memoryview(encoded)[len(code) * 2 + 1:]  # skipping code part
+    encoded = memoryview(encoded)[len(code) * 2 + 1 if len(code) < 128 else 257:]  # skipping serialized code part
     length = int.from_bytes(encoded[:4], 'little')
     decoded = bytearray()
     cursor = tree
-    for byte in memoryview(encoded)[4:]:
+    for byte in encoded[4:]:
         for i in range(7, -1, -1):
             bit = (byte >> i) & 1
             side = -2 if bit == 0 else -1  # left (-2) or right (-1) index on cursor
@@ -185,7 +202,10 @@ def huffman_decode(encoded: bytes):
             if cursor[1] != -1:
                 decoded.append(cursor[1])
                 cursor = tree
-    decoded[length:] = b''
+    if len(decoded) < length:
+        decoded.extend([[*code.keys()][0]] * (length - len(decoded)))
+    if len(decoded) > length:
+        decoded[length:] = b''
     return decoded
 
 
