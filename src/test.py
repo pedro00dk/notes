@@ -1,19 +1,27 @@
 import random
-import time
 import timeit
+from typing import Any, Callable, cast, Iterable, Optional, TypeVar, Union
 
 
-def match(operations: list):
+T = TypeVar('T')
+U = TypeVar('U')
+V = TypeVar('V')
+CheckedOperation = tuple[Callable[..., Any], tuple[Any, ...], Any]
+UncheckedOperation = tuple[Callable[..., Any], tuple[Any, ...]]
+Operation = Union[CheckedOperation, UncheckedOperation]
+
+
+def match(operations: Iterable[Operation]):
     """
-    Match operations and expected results.
-    If the builtin `print` function is passed
+    Execution functions and compare their results with a expected value.
+    The expected value may not be passed.
 
-    > parameters:
-    - `operations: (any => any, any(), any?)`: function to check, arguments and expected result, which is optional
+    > parameters
+    - `operations`: iterable containing tuples with function to execute, arguments and an optional expected result
     """
     for action, arguments, *expected in operations:
         result = action(*arguments)
-        if action == print:
+        if action is print:
             print()
             continue
         print(
@@ -24,32 +32,39 @@ def match(operations: list):
         )
 
 
-def benchmark(algorithms, /, *, input_str=str, output_str=str, test_inputs, bench_sizes, bench_repeat=100, bench_tries=1, bench_input, preprocess_input=None):
+def benchmark(
+    algorithms: Iterable[tuple[str, Callable[[T], U]]],
+    test_inputs: Iterable[T],
+    bench_sizes: Iterable[V],
+    bench_input: Callable[[V], T],
+    bench_repeat: int = 100,
+    bench_tries: int = 1,
+    input_str: Callable[[T], str] = str,
+    output_str: Callable[[U], str] = str,
+    preprocess_input: Optional[Callable[[T], T]] = None,
+):
     """
-    Benchmark on or multiple algorithms against each other.
+    Benchmark one or multiple algorithms against each other.
 
-    > generics:
-    - `<T>`: type of algorithm input
-    - `<U>`: type of algorithm output
-
-    > parameters:
-    - `algorithms: (str, <T> => <U>)()`: list of labels and algorithms to benchmark
-    - `input_str: (<T> => str)? = str`: function to transform inputs into string
-    - `output_str: (<U> => str)? = str`: function to transform outputs into string
-    - `test_inputs: iter<T>`: list of inputs to display algorithms results
-    - `bench_sizes: iter<V>`: list of elements that identify benchmark input sizes (usually int)
-    - `bench_repeat: int? = 100`: number of times to run the benchmark (each repeat generates a new input)
-    - `bench_tries: int? = 1`: number of run tries for each repeat (each trie reuses the same repeat input)
-    - `bench_input: int => <T>`: function that takes input sizes and creates inputs for the algorithms
-    - `preprocess_input: (<T> => <T>)? = None`: function that preprocess inputs, usually copying the input if the
-        algorithm mutates it, the preprocessing runs per repeat, not trie.
+    > parameters
+    - `algorithms`: labeled algorithms to benchmark
+    - `test_inputs`: inputs to display algorithms results
+    - `bench_sizes`: elements that identify benchmark input sizes (usually int)
+    - `bench_repeat`: number of times to run the benchmark (each run generates a new input)
+    - `bench_tries`: number of run tries for each repeat (each run uses the same input)
+    - `bench_input`: function that takes input sizes and creates inputs for the algorithms
+    - `input_str`: function to transform inputs into string
+    - `output_str`: function to transform outputs into string
+    - `preprocess_input`: function that preprocess inputs, usually copying the input if the algorithm mutates it, the
+        preprocessing runs per repeat, not trie
     """
     print('### test')
     for input in test_inputs:
         print("# input", input_str(input))
         for label, function in algorithms:
-            prep_input = input if preprocess_input is None else preprocess_input(input)
-            print(label, output_str(function(prep_input)))
+            input = input if preprocess_input is None else preprocess_input(input)
+            output = function(input)
+            print(label, output_str(output))
         print()
     print('### benchmark')
     for size in bench_sizes:
@@ -58,52 +73,65 @@ def benchmark(algorithms, /, *, input_str=str, output_str=str, test_inputs, benc
         for label, function in algorithms:
             times = []
             for input in inputs:
-                prep_input = input if preprocess_input is None else preprocess_input(input)
-                time = timeit.timeit(stmt='function(prep_input)', globals={**globals(), **locals()}, number=bench_tries)
+                input = input if preprocess_input is None else preprocess_input(input)
+                time = timeit.timeit(stmt='function(input)', globals={**globals(), **locals()}, number=bench_tries)
                 times.append(time)
             print(label, sum(times))
         print()
 
 
-def sort_benchmark(algorithms, /, *, test_size=20, bench_sizes=(0, 1, 10, 100, 1000, 10000), bench_repeat=100, value_range=lambda s: (0, s**2)):
+def sort_benchmark(
+    algorithms: Iterable[tuple[str, Callable[[list[float]], list[float]]]],
+    test_size: int = 20,
+    bench_sizes: Iterable[int] = (0, 1, 10, 100, 1000, 10000),
+    bench_repeat: int = 100,
+    value_range: Callable[[int], tuple[int, int]] = lambda s: (0, s**2)
+):
     """
-    Helper benchmarking function for sorting algorithms.
+    Benchmark one or multiple sorting algorithms against each other.
 
-    > parameters:
-    - `algorithms: (str, (int | float)[] => (int | float)[])()`: list of labels and algorithms to benchmark
-    - `test_size: int? = 20`: size of array to use in testing
-    - `bench_sizes: iter<int>? = (0, 1, 10, 100, 1000, 10000)`: list of elements that identify benchmark input sizes
-    - `bench_repeat: int? = 100`: number of times to run the benchmark (each repeat generates a new input)
-    - `value_range: int => (int, int)`: function that takes input sizes and return min and max allowed values in array
-    -
+    > parameters
+    - `algorithms`: labeled algorithms to benchmark
+    - `test_size`: size of array to use in testing
+    - `bench_sizes`: benchmark input sizes
+    - `bench_repeat`: number of times to run the benchmark
+    - `value_range`: function that takes input sizes and return min and max allowed input values
     """
+    test_inputs = cast(
+        list[list[float]],
+        [
+            [],
+            [0],
+            [*range(test_size)],
+            [*range(test_size - 1, -1, -1)],
+            random.sample([*range(test_size)], test_size)
+        ]
+    )
     benchmark(
         algorithms,
-        test_inputs=(
-            [], [0], [*range(test_size)], [*range(test_size - 1, -1, -1)], random.sample([*range(test_size)], test_size)
-        ),
-        bench_sizes=bench_sizes,
-        bench_repeat=bench_repeat,
-        bench_input=lambda s: [random.randint(*value_range(s)) for _ in range(s)],
-        preprocess_input=list.copy
+        test_inputs,
+        bench_sizes,
+        lambda size: [random.randint(*value_range(size)) for _ in range(size)],
+        bench_repeat,
+        preprocess_input=lambda input: input.copy()
     )
 
 
-def heuristic_approximation(label: str, optimal_results: list, heuristic_results: list):
+def heuristic_approximation(label: str, optimal_results: list[float], heuristic_results: list[float]):
     """
-    Helper function for computing approximations statistics of heuristics.
+    Compute approximations of heuristic algorithms given then optimal and heuristic results.
 
-    > parameters:
-    - `label: str`: label of the heuristic
-    - `optimal_results: (int | float)[]`: optimal results (must be preprocessed into a list of integers or floats)
-    - `heuristic_results: (int | float)[]`: heuristic results (must be preprocessed into a list of integers or floats)
+    > parameters
+    - `label`: label of the heuristic
+    - `optimal_results`: optimal results, must be preprocessed into a list of integers or floats
+    - `heuristic_results`: heuristic results, must be preprocessed into a list of integers or floats
     """
     pairs = zip(optimal_results, heuristic_results)
     approximations = [h / opt if opt != 0 else 1 for opt, h in pairs]
-    print('approximation of', label)
-    print('     number of runs:', len(optimal_results))
     perfect_results = sum(1 for approximation in approximations if approximation == 1)
-    print('    perfect results:', perfect_results, f'{"%.2f" % (perfect_results / len(optimal_results) * 100)}%')
-    print('            minimum:', min(approximations))
-    print('            maximum:', max(approximations))
-    print('            average:', sum(approximations) / len(approximations))
+    print('# heuristic ', label)
+    print('   number of runs:', len(optimal_results))
+    print('  perfect results:', perfect_results, f'{"%.2f" % (perfect_results / len(optimal_results) * 100)}%')
+    print('          minimum:', min(approximations))
+    print('          maximum:', max(approximations))
+    print('          average:', sum(approximations) / len(approximations))
