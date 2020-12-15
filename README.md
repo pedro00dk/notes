@@ -2,7 +2,7 @@
 
 Collection of data structures and algorithms implemented in Python.
 
-The minimum python version required is 3.8.
+The minimum python version required is 3.9.
 Scripts of this project must be run as a module:
 
 ```shell
@@ -17,9 +17,7 @@ $ python -m src.graph.path.ssp
 
 #### Notes
 
--   Functions have basic type hints, the docstring contains a better specification of parameters and return value types.
--   A combination of python basic types (`str`, `int`, `float`, etc) and typescript type operators (`|`, `&`, `typeof`, `[]`, `{}`, etc), generics (`<T extends any>`, etc), and extra syntax for tuples `(T,)`, `(<T>, <U>)`, `<T>()` is used to specify types.
--   The `n` value in most asymptotic complexity descriptions refer to the main input size, which may be an array or string size, the absolute value of a numeric parameter, the size of a data structure, etc. Other complexity variables are usually described in the comments or in the code.
+-   The `n` value in most asymptotic complexity descriptions refer to the main input size, which may be a list or string size, the absolute value of a numeric parameter, the size of a data structure, etc. Other complexity variables are usually described in the comments or in the code.
 
 ---
 
@@ -232,7 +230,7 @@ Space complexity is available in algorithms files.
         -   weighted pricing method (heuristic) **- O(v + e)**
         -   weighted pricing sorted method (heuristic) **- O(e\*log(e) + v)**
 
-## Enumeration Combinatorics
+## Enumeration Combinatorics [updated]
 
 -   [factorial](./src/combinatorics/factorial.py)
     -   factorial recursive **- O(n)**
