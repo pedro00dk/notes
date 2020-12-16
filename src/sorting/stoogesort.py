@@ -1,23 +1,19 @@
 import math
 
 
-def stoogesort(array: list):
+def stoogesort(array: list[float]) -> list[float]:
     """
-    Stoogesort implementation.
+    Sort `array` using stoogesort.
 
-    > complexity:
+    > complexity
     - time: `O(n**(log(3)/log(1.5))) ~ O(n**2.7)`
     - space: `O(log(n, 3))`
 
-    > parameters:
-    - `array: (int | float)[]`: array to be sorted
-
-    > `return: (int | float)[]`: `array` sorted
+    > parameters
+    - `array`: array to be sorted
+    - `return`: `array` sorted
     """
-    if len(array) == 0:
-        return array
-
-    def rec(array: list, first: int, last: int):
+    def rec(array: list[float], first: int, last: int):
         if array[first] > array[last]:
             array[first], array[last] = array[last], array[first]
         if last - first + 1 <= 2:
@@ -27,13 +23,15 @@ def stoogesort(array: list):
         rec(array, math.floor(first + third), last)
         rec(array, first, math.ceil(last - third))
 
+    if len(array) == 0:
+        return array
     rec(array, 0, len(array) - 1)
     return array
 
 
 def test():
     from ..test import sort_benchmark
-    sort_benchmark([('stoogesort', stoogesort)], bench_sizes=(0, 1, 10, 100, 1000))
+    sort_benchmark((('stoogesort', stoogesort),), bench_sizes=(0, 1, 10, 100, 1000))
 
 
 if __name__ == '__main__':

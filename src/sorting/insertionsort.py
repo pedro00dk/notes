@@ -1,19 +1,14 @@
-def insertionsort(array: list):
+def insertionsort(array: list[float]) -> list[float]:
     """
-    Insertionsort implementation.
+    Sort `array` using insertionsort.
 
-    > optimizations:
-    - save current element to be sorted and override previous values rather than swapping, then place the saved value in
-      its position.
-
-    > complexity:
+    > complexity
     - time: `O(n**2)`
     - space: `O(1)`
 
-    > parameters:
-    - `array: (int | float)[]`: array to be sorted
-
-    > `return: (int | float)[]`: `array` sorted
+    > parameters
+    - `array`: array to be sorted
+    - `return`: `array` sorted
     """
     for i in range(1, len(array)):
         key = array[i]
@@ -27,7 +22,8 @@ def insertionsort(array: list):
 
 def test():
     from ..test import sort_benchmark
-    sort_benchmark([('insertionsort', insertionsort)], bench_sizes=(0, 1, 10, 100, 1000))
+
+    sort_benchmark((('insertionsort', insertionsort),), bench_sizes=(0, 1, 10, 100, 1000))
 
 
 if __name__ == '__main__':

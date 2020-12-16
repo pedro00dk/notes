@@ -1,17 +1,19 @@
-def countingsort(array: list):
-    """
-    Countingsort implementation.
-    This implementation only supports integer values.
-    Use bucketsort for floating-point values.
+from typing import Callable, cast
 
-    > complexity:
+
+def countingsort(array: list[int]) -> list[int]:
+    """
+    Sort `array` using countingsort.
+    This implementation only supports integer values.
+    `bucketsort` can be used for floating-point values.
+
+    > complexity
     - time: `O(n + k)` where `k` is `value_range`
     - space: `O(n + k)` where `k` is `value_range`
 
-    > parameters:
-    - `array: int[]`: array to be sorted
-
-    > `return: int[]`: `array` sorted
+    > parameters
+    - `array`: array to be sorted
+    - `return`: `array` sorted
     """
     if len(array) == 0:
         return array
@@ -33,17 +35,20 @@ def countingsort(array: list):
 
 def test():
     from ..test import sort_benchmark
+
+    sort = cast(Callable[[list[float]], list[float]], countingsort)
+
     print('terrible input')
-    sort_benchmark([('countingsort', countingsort)], value_range=lambda s: (-s * 10, s * 10))
+    sort_benchmark((('countingsort', sort),), value_range=lambda s: (-s * 10, s * 10))
     print()
     print('bad input')
-    sort_benchmark([('countingsort', countingsort)], value_range=lambda s: (-s * 5, s * 5))
+    sort_benchmark((('countingsort', sort),), value_range=lambda s: (-s * 5, s * 5))
     print()
     print('good input')
-    sort_benchmark([('countingsort', countingsort)], value_range=lambda s: (-s, s))
+    sort_benchmark((('countingsort', sort),), value_range=lambda s: (-s, s))
     print()
     print('best input')
-    sort_benchmark([('countingsort', countingsort)], value_range=lambda s: (-10, 10))
+    sort_benchmark((('countingsort', sort),), value_range=lambda s: (-10, 10))
     print()
 
 

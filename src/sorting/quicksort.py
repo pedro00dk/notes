@@ -1,22 +1,21 @@
 import math
 
 
-def quicksort_hoare(array: list):
+def quicksort_hoare(array: list[float]) -> list[float]:
     """
-    Quicksort implementation using Hoare's partition algorithm with a few modifications.
-    The center element is used as index.
+    Sort `array` using quicksort with Hoare's partition algorithm.
+    The center element is used as pivot.
     Random pivot is not used because python random functions are very slow.
 
-    > complexity:
+    > complexity
     - time: average: `O(n*log(n))`, worst: `O(n**2)`
     - space: average: `O(log(n))`, worst: `O(n)`
 
-    > parameters:
-    - `array: (int | float)[]`: array to be sorted
-
-    > `return: (int | float)[]`: `array` sorted
+    > parameters
+    - `array`: array to be sorted
+    - `return`: `array` sorted
     """
-    def rec(array: list, left: int, right: int):
+    def rec(array: list[float], left: int, right: int):
         if left >= right:
             return
         pivot = array[(left + right) // 2]
@@ -39,22 +38,21 @@ def quicksort_hoare(array: list):
     return array
 
 
-def quicksort_lomuto(array: list):
+def quicksort_lomuto(array: list[float]) -> list[float]:
     """
-    Quicksort implementation using Hoare's partition algorithm with a few modifications.
-    The center element is used as index.
+    Sort `array` using quicksort with Lomuto's partition algorithm.
+    The center element is used as pivot.
     Random pivot is not used because python random functions are very slow.
 
-    > complexity:
+    > complexity
     - time: average: `O(n*log(n))`, worst: `O(n**2)`
     - space: average: `O(log(n))`, worst: `O(n)`
 
-    > parameters:
-    - `array: (int | float)[]`: array to be sorted
-
-    > `return: (int | float)[]`: `array` sorted
+    > parameters
+    - `array`: array to be sorted
+    - `return`: `array` sorted
     """
-    def rec(array: list, left: int, right: int):
+    def rec(array: list[float], left: int, right: int):
         if left >= right:
             return
         pivot_index = (left + right) // 2
@@ -73,20 +71,20 @@ def quicksort_lomuto(array: list):
     return array
 
 
-def quicksort_dual_pivot(array: list):
+def quicksort_dual_pivot(array: list[float]) -> list[float]:
     """
-    Quicksort dual-pivot implementation.
+    Sort `array` using quicksort with dual pivot partition algorithm.
+    The the elements in first and second thirds are used as pivots.
 
-    > complexity:
+    > complexity
     - time: average: `O(n*log(n))`, worst: `O(n**2)`
     - space: average: `O(log(n))`, worst: `O(n)`
 
-    > parameters:
-    - `array: (int | float)[]`: array to be sorted
-
-    > `return: (int | float)[]`: `array` sorted
+    > parameters
+    - `array`: array to be sorted
+    - `return`: `array` sorted
     """
-    def rec(array: list, left: int, right: int):
+    def rec(array: list[float], left: int, right: int):
         if left >= right:
             return
         third = (right - left) / 3
@@ -125,12 +123,13 @@ def quicksort_dual_pivot(array: list):
 
 def test():
     from ..test import sort_benchmark
+
     sort_benchmark(
-        [
-            ('     hoare', quicksort_hoare),
-            ('    lomuto', quicksort_lomuto),
-            ('dual pivot', quicksort_dual_pivot)
-        ]
+        (
+            ('     quicksort hoare', quicksort_hoare),
+            ('    quicksort lomuto', quicksort_lomuto),
+            ('quicksort dual pivot', quicksort_dual_pivot),
+        )
     )
 
 

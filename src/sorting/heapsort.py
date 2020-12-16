@@ -1,17 +1,17 @@
-def sift_down(heap: list, i: int, length: int):
+def sift_down(heap: list[float], i: int, length: int):
     """
     Heap sift down algorithm.
-    Appart from the sift down in the heap.py module, this one uses direct numeric comparisons rathen than comparators
+    Appart from the sift down in the heap.py module, this one uses direct numeric comparisons rather than comparators
     and is max only.
 
-    > complexity:
+    > complexity
     - time: `O(log(n))`
     - space: `O(1)`
 
-    > parameters:
-    - `heap: (int | float)[]`: array containing heap structure
-    - `i: int`: index of value to sift down
-    - `length: int`: length of the heap (may be smaller than `len(heap)`)
+    > parameters
+    - `heap`: array containing heap structure
+    - `i`: index of value in `heap` to sift down
+    - `length`: virtual length of the heap, may be smaller than or equals to len(heap)`
     """
     while (left := i * 2 + 1) < length:
         right = left + 1
@@ -24,18 +24,17 @@ def sift_down(heap: list, i: int, length: int):
         i = chosen
 
 
-def heapsort(array: list):
+def heapsort(array: list[float]) -> list[float]:
     """
-    Heapsort implementation.
+    Sort `array` using heapsort.
 
-    > complexity:
+    > complexity
     - time: `O(n*log(n))`
     - space: `O(1)`
 
-    > parameters:
-    - `array: (int | float)[]`: array to be sorted
-    
-    > `return: (int | float)[]`: `array` sorted
+    > parameters
+    - `array`: array to be sorted
+    - `return`: `array` sorted
     """
     length = len(array)
     for i in range(length // 2 - 1, -1, -1):
@@ -48,7 +47,8 @@ def heapsort(array: list):
 
 def test():
     from ..test import sort_benchmark
-    sort_benchmark([('heapsort', heapsort)])
+
+    sort_benchmark((('heapsort', heapsort),))
 
 
 if __name__ == '__main__':
