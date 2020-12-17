@@ -1,6 +1,6 @@
 import random
 import timeit
-from typing import Any, Callable, cast, Iterable, Optional, TypeVar, Union
+from typing import Any, Callable, cast, Optional, TypeVar, Union
 
 
 T = TypeVar('T')
@@ -11,7 +11,7 @@ UncheckedOperation = tuple[Callable[..., Any], tuple[Any, ...]]
 Operation = Union[CheckedOperation, UncheckedOperation]
 
 
-def match(operations: Iterable[Operation]):
+def match(operations: tuple[Operation, ...]):
     """
     Execution functions and compare their results with a expected value.
     The expected value may not be passed.
@@ -33,9 +33,9 @@ def match(operations: Iterable[Operation]):
 
 
 def benchmark(
-    algorithms: Iterable[tuple[str, Callable[[T], U]]],
-    test_inputs: Iterable[T],
-    bench_sizes: Iterable[V],
+    algorithms: tuple[tuple[str, Callable[[T], U]], ...],
+    test_inputs: tuple[T, ...],
+    bench_sizes: tuple[V, ...],
     bench_input: Callable[[V], T],
     bench_repeat: int = 100,
     bench_tries: int = 1,
@@ -81,9 +81,9 @@ def benchmark(
 
 
 def sort_benchmark(
-    algorithms: Iterable[tuple[str, Callable[[list[float]], list[float]]]],
+    algorithms: tuple[tuple[str, Callable[[list[float]], list[float]]], ...],
     test_size: int = 20,
-    bench_sizes: Iterable[int] = (0, 1, 10, 100, 1000, 10000),
+    bench_sizes: tuple[int, ...] = (0, 1, 10, 100, 1000, 10000),
     bench_repeat: int = 100,
     value_range: Callable[[int], tuple[int, int]] = lambda s: (0, s**2)
 ):
@@ -98,14 +98,14 @@ def sort_benchmark(
     - `value_range`: function that takes input sizes and return min and max allowed input values
     """
     test_inputs = cast(
-        list[list[float]],
-        [
+        tuple[list[float]],
+        (
             [],
             [0],
             [*range(test_size)],
             [*range(test_size - 1, -1, -1)],
             random.sample([*range(test_size)], test_size)
-        ]
+        )
     )
     benchmark(
         algorithms,
@@ -119,7 +119,7 @@ def sort_benchmark(
 
 def heuristic_approximation(label: str, optimal_results: list[float], heuristic_results: list[float]):
     """
-    Compute approximations of heuristic algorithms given then optimal and heuristic results.
+    Compute approximations of heuristic algorithms given the optimal and heuristic results.
 
     > parameters
     - `label`: label of the heuristic

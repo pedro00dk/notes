@@ -4,6 +4,9 @@ from .factorial import factorial_itr
 from .permutations import permutation
 
 
+T = TypeVar('T')
+
+
 def combination_pascal(n: int, k: int) -> int:
     """
     Count possible combinations of `n` items of `k` size using pascal triangle properties.
@@ -43,9 +46,6 @@ def combination_perm(n: int, k: int) -> int:
     """
     k = min(k, n - k)
     return permutation(n, k) // factorial_itr(k)
-
-
-T = TypeVar('T')
 
 
 def combinations_range(items: list[T], k: int) -> Generator[tuple[T, ...], None, None]:

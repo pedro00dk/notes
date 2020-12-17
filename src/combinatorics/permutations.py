@@ -1,6 +1,9 @@
 from typing import Generator, Optional, TypeVar
 
 
+T = TypeVar('T')
+
+
 def permutation(n: int, k: Optional[int] = None) -> int:
     """
     Count possible permutations of `k` size in `n` elements.
@@ -24,9 +27,6 @@ def permutation(n: int, k: Optional[int] = None) -> int:
     for i in range(n, n - k, -1):
         p *= i
     return p
-
-
-T = TypeVar('T')
 
 
 def permutations_cycle(items: list[T], k: Optional[int] = None) -> Generator[tuple[T, ...], None, None]:
