@@ -18,7 +18,8 @@ def treesort(array: list[float], tree: Tree[float, int]) -> list[float]:
     - `tree`: an empty tree instance
     - `return`: `array` sorted
     """
-    assert tree.empty(), 'tree must be empty'
+    if not tree.empty():
+        raise Exception('tree must be empty')
     replacer: Callable[[int, int], int] = lambda count, old_count: old_count + count
     for value in array:
         tree.put(value, 1, replacer)
@@ -35,9 +36,9 @@ def test():
 
     sort_benchmark(
         (
-            ('bstsort', lambda array: treesort(array, BST())),
-            ('avlsort', lambda array: treesort(array, AVL())),
-            ('rbtsort', lambda array: treesort(array, RBT()))
+            ('bstsort', lambda array: treesort(array, BST[float, int]())),
+            ('avlsort', lambda array: treesort(array, AVL[float, int]())),
+            ('rbtsort', lambda array: treesort(array, RBT[float, int]()))
         )
     )
 

@@ -1,19 +1,25 @@
+from typing import Callable, Generic, Optional, TypeVar
 from .abc import Node, Tree
 
 
-class BST(Tree):
+T = TypeVar('T', bool, int, float, str)
+U = TypeVar('U')
+
+
+class BST(Generic[T, U], Tree[T, U]):
     """
     Binary Search Tree implementation.
     """
 
     def __init__(self):
-        super().__init__(lambda node, depth: f'{node.key}: {node.value}')
+        super().__init__()
+        self._root: Optional[Node[T, U]] = None
 
-    def put(self, key, /, value=None, replacer=None):
+    def put(self, key: T, value: U, replacer: Optional[Callable[[U, U], U]] = None) -> Optional[U]:
         """
         Check abstract class for documentation.
 
-        > complexity:
+        > complexity
         - time: average: `O(log(n))`, worst: `O(n)`
         - space: `O(1)`
         """
@@ -32,14 +38,15 @@ class BST(Tree):
             self._size += 1
         else:
             old_value = node.value
-            node.key, node.value = key, replacer(value, node.value) if replacer is not None else value
+            node.key = key
+            node.value = replacer(value, node.value) if replacer is not None else value
             return old_value
 
-    def take(self, key):
+    def take(self, key: T) -> U:
         """
         Check abstract class for documentation.
 
-        > complexity:
+        > complexity
         - time: average: `O(log(n))`, worst: `O(n)`
         - space: `O(1)`
         """
@@ -70,33 +77,34 @@ class BST(Tree):
 
 def test():
     from ..test import match
-    t = BST()
-    match([
-        (t.put, (-15, -1000)),
-        (t.put, (-10,)),
-        (t.put, (-5,)),
-        (t.put, (0,)),
-        (t.put, (5, 1000)),
-        (t.put, (10,)),
-        (t.put, (15,)),
-        (t.get, (5,), 1000),
-        (t.get, (-15,), -1000),
-        (print, (t,)),
-        (t.take, (0,)),
-        (t.take, (-10,)),
-        (t.take, (-15,), -1000),
-        (print, (t,))
-    ])
-    for key, value, depth in t.traverse('pre'):
+
+    tree = BST[int, Optional[int]]()
+    match((
+        (tree.put, (-15, -1000)),
+        (tree.put, (-10, None)),
+        (tree.put, (-5, None)),
+        (tree.put, (0, None)),
+        (tree.put, (5, 1000)),
+        (tree.put, (10, None)),
+        (tree.put, (15, None)),
+        (tree.get, (5,), 1000),
+        (tree.get, (-15,), -1000),
+        (print, (tree,)),
+        (tree.take, (0,)),
+        (tree.take, (-10,)),
+        (tree.take, (-15,), -1000),
+        (print, (tree,)),
+    ))
+    for key, *_ in tree.traverse('pre'):
         print(key, end=' ')
     print()
-    for key, value, depth in t.traverse('in'):
+    for key, *_ in tree.traverse('in'):
         print(key, end=' ')
     print()
-    for key, value, depth in t.traverse('post'):
+    for key, *_ in tree.traverse('post'):
         print(key, end=' ')
     print()
-    for key, value, depth in t.traverse('breadth'):
+    for key, *_ in tree.traverse('breadth'):
         print(key, end=' ')
     print()
 

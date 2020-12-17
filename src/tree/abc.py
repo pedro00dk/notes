@@ -26,13 +26,10 @@ class Tree(Generic[T, U], abc.ABC):
     The `printer` attribute is used to generate the tree string representation
     """
 
-    def __init__(self, printer: Callable[[Node[T, U], int], str]):
-        """
-        > parameters
-        - `printer: (Node, int) => str`: function to print a tree node info from the node object and its depth
-        """
+    def __init__(self):
         self._root: Optional[Node[T, U]] = None
-        self._size = 0
+        self._size: int = 0
+        printer: Callable[[Node[T, U], int], str] = lambda node, depth: f'{node.key}: {node.value}'
         self._printer = printer
 
     def __len__(self) -> int:
