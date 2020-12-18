@@ -37,7 +37,6 @@ def test():
     from ..test import sort_benchmark
 
     sort = cast(Callable[[list[float]], list[float]], countingsort)
-
     print('terrible input')
     sort_benchmark((('countingsort', sort),), value_range=lambda s: (-s * 10, s * 10))
     print()

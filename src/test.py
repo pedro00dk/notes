@@ -1,6 +1,6 @@
 import random
 import timeit
-from typing import Any, Callable, cast, Optional, TypeVar, Union
+from typing import Any, Callable, Optional, TypeVar, Union
 
 
 T = TypeVar('T')
@@ -97,19 +97,9 @@ def sort_benchmark(
     - `bench_repeat`: number of times to run the benchmark
     - `value_range`: function that takes input sizes and return min and max allowed input values
     """
-    test_inputs = cast(
-        tuple[list[float]],
-        (
-            [],
-            [0],
-            [*range(test_size)],
-            [*range(test_size - 1, -1, -1)],
-            random.sample([*range(test_size)], test_size)
-        )
-    )
     benchmark(
         algorithms,
-        test_inputs,
+        ([], [0], [*range(test_size)], [*range(test_size - 1, -1, -1)], random.sample([*range(test_size)], test_size)),
         bench_sizes,
         lambda size: [random.randint(*value_range(size)) for _ in range(size)],
         bench_repeat,
