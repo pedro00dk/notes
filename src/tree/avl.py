@@ -1,8 +1,6 @@
-from typing import Callable, Generic, Optional, TypeVar, cast
-from .abc import Node, Tree
+from typing import Callable, Generic, Optional, cast
 
-T = TypeVar('T', bool, int, float, str)
-U = TypeVar('U')
+from .abc import Node, T, Tree, U
 
 
 class AVLNode(Generic[T, U], Node[T, U]):

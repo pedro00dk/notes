@@ -1,4 +1,5 @@
 from typing import Callable, Optional
+
 from .insertionsort import insertionsort
 
 

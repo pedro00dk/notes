@@ -1,6 +1,5 @@
 from typing import Generator, Optional, TypeVar
 
-
 T = TypeVar('T')
 
 
@@ -97,6 +96,7 @@ def permutations_heap(items: list[T]) -> Generator[tuple[T, ...], None, None]:
 def test():
     import itertools
     import math
+
     from ..test import benchmark
 
     benchmark(

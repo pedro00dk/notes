@@ -2,7 +2,6 @@ import random
 import timeit
 from typing import Any, Callable, Optional, TypeVar, Union
 
-
 T = TypeVar('T')
 U = TypeVar('U')
 V = TypeVar('V')

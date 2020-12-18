@@ -1,7 +1,6 @@
 import math
 from typing import Callable
 
-
 GapFunction = Callable[[int, int], int]
 
 # Functions to be used in the shellsort algorithm to create gap sequences.

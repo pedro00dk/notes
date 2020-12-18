@@ -1,8 +1,8 @@
 import itertools
 from typing import Generator, TypeVar
+
 from .factorial import factorial_itr
 from .permutations import permutation
-
 
 T = TypeVar('T')
 
@@ -121,6 +121,7 @@ def bit_combinations_branch(n: int, k: int) -> Generator[int, None, None]:
 
 def test():
     import math
+
     from ..test import benchmark
 
     def bit_combinations_native(n: int, k: int) -> Generator[int, None, None]:

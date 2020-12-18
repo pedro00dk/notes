@@ -31,6 +31,7 @@ def stoogesort(array: list[float]) -> list[float]:
 
 def test():
     from ..test import sort_benchmark
+
     sort_benchmark((('stoogesort', stoogesort),), bench_sizes=(0, 1, 10, 100, 1000))
 
 

@@ -1,4 +1,5 @@
 from typing import Callable
+
 from ..tree.abc import Tree
 from ..tree.avl import AVL
 from ..tree.bst import BST

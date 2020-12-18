@@ -1,7 +1,6 @@
 import abc
 import collections
-from typing import Callable, Generator, Generic, Literal, Optional, TypeVar, Union
-
+from typing import Callable, Generator, Generic, Literal, Optional, TypeVar
 
 T = TypeVar('T', bool, int, float, str)
 U = TypeVar('U')
@@ -39,7 +38,7 @@ class Tree(Generic[T, U], abc.ABC):
         tree = '\n'.join(f'{"|  " * depth}├─ {self._printer(node, depth)}' for node, depth in self._traverse('pre'))
         return f'{type(self).__name__} [\n{tree}\n]'
 
-    def __iter__(self) -> Generator[tuple[T, Union[U, None], int], None, None]:
+    def __iter__(self) -> Generator[tuple[T, U, int], None, None]:
         return self.traverse()
 
     def _pre(self, node: Optional[Node[T, U]], depth: int = 0) -> Generator[tuple[Node[T, U], int], None, None]:

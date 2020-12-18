@@ -1,9 +1,6 @@
-from typing import Callable, Generic, Optional, TypeVar
-from .abc import Node, Tree
+from typing import Callable, Generic, Optional
 
-
-T = TypeVar('T', bool, int, float, str)
-U = TypeVar('U')
+from .abc import Node, T, Tree, U
 
 
 class BST(Generic[T, U], Tree[T, U]):

@@ -155,7 +155,6 @@ def test():
 
     sort_lsd = cast(Callable[[list[float], Optional[int]], list[float]], radixsort_lsd)
     sort_msd = cast(Callable[[list[float], Optional[int]], list[float]], radixsort_msd)
-
     sort_benchmark(
         (
             ('radixsort lsd block=1', lambda array: sort_lsd(array, 1)),
