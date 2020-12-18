@@ -79,7 +79,7 @@ def test():
             ('factorial iterative', factorial_itr),
             (' factorial stirling', factorial_stirling),
             ('factorial ramanujan', factorial_ramanujan),
-            ('   factorial native', math.factorial)
+            ('   factorial native', math.factorial),
         ),
         test_inputs=(0, 1, *range(2, 11, 2)),
         bench_sizes=(*range(0, 101, 10),),

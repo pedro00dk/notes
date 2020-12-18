@@ -27,7 +27,7 @@ def match(operations: tuple[Operation, ...]):
             action.__name__,
             f'  args: {", ".join(str(arg) for arg in arguments)}',
             f'result: {result}' if result is not None else '',
-            f'expected: {expected[0]}' if len(expected) > 0 and result != expected[0] else ''
+            f'expected: {expected[0]}' if len(expected) > 0 and result != expected[0] else '',
         )
 
 
@@ -102,7 +102,7 @@ def sort_benchmark(
         bench_sizes,
         lambda size: [random.randint(*value_range(size)) for _ in range(size)],
         bench_repeat,
-        preprocess_input=lambda input: input.copy()
+        preprocess_input=lambda input: input.copy(),
     )
 
 

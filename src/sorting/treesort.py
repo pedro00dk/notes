@@ -39,8 +39,8 @@ def test():
         (
             ('bstsort', lambda array: treesort(array, BST[float, int]())),
             ('avlsort', lambda array: treesort(array, AVL[float, int]())),
-            ('rbtsort', lambda array: treesort(array, RBT[float, int]()))
-        )
+            ('rbtsort', lambda array: treesort(array, RBT[float, int]())),
+        ),
     )
 
 

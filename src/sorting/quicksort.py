@@ -129,7 +129,7 @@ def test():
             ('     quicksort hoare', quicksort_hoare),
             ('    quicksort lomuto', quicksort_lomuto),
             ('quicksort dual pivot', quicksort_dual_pivot),
-        )
+        ),
     )
 
 

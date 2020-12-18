@@ -170,7 +170,7 @@ def test():
             ('radixsort msd block=4', lambda array: sort_msd(array, 4)),
             ('radixsort msd block=5', lambda array: sort_msd(array, 5)),
             ('radixsort msd block=6', lambda array: sort_msd(array, 6)),
-        )
+        ),
     )
 
 

@@ -85,9 +85,9 @@ def test():
             ('             shellsort Knuth 1973', lambda array: shellsort(array, gap_function=KNUTH1973)),
             ('         shellsort Sedgewick 1982', lambda array: shellsort(array, gap_function=SEDGEWICK1982)),
             ('            shellsort Tokuda 1992', lambda array: shellsort(array, gap_function=TOKUDA1992)),
-            ('             shellsort Ciura 2001', lambda array: shellsort(array, gap_function=CIURA2001))
+            ('             shellsort Ciura 2001', lambda array: shellsort(array, gap_function=CIURA2001)),
         ),
-        bench_sizes=(0, 1, 10, 100, 1000)
+        bench_sizes=(0, 1, 10, 100, 1000),
     )
 
 

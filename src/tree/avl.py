@@ -15,7 +15,9 @@ class AVLNode(Generic[T, U], Node[T, U]):
         self.height: int = 1
 
     def balance(self) -> int:
-        return (self.right.height if self.right is not None else 0) - (self.left.height if self.left is not None else 0)
+        left_height = self.right.height if self.right is not None else 0
+        right_height = self.left.height if self.left is not None else 0
+        return left_height - right_height
 
 
 class AVL(Generic[T, U], Tree[T, U]):
@@ -78,13 +80,13 @@ class AVL(Generic[T, U], Tree[T, U]):
                 node.left, value = rec(key, node.left)
                 node.height = max(
                     node.left.height if node.left is not None else 0,
-                    node.right.height if node.right is not None else 0
+                    node.right.height if node.right is not None else 0,
                 ) + 1
             elif key > node.key:
                 node.right, value = rec(key, node.right)
                 node.height = max(
                     node.left.height if node.left is not None else 0,
-                    node.right.height if node.right is not None else 0
+                    node.right.height if node.right is not None else 0,
                 ) + 1
             elif node.left is not None and node.right is not None:
                 successor = node.right
@@ -96,7 +98,6 @@ class AVL(Generic[T, U], Tree[T, U]):
                 node.value, successor.value = successor.value, node.value
                 current_node = node
                 node, value = rec(key, node)
-                node = cast(AVLNode[T, U], node)
                 current_node.key = successor_key
             else:
                 value = node.value
@@ -171,7 +172,7 @@ class AVL(Generic[T, U], Tree[T, U]):
         child.left = node
         node.height = max(
             node.left.height if node.left is not None else 0,
-            node.right.height if node.right is not None else 0
+            node.right.height if node.right is not None else 0,
         ) + 1
         child.height = max(node.height, child.right.height if child.right is not None else 0) + 1
         return child
@@ -207,7 +208,7 @@ class AVL(Generic[T, U], Tree[T, U]):
         child.right = node
         node.height = max(
             node.left.height if node.left is not None else 0,
-            node.right.height if node.right is not None else 0
+            node.right.height if node.right is not None else 0,
         ) + 1
         child.height = max(node.height, child.left.height if child.left is not None else 0) + 1
         return child

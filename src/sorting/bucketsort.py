@@ -50,7 +50,7 @@ def test():
             (' bucketsort k=n/8', lambda array: bucketsort(array, len(array) // 8)),
             ('bucketsort k=n/16', lambda array: bucketsort(array, len(array) // 16)),
             ('bucketsort k=n/32', lambda array: bucketsort(array, len(array) // 32)),
-        )
+        ),
     )
 
 
