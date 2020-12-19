@@ -1,22 +1,25 @@
 import collections
 import heapq
+from typing import Any, Optional, cast
+
+HuffmanTree = tuple[int, int, Optional['HuffmanTree'], Optional['HuffmanTree']]  # (frequency, byte, left, right)
+HuffmanCode = dict[int, tuple[int, int]]  # {[byte]: (size, value)}
 
 
-def huffman_tree(data: bytes):
+def huffman_tree(data: bytes) -> HuffmanTree:
     """
     Build a huffman coding tree from `data`.
 
-    > complexity:
+    > complexity
     - time: `O(n*log(n))`
     - space: `O(n*log(n))`
 
-    > parameters:
-    - `data: bytes`: data to generate the huffman coding tree
-
-    > `return: T = (frequency: int, byte: int, left: T, right: T)`: a tree structure made of tuples
+    > parameters
+    - `data`: data to generate the huffman coding tree
+    - `return`: a tree structure made of tuples
     """
     frequencies = collections.Counter(data)
-    heap = [(frequency, byte, None, None) for byte, frequency in frequencies.items()]
+    heap: list[HuffmanTree] = [(frequency, byte, None, None) for byte, frequency in frequencies.items()]
     heapq.heapify(heap)
     while len(heap) > 1:
         right = heapq.heappop(heap)
@@ -25,65 +28,61 @@ def huffman_tree(data: bytes):
     return heap[0]
 
 
-def huffman_tree_to_code(tree: tuple):
+def huffman_tree_to_code(tree: HuffmanTree) -> HuffmanCode:
     """
     Build the huffman code table based on the huffman tree.
 
-    > parameters:
-    - `tree: T = (frequency: int, byte: int, left: T, right: T)`: a tree structure made of tuples
-
-    > `return: {[byte: int]: (size: int, value: int)}`: the huffman code
+    > parameters
+    - `tree`: a tree structure made of tuples
+    - `return`: the huffman code
     """
-    def build_code(node: tuple, size: int, value: int, code: dict):
-        frequency, byte, left, right = node
+    def build_code(node: HuffmanTree, size: int, value: int, code: HuffmanCode) -> HuffmanCode:
+        _, byte, left, right = node
         if byte != -1:
             code[byte] = size, value
             return code
-        build_code(left, size + 1, value << 1, code)
-        build_code(right, size + 1, (value << 1) + 1, code)
+        build_code(cast(HuffmanTree, left), size + 1, value << 1, code)
+        build_code(cast(HuffmanTree, right), size + 1, (value << 1) + 1, code)
         return code
 
     return build_code(tree, 0, 0, {})
 
 
-def huffman_code_to_tree(code: dict):
+def huffman_code_to_tree(code: HuffmanCode) -> HuffmanTree:
     """
     Build the huffman tree based on the huffman code table.
     Note that the resulting tree structure is made of lists rather than tuples.
 
-    > parameters:
-    > `code: {[byte: int]: (size: int, value: int)}`: the huffman code
-
-    > `return: T = [frequency: int, byte: int, left: T, right: T]`: a tree structure made of lists
+    > parameters
+    > `code`: the huffman code
+    - `return`: a tree structure made of lists
     """
     tree = [-1, -1, None, None]
     for byte, (size, value) in code.items():
-        cursor = tree
+        cursor: Any = tree
         for i in range(size - 1, -1, -1):
             bit = value >> i & 1
             side = -2 if bit == 0 else -1  # left (-2) or right (-1) index on cursor
             cursor[side] = cursor[side] if cursor[side] is not None else [0, -1, None, None]
             cursor = cursor[side]
         cursor[1] = byte
-    return tree
+    return cast(HuffmanTree, tree)
 
 
-def canonized_huffman_code(code: dict):
+def canonized_huffman_code(code: HuffmanCode) -> HuffmanCode:
     """
     Create a canonized version of `code`.
     The tree itself cannot be easily canonized, but the code table can.
 
-    > parameters:
-    - `code: {[byte: int]: (size: int, value: int)}`: the huffman code
-
-    > `return: {[byte: int]: (size: int, value: int)}`: a canonized huffman code
+    > parameters
+    - `code`: the huffman code
+    - `return`: a canonized huffman code
     """
-    sizes = [(size, byte) for byte, (size, value) in code.items() if byte != -1]
+    sizes = [(size, byte) for byte, (size, _) in code.items() if byte != -1]
     sizes.sort()
-    values = []
     current_value = 0
     current_size = sizes[0][0]
-    canonized_code = {}
+    canonized_code: HuffmanCode = {}
     for size, byte in sizes:
         current_value <<= size - current_size
         current_size = size
@@ -92,7 +91,7 @@ def canonized_huffman_code(code: dict):
     return canonized_code
 
 
-def serialize_huffman_code(code: dict):
+def serialize_huffman_code(code: HuffmanCode) -> bytearray:
     """
     Serialize `code` into a bytearray.
     `code` must be canonical, otherwise the deserialization process will fail.
@@ -100,16 +99,15 @@ def serialize_huffman_code(code: dict):
     If there is less than 128 bytes in the alphabet, each byte is encoded together with its size.
     If there is 128 or more bytes, all 256 bytes are encoded, but only their sizes.
 
-    > parameters:
-    - `code: {[byte: int]: (size: int, value: int)}`: the huffman code, it must be canonical
-
-    > `return: bytearray`: serialized code
+    > parameters
+    - `code`: the huffman code, it must be canonical
+    - `return`: serialized code
     """
     serialized = bytearray()
     length = len(code)
     serialized.append(length - 1)  # -1 to fit a size 256 alphabet into 0-255
     if length < 128:
-        for byte, (size, value) in code.items():
+        for byte, (size, _) in code.items():
             serialized.append(byte)
             serialized.append(size)
     else:
@@ -119,40 +117,36 @@ def serialize_huffman_code(code: dict):
     return serialized
 
 
-def deserialize_huffman_code(serialized: bytes):
+def deserialize_huffman_code(serialized: bytes) -> HuffmanCode:
     """
     Deserialize `serialized` into a canonical huffman code.
     Two deserialization strategies may be used depending on the alphabet length, see serialize function.
 
-    > parameters:
-    - `serialized: bytearray`: serialized code
-
-    > `return: {[byte: int]: (size: int, value: int)}`: a canonical huffman code
+    > parameters
+    - `serialized`: serialized code
+    - `return`: a canonical huffman code
     """
     length = serialized[0] + 1  # -1 to fit a size 256 alphabet into 0-255
     serialized = memoryview(serialized)[1:]
-    if length < 128:
-        partial_code = {serialized[i * 2]: (serialized[i * 2 + 1], None) for i in range(length)}
-    else:
-        partial_code = {i: (serialized[i], None) for i in range(256) if serialized[i] != 0}
+    partial_code: HuffmanCode = {serialized[i * 2]: (serialized[i * 2 + 1], 0) for i in range(length)} if length < 128 \
+        else {i: (serialized[i], 0) for i in range(256) if serialized[i] != 0}
     return canonized_huffman_code(partial_code)
 
 
-def huffman_encode(data: bytes):
+def huffman_encode(data: bytes) -> bytearray:
     """
     Encode `data` using huffman code.
 
-    > complexity:
+    > complexity
     - time: `O(n)`
     - space: `O(n)`
 
-    > parameters:
-    - `data: bytes`: data to be encoded
-
-    > `return: bytes`: encoded data
+    > parameters
+    - `data`: data to be encoded
+    - `return`: encoded data
     """
     if len(data) == 0:
-        return data
+        return bytearray()
     code = canonized_huffman_code(huffman_tree_to_code(huffman_tree(data)))
     encoded = serialize_huffman_code(code)
     encoded.extend(len(data).to_bytes(4, 'little'))
@@ -173,21 +167,20 @@ def huffman_encode(data: bytes):
     return encoded
 
 
-def huffman_decode(encoded: bytes):
+def huffman_decode(encoded: bytes) -> bytearray:
     """
     Decode `encoded` using huffman code.
 
-    > complexity:
+    > complexity
     - time: `O(n)`
     - space: `O(n)`
 
-    > parameters:
-    - `encoded: bytes`: data to be decoded
-
-    > `return: bytes`: decoded data
+    > parameters
+    - `encoded`: data to be decoded
+    - `return`: decoded data
     """
-    if len(data) == 0:
-        return data
+    if len(encoded) == 0:
+        return bytearray()
     code = deserialize_huffman_code(encoded)
     tree = huffman_code_to_tree(code)
     encoded = memoryview(encoded)[len(code) * 2 + 1 if len(code) < 128 else 257:]  # skipping serialized code part
@@ -198,7 +191,7 @@ def huffman_decode(encoded: bytes):
         for i in range(7, -1, -1):
             bit = (byte >> i) & 1
             side = -2 if bit == 0 else -1  # left (-2) or right (-1) index on cursor
-            cursor = cursor[side]
+            cursor = cast(HuffmanTree, cursor[side])
             if cursor[1] != -1:
                 decoded.append(cursor[1])
                 cursor = tree
@@ -217,11 +210,11 @@ def test():
         decoded = huffman_decode(encoded)
         return decoded, encoded
 
-    match([
+    match((
         (test_huffman, (b'man',)),
         (test_huffman, (b'hello world!',)),
         (test_huffman, (b'pedro',)),
-    ])
+    ))
 
 
 if __name__ == '__main__':

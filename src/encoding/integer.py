@@ -1,5 +1,5 @@
 import math
-
+from typing import Optional
 
 # alphabets that can be used by alphabet_base_encode and alphabet_base_decode functions
 BINARY_ALPHABET = b'01'
@@ -10,17 +10,16 @@ BASE255_ALPHABET = bytes([*range(10), *range(11, 256)])
 BASE256_ALPHABET = bytes(range(256))
 
 
-def alphabet_base_encode(value: int, alphabet: bytes, /, maximum: int = None):
+def alphabet_base_encode(value: int, alphabet: bytes, maximum: Optional[int] = None):
     """
     Convert an integer `value` to any base defined by `alphabet`.
     The result value follows big-endian order.
 
-    > parameters:
-    - `value: int`: value to convert
-    - `alphabet: bytes`: the base alphabet
-    - `maximum: int? = None`: the maximum value that `value` could be, can be used to compute fixed encoding size
-
-    > `return: bytearray`: the converted value
+    > parameters
+    - `value`: value to convert
+    - `alphabet`: the base alphabet
+    - `maximum`: the maximum value that `value` could be, can be used to compute fixed encoding size
+    - `return`: the converted value
     """
     base = len(alphabet)
     size = math.ceil(math.log(maximum if maximum is not None else value if value > 1 else base, base))
@@ -36,11 +35,10 @@ def alphabet_base_decode(encoded: bytes, alphabet: bytes):
     """
     Convert an `encoded` value using `alphabet` back the integer value.
 
-    > parameters:
-    - `encoded: bytes`: bytes to decoded
-    - `alphabet: bytes`: the base alphabet
-
-    > `return: int`: the decoded value
+    > parameters
+    - `encoded`: bytes to decoded
+    - `alphabet`: the base alphabet
+    - `return`: the decoded value
     """
     base = len(alphabet)
     value = 0
@@ -56,14 +54,13 @@ def little_endian_base_128_encode(value: int):
     Little Endian Base 128 (LEB128) algorithm for integer encoding.
     This is the basic algorithm implementation and only works with unsigned integers.
 
-    > complexity:
+    > complexity
     - time: `O(log(n))` where `n` is the absolute value of `value`, this log has base 128
     - space: `O(log(n))` where `n` is the absolute value of `value`, this log has base 128
 
-    > parameters:
-    - `value: int`: value to encode, negative values are not supported
-
-    > `return: bytearray`: the encoded bytes
+    > parameters
+    - `value`: value to encode, negative values are not supported
+    - `return`: the encoded bytes
     """
     encoded = bytearray()
     while value >= 0x80:
@@ -73,20 +70,19 @@ def little_endian_base_128_encode(value: int):
     return encoded
 
 
-def little_endian_base_128_decode(encoded=bytes, /, start=0):
+def little_endian_base_128_decode(encoded: bytes, start: int = 0):
     """
     Little Endian Base 128 (LEB128) algorithm for integer decoding.
     This is the basic algorithm implementation and only works with unsigned integer.
 
-    > complexity:
+    > complexity
     - time: `O(log(n))` where `n` is the absolute value of `value`, this log has base of 127
     - space: `O(log(n))` where `n` is the absolute value of `value`, this log has base of 127
 
-    > parameters:
-    - `encoded: bytearray? = bytearray()`: bytearray containing encoded value, if not provided, a new one is created
-    - `start: int? = 0`: starting index in encoded to start decoding
-
-    > `return: bytearray`: the encoded bytes
+    > parameters
+    - `encoded`: bytearray containing encoded value, if not provided, a new one is created
+    - `start`: starting index in encoded to start decoding
+    - `return`: the encoded bytes
     """
     value = 0
     for i, j in enumerate(range(start, len(encoded))):
@@ -98,7 +94,6 @@ def little_endian_base_128_decode(encoded=bytes, /, start=0):
 
 
 def test():
-    import random
     from ..test import match
 
     def test_alphabet_base(value: int, alphabet: bytes):
@@ -112,7 +107,7 @@ def test():
         return decoded, len(encoded)
 
     match(
-        [
+        (
             (test_alphabet_base, (0, OCTAL_ALPHABET), (0, 1)),
             (test_alphabet_base, (1, OCTAL_ALPHABET), (1, 1)),
             (test_alphabet_base, (127, OCTAL_ALPHABET), (127, 3)),
@@ -133,7 +128,6 @@ def test():
             (test_alphabet_base, (2097152, BASE255_ALPHABET), (2097152, 3)),
             (test_alphabet_base, (268435455, BASE255_ALPHABET), (268435455, 4)),
             (test_alphabet_base, (268435456, BASE255_ALPHABET), (268435456, 4)),
-
             (test_leb128, (0,), (0, 1)),
             (test_leb128, (1,), (1, 1)),
             (test_leb128, (127,), (127, 1)),
@@ -146,7 +140,7 @@ def test():
             (test_leb128, (2097152,), (2097152, 4)),
             (test_leb128, (268435455,), (268435455, 4)),
             (test_leb128, (268435456,), (268435456, 5)),
-        ]
+        ),
     )
 
 
