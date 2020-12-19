@@ -1,48 +1,56 @@
-import ctypes
-import io
 import mmap
+from typing import Any, Callable, Optional, Union
+
+AnyBytes = Union[bytes, bytearray, mmap.mmap]
 
 
-def read(*, file: str = None, filemap=None, string: str = None, byte: bytes = None):
+def read(
+    *,
+    path: Optional[str] = None,
+    string: Optional[str] = None,
+    byte: Optional[Union[bytes, bytearray]] = None
+) -> tuple[AnyBytes, Callable[[], Any]]:
     """
-    Returns an indexable object from a file, string or bytes, this function allows running searching algorithms in any
-    of these types.
+    Returns an indexable bytes object from a file path, string, bytes or bytearray, this function allows running
+    searching algorithms in any of these types.
+    Only one of the parameters should be provided.
 
     If a file is provided, it is assumed to use the `utf-8` encoding.
+    An immutable `mmap.mmap` is returned (works like `bytearray`).
+
     If a string is provided, it is converted to `bytes` using `utf-8` encoding (requires copying).
 
-    If a file is provided, an immutable `mmap.mmap` is returned (works like `bytes` and `bytearray`).
-    If a string or bytes is provided, a `bytes` is returned, strings are converted to bytes using `utf-8`.
-
-    `return: (bytes | mmap.mmap, () => void)`: buffer to access file, string or bytes, and a finalize function to close
-        resources if any are open
+    > parameters
+    - `path`: path to a file
+    - `string`: string to be converted to bytes like
+    - `byte`: a bytes-like object
+    - `return`: buffer to access mmap, string, bytes or bytearray, and a finalize function to close resources
     """
-    if file is not None:
-        file = open(file, 'rb')
-        mm = mmap.mmap(file.fileno(), 0, prot=mmap.PROT_READ)
-        return mm, lambda: (mm.close(), file.close())
+    if path is not None:
+        reader = open(path, 'rb')
+        mm = mmap.mmap(reader.fileno(), 0, prot=mmap.PROT_READ)
+        return mm, lambda: (mm.close(), reader.close())
     if string is not None:
-        return io.BytesIO(bytes(string, 'utf-8')), lambda: ()
+        return bytes(string, 'utf-8'), lambda: ()
     if byte is not None:
-        return io.BytesIO(byte), lambda: ()
+        return byte, lambda: ()
     raise Exception('no source was provided')
 
 
-def exact_brute_force(text: bytes, pattern: bytes):
+def exact_brute_force(text: AnyBytes, pattern: bytes):
     """
     Brute force exact string searching algorithm.
     Some string searching algorithms do not support empty `pattern`.
     For maching specifications, all algorithms raise exceptions if the `pattern` is empty.
 
-    > complexity:
+    > complexity
     - time: `O(n * p)`
     - space: `O(1)`
 
-    > parameters:
-    - `text: bytes | mmap.mmap`: text to search for occurrences of pattern
-    - `pattern: bytes`: pattern
-
-    > `return: int[]`: list containing the starting index of all occurrences
+    > parameters
+    - `text`: text to search for occurrences of pattern
+    - `pattern`: pattern
+    - `return`: list containing the starting index of all occurrences
     """
     if len(pattern) == 0:
         raise Exception('empty pattern')
@@ -56,35 +64,32 @@ def exact_brute_force(text: bytes, pattern: bytes):
     return occurrences
 
 
-def exact_rabin_karp(text: bytes, pattern: bytes, /, alphabet=256, modulus=2147483647):
+def exact_rabin_karp(text: AnyBytes, pattern: bytes, alphabet: int = 256, modulus: int = 2147483647):
     """
     Rabin-Karp exact string searching algorithm.
 
-    > complexity:
+    > complexity
     - time: average: `O(n + p)`, worst: `O(n * p)`
     - space: `O(1)`
 
-    > parameters:
-    - `text: bytes | mmap.mmap`: text to search for occurrences of pattern
-    - `pattern: bytes`: pattern
-    - `alphabet: int? = 256`: size of the alphabet (max 256 because comparisons are done per byte)
-    - `modulus: int? = 2147483647`: modulus value use to limit the size of the hashes
-
-    > `return: int[]`: list containing the starting index of all occurrences
+    > parameters
+    - `text`: text to search for occurrences of pattern
+    - `pattern`: pattern
+    - `alphabet`: size of the alphabet (max 256 because comparisons are done per byte)
+    - `modulus`: modulus value use to limit the size of the hashes
+    - `return`: list containing the starting index of all occurrences
     """
-    alphabet = min(max(2, alphabet), 256)
-    modulus = max(modulus, 257)
 
-    def compute_power(pattern: int):
+    def compute_power(pattern: bytes, alphabet: int, modulus: int):
         """
         Compute the largest multiplicative coefficient for a hash of length equals to `len(pattern)`.
         """
         power = 1
-        for i in range(len(pattern) - 1):
+        for _ in range(len(pattern) - 1):
             power = (power * alphabet) % modulus
         return power
 
-    def init_hash(text: bytes, pattern: int):
+    def init_hash(text: AnyBytes, pattern: bytes, alphabet: int, modulus: int):
         """
         Compute initial hash for `text` using the length of `pattern`.
         """
@@ -93,7 +98,7 @@ def exact_rabin_karp(text: bytes, pattern: bytes, /, alphabet=256, modulus=21474
             hash = (hash * alphabet + text[i]) % modulus
         return hash
 
-    def roll_hash(text: bytes, pattern: bytes, hash: int, power: int, i: int):
+    def roll_hash(text: AnyBytes, pattern: bytes, hash: int, power: int, i: int, alphabet: int, modulus: int):
         """
         Roll the current `hash` of `text[i: i + len(pattern)]` to `text[i + 1: i + len(pattern) + 1]`.
         This is done by removing `text[index]` from the hash (which was multiplied by `power`), then multiply the hash
@@ -101,7 +106,7 @@ def exact_rabin_karp(text: bytes, pattern: bytes, /, alphabet=256, modulus=21474
         """
         return ((hash - text[i] * power) * alphabet + text[i + len(pattern)]) % modulus
 
-    def equals(text: bytes, pattern: bytes, i: int):
+    def equals(text: AnyBytes, pattern: bytes, i: int):
         """
         Return `True` if `text[index:index+length] == pattern[:length]`.
         """
@@ -114,31 +119,32 @@ def exact_rabin_karp(text: bytes, pattern: bytes, /, alphabet=256, modulus=21474
         raise Exception('empty pattern')
     if len(text) < len(pattern):
         return []
+    alphabet = min(max(2, alphabet), 256)
+    modulus = max(modulus, 257)
     occurrences = []
-    power = compute_power(pattern)
-    text_hash = init_hash(text, pattern)
-    pattern_hash = init_hash(pattern, pattern)
+    power = compute_power(pattern, alphabet, modulus)
+    text_hash = init_hash(text, pattern, alphabet, modulus)
+    pattern_hash = init_hash(pattern, pattern, alphabet, modulus)
     for i in range(len(text) - len(pattern)):
         if text_hash == pattern_hash and equals(text, pattern, i):
             occurrences.append(i)
-        text_hash = roll_hash(text, pattern, text_hash, power, i)
+        text_hash = roll_hash(text, pattern, text_hash, power, i, alphabet, modulus)
     return occurrences
 
 
-def exact_knuth_morris_pratt(text: bytes, pattern: bytes, /, border_opt=True):
+def exact_knuth_morris_pratt(text: AnyBytes, pattern: bytes, optimized_border: bool = True):
     """
     Knuth-Morris-Pratt exact string searching algorithm.
 
-    > complexity:
+    > complexity
     - time: `O(n + p)` if `border_opt` else `O(n + p**2)`
     - space: `O(p)`
 
-    > parameters:
-    - `text: bytes | mmap.mmap`: text to search for occurrences of pattern
-    - `pattern: bytes`: pattern
-    - `border_opt: bool? = True`: use optimized border computation algorithm
-
-    > `return: int[]`: list containing the starting index of all occurrences
+    > parameters
+    - `text`: text to search for occurrences of pattern
+    - `pattern`: pattern
+    - `optimized_border`: use optimized border computation algorithm
+    - `return`: list containing the starting index of all occurrences
     """
     def compute_border_lengths_brute_force(pattern: bytes):
         """
@@ -172,7 +178,8 @@ def exact_knuth_morris_pratt(text: bytes, pattern: bytes, /, border_opt=True):
     if len(pattern) == 0:
         raise Exception('empty pattern')
     occurrences = []
-    border_lengths = compute_border_lengths_opt(pattern) if border_opt else compute_border_lengths_brute_force(pattern)
+    border_lengths = compute_border_lengths_opt(
+        pattern) if optimized_border else compute_border_lengths_brute_force(pattern)
     i = 0
     j = 0
     while i <= len(text) - len(pattern):
@@ -190,15 +197,15 @@ def exact_baeza_yates_gonnet(text: bytes, pattern: bytes):
     Baeza-Yates–Gonnet exact string searching algorithm.
     This algorithm is also known as shift-or, shift-and, or bitap.
 
-    > complexity:
+    > complexity
     - time: `O(n + p)`
     - space: `O(1)`
 
-    > parameters:
+    > parameters
     - `text: bytes | mmap.mmap`: text to search for occurrences of pattern
     - `pattern: bytes`: pattern
 
-    > `return: int[]`: list containing the starting index of all occurrences
+    - `return`: list containing the starting index of all occurrences
     """
     def compute_char_masks(pattern: bytes):
         """
@@ -222,19 +229,18 @@ def exact_baeza_yates_gonnet(text: bytes, pattern: bytes):
     return occurrences
 
 
-def exact_boyer_moore(text: bytes, pattern: bytes, /, extended_bad_char_table=True):
+def exact_boyer_moore(text: AnyBytes, pattern: bytes, extended_bad_char_table: bool = True):
     """
     Boyer-Moore exact string searching algorithm.
 
-    > complexity:
+    > complexity
     - time: `O(n + p)`
     - space: `O(1)` if not `extended_bad_char_table` else `O(p)`
 
-    > parameters:
-    - `text: bytes | mmap.mmap`: text to search for occurrences of pattern
-    - `pattern: bytes`: pattern
-
-    > `return: int[]`: list containing the starting index of all occurrences
+    > parameters
+    - `text`: text to search for occurrences of pattern
+    - `pattern`: pattern
+    - `return`: list containing the starting index of all occurrences
     """
     def compute_basic_bad_char_table(pattern: bytes):
         """
@@ -301,13 +307,12 @@ def exact_boyer_moore(text: bytes, pattern: bytes, /, extended_bad_char_table=Tr
         +---+---+---+---+---+---+
         ```
         """
-        table = [None] * (len(pattern) + 1)
-        table[0] = [-1] * 256
+        table = [[-1] * 256]
         for i in range(len(pattern)):
             byte = pattern[i]
             prefix_table = table[i][:]
             prefix_table[byte] = i
-            table[i + 1] = prefix_table
+            table.append(prefix_table)
         return table
 
     def compute_good_suffix_table(pattern: bytes):
@@ -354,31 +359,31 @@ def exact_boyer_moore(text: bytes, pattern: bytes, /, extended_bad_char_table=Tr
     return occurrences
 
 
-def exact_aho_corasick(text: bytes, patterns: list):
+def exact_aho_corasick(text: AnyBytes, patterns: list[bytes]):
     """
     Aho-Corasick string exact multi string searching algorithm.
 
-    > complexity:
+    > complexity
     - time: `O()`
     - space: `O()`
 
-    > parameters:
-    - `text: bytes | mmap.mmap`: text to search for occurrences of pattern
-    - `patterns: bytes[]`: list of patterns to search
-
-    > `return: (int, int)[]`: list of tuples containing the index of the pattern and starting index of the occurrence
+    > parameters
+    - `text`: text to search for occurrences of pattern
+    - `patterns`: list of patterns to search
+    - `return`: list of tuples containing the index of the pattern and starting index of the occurrence
     """
     pass
 
 
 def test():
     import random
+
     from ..test import benchmark
 
     def random_bytes(size: int, alphabet_size: int):
-        return bytes(random.randint(0, alphabet_size - 1) for i in range(size))
+        return bytes(random.randint(0, alphabet_size - 1) for _ in range(size))
 
-    def test_exact_native(text: bytes, pattern: bytes):
+    def test_exact_native(text: AnyBytes, pattern: bytes):
         occurrences = []
         i = -1
         while (i := text.find(pattern, i + 1)) != -1:
@@ -387,7 +392,7 @@ def test():
 
     print('alphabet size = 4')
     benchmark(
-        [
+        (
             ('           exact brute force', lambda args: exact_brute_force(*args)),
             ('            exact rabin karp', lambda args: exact_rabin_karp(*args)),
             ('    exact knuth morris pratt', lambda args: exact_knuth_morris_pratt(*args, False)),
@@ -395,16 +400,15 @@ def test():
             ('    exact baeza yates gonnet', lambda args: exact_baeza_yates_gonnet(*args)),
             ('           exact boyer moore', lambda args: exact_boyer_moore(*args, False)),
             ('       exact boyer moore opt', lambda args: exact_boyer_moore(*args, True)),
-            ('                exact native', lambda args: test_exact_native(*args))
-        ],
+            ('                exact native', lambda args: test_exact_native(*args)),
+        ),
         test_inputs=((b'hello world!', b'o w'), (b'cagtcatgcatacgtctatatcggctgc', b'cat')),
         bench_sizes=((1000, 1), (1000, 5), (1000, 10), (1000, 20), (10000, 1), (10000, 5), (10000, 10), (10000, 20)),
-        bench_input=lambda s: (random_bytes(s[0], 4), random_bytes(s[1], 4))
+        bench_input=lambda s: (random_bytes(s[0], 4), random_bytes(s[1], 4)),
     )
-
     print('alphabet size = 256')
     benchmark(
-        [
+        (
             ('           exact brute force', lambda args: exact_brute_force(*args)),
             ('            exact rabin karp', lambda args: exact_rabin_karp(*args)),
             ('    exact knuth morris pratt', lambda args: exact_knuth_morris_pratt(*args, False)),
@@ -412,11 +416,11 @@ def test():
             ('    exact baeza yates gonnet', lambda args: exact_baeza_yates_gonnet(*args)),
             ('           exact boyer moore', lambda args: exact_boyer_moore(*args, False)),
             ('       exact boyer moore opt', lambda args: exact_boyer_moore(*args, True)),
-            ('                exact native', lambda args: test_exact_native(*args))
-        ],
+            ('                exact native', lambda args: test_exact_native(*args)),
+        ),
         test_inputs=(),
         bench_sizes=((1000, 1), (1000, 5), (1000, 10), (1000, 20), (10000, 1), (10000, 5), (10000, 10), (10000, 20)),
-        bench_input=lambda s: (random_bytes(s[0], 256), random_bytes(s[1], 256))
+        bench_input=lambda s: (random_bytes(s[0], 256), random_bytes(s[1], 256)),
     )
 
 

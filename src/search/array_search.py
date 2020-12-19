@@ -1,23 +1,29 @@
 import math
+from typing import Callable, Optional
 
 
-def binary_search(array: list, key, /, comparator=lambda a, b: a - b, left: int = None, right: int = None):
+def binary_search(
+    array: list[float],
+    key: float,
+    comparator: Callable[[float, float], float] = lambda a, b: a - b,
+    left: Optional[int] = None,
+    right: Optional[int] = None,
+):
     """
     Binary search algorithm.
     Require `array` to be sorted based on `comparator`.
 
-    > complexity:
+    > complexity
     - time: `O(log(n))`
     - space: `O(1)`
 
-    > parameters:
-    - `array: <T>[]`: array to search `key`
-    - `key: <T>`: key to be search in `array`
-    - `comparator: (<T>, <T>) => int`: comparator for `<T>` type values
-    - `left: int? = 0`: starting index to search
-    - `right: int? = len(array)`: ending index to search
-
-    > `return: int`: index of `key` in `array`
+    > parameters
+    - `array`: array to search `key`
+    - `key`: key to be search in `array`
+    - `comparator`: comparator of values
+    - `left`: starting index to search
+    - `right`: ending index to search
+    - `return`: index of `key` in `array`
     """
     left = left if left is not None else 0
     right = right if right is not None else len(array) - 1
@@ -33,24 +39,30 @@ def binary_search(array: list, key, /, comparator=lambda a, b: a - b, left: int 
     raise KeyError(f'key ({key}) not found')
 
 
-def k_ary_search(array: list, key, /, k=4, comparator=(lambda a, b: a - b), left: int = None, right: int = None):
+def k_ary_search(
+    array: list[float],
+    key: float,
+    comparator: Callable[[float, float], float] = lambda a, b: a - b,
+    left: Optional[int] = None,
+    right: Optional[int] = None,
+    k: int = 4,
+):
     """
     K-ary search algorithm.
     Require `array` to be sorted based on `comparator`.
 
-    > complexity:
+    > complexity
     - time: `O(k*log(n,k))`
     - space: `O(1)`
 
-    > parameters:
-    - `array: <T>[]`: array to search `key`
-    - `key: <T>`: key to be search in `array`
-    - `k: int? = 2`: number of buckets to subdivide search
-    - `comparator: ((<T>, <T>) => int)? = lambda a, b: a - b`: comparator for `<T>` type values
-    - `left: int? = 0`: starting index to search
-    - `right: int? = len(array)`: ending index to search
-
-    > `return: int`: index of `key` in `array`
+    > parameters
+    - `array`: array to search `key`
+    - `key`: key to be search in `array`
+    - `comparator`: comparator of values
+    - `left`: starting index to search
+    - `right`: ending index to search
+    - `k`: number of buckets to subdivide search
+    - `return`: index of `key` in `array`
     """
     left = left if left is not None else 0
     right = right if right is not None else len(array) - 1
@@ -71,17 +83,23 @@ def k_ary_search(array: list, key, /, k=4, comparator=(lambda a, b: a - b), left
     raise KeyError(f'key ({key}) not found')
 
 
-def interpolation_search(array: list, key, /, comparator=lambda a, b: a - b, left: int = None, right: int = None):
+def interpolation_search(
+    array: list[int],
+    key: int,
+    comparator: Callable[[int, int], int] = lambda a, b: a - b,
+    left: Optional[int] = None,
+    right: Optional[int] = None,
+):
     """
     Interpolation search algorithm.
     Require `array` to be sorted based on `comparator`.
     Faster than binary search for uniformly distributed arrays.
 
-    > complexity:
+    > complexity
     - time: `O(log(log(n))) uniformly distributed arrays, worst: O(n)`
     - space: `O(1)`
 
-    > parameters:
+    > parameters
     - `array: <T>[]`: array to search `key`
     - `key: <T>`: key to be search in `array`
     - `k: int? = 2`: number of buckets to subdivide search
@@ -89,7 +107,7 @@ def interpolation_search(array: list, key, /, comparator=lambda a, b: a - b, lef
     - `left: int? = 0`: starting index to search
     - `right: int? = len(array)`: ending index to search
 
-    > `return: int`: index of `key` in `array`
+    - `return`: index of `key` in `array`
     """
     left = left if left is not None else 0
     right = right if right is not None else len(array) - 1
@@ -107,23 +125,29 @@ def interpolation_search(array: list, key, /, comparator=lambda a, b: a - b, lef
     raise KeyError(f'key ({key}) not found')
 
 
-def exponential_search(array: list, key, /, comparator=lambda a, b: a - b, left: int = None, right: int = None):
+def exponential_search(
+    array: list[float],
+    key: float,
+    comparator: Callable[[float, float], float] = lambda a, b: a - b,
+    left: Optional[int] = None,
+    right: Optional[int] = None,
+):
     """
     Exponential search algorithm.
     Require `array` to be sorted based on `comparator`.
 
-    > complexity:
+    > complexity
     - time: `O(log(i))` where `i` is `key` index
     - space: `O(1)`
 
-    > parameters:
+    > parameters
     - `array: <T>[]`: array to search `key`
     - `key: <T>`: key to be search in `array`
     - `comparator: ((<T>, <T>) => int)? = lambda a, b: a - b`: comparator for `<T>` type values
     - `left: int? = 0`: starting index to search
     - `right: int? = len(array)`: ending index to search
 
-    > `return: int`: index of `key` in `array`
+    - `return`: index of `key` in `array`
     """
     left = left if left is not None else 0
     right = right if right is not None else len(array) - 1
@@ -135,37 +159,38 @@ def exponential_search(array: list, key, /, comparator=lambda a, b: a - b, left:
 
 def test():
     import random
+
     from ..test import benchmark, match
-    match([
+
+    match((
         (binary_search, ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6), 6),
         (binary_search, ([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8), 4),
         (binary_search, ([1, 10, 100, 1000, 10000, 100000, 1000000], 10), 1),
-        (k_ary_search, ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6, 2), 6),
-        (k_ary_search, ([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8, 4), 4),
-        (k_ary_search, ([1, 10, 100, 1000, 10000, 100000, 1000000], 10, 8), 1),
+        (k_ary_search, ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6), 6),
+        (k_ary_search, ([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8), 4),
+        (k_ary_search, ([1, 10, 100, 1000, 10000, 100000, 1000000], 10), 1),
         (interpolation_search, ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6), 6),
         (interpolation_search, ([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8), 4),
         (interpolation_search, ([1, 10, 100, 1000, 10000, 100000, 1000000], 10), 1),
         (exponential_search, ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6), 6),
         (exponential_search, ([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8), 4),
-        (exponential_search, ([1, 10, 100, 1000, 10000, 100000, 1000000], 10), 1)
-    ])
+        (exponential_search, ([1, 10, 100, 1000, 10000, 100000, 1000000], 10), 1),
+    ))
     benchmark(
-        [
+        (
             ('       binary search', lambda array: binary_search(array, random.sample(array, 1)[0])),
-            ('  k-ary search (k=2)', lambda array: k_ary_search(array, random.sample(array, 1)[0], 2)),
-            ('  k-ary search (k=4)', lambda array: k_ary_search(array, random.sample(array, 1)[0], 4)),
-            ('  k-ary search (k=8)', lambda array: k_ary_search(array, random.sample(array, 1)[0], 8)),
-            (' k-ary search (k=16)', lambda array: k_ary_search(array, random.sample(array, 1)[0], 16)),
+            ('  k-ary search (k=2)', lambda array: k_ary_search(array, random.sample(array, 1)[0], k=2)),
+            ('  k-ary search (k=4)', lambda array: k_ary_search(array, random.sample(array, 1)[0], k=4)),
+            ('  k-ary search (k=8)', lambda array: k_ary_search(array, random.sample(array, 1)[0], k=8)),
+            (' k-ary search (k=16)', lambda array: k_ary_search(array, random.sample(array, 1)[0], k=16)),
             ('interpolation search', lambda array: interpolation_search(array, random.sample(array, 1)[0])),
-            ('  exponential search', lambda array: exponential_search(array, random.sample(array, 1)[0]))
-
-        ],
+            ('  exponential search', lambda array: exponential_search(array, random.sample(array, 1)[0])),
+        ),
         test_inputs=(),
         bench_sizes=(1, 10, 100, 1000, 10000, 100000),
         bench_input=lambda s: [*range(s)],
         bench_repeat=1,
-        bench_tries=100000
+        bench_tries=100000,
     )
 
 
