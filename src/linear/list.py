@@ -1,255 +1,259 @@
-from .abc import Linear, Node
+from __future__ import annotations
+
+from typing import Generic, Optional, cast
+
+from .abc import Linear, Node, T
 
 
-class ListNode(Node):
+class ListNode(Generic[T], Node[T]):
     """
     Node with the extra `tail` property for doubly linked lists.
     """
 
-    def __init__(self, value, /, prev=None, next=None):
-        super().__init__(value, next)
-        self.prev = prev
+    def __init__(self, value: T, prev: Optional[ListNode[T]] = None, next: Optional[ListNode[T]] = None):
+        super().__init__(value)
+        self.prev: Optional[ListNode[T]] = prev
+        self.next: Optional[ListNode[T]] = next
 
 
-class LinkedList(Linear):
+class LinkedList(Generic[T], Linear[T]):
     """
     Doubly Linked List implementation.
     """
 
     def __init__(self):
         super().__init__()
+        self._head: Optional[ListNode[T]] = None
+        self._tail: Optional[ListNode[T]] = None
 
-    def _node_index(self, index: int):
+    def _node_index(self, index: int) -> tuple[ListNode[T], int]:
         """
         Get the node at `index`, or raise exception if index is invalid.
 
-        > optimizations:
+        > optimizations
         -  only go through half the list by checking the index beforehand.
 
-        > complexity:
+        > complexity
         > time: `O(n)`
         > space: `O(1)`
 
-        > parameters:
-        - `index: int`: node index
-
-        > `return: ListNode`: node at `index`
+        > parameters
+        - `index`: node index
+        - `return`: node at `index`
         """
         self._check(index)
         forward = index < self._size / 2
-        node = self._head if forward else self._tail
-        for i in range(index if forward else (self._size - 1 - index)):
-            node = node.next if forward else node.prev
+        node = cast(ListNode[T], self._head if forward else self._tail)
+        for _ in range(index if forward else (self._size - 1 - index)):
+            node = cast(ListNode[T], node.next if forward else node.prev)
         return node, index
 
-    def _node_value(self, value):
+    def _node_value(self, value: T):
         """
         Get the first node that contains`value`, or raise exception if not found.
 
-        > complexity:
+        > complexity
         > time: `O(n)`
         > space: `O(1)`
 
-        > parameters:
-        - `value: any`: node value
-
-        > `return: ListNode`: node containing `value`
+        > parameters
+        - `value`: node value
+        - `return`: node containing `value`
         """
         for i, node in enumerate(self._nodes()):
             if value == node.value:
-                return node, i
+                return cast(ListNode[T], node), i
         raise ValueError(f'value ({value}) not found')
 
-    def _insert(self, index: int, value):
+    def _insert(self, index: int, value: T):
         """
         Create and insert a new node with `value` in the specified `index`.
 
-        > complexity:
+        > complexity
         - time: `O(n)`
         - space: `O(1)`
 
-        > parameters:
-        - `index: int`: insertion index
-        - `value: any`: value to insert
+        > parameters
+        - `index`: insertion index
+        - `value`: value to insert
         """
         self._check(index, True)
         if self._head is None:
             self._head = self._tail = ListNode(value)
         elif index == 0:
             self._head = ListNode(value, None, self._head)
-            self._head.next.prev = self._head
+            cast(ListNode[T], self._head.next).prev = self._head
         elif index == self._size:
             self._tail = ListNode(value, self._tail, None)
-            self._tail.prev.next = self._tail
+            cast(ListNode[T], self._tail.prev).next = self._tail
         else:
             current = self._node_index(index)[0]
             node = ListNode(value, current.prev, current)
-            node.prev.next = node.next.prev = node
+            cast(ListNode[T], node.prev).next = cast(ListNode[T], node.next).prev = node
         self._size += 1
 
-    def _delete(self, node: type(ListNode)):
+    def _delete(self, node: ListNode[T]) -> T:
         """
         Delete the received `node` from the data structure.
 
-        > complexity:
+        > complexity
         - time: `O(1)`
         - space: `O(1)`
 
-        > parameters:
-        - `node: ListNode`: node to delete
+        > parameters
+        - `node`: node to delete
         """
-        if node.prev is None and node.next is None:
-            self._head = self._tail = None
-        elif node.prev is None:
+        if node.prev is not None and node.next is not None:
+            node.prev.next = node.next
+            node.next.prev = node.prev
+        elif node.next is not None:
             self._head = node.next
             self._head.prev = None
-        elif node.next is None:
+        elif node.prev is not None:
             self._tail = node.prev
             self._tail.next = None
         else:
-            node.prev.next = node.next
-            node.next.prev = node.prev
+            self._head = self._tail = None
         self._size -= 1
         return node.value
 
-    def push(self, value, /, index: int = None):
+    def push(self, value: T, index: Optional[int] = None):
         """
         Insert `value` at the end of the list.
         If `index` is provided, then insert at `index`.
 
-        > complexity:
+        > complexity
         - time: `O(n)`
         - space: `O(1)`
 
-        > parameters:
-        - `value: any`: value to insert
-        - `index: int? = len(self)`: insertion index
+        > parameters
+        - `value`: value to insert
+        - `index`: insertion index
         """
-        return self._insert(index if index is not None else self._size, value)
+        self._insert(index if index is not None else self._size, value)
 
-    def pop(self, /, index: int = None):
+    def pop(self, index: Optional[int] = None) -> T:
         """
         Delete the value at the end of the list.
         If `index` is provided, then delete at `index`.
 
-        > complexity:
+        > complexity
         - time: `O(n)`
         - space: `O(1)`
 
-        > parameters:
-        - `index: int? = len(self) - 1`: deletion index
-
-        > `return: any`: value from the deleted node
+        > parameters
+        - `index`: deletion index
+        - `return`: value from the deleted node
         """
         return self._delete(self._node_index(index if index is not None else self._size - 1)[0])
 
-    def remove(self, value):
+    def remove(self, value: T) -> T:
         """
         Remove the first node that contains `value`.
 
-        > complexity:
+        > complexity
         - time: `O(n)`
         - space: `O(1)`
 
-        > parameters:
-        - `index: int? = len(self) - 1`: deletion index
-
-        > `return: any`: value from the deleted node
+        > parameters
+        - `index`: deletion index
+        - `return`: value from the deleted node
         """
         return self._delete(self._node_value(value)[0])
 
-    def get(self, /, index: int = None):
+    def get(self, index: Optional[int] = None) -> T:
         """
         Get the value at the end of the list.
         If `index` is provided, then get at `index`.
 
-        > complexity:
+        > complexity
         > time: `O(n)`
         > space: `O(1)`
 
-        > parameters:
-        - `index: int`: value index
-
-        > `return: any`: value at `index`
+        > parameters
+        - `index`: value index
+        - `return`: value at `index`
         """
-        return self._node_index(index if index is not None else self.size - 1)[0].value
+        return self._node_index(index if index is not None else self._size - 1)[0].value
 
     def reverse(self):
         """
         Reverse the list nodes.
 
-        > complexity:
+        > complexity
         > time: `O(n)`
         > space: `O(1)`
         """
-        node = self._head
+        node = cast(ListNode[T], self._head)
         self._head, self._tail = self._tail, self._head
-        for i in range(self._size):
+        for _ in range(self._size):
             node.prev, node.next = node.next, node.prev
-            node = node.prev
+            node = cast(ListNode[T], node.prev)
 
 
 def test():
     import collections
+
     from ..test import benchmark, match
-    l = LinkedList()
-    match([
-        (l.push, (2, 0)),
-        (l.push, (1, 0)),
-        (l.push, (0, 0)),
-        (l.push, (5,)),
-        (l.push, (6,)),
-        (l.push, (7,)),
-        (l.push, (3, 3,)),
-        (l.push, (4, 4,)),
-        (print, (l,)),
-        (l.get, (6,), 6),
-        (l.get, (2,), 2),
-        (l.pop, (4,), 4),
-        (l.pop, (3,), 3),
-        (print, (l,)),
-        (l.pop, (), 7),
-        (l.pop, (0,), 0),
-        (print, (l,)),
-        (l.reverse, ()),
-        (l.index, (5,), 1),
-        (l.index, (2,), 2),
-        (print, (l,))
-    ])
+
+    linked_list = LinkedList[int]()
+    match((
+        (linked_list.push, (2, 0)),
+        (linked_list.push, (1, 0)),
+        (linked_list.push, (0, 0)),
+        (linked_list.push, (5,)),
+        (linked_list.push, (6,)),
+        (linked_list.push, (7,)),
+        (linked_list.push, (3, 3,)),
+        (linked_list.push, (4, 4,)),
+        (print, (linked_list,)),
+        (linked_list.get, (6,), 6),
+        (linked_list.get, (2,), 2),
+        (linked_list.pop, (4,), 4),
+        (linked_list.pop, (3,), 3),
+        (print, (linked_list,)),
+        (linked_list.pop, (), 7),
+        (linked_list.pop, (0,), 0),
+        (print, (linked_list,)),
+        (linked_list.reverse, ()),
+        (linked_list.index, (5,), 1),
+        (linked_list.index, (2,), 2),
+        (print, (linked_list,)),
+    ))
 
     def test_linkedlist(count: int):
-        l = LinkedList()
+        linked_list = LinkedList[int]()
         for i in range(count):
-            l.push(i)
+            linked_list.push(i)
         for i in range(count // 2):
-            l.pop()
-            l.pop(0)
+            linked_list.pop()
+            linked_list.pop(0)
 
     def test_native_list(count: int):
-        l = list()
+        lst = list[int]()
         for i in range(count):
-            l.append(i)
+            lst.append(i)
         for i in range(count // 2):
-            l.pop()
-            l.pop(0)
+            lst.pop()
+            lst.pop(0)
 
     def test_native_deque(count: int):
-        d = collections.deque()
+        deque = collections.deque[int]()
         for i in range(count):
-            d.append(i)
+            deque.append(i)
         for i in range(count // 2):
-            d.pop()
-            d.popleft()
+            deque.pop()
+            deque.popleft()
 
     benchmark(
-        [
+        (
             ('  linkedlist', test_linkedlist),
             (' native list', test_native_list),
-            ('native deque', test_native_deque)
-        ],
+            ('native deque', test_native_deque),
+        ),
         test_inputs=(),
         bench_sizes=(0, 1, 10, 100, 1000, 10000, 100000),
-        bench_input=lambda s: s
+        bench_input=lambda s: s,
     )
 
 

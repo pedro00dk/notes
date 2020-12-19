@@ -1,19 +1,22 @@
-from .abc import Linear, Node
+from typing import Generic, Optional
+
+from .abc import Linear, Node, T
 
 
-class Stack(Linear):
+class Stack(Generic[T], Linear[T]):
     def __init__(self):
         super().__init__()
+        self._head: Optional[Node[T]] = None
 
-    def push(self, value):
+    def push(self, value: T):
         """
         Insert `value` at the top of the stack.
 
-        > complexity:
+        > complexity
         - time: `O(1)`
         - space: `O(1)`
 
-        > parameters:
+        > parameters
         - `value: any`: value to insert
         """
         if self._head is None:
@@ -26,11 +29,11 @@ class Stack(Linear):
         """
         Delete the value at the top of the stack.
 
-        > complexity:
+        > complexity
         - time: `O(1)`
         - space: `O(1)`
 
-        > `return: any`: deleted value
+        - `return`: deleted value
         """
         if self._head is None:
             raise IndexError('empty stack')
@@ -43,11 +46,11 @@ class Stack(Linear):
         """
         Get the value at the top of the stack without removeing it.
 
-        > complexity:
-        > time: `O(1)`
-        > space: `O(1)`
+        > complexity
+        - time: `O(1)`
+        - space: `O(1)`
 
-        > `return: any`: value at the top of the stack
+        - `return`: value at the top of the stack
         """
         if self._head is None:
             raise IndexError('empty stack')
@@ -56,59 +59,60 @@ class Stack(Linear):
 
 def test():
     import collections
+
     from ..test import benchmark, match
-    s = Stack()
-    match([
-        (s.push, (0,)),
-        (s.push, (1,)),
-        (s.push, (2,)),
-        (s.push, (3,)),
-        (s.push, (4,)),
-        (s.push, (5,)),
-        (print, (s,)),
-        (s.pop, (), 5),
-        (s.pop, (), 4),
-        (s.peek, (), 3),
-        (print, (s,)),
-        (s.pop, (), 3),
-        (s.pop, (), 2),
-        (s.peek, (), 1),
-        (print, (s,)),
-        (s.pop, (), 1),
-        (s.pop, (), 0),
-        (print, (s,))
-    ])
+    stack = Stack[int]()
+    match((
+        (stack.push, (0,)),
+        (stack.push, (1,)),
+        (stack.push, (2,)),
+        (stack.push, (3,)),
+        (stack.push, (4,)),
+        (stack.push, (5,)),
+        (print, (stack,)),
+        (stack.pop, (), 5),
+        (stack.pop, (), 4),
+        (stack.peek, (), 3),
+        (print, (stack,)),
+        (stack.pop, (), 3),
+        (stack.pop, (), 2),
+        (stack.peek, (), 1),
+        (print, (stack,)),
+        (stack.pop, (), 1),
+        (stack.pop, (), 0),
+        (print, (stack,)),
+    ))
 
     def test_stack(count: int):
-        s = Stack()
+        stack = Stack[int]()
         for i in range(count):
-            s.push(i)
+            stack.push(i)
         for i in range(count):
-            s.pop()
+            stack.pop()
 
     def test_native_list(count: int):
-        l = list()
+        lst = list[int]()
         for i in range(count):
-            l.append(i)
+            lst.append(i)
         for i in range(count):
-            l.pop()
+            lst.pop()
 
     def test_native_deque(count: int):
-        d = collections.deque()
+        deque = collections.deque[int]()
         for i in range(count):
-            d.append(i)
+            deque.append(i)
         for i in range(count):
-            d.pop()
+            deque.pop()
 
     benchmark(
-        [
+        (
             ('       stack', test_stack),
             (' native list', test_native_list),
-            ('native deque', test_native_deque)
-        ],
+            ('native deque', test_native_deque),
+        ),
         test_inputs=(),
         bench_sizes=(0, 1, 10, 100, 1000, 10000, 100000),
-        bench_input=lambda s: s
+        bench_input=lambda s: s,
     )
 
 

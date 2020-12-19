@@ -1,20 +1,24 @@
-from .abc import Linear, Node
+from typing import Generic, Optional
+
+from .abc import Linear, Node, T
 
 
-class Queue(Linear):
+class Queue(Generic[T], Linear[T]):
     def __init__(self):
         super().__init__()
+        self._head: Optional[Node[T]] = None
+        self._tail: Optional[Node[T]] = None
 
-    def offer(self, value):
+    def offer(self, value: T):
         """
         Insert `value` at the end of the queue.
 
-        > complexity:
+        > complexity
         - time: `O(1)`
         - space: `O(1)`
 
-        > parameters:
-        - `value: any`: value to insert
+        > parameters
+        - `value`: value to insert
         """
         if self._tail is None:
             self._head = self._tail = Node(value)
@@ -27,11 +31,11 @@ class Queue(Linear):
         """
         Delete the value at the begginging of the queue.
 
-        > complexity:
+        > complexity
         - time: `O(1)`
         - space: `O(1)`
 
-        > `return: any`: deleted value
+        - `return`: deleted value
         """
         if self._head is None:
             raise IndexError('empty queue')
@@ -46,11 +50,11 @@ class Queue(Linear):
         """
         Get the value at the beggening of the queue without removing it.
 
-        > complexity:
-        > time: `O(1)`
-        > space: `O(1)`
+        > complexity
+        - time: `O(1)`
+        - space: `O(1)`
 
-        > `return: any`: value at the begginging of the queue
+        - `return`: value at the begginging of the queue
         """
         if self._head is None:
             raise IndexError('empty queue')
@@ -59,59 +63,61 @@ class Queue(Linear):
 
 def test():
     import collections
+
     from ..test import benchmark, match
-    q = Queue()
-    match([
-        (q.offer, (0,)),
-        (q.offer, (1,)),
-        (q.offer, (2,)),
-        (q.offer, (3,)),
-        (q.offer, (4,)),
-        (q.offer, (5,)),
-        (print, (q,)),
-        (q.poll, (), 0),
-        (q.poll, (), 1),
-        (q.peek, (), 2),
-        (print, (q,)),
-        (q.poll, (), 2),
-        (q.poll, (), 3),
-        (q.peek, (), 4),
-        (print, (q,)),
-        (q.poll, (), 4),
-        (q.poll, (), 5),
-        (print, (q,))
-    ])
+
+    queue = Queue[int]()
+    match((
+        (queue.offer, (0,)),
+        (queue.offer, (1,)),
+        (queue.offer, (2,)),
+        (queue.offer, (3,)),
+        (queue.offer, (4,)),
+        (queue.offer, (5,)),
+        (print, (queue,)),
+        (queue.poll, (), 0),
+        (queue.poll, (), 1),
+        (queue.peek, (), 2),
+        (print, (queue,)),
+        (queue.poll, (), 2),
+        (queue.poll, (), 3),
+        (queue.peek, (), 4),
+        (print, (queue,)),
+        (queue.poll, (), 4),
+        (queue.poll, (), 5),
+        (print, (queue,)),
+    ))
 
     def test_queue(count: int):
-        q = Queue()
+        queue = Queue[int]()
         for i in range(count):
-            q.offer(i)
+            queue.offer(i)
         for i in range(count):
-            q.poll()
+            queue.poll()
 
     def test_native_list(count: int):
-        l = list()
+        lst = list[int]()
         for i in range(count):
-            l.append(i)
+            lst.append(i)
         for i in range(count):
-            l.pop(0)
+            lst.pop(0)
 
     def test_native_deque(count: int):
-        d = collections.deque()
+        deque = collections.deque[int]()
         for i in range(count):
-            d.append(i)
+            deque.append(i)
         for i in range(count):
-            d.popleft()
+            deque.popleft()
 
     benchmark(
-        [
+        (
             ('       queue', test_queue),
             (' native list', test_native_list),
-            ('native deque', test_native_deque)
-        ],
+            ('native deque', test_native_deque),
+        ),
         test_inputs=(),
         bench_sizes=(0, 1, 10, 100, 1000, 10000, 100000),
-        bench_input=lambda s: s
+        bench_input=lambda s: s,
     )
 
 
