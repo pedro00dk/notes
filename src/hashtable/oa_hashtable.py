@@ -1,19 +1,19 @@
 from typing import Any, Generator, Generic, Literal, Optional, cast
 
-from .abc import Entry, Hashtable, T, U
+from .abc import Entry, Hashtable, K, V
 
 
-class OAEntry(Generic[T, U], Entry[T, U]):
+class OAEntry(Generic[K, V], Entry[K, V]):
     """
     Entry with extra `deleted` property.
     """
 
-    def __init__(self, hash_: int, key: T, value: U):
+    def __init__(self, hash_: int, key: K, value: V):
         super().__init__(hash_, key, value)
         self.deleted = False
 
 
-class OAHashtable(Generic[T, U], Hashtable[T, U]):
+class OAHashtable(Generic[K, V], Hashtable[K, V]):
     """
     Open Addressing Hashtable implementation.
     """
@@ -24,9 +24,9 @@ class OAHashtable(Generic[T, U], Hashtable[T, U]):
         - `prober_name`: prober data
         """
         super().__init__(prober_name)
-        self._table = cast(list[Optional[OAEntry[T, U]]], [None] * self._capacity)
+        self._table = cast(list[Optional[OAEntry[K, V]]], [None] * self._capacity)
 
-    def _find(self, key: T, free: bool = True) -> tuple[int, int, Optional[OAEntry[T, U]]]:
+    def _find(self, key: K, free: bool = True) -> tuple[int, int, Optional[OAEntry[K, V]]]:
         """
         Suport function for hashtable operations.
         This function looks for indices and entries in the hashtable.
@@ -42,7 +42,7 @@ class OAHashtable(Generic[T, U], Hashtable[T, U]):
         """
         hash_ = hash(key)
         index = 0
-        entry: Optional[OAEntry[T, U]] = None
+        entry: Optional[OAEntry[K, V]] = None
         for trie in range(self._capacity):
             index = self._prober.probe(self._capacity, hash_, trie)
             entry = self._table[index]
@@ -52,7 +52,7 @@ class OAHashtable(Generic[T, U], Hashtable[T, U]):
                 break
         return hash_, index, entry
 
-    def entries(self) -> Generator[tuple[T, U], None, None]:
+    def entries(self) -> Generator[tuple[K, V], None, None]:
         """
         Check abstract class for documentation.
 
@@ -62,7 +62,7 @@ class OAHashtable(Generic[T, U], Hashtable[T, U]):
         """
         return ((entry.key, entry.value) for entry in self._table if entry is not None and not entry.deleted)
 
-    def put(self, key: T, value: U):
+    def put(self, key: K, value: V):
         """
         Check abstract class for documentation.
         """
@@ -73,7 +73,7 @@ class OAHashtable(Generic[T, U], Hashtable[T, U]):
             self._size += 1
         self._table[index] = OAEntry(hash_, key, value)
 
-    def take(self, key: T) -> U:
+    def take(self, key: K) -> V:
         if self._size / self._capacity < self._prober.load / 4:
             self._rebuild(False)
         _, _, entry = self._find(key, False)
@@ -86,7 +86,7 @@ class OAHashtable(Generic[T, U], Hashtable[T, U]):
         self._size -= 1
         return value
 
-    def get(self, key: T) -> U:
+    def get(self, key: K) -> V:
         _, _, entry = self._find(key, False)
         if entry is None:
             raise KeyError(f'key ({key}) not found')

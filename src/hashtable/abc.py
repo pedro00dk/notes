@@ -58,22 +58,22 @@ QUADRATIC_TRIANGULAR_PROBER = Prober(
 )
 
 
-T = TypeVar('T')
-U = TypeVar('U')
+K = TypeVar('K')
+V = TypeVar('V')
 
 
-class Entry(Generic[T, U]):
+class Entry(Generic[K, V]):
     """
     Base Entry class for hashtables.
     """
 
-    def __init__(self, hash_: int, key: T, value: U):
+    def __init__(self, hash_: int, key: K, value: V):
         self.hash_ = hash_
         self.key = key
         self.value = value
 
 
-class Hashtable(Generic[T, U], abc.ABC):
+class Hashtable(Generic[K, V], abc.ABC):
     """
     Abstract base class for hashtables.
     This class provides fields used in common hashtables, which are `table`, `load_threshold`, `capacity` and `size`
@@ -91,7 +91,7 @@ class Hashtable(Generic[T, U], abc.ABC):
         self._capacity_index: int = 0
         self._capacity = self._prober.capacity(0, self._capacity_index)
         self._size: int = 0
-        self._table = cast(list[Optional[Entry[T, U]]], [None] * self._capacity)
+        self._table = cast(list[Optional[Entry[K, V]]], [None] * self._capacity)
 
     def __len__(self) -> int:
         return self._size
@@ -100,7 +100,7 @@ class Hashtable(Generic[T, U], abc.ABC):
         lines = '\n'.join(f'k: {key}, v: {value}' for key, value in self)
         return f'{type(self).__name__} prober={self._prober_name} {self._prober.load} [\n{lines}\n]'
 
-    def __iter__(self) -> Generator[tuple[T, U], None, None]:
+    def __iter__(self) -> Generator[tuple[K, V], None, None]:
         return self.entries()
 
     def _rebuild(self, increase: bool):
@@ -130,7 +130,7 @@ class Hashtable(Generic[T, U], abc.ABC):
             self.put(key, value)
 
     @abc.abstractmethod
-    def entries(self) -> Generator[tuple[T, U], None, None]:
+    def entries(self) -> Generator[tuple[K, V], None, None]:
         """
         Return a iterator for hashtable keys and values.
         The iterator must continue yielding entries from the hashtable correctly even it is being rebuilt.
@@ -143,7 +143,7 @@ class Hashtable(Generic[T, U], abc.ABC):
         """
         pass
 
-    def keys(self) -> Generator[T, None, None]:
+    def keys(self) -> Generator[K, None, None]:
         """
         Return a iterator for hashtable keys.
 
@@ -155,7 +155,7 @@ class Hashtable(Generic[T, U], abc.ABC):
         """
         return (key for key, _ in self.entries())
 
-    def values(self) -> Generator[U, None, None]:
+    def values(self) -> Generator[V, None, None]:
         """
         Return a iterator for hashtable values.
 
@@ -176,7 +176,7 @@ class Hashtable(Generic[T, U], abc.ABC):
         return self._size == 0
 
     @abc.abstractmethod
-    def put(self, key: T, value: U) -> Optional[U]:
+    def put(self, key: K, value: V) -> Optional[V]:
         """
         Insert a new entry containing `key` and `value` in the hashtable.
         If `key` already exists, then, `value` is replaced.
@@ -193,7 +193,7 @@ class Hashtable(Generic[T, U], abc.ABC):
         pass
 
     @abc.abstractmethod
-    def take(self, key: T) -> U:
+    def take(self, key: K) -> V:
         """
         Remove from the entry containing `key` from the hashtable and return its value.
 
@@ -210,7 +210,7 @@ class Hashtable(Generic[T, U], abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get(self, key: T) -> U:
+    def get(self, key: K) -> V:
         """
         Retrieve the value associated with `key`.
 
@@ -224,7 +224,7 @@ class Hashtable(Generic[T, U], abc.ABC):
         """
         pass
 
-    def contains(self, key: T) -> bool:
+    def contains(self, key: K) -> bool:
         """
         Return `True` if `key` exists in the hashtable, `False` otherwise.
 
@@ -242,7 +242,7 @@ class Hashtable(Generic[T, U], abc.ABC):
         except KeyError:
             return False
 
-    def contains_value(self, value: U) -> bool:
+    def contains_value(self, value: V) -> bool:
         """
         Return `True` if `value` exists in the hashtable, `False` otherwise.
 

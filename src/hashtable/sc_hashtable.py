@@ -1,19 +1,19 @@
 from typing import Any, Generator, Generic, Literal, Optional, cast
 
-from .abc import Entry, Hashtable, T, U
+from .abc import Entry, Hashtable, K, V
 
 
-class SCEntryNode(Generic[T, U], Entry[T, U]):
+class SCEntryNode(Generic[K, V], Entry[K, V]):
     """
     Entry with extra `next` property.
     """
 
-    def __init__(self, hash_: int, key: T, value: U):
+    def __init__(self, hash_: int, key: K, value: V):
         super().__init__(hash_, key, value)
-        self.next: Optional[SCEntryNode[T, U]] = None
+        self.next: Optional[SCEntryNode[K, V]] = None
 
 
-class SCHashtable(Generic[T, U], Hashtable[T, U]):
+class SCHashtable(Generic[K, V], Hashtable[K, V]):
     """
     Sequence chaining Hashtable implementation.
     Probers have minimal impact in sequence chaining performance, if probers produce the same index for `trie = 0`,
@@ -26,9 +26,9 @@ class SCHashtable(Generic[T, U], Hashtable[T, U]):
         - `prober_name`: prober data
         """
         super().__init__(prober_name)
-        self._table = cast(list[Optional[SCEntryNode[T, U]]], [None] * self._capacity)
+        self._table = cast(list[Optional[SCEntryNode[K, V]]], [None] * self._capacity)
 
-    def _find(self, key: T) -> tuple[int, int, Optional[SCEntryNode[T, U]]]:
+    def _find(self, key: K) -> tuple[int, int, Optional[SCEntryNode[K, V]]]:
         """
         Suport function for hashtable operations.
         This function looks for indices and entries in the hashtable.
@@ -43,7 +43,7 @@ class SCHashtable(Generic[T, U], Hashtable[T, U]):
         entry = self._table[index]
         return hash_, index, entry
 
-    def entries(self) -> Generator[tuple[T, U], None, None]:
+    def entries(self) -> Generator[tuple[K, V], None, None]:
         """
         Check abstract class for documentation.
 
@@ -57,7 +57,7 @@ class SCHashtable(Generic[T, U], Hashtable[T, U]):
                 yield (cursor.key, cursor.value)
                 cursor = cursor.next
 
-    def put(self, key: T, value: U):
+    def put(self, key: K, value: V):
         """
         Check abstract class for documentation.
         """
@@ -80,7 +80,7 @@ class SCHashtable(Generic[T, U], Hashtable[T, U]):
             node.key, node.value = key, value
             return old_value
 
-    def take(self, key: T) -> U:
+    def take(self, key: K) -> V:
         """
         Check abstract class for documentation.
         """
@@ -101,7 +101,7 @@ class SCHashtable(Generic[T, U], Hashtable[T, U]):
         self._size -= 1
         return node.value
 
-    def get(self, key: T) -> U:
+    def get(self, key: K) -> V:
         """
         Check abstract class for documentation.
         """
