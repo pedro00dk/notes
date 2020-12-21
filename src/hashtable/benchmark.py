@@ -1,64 +1,66 @@
+from typing import Any, cast
+
+
 def test():
     from ..test import benchmark
-    from .abc import Prober
     from .oa_hashtable import OAHashtable
     from .sc_hashtable import SCHashtable
 
-    def test_oa_hashtable(entries: list, prober: Prober):
-        h = OAHashtable(prober)
+    def test_oa_hashtable(entries: list[int], prober_name: str):
+        hashtable = OAHashtable[int, int](cast(Any, prober_name))
         for i in entries:
-            h.put(i)
+            hashtable.put(i, i)
         for i in entries:
-            h.take(i)
+            hashtable.take(i)
 
-    def test_sc_hashtable(entries: list, prober: Prober):
-        h = SCHashtable(prober)
+    def test_sc_hashtable(entries: list[int], prober_name: str):
+        hashtable = SCHashtable[int, int](cast(Any, prober_name))
         for i in entries:
-            h.put(i)
+            hashtable.put(i, i)
         for i in entries:
-            h.take(i)
+            hashtable.take(i)
 
-    def test_native_dict(entries: list):
-        d = dict()
+    def test_native_dict(entries: list[int]):
+        dct = dict[int, int]()
         for i in entries:
-            d[i] = None
+            dct[i] = i
         for i in entries:
-            d.pop(i)
+            dct.pop(i)
 
     benchmark(
-        [
+        (
             (
-                '                open addressing hashtable (linear)',
-                lambda entries: test_oa_hashtable(entries, Prober.LINEAR)
+                '                hashtable (open addressing, linear)',
+                lambda entries: test_oa_hashtable(entries, 'linear')
             ),
             (
-                '       open addressing hashtable (quadratic prime)',
-                lambda entries: test_oa_hashtable(entries, Prober.QUADRATIC_PRIME)
+                '       hashtable (open addressing, quadratic prime)',
+                lambda entries: test_oa_hashtable(entries, 'prime')
             ),
             (
-                '  open addressing hashtable (quadratic triangular)',
-                lambda entries: test_oa_hashtable(entries, Prober.QUADRATIC_TRIANGULAR)
+                '  hashtable (open addressing, quadratic triangular)',
+                lambda entries: test_oa_hashtable(entries, 'triangular')
             ),
             (
-                '              sequence chaining hashtable (linear)',
-                lambda entries: test_sc_hashtable(entries, Prober.LINEAR)
+                '              hashtable (sequence chaining, linear)',
+                lambda entries: test_sc_hashtable(entries, 'linear')
             ),
             (
-                '     sequence chaining hashtable (quadratic prime)',
-                lambda entries: test_sc_hashtable(entries, Prober.QUADRATIC_PRIME)
+                '     hashtable (sequence chaining, quadratic prime)',
+                lambda entries: test_sc_hashtable(entries, 'prime')
             ),
             (
-                'sequence chaining hashtable (quadratic triangular)',
-                lambda entries: test_sc_hashtable(entries, Prober.QUADRATIC_TRIANGULAR)
+                'hashtable (sequence chaining, quadratic triangular)',
+                lambda entries: test_sc_hashtable(entries, 'triangular')
             ),
             (
                 '                                       native dict',
                 lambda entries: test_native_dict(entries)
-            )
-        ],
+            ),
+        ),
         test_inputs=(),
         bench_sizes=(0, 1, 10, 100, 1000, 10000),
-        bench_input=lambda s: [str(i) for i in range(s)]
+        bench_input=lambda s: [str(i) for i in range(s)],
     )
 
 

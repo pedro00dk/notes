@@ -1,22 +1,32 @@
-from .abc import Entry, Hashtable, Prober
+from typing import Any, Generator, Generic, Literal, Optional, cast
+
+from .abc import Entry, Hashtable, T, U
 
 
-class OAEntry(Entry):
+class OAEntry(Generic[T, U], Entry[T, U]):
     """
     Entry with extra `deleted` property.
     """
 
-    def __init__(self, hash_: int, key, /, value=None):
+    def __init__(self, hash_: int, key: T, value: U):
         super().__init__(hash_, key, value)
         self.deleted = False
 
 
-class OAHashtable(Hashtable):
+class OAHashtable(Generic[T, U], Hashtable[T, U]):
     """
     Open Addressing Hashtable implementation.
     """
 
-    def _find(self, key, /, free=True):
+    def __init__(self, prober_name: Literal['linear', 'prime', 'triangular'] = 'triangular'):
+        """
+        > parameters
+        - `prober_name`: prober data
+        """
+        super().__init__(prober_name)
+        self._table = cast(list[Optional[OAEntry[T, U]]], [None] * self._capacity)
+
+    def _find(self, key: T, free: bool = True) -> tuple[int, int, Optional[OAEntry[T, U]]]:
         """
         Suport function for hashtable operations.
         This function looks for indices and entries in the hashtable.
@@ -25,15 +35,16 @@ class OAHashtable(Hashtable):
         - `free` is `True` and `entry.deleted` is `True` (free for insertion, not exists for deletion)
         - `free` is `False` and `entry.deleted` is `False` and `hash` equals (not free for insertion, deletion allowed)
 
-        > parameters:
-        - `key: any`: key to search for in table entries
-        - `free: bool? = True`: if should stop if entry with deleted flag set is found
-
-        > `return: (int, int, OAEntry)`: tuple with key hash, index and entry (entry may be `None`)
+        > parameters
+        - `key`: key to search for in table entries
+        - `free`: if should stop if entry with deleted flag set is found
+        - `return`: tuple with key hash, index and entry (entry may be `None`)
         """
         hash_ = hash(key)
+        index = 0
+        entry: Optional[OAEntry[T, U]] = None
         for trie in range(self._capacity):
-            index = self._probe(self._capacity, hash_, trie)
+            index = self._prober.probe(self._capacity, hash_, trie)
             entry = self._table[index]
             if entry is None or \
                     free and entry.deleted or \
@@ -41,41 +52,42 @@ class OAHashtable(Hashtable):
                 break
         return hash_, index, entry
 
-    def entries(self):
+    def entries(self) -> Generator[tuple[T, U], None, None]:
         """
         Check abstract class for documentation.
 
-        > complexity:
+        > complexity
         - time: `O(n)`
         - space: `O(1)`
         """
         return ((entry.key, entry.value) for entry in self._table if entry is not None and not entry.deleted)
 
-    def put(self, key, /, value=None):
+    def put(self, key: T, value: U):
         """
         Check abstract class for documentation.
         """
-        if self._size / self._capacity >= self._load_threshold:
+        if self._size / self._capacity >= self._prober.load:
             self._rebuild(True)
         hash_, index, entry = self._find(key, True)
         if entry is None or entry.deleted:
             self._size += 1
         self._table[index] = OAEntry(hash_, key, value)
 
-    def take(self, key):
-        if self._size / self._capacity < self._load_threshold / 4:
+    def take(self, key: T) -> U:
+        if self._size / self._capacity < self._prober.load / 4:
             self._rebuild(False)
-        hash_, index, entry = self._find(key, False)
+        _, _, entry = self._find(key, False)
         if entry is None:
             raise KeyError(f'key ({key}) not found')
         value = entry.value
         entry.deleted = True
-        entry.key = entry.value = None
+        del entry.key
+        del entry.value
         self._size -= 1
         return value
 
-    def get(self, key):
-        hash_, index, entry = self._find(key, False)
+    def get(self, key: T) -> U:
+        _, _, entry = self._find(key, False)
         if entry is None:
             raise KeyError(f'key ({key}) not found')
         return entry.value
@@ -83,15 +95,17 @@ class OAHashtable(Hashtable):
 
 def test():
     import random
+
     from ..test import match
-    for prober in Prober:
-        h = OAHashtable(prober)
-        match([
-            *((h.put, (str(i), i * 2), None) for i in random.sample([i for i in range(100)], 100)),
-            (print, (h,)),
-            *((h.take, (str(i),), i * 2) for i in random.sample([i for i in range(100)], 100) if i % 3 == 0),
-            (print, (h,))
-        ])
+
+    for prober_name in ('linear', 'prime', 'triangular'):
+        hashtable = OAHashtable[int, int](cast(Any, prober_name))
+        match((
+            *((hashtable.put, (str(i), i * 2), None) for i in random.sample([i for i in range(100)], 100)),
+            (print, (hashtable,)),
+            *((hashtable.take, (str(i),), i * 2) for i in random.sample([i for i in range(100)], 100) if i % 3 == 0),
+            (print, (hashtable,)),
+        ))
 
 
 if __name__ == '__main__':

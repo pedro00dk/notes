@@ -1,43 +1,53 @@
-from .abc import Entry, Hashtable, Prober
+from typing import Any, Generator, Generic, Literal, Optional, cast
+
+from .abc import Entry, Hashtable, T, U
 
 
-class SCEntryNode(Entry):
+class SCEntryNode(Generic[T, U], Entry[T, U]):
     """
     Entry with extra `next` property.
     """
 
-    def __init__(self, hash_: int, key, /, value=None):
+    def __init__(self, hash_: int, key: T, value: U):
         super().__init__(hash_, key, value)
-        self.next = None
+        self.next: Optional[SCEntryNode[T, U]] = None
 
 
-class SCHashtable(Hashtable):
+class SCHashtable(Generic[T, U], Hashtable[T, U]):
     """
     Sequence chaining Hashtable implementation.
     Probers have minimal impact in sequence chaining performance, if probers produce the same index for `trie = 0`,
     the only change is the capacity and threshold limits. 
     """
 
-    def _find(self, key):
+    def __init__(self, prober_name: Literal['linear', 'prime', 'triangular'] = 'triangular'):
+        """
+        > parameters
+        - `prober_name`: prober data
+        """
+        super().__init__(prober_name)
+        self._table = cast(list[Optional[SCEntryNode[T, U]]], [None] * self._capacity)
+
+    def _find(self, key: T) -> tuple[int, int, Optional[SCEntryNode[T, U]]]:
         """
         Suport function for hashtable operations.
         This function looks for indices and entries in the hashtable.
 
-        > parameters:
+        > parameters
         - `key: any`: key to search for in table entries
 
-        > `return: (int, int, SCEntryNode)`: tuple with key hash, index and the first entry (entry may be `None`)
+        - `return`: tuple with key hash, index and the first entry (entry may be `None`)
         """
         hash_ = hash(key)
-        index = self._probe(self._capacity, hash_, 0)
+        index = self._prober.probe(self._capacity, hash_, 0)
         entry = self._table[index]
         return hash_, index, entry
 
-    def entries(self):
+    def entries(self) -> Generator[tuple[T, U], None, None]:
         """
         Check abstract class for documentation.
 
-        > complexity:
+        > complexity
         - time: `O(n)`
         - space: `O(1)`
         """
@@ -47,11 +57,11 @@ class SCHashtable(Hashtable):
                 yield (cursor.key, cursor.value)
                 cursor = cursor.next
 
-    def put(self, key, /, value=None):
+    def put(self, key: T, value: U):
         """
         Check abstract class for documentation.
         """
-        if self._size / self._capacity >= self._load_threshold:
+        if self._size / self._capacity >= self._prober.load:
             self._rebuild(True)
         hash_, index, entry = self._find(key)
         parent = None
@@ -70,13 +80,13 @@ class SCHashtable(Hashtable):
             node.key, node.value = key, value
             return old_value
 
-    def take(self, key):
+    def take(self, key: T) -> U:
         """
         Check abstract class for documentation.
         """
-        if self._size / self._capacity < self._load_threshold / 4:
+        if self._size / self._capacity < self._prober.load / 4:
             self._rebuild(False)
-        hash_, index, entry = self._find(key)
+        _, index, entry = self._find(key)
         parent = None
         node = entry
         while node is not None and key != node.key:
@@ -91,11 +101,11 @@ class SCHashtable(Hashtable):
         self._size -= 1
         return node.value
 
-    def get(self, key):
+    def get(self, key: T) -> U:
         """
         Check abstract class for documentation.
         """
-        hash_, index, entry = self._find(key)
+        _, _, entry = self._find(key)
         node = entry
         while node is not None and key != node.key:
             node = node.next
@@ -106,15 +116,17 @@ class SCHashtable(Hashtable):
 
 def test():
     import random
+
     from ..test import match
-    for prober in Prober:
-        h = SCHashtable(prober)
-        match([
-            *((h.put, (str(i), i * 2), None) for i in random.sample([i for i in range(100)], 100)),
-            (print, (h,)),
-            *((h.take, (str(i),), i * 2) for i in random.sample([i for i in range(100)], 100) if i % 3 == 0),
-            (print, (h,))
-        ])
+
+    for prober_name in ('linear', 'prime', 'triangular'):
+        hashtable = SCHashtable[int, int](cast(Any, prober_name))
+        match((
+            *((hashtable.put, (str(i), i * 2), None) for i in random.sample([i for i in range(100)], 100)),
+            (print, (hashtable,)),
+            *((hashtable.take, (str(i),), i * 2) for i in random.sample([i for i in range(100)], 100) if i % 3 == 0),
+            (print, (hashtable,)),
+        ))
 
 
 if __name__ == '__main__':

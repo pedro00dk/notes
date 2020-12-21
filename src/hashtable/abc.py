@@ -1,5 +1,24 @@
 import abc
-import enum
+from typing import (Callable, Generator, Generic, Literal, Optional, TypeVar,
+                    cast)
+
+
+class Prober:
+    """
+    Hash probing strategies.
+    """
+
+    def __init__(self, load: float, capacity: Callable[[int, int], int], probe: Callable[[int, int, int], int]):
+        """
+        > parameters
+        - `load`: load threshold for the hashtable for the probe function
+        - `capacity`: a function to generate capacities for rebuilds, the first capacity and index must be 0
+        - `probe`: is a function that creates indices from a hash and number of tries to place entries in the hashtable
+        """
+        self.load = load
+        self.capacity = capacity
+        self.probe = probe
+
 
 # prime numbers near to the 2**powers for power range of [1, 32]
 PRIMES = (
@@ -8,88 +27,80 @@ PRIMES = (
     4294967291
 )
 
+# Linear probing using prime size capacities.
+# Probing constants: probe: c1 = 1
+# For capacities above 2^32 it uses odd values based on the last prime.
+LINEAR_PROBER = Prober(
+    0.65,
+    lambda capacity, index: PRIMES[index + 3] if index + 3 < len(PRIMES) else capacity * 2 - 1,
+    lambda capacity, hash_, trie: (hash_ + trie) % capacity,
+)
 
-class Prober(enum.Enum):
-    """
-    Open Addressing probe strategies.
-    - `'threshold'` contains the default and max load threshold for the hashtable for the probe function.
-    - `'capacity'` a function to generate capacities for rebuilds, the first capacity and index must be 0.
-    - `'probe'` is a function that creates indices from a hash and number of tries to place entries in the hashtable.
-    """
+# Quadratic probing using prime size capacities.
+# However, due to probe the function, only half the indices are accessible.
+# Probing constants probe: c1 = c2 = 1; probe2: c1 = 0, c2 = 1; probe3: c1 = c2 = 1/2
+# For capacities above 2^32 it uses odd values based on the last prime (may fail).
+QUADRATIC_PRIME_PROBER = Prober(
+    0.5,
+    lambda capacity, index: PRIMES[index + 3] if index + 3 < len(PRIMES) else capacity * 2 - 1,
+    lambda capacity, hash_, trie: (hash_ + trie ** 2 + trie) % capacity,
+)
+# lambda capacity, hash_, trie: (hash_ + trie ** 2) % capacity,
+# lambda capacity, hash_, trie: (hash_ + (trie * 0.5) ** 2 + (trie * 0.5)) % capacity
 
-    # Linear probing using prime size capacities.
-    # Probing constants: probe: c1 = 1
-    # For capacities above 2^32 it uses odd values based on the last prime.
-    LINEAR = {
-        'threshold': (0.65, 1),
-        'capacity': lambda capacity, index: PRIMES[index + 3] if index + 3 < len(PRIMES) else capacity * 2 - 1,
-        'probe': lambda capacity, hash_, trie: (hash_ + trie) % capacity
-    }
-
-    # Quadratic probing using prime size capacities.
-    # However, due to probe the function, only half the indices are accessible.
-    # Probing constants probe: c1 = c2 = 1; probe2: c1 = 0, c2 = 1; probe3: c1 = c2 = 1/2
-    # For capacities above 2^32 it uses odd values based on the last prime (may fail).
-    QUADRATIC_PRIME = {
-        'threshold': (0.5, 0.5),
-        'capacity': lambda capacity, index: PRIMES[index + 3] if index + 3 < len(PRIMES) else capacity * 2 - 1,
-        'probe': lambda capacity, hash_, trie: (hash_ + trie ** 2 + trie) % capacity,
-        'probe_2': lambda capacity, hash_, trie: (hash_ + trie ** 2) % capacity,
-        'probe_3': lambda capacity, hash_, trie: (hash_ + (trie * 0.5) ** 2 + (trie * 0.5)) % capacity
-    }
-
-    # Quadratic probing using triangular numbers that fully covers indices on a hashtable of capacity 2**n.
-    # Probing constants for triangular numbers probe: c1 = c2 = 1/2
-    # However, because of the even capacity, it may increase collisions among keys even and odd keys independently.
-    QUADRATIC_TRIANGULAR = {
-        'threshold': (0.75, 1),
-        'capacity': lambda capacity, index: 2**(index + 3),
-        'probe': lambda capacity, hash_, trie: (hash_ + (trie ** 2 + trie) // 2) % capacity
-    }
+# Quadratic probing using triangular numbers that fully covers indices on a hashtable of capacity 2**n.
+# Probing constants for triangular numbers probe: c1 = c2 = 1/2
+# However, because of the even capacity, it may increase collisions among keys even and odd keys independently.
+QUADRATIC_TRIANGULAR_PROBER = Prober(
+    0.75,
+    lambda capacity, index: 2**(index + 3),
+    lambda capacity, hash_, trie: (hash_ + (trie ** 2 + trie) // 2) % capacity,
+)
 
 
-class Entry:
+T = TypeVar('T')
+U = TypeVar('U')
+
+
+class Entry(Generic[T, U]):
     """
     Base Entry class for hashtables.
     """
 
-    def __init__(self, hash_: int, key, /, value=None):
+    def __init__(self, hash_: int, key: T, value: U):
         self.hash_ = hash_
         self.key = key
         self.value = value
 
 
-class Hashtable(abc.ABC):
+class Hashtable(Generic[T, U], abc.ABC):
     """
     Abstract base class for hashtables.
     This class provides fields used in common hashtables, which are `table`, `load_threshold`, `capacity` and `size`
     """
 
-    def __init__(self, /, prober=Prober.QUADRATIC_TRIANGULAR, load_threshold: int = None):
+    def __init__(self, prober_name: Literal['linear', 'prime', 'triangular'] = 'triangular'):
         """
-        > parameters:
-        - `prober: Prober? = Prober.QUADRATIC_TRIANGULAR`: hashtable index prober
-        - `load_threshold: float`: hashtable load threshold, may be clamped to prober max threshold
+        > parameters
+        - `prober`: prober data
         """
-        self._prober = prober
-        self._load_threshold = min(
-            max(0.1, load_threshold if load_threshold is not None else self._prober.value['threshold'][0]),
-            self._prober.value['threshold'][1]
-        )
-        self._capacity_index = 0
-        self._capacity = self._prober.value['capacity'](0, self._capacity_index)
-        self._probe = self._prober.value['probe']
-        self._table = [None] * self._capacity
-        self._size = 0
+        self._prober_name = prober_name
+        self._prober = LINEAR_PROBER if self._prober_name == 'linear' else \
+            QUADRATIC_PRIME_PROBER if self._prober_name == 'prime' else \
+            QUADRATIC_TRIANGULAR_PROBER
+        self._capacity_index: int = 0
+        self._capacity = self._prober.capacity(0, self._capacity_index)
+        self._size: int = 0
+        self._table = cast(list[Optional[Entry[T, U]]], [None] * self._capacity)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self._size
 
-    def __str__(self):
+    def __str__(self) -> str:
         lines = '\n'.join(f'k: {key}, v: {value}' for key, value in self)
-        return f'{type(self).__name__} prober={self._prober.name} {self._load_threshold} [\n{lines}\n]'
+        return f'{type(self).__name__} prober={self._prober_name} {self._prober.load} [\n{lines}\n]'
 
-    def __iter__(self):
+    def __iter__(self) -> Generator[tuple[T, U], None, None]:
         return self.entries()
 
     def _rebuild(self, increase: bool):
@@ -101,130 +112,129 @@ class Hashtable(abc.ABC):
         This function relies on the `entries` (and consequently `__iter__`) iterators to continue using the old table
         while the new is being rebuilt.
 
-        > complexity:
+        > complexity
         - time: `O(n)`
         - space: `O(n)`
 
-        > parameters:
+        > parameters
         - `increase: bool`: if table should increase or decrease size
         """
         entries = iter(self)  # iterator obtained before updating _table
         first = next(entries)  # start iterator before updating references to ensure reference loads
         self._size = 0
         self._capacity_index += 1 if increase else -1
-        self._capacity = self._prober.value['capacity'](self._capacity, self._capacity_index)
+        self._capacity = self._prober.capacity(self._capacity, self._capacity_index)
         self._table = [None] * self._capacity
         self.put(*first)
         for key, value in entries:
             self.put(key, value)
 
     @abc.abstractmethod
-    def entries(self):
+    def entries(self) -> Generator[tuple[T, U], None, None]:
         """
         Return a iterator for hashtable keys and values.
         The iterator must continue yielding entries from the hashtable correctly even it is being rebuilt.
 
-        > complexity:
+        > complexity
         - time: `O(n)`
         - space: `O(1)`
 
-        > `return: iter<(any, any)>`: iterator of keys and values
+        - `return`: generator of keys and values
         """
         pass
 
-    def keys(self):
+    def keys(self) -> Generator[T, None, None]:
         """
         Return a iterator for hashtable keys.
 
-        > complexity:
+        > complexity
         - time: `O(n)`
         - space: `O(1)`
 
-        > `return: iter<(any, any)>`: iterator of keys
+        - `return`: generator of keys
         """
-        return (key for key, value in self.entries())
+        return (key for key, _ in self.entries())
 
-    def values(self):
+    def values(self) -> Generator[U, None, None]:
         """
         Return a iterator for hashtable values.
 
-        > complexity:
+        > complexity
         - time: `O(n)`
         - space: `O(1)`
 
-        > `return: iter<(any, any)>`: iterator of values
+        - `return`: generator of values
         """
-        return (value for key, value in self.entries())
+        return (value for _, value in self.entries())
 
     def empty(self):
         """
         Return if the structure is empty.
 
-        > `return: bool`: if empty
+        - `return`: if empty
         """
         return self._size == 0
 
     @abc.abstractmethod
-    def put(self, key, /, value=None):
+    def put(self, key: T, value: U) -> Optional[U]:
         """
         Insert a new entry containing `key` and `value` in the hashtable.
         If `key` already exists, then, `value` is replaced.
 
-        > complexity:
+        > complexity
         - time: `O(1)` amortized
         - space: `O(1)` amortized
 
-        > parameters:
-        - `key: any`: key of the entry
-        - `value: any? = None`: value of the entry
-
-        > `return: any`: `None` if it is a new key, otherwise the previous value associated with `key`
+        > parameters
+        - `key`: key of the entry
+        - `value`: value of the entry
+        - `return`: `None` if it is a new key, otherwise the previous value associated with `key`
         """
         pass
 
     @abc.abstractmethod
-    def take(self, key):
+    def take(self, key: T) -> U:
         """
         Remove from the entry containing `key` from the hashtable and return its value.
 
-        > complexity: check subclass implementations
+        > complexity check subclass implementations
 
-        > complexity:
+        > complexity
         - time: `O(1)` amortized
         - space: `O(1)` amortized
 
-        > `return: any`: value associated with `key`
+        > parameters
+        - `key`: key of the entry
+        - `return`: value associated with `key`
         """
         pass
 
     @abc.abstractmethod
-    def get(self, key):
+    def get(self, key: T) -> U:
         """
         Retrieve the value associated with `key`.
 
-        > complexity:
+        > complexity
         - time: `O(1)`
         - space: `O(1)`
 
-        > parameters:
-        - `key: int | float`: key of value to retrieve
-
-        > `return: any`: value associated with `key`
+        > parameters
+        - `key`: key of value to retrieve
+        - `return`: value associated with `key`
         """
         pass
 
-    def contains(self, key):
+    def contains(self, key: T) -> bool:
         """
         Return `True` if `key` exists in the hashtable, `False` otherwise.
 
-        > complexity:
+        > complexity
         - time: `O(1)`
         - space: `O(log(n))`
 
-        > parameters:
-        - `key: any`: key to check
-
-        > `return: bool`: if `key` exists
+        > parameters
+        - `key`: key to check
+        - `return`: if `key` exists
         """
         try:
             self.get(key)
@@ -232,20 +242,19 @@ class Hashtable(abc.ABC):
         except KeyError:
             return False
 
-    def contains_value(self, value):
+    def contains_value(self, value: U) -> bool:
         """
         Return `True` if `value` exists in the hashtable, `False` otherwise.
 
-        > complexity:
+        > complexity
         - time: `O(n)`
         - space: `O(1)`
 
-        > parameters:
-        - `value: any`: value to check
-
-        > `return: bool`: if `value` exists
+        > parameters
+        - `value`: value to check
+        - `return`: if `value` exists
         """
-        for entry_key, entry_value in self:
+        for _, entry_value in self:
             if value == entry_value:
                 return True
         return False
