@@ -102,7 +102,7 @@ def sort_benchmark(
         bench_sizes,
         lambda size: [random.randint(*value_range(size)) for _ in range(size)],
         bench_repeat,
-        preprocess_input=lambda input: input.copy(),
+        preprocess_input=list[float].copy
     )
 
 

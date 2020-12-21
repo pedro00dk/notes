@@ -1,26 +1,27 @@
+from typing import Any
+
 from .graph import Graph
 
 
-def topsort_khan(graph: Graph):
+def topsort_khan(graph: Graph[Any, Any]) -> list[int]:
     """
     Khan topological sort algorithm.
-    This algorithm mutates the graph to preserve asymptotic complexities (`edge._target` field).
+    This algorithm mutates the graph to preserve asymptotic complexities (`edge.data` field).
 
-    > complexity:
+    > complexity
     - time: `O(v + e)`
     - space: `O(v + e)` extra `e` due to graph copy
 
-    > parameters:
-    - `graph: Graph`: graph to compute topological order
-
-    > `return: Vertex[]`: topological order
+    > parameters
+    - `graph`: graph to compute topological order
+    - `return`: topological order
     """
     if not graph.is_directed():
         raise Exception('graph must be directed')
     incoming_edges = [0] * graph.vertices_count()
     total_edges = 0
     for edge in graph.edges():
-        incoming_edges[edge._target] += 1
+        incoming_edges[edge.target] += 1
         total_edges += 1
     root_vertices = [v for v, count in enumerate(incoming_edges) if count == 0]
     order = []
@@ -31,40 +32,39 @@ def topsort_khan(graph: Graph):
             if edge.data == True:  # graph does not support edge deletion, edge.data == True indicates edge deletion
                 continue
             edge.data = True
-            incoming_edges[edge._target] -= 1
+            incoming_edges[edge.target] -= 1
             total_edges -= 1
-            if incoming_edges[edge._target] == 0:
-                root_vertices.append(edge._target)
+            if incoming_edges[edge.target] == 0:
+                root_vertices.append(edge.target)
     if total_edges > 0:
         raise Exception('graph must be acyclic')
     return order
 
 
-def topsort_dfs(graph: Graph):
+def topsort_dfs(graph: Graph[Any, Any]) -> list[int]:
     """
     Topological sort algorithm based on depth first search.
 
-    > complexity:
+    > complexity
     - time: `O(v + e)`
     - space: `O(v)`
 
-    > parameters:
-    - `graph: Graph`: graph to compute topological order
-
-    > `return: Vertex[]`: topological order
+    > parameters
+    - `graph`: graph to compute topological order
+    - `return`: topological order
     """
     if not graph.is_directed():
         raise Exception('graph must be directed')
     visited = [0] * graph.vertices_count()  # 0: unvisited, 1: visited, 2: all children visited
-    order = []
+    order: list[int] = []
 
     def dfs(v: int):
         if visited[v] == 1:  # visited
             raise Exception('graph must be acyclic')
         visited[v] = 1
         for edge in graph.edges(v):
-            if visited[edge._target] != 2:  # not all children visited
-                dfs(edge._target)
+            if visited[edge.target] != 2:  # not all children visited
+                dfs(edge.target)
         visited[v] = 2
         order.append(v)
 
@@ -77,19 +77,20 @@ def topsort_dfs(graph: Graph):
 
 def test():
     from ..test import benchmark
-    from .connectivity import strong_connected_kosaraju, strong_connected_tarjan
+    from .connectivity import (strong_connected_kosaraju,
+                               strong_connected_tarjan)
     from .factory import random_dag
     benchmark(
-        [
-            ('    topological sort khan', lambda graph: topsort_khan(graph))),
+        (
+            ('    topological sort khan', lambda graph: topsort_khan(graph)),
             ('     topological sort dfs', topsort_dfs),
             ('  topological sort tarjan', lambda graph: [*reversed([v for v, in strong_connected_tarjan(graph)])]),
-            ('topological sort kosaraju', lambda graph: [v for v, in strong_connected_kosaraju(graph)])
-        ],
-        test_inputs=(random_dag() for i in range(5)),
+            ('topological sort kosaraju', lambda graph: [v for v, in strong_connected_kosaraju(graph)]),
+        ),
+        test_inputs=(*(random_dag() for _ in range(5)),),
         bench_sizes=(0, 1, 10, 100),
-        bench_input=lambda s: random_dag((s // 10, s // 5), (5, 10))
-        preprocess_input=Graph.copy
+        bench_input=lambda s: random_dag((s // 10, s // 5), (5, 10)),
+        preprocess_input=Graph[Any, Any].copy,
     )
 
 
