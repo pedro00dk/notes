@@ -4,8 +4,12 @@ import random
 from .graph import Graph
 
 
-def complete(vertices=5, vw_range=(1, 1), el_range=(1, 1)):
-    graph = Graph()
+def complete(
+    vertices: int = 5,
+    vw_range: tuple[int, int] = (1, 1),
+    el_range: tuple[int, int] = (1, 1),
+) -> Graph[None, None]:
+    graph = Graph[None, None]()
     for v in range(vertices):
         graph.make_vertex(weight=random.randint(*vw_range))
         for target in range(0, v):
@@ -13,9 +17,14 @@ def complete(vertices=5, vw_range=(1, 1), el_range=(1, 1)):
     return graph
 
 
-def random_undirected(vertices=5, density=0.5, vw_range=(1, 1), el_range=(1, 1)):
-    graph = Graph()
-    for v in range(vertices):
+def random_undirected(
+    vertices: int = 5,
+    density: float = 0.5,
+    vw_range: tuple[int, int] = (1, 1),
+    el_range: tuple[int, int] = (1, 1)
+) -> Graph[None, None]:
+    graph = Graph[None, None]()
+    for _ in range(vertices):
         graph.make_vertex(weight=random.randint(*vw_range))
     edges = round(min(max(0, density), 1) * vertices * (vertices - 1) / 2)
     for source, target in random.sample([*itertools.combinations([*range(vertices)], 2)], edges):
@@ -23,9 +32,14 @@ def random_undirected(vertices=5, density=0.5, vw_range=(1, 1), el_range=(1, 1))
     return graph
 
 
-def random_directed(vertices=5, density=0.5, vw_range=(1, 1), el_range=(1, 1)):
-    graph = Graph()
-    for v in range(vertices):
+def random_directed(
+    vertices: int = 5,
+    density: float = 0.5,
+    vw_range: tuple[int, int] = (1, 1),
+    el_range: tuple[int, int] = (1, 1),
+) -> Graph[None, None]:
+    graph = Graph[None, None]()
+    for _ in range(vertices):
         graph.make_vertex(weight=random.randint(*vw_range))
     edges = round(min(max(0, density), 1) * vertices * (vertices - 1))
     for source, target in random.sample([*itertools.permutations([*range(vertices)], 2)], edges):
@@ -33,16 +47,22 @@ def random_directed(vertices=5, density=0.5, vw_range=(1, 1), el_range=(1, 1)):
     return graph
 
 
-def random_undirected_paired(vertices=5, density=0.5, cycle=True, vw_range=(1, 1), el_range=(1, 1)):
+def random_undirected_paired(
+    vertices: int = 5,
+    density: float = 0.5,
+    cycle: bool = True,
+    vw_range: tuple[int, int] = (1, 1),
+    el_range: tuple[int, int] = (1, 1),
+) -> Graph[None, None]:
     # paired means all vertices have even degree
     # unrepeated edges and full vertex coverage are not guaranteed
-    graph = Graph()
-    for v in range(vertices):
+    graph = Graph[None, None]()
+    for _ in range(vertices):
         graph.make_vertex(weight=random.randint(*vw_range))
     edges = round(min(max(0, density), 1) * vertices * (vertices - 1) / 2)
     current = 0
     target = 0
-    for i in range(edges):
+    for _ in range(edges):
         target = random.randint(0, vertices - 1)
         graph.make_edge(current, target, length=random.randint(*el_range), directed=False)
         current = target
@@ -51,16 +71,22 @@ def random_undirected_paired(vertices=5, density=0.5, cycle=True, vw_range=(1, 1
     return graph
 
 
-def random_directed_paired(vertices=5, density=0.5, cycle=True, vw_range=(1, 1), el_range=(1, 1)):
+def random_directed_paired(
+    vertices: int = 5,
+    density: float = 0.5,
+    cycle: bool = True,
+    vw_range: tuple[int, int] = (1, 1),
+    el_range: tuple[int, int] = (1, 1),
+) -> Graph[None, None]:
     # paired means all vertices have out_degree - in_degree = 0
     # unrepeated edges and full vertex coverage are not guaranteed
-    graph = Graph()
-    for v in range(vertices):
+    graph = Graph[None, None]()
+    for _ in range(vertices):
         graph.make_vertex(weight=random.randint(*vw_range))
     edges = round(min(max(0, density), 1) * vertices * (vertices - 1))
     current = 0
     target = 0
-    for i in range(edges):
+    for _ in range(edges):
         target = random.randint(0, vertices - 1)
         graph.make_edge(current, target, length=random.randint(*el_range), directed=True)
         current = target
@@ -69,13 +95,19 @@ def random_directed_paired(vertices=5, density=0.5, cycle=True, vw_range=(1, 1),
     return graph
 
 
-def random_dag(ranks_range=(3, 5), vertices_range=(1, 5), probability=0.5, vw_range=(1, 1), el_range=(1, 1)):
-    graph = Graph()
+def random_dag(
+    ranks_range: tuple[int, int] = (3, 5),
+    vertices_range: tuple[int, int] = (1, 5),
+    probability: float = 0.5,
+    vw_range: tuple[int, int] = (1, 1),
+    el_range: tuple[int, int] = (1, 1),
+) -> Graph[None, None]:
+    graph = Graph[None, None]()
     previous_vertices = []
     ranks = random.randint(*ranks_range)
-    for rank in range(ranks):
+    for _ in range(ranks):
         rank_vertices_count = random.randint(*vertices_range)
-        rank_vertices = [graph.make_vertex()._id for _ in range(rank_vertices_count)]
+        rank_vertices = [graph.make_vertex(random.randint(*vw_range)).id for _ in range(rank_vertices_count)]
         for previous_vertex in previous_vertices:
             for rank_vertex in rank_vertices:
                 if random.random() < probability:
@@ -84,16 +116,24 @@ def random_dag(ranks_range=(3, 5), vertices_range=(1, 5), probability=0.5, vw_ra
     return graph
 
 
-def random_flow(ranks_range=(3, 5), vertices_range=(1, 5), parent_probability=0.9, sibling_probability=0.2, ancestor_probability=0.1, el_range=(1, 1)):
-    graph = Graph()
+def random_flow(
+    ranks_range: tuple[int, int] = (3, 5),
+    vertices_range: tuple[int, int] = (1, 5),
+    parent_probability: float = 0.9,
+    sibling_probability: float = 0.2,
+    ancestor_probability: float = 0.1,
+    vw_range: tuple[int, int] = (1, 1),
+    el_range: tuple[int, int] = (1, 1),
+) -> tuple[Graph[None, None], int, int]:
+    graph = Graph[None, None]()
     ranks_vertices = []
     ranks = random.randint(*ranks_range)
     for rank in range(ranks + 2):
         if rank == 0:
-            ranks_vertices.append([graph.make_vertex()._id])
+            ranks_vertices.append([graph.make_vertex(random.randint(*vw_range)).id])
             continue
         rank_vertices_count = random.randint(*vertices_range) if rank < ranks + 1 else 1
-        rank_vertices = [graph.make_vertex()._id for _ in range(rank_vertices_count)]
+        rank_vertices = [graph.make_vertex().id for _ in range(rank_vertices_count)]
         for rank_vertex in rank_vertices:
             first = True
             # link with parents
@@ -103,7 +143,7 @@ def random_flow(ranks_range=(3, 5), vertices_range=(1, 5), parent_probability=0.
                 first = False
             # link with siblings
             for sibling_vertex in rank_vertices:
-                if rank_vertex != sibling_vertex and random.random() < parent_probability:
+                if rank_vertex != sibling_vertex and random.random() < sibling_probability:
                     graph.make_edge(sibling_vertex, rank_vertex, length=random.randint(*el_range), directed=True)
             # link with ancestors
             for previous_rank_vertices in ranks_vertices[1:-1]:
@@ -118,22 +158,25 @@ def test():
     g = complete(5)
     print(g)
     for vertex in g.vertices():
-        print(vertex._id, end=' ')
+        print(vertex.id, end=' ')
     print()
     for edge in g.edges():
-        print(f'{edge._source}>{edge._target}', end=' ')
+        print(f'{edge.source}>{edge.target}', end=' ')
     print()
-    for vertex, *_ in g.traverse(0, 'dfs'):
-        print(vertex._id, end=' ')
+    for vertex, *_ in g.traverse(0, 'depth'):
+        print(vertex.id, end=' ')
     print()
-    for vertex, *_ in g.traverse(0, 'bfs'):
-        print(vertex._id, end=' ')
+    for vertex, *_ in g.traverse(0, 'breadth'):
+        print(vertex.id, end=' ')
     print()
-    for i in range(10):
+    for i in range(1, 11, 3):
         print('Complete graph:\n', complete(i))
-        print('Random undirected Graph:\n', random_undirected(i))
-        print('Random directed Graph:\n', random_directed(i))
-        print('Random directed Acyclic graph:\n', random_dag((i, i)))
+        print('random undirected Graph:\n', random_undirected(i))
+        print('random directed Graph:\n', random_directed(i))
+        print('random undirected paired Graph:\n', random_undirected_paired(i))
+        print('random directed paired Graph:\n', random_directed_paired(i))
+        print('random directed Acyclic graph:\n', random_dag((i, i)))
+        print('random flow graph:\n', random_flow((i, i)))
 
 
 if __name__ == '__main__':
