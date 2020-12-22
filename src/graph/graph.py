@@ -299,8 +299,7 @@ class Graph(Generic[V, E]):
         Return the vertex object associated with `v`.
 
         > parameters
-        - `v: int`: vertex id
-
+        - `v`: vertex id
         - `return`: vertex
         """
         return self._vertices[v]
@@ -310,9 +309,8 @@ class Graph(Generic[V, E]):
         Return the edge tuple list of the vertex associated with `v` or all edges if `v is None`.
 
         > parameters
-        - `v: int`: vertex id
-        - `v: int? = None`: vertex id, if `None` get all edges
-
+        - `v`: vertex id
+        - `v`: vertex id, if `None` get all edges
         - `return`: edge tuple list
         """
         return (*self.edges(v),)
@@ -378,10 +376,8 @@ class Graph(Generic[V, E]):
         - space: `O(v**2)`
 
         > parameters
-        - `absent_edge_length: (int | float)? = float('inf')`: length to use for absent edges
-        - `tiebreak: (int | float, int | float) => (int | float)? = min`: function used to choose a length if there is
-            more than one edge with the same source and target
-
+        - `absent_edge_length`: length to use for absent edges
+        - `tiebreak`: function used to choose a length if there is more than one edge with the same source and target
         - `return`: graph adjacency matrix
         """
         matrix = [[absent_edge_length] * self.vertices_count() for _ in range(self.vertices_count())]
