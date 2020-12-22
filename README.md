@@ -230,7 +230,7 @@ Space complexity is available in algorithms files.
         -   weighted pricing method (heuristic) **- O(v + e)**
         -   weighted pricing sorted method (heuristic) **- O(e\*log(e) + v)**
 
-## Enumeration Combinatorics [updated]
+## Enumeration Combinatorics
 
 -   [factorial](./src/combinatorics/factorial.py)
     -   factorial recursive **- O(n)**
