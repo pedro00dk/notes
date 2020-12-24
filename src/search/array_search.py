@@ -8,7 +8,7 @@ def binary_search(
     comparator: Callable[[float, float], float] = lambda a, b: a - b,
     left: Optional[int] = None,
     right: Optional[int] = None,
-):
+) -> int:
     """
     Binary search algorithm.
     Require `array` to be sorted based on `comparator`.
@@ -46,7 +46,7 @@ def k_ary_search(
     left: Optional[int] = None,
     right: Optional[int] = None,
     k: int = 4,
-):
+) -> int:
     """
     K-ary search algorithm.
     Require `array` to be sorted based on `comparator`.
@@ -89,7 +89,7 @@ def interpolation_search(
     comparator: Callable[[int, int], int] = lambda a, b: a - b,
     left: Optional[int] = None,
     right: Optional[int] = None,
-):
+) -> int:
     """
     Interpolation search algorithm.
     Require `array` to be sorted based on `comparator`.
@@ -131,7 +131,7 @@ def exponential_search(
     comparator: Callable[[float, float], float] = lambda a, b: a - b,
     left: Optional[int] = None,
     right: Optional[int] = None,
-):
+) -> int:
     """
     Exponential search algorithm.
     Require `array` to be sorted based on `comparator`.
