@@ -255,14 +255,14 @@ Space complexity is available in algorithms files.
     -   k-ary search **- O(k\*log(n,k))**
     -   interpolation search **- O(log(log(n))) uniformly distributed arrays, worst: O(n)**
     -   exponential search **- O(log(i))**
--   [string search](./src/search/string_search.py)
-    -   exact brute force **- O(n\*p)**
-    -   exact rabin karp **- O(n + p), worst: O(n\*p)**
-    -   exact knuth morris pratt **- O(n + p)**
-    -   exact baeza yates gonnet (shift-or) **- O(n + p)**
-    -   exact boyer moore **- O(n + p)**
-    -   exact boyer moore (optimized, extended bad char table) **- O(n + p)**
-    -   exact aho corasick **- O(n + p)**
+-   [exact string search](./src/search/string_exact.py)
+    -   brute force **- O(n\*p)**
+    -   rabin karp **- O(n + p), worst: O(n\*p)**
+    -   knuth morris pratt **- O(n + p)**
+    -   baeza yates gonnet (shift-or) **- O(n + p)**
+    -   boyer moore **- O(n + p)**
+    -   boyer moore (optimized, extended bad char table) **- O(n + p)**
+    -   aho corasick **- O(n + p)**
 
 ## Encoding and Compression
 
