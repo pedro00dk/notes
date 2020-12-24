@@ -1,43 +1,7 @@
-import mmap
-from typing import Any, Callable, Optional, Union
-
-AnyBytes = Union[bytes, bytearray, mmap.mmap]
+import collections
 
 
-def read(
-    *,
-    path: Optional[str] = None,
-    string: Optional[str] = None,
-    byte: Optional[Union[bytes, bytearray]] = None
-) -> tuple[AnyBytes, Callable[[], Any]]:
-    """
-    Returns an indexable bytes object from a file path, string, bytes or bytearray, this function allows running
-    searching algorithms in any of these types.
-    Only one of the parameters should be provided.
-
-    If a file is provided, it is assumed to use the `utf-8` encoding.
-    An immutable `mmap.mmap` is returned (works like `bytearray`).
-
-    If a string is provided, it is converted to `bytes` using `utf-8` encoding (requires copying).
-
-    > parameters
-    - `path`: path to a file
-    - `string`: string to be converted to bytes like
-    - `byte`: a bytes-like object
-    - `return`: buffer to access mmap, string, bytes or bytearray, and a finalize function to close resources
-    """
-    if path is not None:
-        reader = open(path, 'rb')
-        mm = mmap.mmap(reader.fileno(), 0, prot=mmap.PROT_READ)
-        return mm, lambda: (mm.close(), reader.close())
-    if string is not None:
-        return bytes(string, 'utf-8'), lambda: ()
-    if byte is not None:
-        return byte, lambda: ()
-    raise Exception('no source was provided')
-
-
-def exact_brute_force(text: AnyBytes, pattern: bytes):
+def brute_force(text: bytes, pattern: bytes) -> list[int]:
     """
     Brute force exact string searching algorithm.
     Some string searching algorithms do not support empty `pattern`.
@@ -54,7 +18,7 @@ def exact_brute_force(text: AnyBytes, pattern: bytes):
     """
     if len(pattern) == 0:
         raise Exception('empty pattern')
-    occurrences = []
+    occurrences: list[int] = []
     for i in range(len(text) - len(pattern) + 1):
         j = 0
         while j < len(pattern) and text[i + j] == pattern[j]:
@@ -64,7 +28,7 @@ def exact_brute_force(text: AnyBytes, pattern: bytes):
     return occurrences
 
 
-def exact_rabin_karp(text: AnyBytes, pattern: bytes, alphabet: int = 256, modulus: int = 2147483647):
+def rabin_karp(text: bytes, pattern: bytes, alphabet: int = 256, modulus: int = 2147483647) -> list[int]:
     """
     Rabin-Karp exact string searching algorithm.
 
@@ -80,7 +44,7 @@ def exact_rabin_karp(text: AnyBytes, pattern: bytes, alphabet: int = 256, modulu
     - `return`: list containing the starting index of all occurrences
     """
 
-    def compute_power(pattern: bytes, alphabet: int, modulus: int):
+    def compute_power(pattern: bytes, alphabet: int, modulus: int) -> int:
         """
         Compute the largest multiplicative coefficient for a hash of length equals to `len(pattern)`.
         """
@@ -89,7 +53,7 @@ def exact_rabin_karp(text: AnyBytes, pattern: bytes, alphabet: int = 256, modulu
             power = (power * alphabet) % modulus
         return power
 
-    def init_hash(text: AnyBytes, pattern: bytes, alphabet: int, modulus: int):
+    def init_hash(text: bytes, pattern: bytes, alphabet: int, modulus: int) -> int:
         """
         Compute initial hash for `text` using the length of `pattern`.
         """
@@ -98,7 +62,7 @@ def exact_rabin_karp(text: AnyBytes, pattern: bytes, alphabet: int = 256, modulu
             hash = (hash * alphabet + text[i]) % modulus
         return hash
 
-    def roll_hash(text: AnyBytes, pattern: bytes, hash: int, power: int, i: int, alphabet: int, modulus: int):
+    def roll_hash(text: bytes, pattern: bytes, hash: int, power: int, i: int, alphabet: int, modulus: int) -> int:
         """
         Roll the current `hash` of `text[i: i + len(pattern)]` to `text[i + 1: i + len(pattern) + 1]`.
         This is done by removing `text[index]` from the hash (which was multiplied by `power`), then multiply the hash
@@ -106,7 +70,7 @@ def exact_rabin_karp(text: AnyBytes, pattern: bytes, alphabet: int = 256, modulu
         """
         return ((hash - text[i] * power) * alphabet + text[i + len(pattern)]) % modulus
 
-    def equals(text: AnyBytes, pattern: bytes, i: int):
+    def equals(text: bytes, pattern: bytes, i: int) -> bool:
         """
         Return `True` if `text[index:index+length] == pattern[:length]`.
         """
@@ -121,7 +85,7 @@ def exact_rabin_karp(text: AnyBytes, pattern: bytes, alphabet: int = 256, modulu
         return []
     alphabet = min(max(2, alphabet), 256)
     modulus = max(modulus, 257)
-    occurrences = []
+    occurrences: list[int] = []
     power = compute_power(pattern, alphabet, modulus)
     text_hash = init_hash(text, pattern, alphabet, modulus)
     pattern_hash = init_hash(pattern, pattern, alphabet, modulus)
@@ -132,7 +96,7 @@ def exact_rabin_karp(text: AnyBytes, pattern: bytes, alphabet: int = 256, modulu
     return occurrences
 
 
-def exact_knuth_morris_pratt(text: AnyBytes, pattern: bytes, optimized_border: bool = True):
+def knuth_morris_pratt(text: bytes, pattern: bytes, optimized_border: bool = True) -> list[int]:
     """
     Knuth-Morris-Pratt exact string searching algorithm.
 
@@ -146,7 +110,7 @@ def exact_knuth_morris_pratt(text: AnyBytes, pattern: bytes, optimized_border: b
     - `optimized_border`: use optimized border computation algorithm
     - `return`: list containing the starting index of all occurrences
     """
-    def compute_border_lengths_brute_force(pattern: bytes):
+    def compute_border_lengths_brute_force(pattern: bytes) -> list[int]:
         """
         Compute the size of the pattern borders (longest proper prefixes which are also proper suffixes or vice versa)
         for all slices of `pattern` starting from 0.
@@ -159,7 +123,7 @@ def exact_knuth_morris_pratt(text: AnyBytes, pattern: bytes, optimized_border: b
             border_lengths[i] = j
         return border_lengths
 
-    def compute_border_lengths_opt(pattern: bytes):
+    def compute_border_lengths_opt(pattern: bytes) -> list[int]:
         """
         Optimized border computation algorithm.
         """
@@ -177,7 +141,7 @@ def exact_knuth_morris_pratt(text: AnyBytes, pattern: bytes, optimized_border: b
 
     if len(pattern) == 0:
         raise Exception('empty pattern')
-    occurrences = []
+    occurrences: list[int] = []
     border_lengths = compute_border_lengths_opt(
         pattern) if optimized_border else compute_border_lengths_brute_force(pattern)
     i = 0
@@ -192,7 +156,7 @@ def exact_knuth_morris_pratt(text: AnyBytes, pattern: bytes, optimized_border: b
     return occurrences
 
 
-def exact_baeza_yates_gonnet(text: bytes, pattern: bytes):
+def baeza_yates_gonnet(text: bytes, pattern: bytes) -> list[int]:
     """
     Baeza-Yates–Gonnet exact string searching algorithm.
     This algorithm is also known as shift-or, shift-and, or bitap.
@@ -202,12 +166,11 @@ def exact_baeza_yates_gonnet(text: bytes, pattern: bytes):
     - space: `O(1)`
 
     > parameters
-    - `text: bytes | mmap.mmap`: text to search for occurrences of pattern
+    - `text`: text to search for occurrences of pattern
     - `pattern: bytes`: pattern
-
     - `return`: list containing the starting index of all occurrences
     """
-    def compute_char_masks(pattern: bytes):
+    def compute_char_masks(pattern: bytes) -> tuple[list[int], int]:
         """
         Compute character masks for the pattern, to be used in the shifting operations.
         """
@@ -219,7 +182,7 @@ def exact_baeza_yates_gonnet(text: bytes, pattern: bytes):
 
     if len(pattern) == 0:
         raise Exception('empty pattern')
-    occurrences = []
+    occurrences: list[int] = []
     char_masks, match_mask = compute_char_masks(pattern)
     current_mask = 0
     for i in range(len(text)):
@@ -229,7 +192,7 @@ def exact_baeza_yates_gonnet(text: bytes, pattern: bytes):
     return occurrences
 
 
-def exact_boyer_moore(text: AnyBytes, pattern: bytes, extended_bad_char_table: bool = True):
+def boyer_moore(text: bytes, pattern: bytes, extended_bad_char_table: bool = True):
     """
     Boyer-Moore exact string searching algorithm.
 
@@ -242,7 +205,7 @@ def exact_boyer_moore(text: AnyBytes, pattern: bytes, extended_bad_char_table: b
     - `pattern`: pattern
     - `return`: list containing the starting index of all occurrences
     """
-    def compute_basic_bad_char_table(pattern: bytes):
+    def compute_basic_bad_char_table(pattern: bytes) -> list[list[int]]:
         """
         Compute the basic bad character table.
         Basic bad character table contains the index of the last occurrence of a character in the pattern.
@@ -271,7 +234,7 @@ def exact_boyer_moore(text: AnyBytes, pattern: bytes, extended_bad_char_table: b
             table[byte] = i
         return [table]
 
-    def compute_extended_bad_char_table(pattern: bytes):
+    def compute_extended_bad_char_table(pattern: bytes) -> list[list[int]]:
         """
         Compute the extended bad character table.
         Extended bad character table contains the index of the last occurrence of a character in the pattern for each
@@ -315,7 +278,7 @@ def exact_boyer_moore(text: AnyBytes, pattern: bytes, extended_bad_char_table: b
             table.append(prefix_table)
         return table
 
-    def compute_good_suffix_table(pattern: bytes):
+    def compute_good_suffix_table(pattern: bytes) -> list[int]:
         """
         Compute the strong good suffix heuristic.
         """
@@ -342,7 +305,7 @@ def exact_boyer_moore(text: AnyBytes, pattern: bytes, extended_bad_char_table: b
 
     if len(pattern) == 0:
         raise Exception('empty pattern')
-    occurrences = []
+    occurrences: list[int] = []
     bad_char_table = compute_extended_bad_char_table(pattern) \
         if extended_bad_char_table else compute_basic_bad_char_table(pattern)
     good_suffix_table = compute_good_suffix_table(pattern)
@@ -359,20 +322,107 @@ def exact_boyer_moore(text: AnyBytes, pattern: bytes, extended_bad_char_table: b
     return occurrences
 
 
-def exact_aho_corasick(text: AnyBytes, patterns: list[bytes]):
+def aho_corasick(text: bytes, patterns: list[bytes]) -> dict[bytes, list[int]]:
     """
     Aho-Corasick string exact multi string searching algorithm.
 
     > complexity
-    - time: `O()`
-    - space: `O()`
+    - time: `O(n + p)`, where `p` is the sum of the length of all patterns
+    - space: `O(p)`, where `p` is the sum of the length of all patterns
 
     > parameters
     - `text`: text to search for occurrences of pattern
     - `patterns`: list of patterns to search
-    - `return`: list of tuples containing the index of the pattern and starting index of the occurrence
+    - `return`: dictionary containing patterns and list with starting indices of the occurrences
     """
-    pass
+    def build_goto(patterns: list[bytes]) -> tuple[dict[tuple[int, int], int], list[list[bytes]]]:
+        """
+        Build all trie forward links (goto link) based on `patterns`.
+        The trie is a dictionary where each key is a tuple of a vertex index and a character (byte), and the value is
+        the next vertex index.
+        This function also returns the goal vertices, which is a list indexable by a trie vertex index, each index
+        contains a list o patterns that occur at the vertex.
+
+        > complexity
+        - time: `O(p)`, where `p` is the sum of the length of all patterns
+        - space: `O(p)`, where `p` is the sum of the length of all patterns
+
+        > parameters
+        - `patterns`: list of patterns to be searched
+        - `return`: tuple containing the trie and goal vertices
+        """
+        trie: dict[tuple[int, int], int] = {}
+        goals: list[list[bytes]] = [[]]
+        vertex = 0
+        for pattern in patterns:
+            if len(pattern) == 0:
+                raise Exception('empty pattern')
+            cursor = 0
+            for byte in pattern:
+                if (cursor, byte) in trie:
+                    cursor = trie[(cursor, byte)]
+                else:
+                    vertex += 1
+                    trie[(cursor, byte)] = vertex
+                    cursor = vertex
+                    goals.append([])
+            goals[cursor].append(pattern)
+        for byte in range(256):
+            if (0, byte) not in trie:
+                trie[(0, byte)] = 0
+        return trie, goals
+
+    def build_fail(trie: dict[tuple[int, int], int], goals: list[list[bytes]]) -> tuple[list[int], list[list[bytes]]]:
+        """
+        Build all trie fail links, and update goals when fails happen in goal vertices.
+
+        > complexity
+        - time: `O(p)`, where `p` is the sum of the length of all patterns
+        - space: `O(p)`, where `p` is the sum of the length of all patterns
+
+        > parameters
+        - `trie`: the trie computed in `build_goto`
+        - `goals`: the goals computed in `build_goto`
+        - `return`: tuple containing the fail links and goals vertices updated
+        """
+        vertices = len(goals)
+        fail = [0] * vertices
+        queue = collections.deque[int]()
+        for byte in range(256):
+            if trie[(0, byte)] != 0:
+                queue.append(trie[(0, byte)])
+                fail[trie[(0, byte)]] = 0
+        while len(queue) > 0:
+            cursor = queue.popleft()
+            for byte in range(256):
+                if (cursor, byte) in trie:
+                    next = trie[(cursor, byte)]
+                    queue.append(next)
+                    brd = fail[cursor]
+                    while (brd, byte) not in trie:
+                        brd = fail[brd]
+                    fail[next] = trie[(brd, byte)]
+                    goals[next].extend(goals[fail[next]])
+        return fail, goals
+
+    def build_trie(patterns: list[bytes]) -> tuple[dict[tuple[int, int], int], list[int], list[list[bytes]]]:
+        """
+        Call `build_goto` and `build_fail` to create the trie.
+        """
+        trie, goals = build_goto(patterns)
+        fail, goals = build_fail(trie, goals)
+        return trie, fail, goals
+
+    trie, fail, goals = build_trie(patterns)
+    occurrences: dict[bytes, list[int]] = {pattern: [] for pattern in patterns}
+    cursor = 0
+    for i, byte in enumerate(text):
+        while (cursor, byte) not in trie:
+            cursor = fail[cursor]
+        cursor = trie[(cursor, byte)]
+        for pattern in goals[cursor]:
+            occurrences[pattern].append(i - len(pattern) + 1)
+    return occurrences
 
 
 def test():
@@ -383,7 +433,7 @@ def test():
     def random_bytes(size: int, alphabet_size: int):
         return bytes(random.randint(0, alphabet_size - 1) for _ in range(size))
 
-    def test_exact_native(text: AnyBytes, pattern: bytes):
+    def test_native(text: bytes, pattern: bytes):
         occurrences = []
         i = -1
         while (i := text.find(pattern, i + 1)) != -1:
@@ -393,14 +443,15 @@ def test():
     print('alphabet size = 4')
     benchmark(
         (
-            ('           exact brute force', lambda args: exact_brute_force(*args)),
-            ('            exact rabin karp', lambda args: exact_rabin_karp(*args)),
-            ('    exact knuth morris pratt', lambda args: exact_knuth_morris_pratt(*args, False)),
-            ('exact knuth morris pratt opt', lambda args: exact_knuth_morris_pratt(*args, True)),
-            ('    exact baeza yates gonnet', lambda args: exact_baeza_yates_gonnet(*args)),
-            ('           exact boyer moore', lambda args: exact_boyer_moore(*args, False)),
-            ('       exact boyer moore opt', lambda args: exact_boyer_moore(*args, True)),
-            ('                exact native', lambda args: test_exact_native(*args)),
+            ('           brute force', lambda args: brute_force(*args)),
+            ('            rabin karp', lambda args: rabin_karp(*args)),
+            ('    knuth morris pratt', lambda args: knuth_morris_pratt(*args, False)),
+            ('knuth morris pratt opt', lambda args: knuth_morris_pratt(*args, True)),
+            ('    baeza yates gonnet', lambda args: baeza_yates_gonnet(*args)),
+            ('           boyer moore', lambda args: boyer_moore(*args, False)),
+            ('       boyer moore opt', lambda args: boyer_moore(*args, True)),
+            ('          aho corasick', lambda args: aho_corasick(args[0], [args[1]])),
+            ('                native', lambda args: test_native(*args)),
         ),
         test_inputs=((b'hello world!', b'o w'), (b'cagtcatgcatacgtctatatcggctgc', b'cat')),
         bench_sizes=((1000, 1), (1000, 5), (1000, 10), (1000, 20), (10000, 1), (10000, 5), (10000, 10), (10000, 20)),
@@ -409,14 +460,15 @@ def test():
     print('alphabet size = 256')
     benchmark(
         (
-            ('           exact brute force', lambda args: exact_brute_force(*args)),
-            ('            exact rabin karp', lambda args: exact_rabin_karp(*args)),
-            ('    exact knuth morris pratt', lambda args: exact_knuth_morris_pratt(*args, False)),
-            ('exact knuth morris pratt opt', lambda args: exact_knuth_morris_pratt(*args, True)),
-            ('    exact baeza yates gonnet', lambda args: exact_baeza_yates_gonnet(*args)),
-            ('           exact boyer moore', lambda args: exact_boyer_moore(*args, False)),
-            ('       exact boyer moore opt', lambda args: exact_boyer_moore(*args, True)),
-            ('                exact native', lambda args: test_exact_native(*args)),
+            ('           brute force', lambda args: brute_force(*args)),
+            ('            rabin karp', lambda args: rabin_karp(*args)),
+            ('    knuth morris pratt', lambda args: knuth_morris_pratt(*args, False)),
+            ('knuth morris pratt opt', lambda args: knuth_morris_pratt(*args, True)),
+            ('    baeza yates gonnet', lambda args: baeza_yates_gonnet(*args)),
+            ('           boyer moore', lambda args: boyer_moore(*args, False)),
+            ('       boyer moore opt', lambda args: boyer_moore(*args, True)),
+            ('          aho corasick', lambda args: aho_corasick(args[0], [args[1]])),
+            ('                native', lambda args: test_native(*args)),
         ),
         test_inputs=(),
         bench_sizes=((1000, 1), (1000, 5), (1000, 10), (1000, 20), (10000, 1), (10000, 5), (10000, 10), (10000, 20)),

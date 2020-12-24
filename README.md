@@ -262,6 +262,7 @@ Space complexity is available in algorithms files.
     -   exact baeza yates gonnet (shift-or) **- O(n + p)**
     -   exact boyer moore **- O(n + p)**
     -   exact boyer moore (optimized, extended bad char table) **- O(n + p)**
+    -   exact aho corasick **- O(n + p)**
 
 ## Encoding and Compression
 
@@ -288,5 +289,5 @@ Space complexity is available in algorithms files.
 -   graph: maximum matching, edge cover, facility location
 -   heaps: fibonacci heap, pairing heap
 -   compression: lz77, lz78
--   string search: aho corasick, sellers, ukkonen
+-   string search, sellers, ukkonen
 -   indexing: suffix array, suffix tree
