@@ -1,3 +1,4 @@
+import mmap
 import random
 import timeit
 from typing import Any, Callable, Optional, TypeVar, Union
@@ -8,6 +9,7 @@ V = TypeVar('V')
 CheckedOperation = tuple[Callable[..., Any], tuple[Any, ...], Any]
 UncheckedOperation = tuple[Callable[..., Any], tuple[Any, ...]]
 Operation = Union[CheckedOperation, UncheckedOperation]
+AnyBytes = Union[bytes, bytearray, mmap.mmap]
 
 
 def match(operations: tuple[Operation, ...]):
@@ -124,3 +126,36 @@ def heuristic_approximation(label: str, optimal_results: list[float], heuristic_
     print('          minimum:', min(approximations))
     print('          maximum:', max(approximations))
     print('          average:', sum(approximations) / len(approximations))
+
+
+def read(
+    *,
+    path: Optional[str] = None,
+    string: Optional[str] = None,
+    byte: Optional[Union[bytes, bytearray]] = None
+) -> tuple[AnyBytes, Callable[[], Any]]:
+    """
+    Returns an indexable bytes object from a file path, string, bytes or bytearray, this function allows running
+    searching algorithms in any of these types.
+    Only one of the parameters should be provided.
+
+    If a file is provided, it is assumed to use the `utf-8` encoding.
+    An immutable `mmap.mmap` is returned (works like `bytearray`).
+
+    If a string is provided, it is converted to `bytes` using `utf-8` encoding (requires copying).
+
+    > parameters
+    - `path`: path to a file
+    - `string`: string to be converted to bytes like
+    - `byte`: a bytes-like object
+    - `return`: buffer to access mmap, string, bytes or bytearray, and a finalize function to close resources
+    """
+    if path is not None:
+        reader = open(path, 'rb')
+        mm = mmap.mmap(reader.fileno(), 0, prot=mmap.PROT_READ)
+        return mm, lambda: (mm.close(), reader.close())
+    if string is not None:
+        return bytes(string, 'utf-8'), lambda: ()
+    if byte is not None:
+        return byte, lambda: ()
+    raise Exception('no source was provided')
