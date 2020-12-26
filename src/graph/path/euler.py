@@ -5,7 +5,7 @@ from ..connectivity import connected_traverse
 from ..graph import Edge, Graph
 
 
-def undirected_fleury(graph: Graph[Any, Any]) -> Optional[tuple[bool, Optional[list[int]]]]:
+def euler_undirected_fleury(graph: Graph[Any, Any]) -> Optional[tuple[bool, Optional[list[int]]]]:
     """
     Fleury eulerian path algorithm for undirected graphs.
     This algorithm mutates the graph to preserve asymptotic complexities (`edge.data` and `edge._target` fields).
@@ -58,7 +58,7 @@ def undirected_fleury(graph: Graph[Any, Any]) -> Optional[tuple[bool, Optional[l
     return (path[0] == path[-1], [*path]) if len(path) == graph.unique_edges_count() + 1 else None
 
 
-def undirected_hierholzer(
+def euler_undirected_hierholzer(
     graph: Graph[Any, Any],
     recursive: bool = False,
 ) -> Optional[tuple[bool, list[int]]]:
@@ -118,7 +118,7 @@ def undirected_hierholzer(
     return (path[0] == path[-1], [*path]) if len(path) == graph.unique_edges_count() + 1 else None
 
 
-def directed_hierholzer(
+def euler_directed_hierholzer(
     graph: Graph[Any, Any],
     recursive: bool = False,
 ) -> Optional[tuple[bool, Optional[list[int]]]]:
@@ -193,9 +193,9 @@ def test():
     print('undirected graphs')
     benchmark(
         (
-            ('              undirected fleury', lambda graph: undirected_fleury(graph)),
-            ('undirected hierholzer recursive', lambda graph: undirected_hierholzer(graph, True)),
-            ('undirected hierholzer iterative', lambda graph: undirected_hierholzer(graph, False)),
+            ('              undirected fleury', lambda graph: euler_undirected_fleury(graph)),
+            ('undirected hierholzer recursive', lambda graph: euler_undirected_hierholzer(graph, True)),
+            ('undirected hierholzer iterative', lambda graph: euler_undirected_hierholzer(graph, False)),
         ),
         test_inputs=(*(random_undirected_paired(i) for i in (5, 10, 15, 20)),),
         bench_sizes=(1, 10, 100),
@@ -205,8 +205,8 @@ def test():
     print('directed graphs')
     benchmark(
         (
-            ('directed hierholzer recursive', lambda graph: directed_hierholzer(graph, True)),
-            ('directed hierholzer iterative', lambda graph: directed_hierholzer(graph, False)),
+            ('directed hierholzer recursive', lambda graph: euler_directed_hierholzer(graph, True)),
+            ('directed hierholzer iterative', lambda graph: euler_directed_hierholzer(graph, False)),
         ),
         test_inputs=(*(random_undirected_paired(i) for i in (5, 10, 15, 20)),),
         bench_sizes=(1, 10, 100),
