@@ -13,8 +13,8 @@ def test():
         for i in entries:
             tree.take(i)
 
-    def test_avl(entries: list[int], rank: int):
-        tree = AVL[int, None](rank)
+    def test_avl(entries: list[int]):
+        tree = AVL[int, None]()
         for i in entries:
             tree.put(i, None)
         for i in entries:
@@ -30,11 +30,9 @@ def test():
     print('random insertions')
     benchmark(
         (
-            (' binary search tree', test_bst),
-            ('    avl tree rank 2', lambda entries: test_avl(entries, 2)),
-            ('    avl tree rank 3', lambda entries: test_avl(entries, 3)),
-            ('    avl tree rank 4', lambda entries: test_avl(entries, 4)),
-            ('     red-black tree', test_rbt),
+            ('binary search tree', test_bst),
+            ('          avl tree', test_avl),
+            ('    red-black tree', test_rbt),
         ),
         test_inputs=(),
         bench_sizes=(0, 1, 10, 100, 1000, 10000),
@@ -44,9 +42,7 @@ def test():
     benchmark(
         (
             ('binary search tree', test_bst),
-            ('   avl tree rank 2', lambda entries: test_avl(entries, 2)),
-            ('   avl tree rank 3', lambda entries: test_avl(entries, 3)),
-            ('   avl tree rank 4', lambda entries: test_avl(entries, 4)),
+            ('          avl tree', test_avl),
             ('    red-black tree', test_rbt),
         ),
         test_inputs=(),

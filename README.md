@@ -93,7 +93,7 @@ Space complexity is available in algorithms files.
     -   [binary search tree](./src/tree/bst.py)
         -   put **- average: O(log(n)), worst: O(n)**
         -   take **- average: O(log(n)), worst: O(n)**
-    -   [avl tree (with ranks)](./src/tree/avl.py)
+    -   [avl tree](./src/tree/avl.py)
         -   put **- O(log(n))**
         -   take **- O(log(n))**
     -   [red-black tree](./src/tree/rbt.py)

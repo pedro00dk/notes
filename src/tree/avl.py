@@ -22,20 +22,15 @@ class AVLNode(Generic[T, U], Node[T, U]):
 
 class AVL(Generic[T, U], Tree[T, U]):
     """
-    AVL tree implementation (with ranks).
+    AVL tree implementation.
     """
 
-    def __init__(self, rank: int = 2):
-        """
-        > parameters
-        - `rank`: tree rank, if < 2, the value is clamped
-        """
+    def __init__(self):
         super().__init__()
         self._root: Optional[AVLNode[T, U]] = None
         printer: Callable[[AVLNode[T, U], int], str] = \
             lambda node, depth: f'b:{node.balance()} # {node.key}: {node.value}'
         self._printer = printer
-        self._rank = max(rank, 2)
 
     def put(self, key: T, value: U, replacer: Optional[Callable[[U, U], U]] = None) -> Optional[U]:
         """
@@ -121,12 +116,12 @@ class AVL(Generic[T, U], Tree[T, U]):
         - `return`: rotated subtree root
         """
         balance = node.balance()
-        if balance <= -self._rank:
+        if balance <= -2:
             left = cast(AVLNode[T, U], node.left)
             if left.balance() > 0:
                 node.left = self._rotate_left(left)
             node = self._rotate_right(node)
-        elif balance >= self._rank:
+        elif balance >= 2:
             right = cast(AVLNode[T, U], node.right)
             if right.balance() < 0:
                 node.right = self._rotate_right(right)
@@ -217,37 +212,34 @@ class AVL(Generic[T, U], Tree[T, U]):
 def test():
     from ..test import match
 
-    for i in (2, 3, 4):
-        print(f'rank {i} tree')
-        tree = AVL[int, Optional[int]](i)
-        match((
-            (tree.put, (-15, -1000)),
-            (tree.put, (-10, None)),
-            (tree.put, (-5, None)),
-            (tree.put, (0, None)),
-            (tree.put, (5, 1000)),
-            (tree.put, (10, None)),
-            (tree.put, (15, None)),
-            (tree.get, (5,), 1000),
-            (tree.get, (-15,), -1000),
-            (print, (tree,)),
-            (tree.take, (0,)),
-            (tree.take, (-10,)),
-            (tree.take, (-15,), -1000),
-            (print, (tree,)),
-        ))
-        for key, *_ in tree.traverse('pre'):
-            print(key, end=' ')
-        print()
-        for key, *_ in tree.traverse('in'):
-            print(key, end=' ')
-        print()
-        for key, *_ in tree.traverse('post'):
-            print(key, end=' ')
-        print()
-        for key, *_ in tree.traverse('breadth'):
-            print(key, end=' ')
-        print()
+    tree = AVL[int, Optional[int]]()
+    match((
+        (tree.put, (-15, -1000)),
+        (tree.put, (-10, None)),
+        (tree.put, (-5, None)),
+        (tree.put, (0, None)),
+        (tree.put, (5, 1000)),
+        (tree.put, (10, None)),
+        (tree.put, (15, None)),
+        (tree.get, (5,), 1000),
+        (tree.get, (-15,), -1000),
+        (print, (tree,)),
+        (tree.take, (0,)),
+        (tree.take, (-10,)),
+        (tree.take, (-15,), -1000),
+        (print, (tree,)),
+    ))
+    for key, *_ in tree.traverse('pre'):
+        print(key, end=' ')
+    print()
+    for key, *_ in tree.traverse('in'):
+        print(key, end=' ')
+    print()
+    for key, *_ in tree.traverse('post'):
+        print(key, end=' ')
+    print()
+    for key, *_ in tree.traverse('breadth'):
+        print(key, end=' ')
 
 
 if __name__ == '__main__':
