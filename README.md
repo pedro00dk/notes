@@ -263,6 +263,10 @@ Space complexity is available in algorithms files.
     -   boyer moore **- O(n + p)**
     -   boyer moore (optimized, extended bad char table) **- O(n + p)**
     -   aho corasick **- O(n + p)**
+-   [string edit distance](./src/search/string_distance.py)
+    -   brute force **- O(3<sup>n + m</sup>)**
+    -   wagner fischer **- O(n\*m)**
+    -   wagner fischer (optimized, reuse distance table) **- O(n\*m)**
 
 ## Encoding and Compression
 
