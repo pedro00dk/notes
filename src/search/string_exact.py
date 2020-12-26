@@ -83,9 +83,9 @@ def rabin_karp(text: bytes, pattern: bytes, alphabet: int = 256, modulus: int = 
         raise Exception('empty pattern')
     if len(text) < len(pattern):
         return []
+    occurrences: list[int] = []
     alphabet = min(max(2, alphabet), 256)
     modulus = max(modulus, 257)
-    occurrences: list[int] = []
     power = compute_power(pattern, alphabet, modulus)
     text_hash = init_hash(text, pattern, alphabet, modulus)
     pattern_hash = init_hash(pattern, pattern, alphabet, modulus)
@@ -413,8 +413,8 @@ def aho_corasick(text: bytes, patterns: list[bytes]) -> dict[bytes, list[int]]:
         fail, goals = build_fail(trie, goals)
         return trie, fail, goals
 
-    trie, fail, goals = build_trie(patterns)
     occurrences: dict[bytes, list[int]] = {pattern: [] for pattern in patterns}
+    trie, fail, goals = build_trie(patterns)
     cursor = 0
     for i, byte in enumerate(text):
         while (cursor, byte) not in trie:
