@@ -9,7 +9,7 @@ V = TypeVar('V')
 CheckedOperation = tuple[Callable[..., Any], tuple[Any, ...], Any]
 UncheckedOperation = tuple[Callable[..., Any], tuple[Any, ...]]
 Operation = Union[CheckedOperation, UncheckedOperation]
-AnyBytes = Union[bytes, bytearray, mmap.mmap]
+AnyBytes = Union[bytes, bytearray, memoryview, mmap.mmap]
 
 
 def match(operations: tuple[Operation, ...]):
