@@ -395,26 +395,28 @@ def aho_corasick(text: bytes, patterns: list[bytes]) -> dict[bytes, list[int]]:
         while len(queue) > 0:
             cursor = queue.popleft()
             for byte in range(256):
-                if (cursor, byte) in trie:
-                    next = trie[(cursor, byte)]
-                    queue.append(next)
-                    brd = fail[cursor]
-                    while (brd, byte) not in trie:
-                        brd = fail[brd]
-                    fail[next] = trie[(brd, byte)]
-                    goals[next].extend(goals[fail[next]])
+                if (cursor, byte) not in trie:
+                    continue
+                next = trie[(cursor, byte)]
+                queue.append(next)
+                brd = fail[cursor]
+                while (brd, byte) not in trie:
+                    brd = fail[brd]
+                fail[next] = trie[(brd, byte)]
+                goals[next].extend(goals[fail[next]])
         return fail, goals
 
-    def build_trie(patterns: list[bytes]) -> tuple[dict[tuple[int, int], int], list[int], list[list[bytes]]]:
+    def build_fsa(patterns: list[bytes]) -> tuple[dict[tuple[int, int], int], list[int], list[list[bytes]]]:
         """
-        Call `build_goto` and `build_fail` to create the trie.
+        Call `build_goto` and `build_fail` to create the aho corasick finite state automaton.
+        The automaton is composed of a trie containing only forward links, a list contaning fail links, and the goals.
         """
         trie, goals = build_goto(patterns)
         fail, goals = build_fail(trie, goals)
         return trie, fail, goals
 
     occurrences: dict[bytes, list[int]] = {pattern: [] for pattern in patterns}
-    trie, fail, goals = build_trie(patterns)
+    trie, fail, goals = build_fsa(patterns)
     cursor = 0
     for i, byte in enumerate(text):
         while (cursor, byte) not in trie:

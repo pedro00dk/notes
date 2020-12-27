@@ -33,7 +33,7 @@ def connected_traverse(graph: Graph[Any, Any], mode: Literal['depth', 'breadth']
                 dfs(edge.target, component)
 
     def bfs(v: int, component: list[int]):
-        queue = collections.deque()
+        queue = collections.deque[int]()
         queue.append(v)
         visited[v] = True
         while len(queue) > 0:

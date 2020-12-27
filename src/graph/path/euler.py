@@ -158,7 +158,7 @@ def euler_directed_hierholzer(
     if len(start_vertices) not in (0, 1) or len(start_vertices) != len(end_vertices):
         return None
     start = start_vertices[0] if len(start_vertices) > 0 else 0
-    path = collections.deque()
+    path = collections.deque[int]()
     if recursive:
         def dfs(v: int):
             while outcoming_edges[v] > 0:

@@ -231,7 +231,7 @@ def pathfinder_dinic(flow_graph: Graph[Any, Any], source: int, sink: int):
         """
         levels[:] = (-1 for _ in range(flow_graph.vertices_count()))
         next_edge[:] = (0 for _ in range(flow_graph.vertices_count()))
-        queue = collections.deque()
+        queue = collections.deque[int]()
         queue.append(source)
         levels[source] = 0
         while len(queue) > 0:
@@ -338,7 +338,7 @@ def maxflow_ford_fulkerson(
         if not keep:
             break
     mincut = []
-    queue = collections.deque()
+    queue = collections.deque[int]()
     queue.append(source)
     visited[source] = visited_marker
     while len(queue) > 0:
