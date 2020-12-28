@@ -163,7 +163,7 @@ def baeza_yates_gonnet(text: bytes, pattern: bytes) -> list[int]:
 
     > complexity
     - time: `O(n + p)`
-    - space: `O(1)`
+    - space: `O(c)`, where `c` is the alphabet size (256)
 
     > parameters
     - `text`: text to search for occurrences of pattern
@@ -173,6 +173,10 @@ def baeza_yates_gonnet(text: bytes, pattern: bytes) -> list[int]:
     def compute_char_masks(pattern: bytes) -> tuple[list[int], int]:
         """
         Compute character masks for the pattern, to be used in the shifting operations.
+
+        > complexity
+        - time: `O(p)`
+        - space: `O(c)`, where `c` is the alphabet size (256)
         """
         char_masks = [0] * 256
         match_mask = 1 << len(pattern) - 1
@@ -198,7 +202,7 @@ def boyer_moore(text: bytes, pattern: bytes, extended_bad_char_table: bool = Tru
 
     > complexity
     - time: `O(n + p)`
-    - space: `O(1)` if not `extended_bad_char_table` else `O(p)`
+    - space: `O(c)` if not `extended_bad_char_table` else `O(p*c)`
 
     > parameters
     - `text`: text to search for occurrences of pattern
@@ -228,6 +232,10 @@ def boyer_moore(text: bytes, pattern: bytes, extended_bad_char_table: bool = Tru
         | 4 | 1 | 6 | 3 | 5 |-1 |
         +---+---+---+---+---+---+
         ```
+
+        > complexity
+        - time: `O(p)`
+        - space: `O(c)`, where `c` is the alphabet size (256)
         """
         table = [-1] * 256
         for i, byte in enumerate(pattern):
@@ -269,6 +277,10 @@ def boyer_moore(text: bytes, pattern: bytes, extended_bad_char_table: bool = Tru
         | 4 | 1 | 6 | 3 | 5 |-1 | <- before any comparisons prefix: 'avocado' (not used, just for checking, this is the one used by the basic algorithm) 
         +---+---+---+---+---+---+
         ```
+
+        > complexity
+        - time: `O(p)`
+        - space: `O(p*c)`, where `c` is the alphabet size (256)
         """
         table = [[-1] * 256]
         for i in range(len(pattern)):
@@ -281,6 +293,10 @@ def boyer_moore(text: bytes, pattern: bytes, extended_bad_char_table: bool = Tru
     def compute_good_suffix_table(pattern: bytes) -> list[int]:
         """
         Compute the strong good suffix heuristic.
+
+        > complexity
+        - time: `O(p)`
+        - space: `O(p)`
         """
         shift = [0] * (len(pattern) + 1)
         i = len(pattern)
@@ -378,7 +394,7 @@ def aho_corasick(text: bytes, patterns: list[bytes]) -> dict[bytes, list[int]]:
 
         > complexity
         - time: `O(p)`, where `p` is the sum of the length of all patterns
-        - space: `O(p)`, where `p` is the sum of the length of all patterns
+        - space: `O(p*c)`, where `p` is the sum of the length of all patterns, and `c` is the alphabet size (256)
 
         > parameters
         - `trie`: the trie computed in `build_goto`
