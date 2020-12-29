@@ -267,6 +267,10 @@ Space complexity is available in algorithms files.
     -   brute force **- O(3<sup>n + m</sup>)**
     -   wagner fischer **- O(n\*m)**
     -   wagner fischer (optimized, reuse distance table) **- O(n\*m)**
+-   [approximate/fuzzy string search](./src/search/string_fuzzy.py)
+    -   sellers **- O(n\*p)**
+    -   ukkonen **- O(n + (p\*min(p, d)\*c))**
+    -   wu manber **- O(n\*min(p, d) + p)**
 
 ## Encoding and Compression
 
@@ -293,5 +297,4 @@ Space complexity is available in algorithms files.
 -   graph: maximum matching, edge cover, facility location
 -   heaps: fibonacci heap, pairing heap
 -   compression: lz77, lz78
--   string search, sellers, ukkonen
--   indexing: suffix array, suffix tree
+-   string search: suffix array, suffix tree
