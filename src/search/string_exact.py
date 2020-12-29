@@ -172,7 +172,7 @@ def baeza_yates_gonnet(text: bytes, pattern: bytes) -> list[int]:
     """
     def compute_char_masks(pattern: bytes) -> tuple[list[int], int]:
         """
-        Compute character masks for the pattern, to be used in the shifting operations.
+        Compute character masks for the pattern, to be used in the shifting operations, and the match mask.
 
         > complexity
         - time: `O(p)`
@@ -189,8 +189,8 @@ def baeza_yates_gonnet(text: bytes, pattern: bytes) -> list[int]:
     occurrences: list[int] = []
     char_masks, match_mask = compute_char_masks(pattern)
     current_mask = 0
-    for i in range(len(text)):
-        current_mask = ((current_mask << 1) | 1) & char_masks[text[i]]
+    for i, byte in enumerate(text):
+        current_mask = ((current_mask << 1) | 1) & char_masks[byte]
         if current_mask & match_mask != 0:
             occurrences.append(i - len(pattern) + 1)
     return occurrences

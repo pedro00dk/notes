@@ -90,7 +90,7 @@ def test():
         ),
         test_inputs=((b'kitten', b'sitting'), (b'saturday', b'monday'), (b'', b'')),
         bench_sizes=((0, 0), (1, 1), (5, 3), (10, 5)),
-        bench_input=lambda s: (random_bytes(s[0], 4), random_bytes(s[1], 4)),
+        bench_input=lambda s: (random_bytes(s[0], 256), random_bytes(s[1], 256)),
     )
     print('without brute force')
     benchmark(
@@ -100,7 +100,7 @@ def test():
         ),
         test_inputs=(),
         bench_sizes=((20, 8), (20, 16), (100, 35), (100, 70), (1000, 350), (1000, 700)),
-        bench_input=lambda s: (random_bytes(s[0], 4), random_bytes(s[1], 4)),
+        bench_input=lambda s: (random_bytes(s[0], 256), random_bytes(s[1], 256)),
     )
 
 
