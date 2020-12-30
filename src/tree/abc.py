@@ -286,31 +286,30 @@ class Tree(Generic[T, U], abc.ABC):
             node = node.right
         return (node.key, node.value) if node is not None else None
 
-    def ancestor(self, key: T) -> Optional[tuple[T, U]]:
+    def predecessor(self, key: T) -> Optional[tuple[T, U]]:
         """
-        Retrieve the ancestor of `key`.
-        If `key` is the tree `min`, then `None` is returned.
+        Retrieve the predecessor of `key`.
+        `key` does not need to be inserted in the tree.
+        If `key` is smaller or equal the maximum, or the tree is empty, `None` is returned.
 
         > complexity
         - time: `O(n)` or `O(log(n))` for balanced trees
         - space: `O(n)` or `O(log(n))` for balanced trees
 
         > parameters
-        - `key`: key of value to retrieve ancestor
-        - `return`: key and value ancestor of `key`
+        - `key`: key to retrieve predecessor
+        - `return`: predecessor of `key`
         """
         parents: list[Node[T, U]] = []
         node = self._root
         while node is not None and key != node.key:
             parents.append(node)
             node = node.left if key < node.key else node.right
-        if node is None:
-            raise KeyError(f'key ({key}) not found')
-        if node.left is not None:
-            ancestor = node.left
-            while ancestor.right is not None:
-                ancestor = ancestor.right
-            return ancestor.key, ancestor.value
+        if node is not None and node.left is not None:
+            predecessor = node.left
+            while predecessor.right is not None:
+                predecessor = predecessor.right
+            return predecessor.key, predecessor.value
         for parent in reversed(parents):
             if parent.key < key:
                 return parent.key, parent.value
@@ -319,25 +318,23 @@ class Tree(Generic[T, U], abc.ABC):
     def successor(self, key: T) -> Optional[tuple[T, U]]:
         """
         Retrieve the successor of `key`.
-        If `key` is the tree `max`, then `None` is returned.
+        `key` does not need to be inserted in the tree.
+        If `key` is greater or equal the maximum, `None` is returned.
 
         > complexity
         - time: `O(n)` or `O(log(n))` for balanced trees
         - space: `O(n)` or `O(log(n))` for balanced trees
 
         > parameters
-        - `key: int | float`: key of value to retrieve ancestor
-
-        - `return`: key and value successor of `key`
+        - `key`: key to retrieve successor
+        - `return`: successor of `key`
         """
         parents: list[Node[T, U]] = []
         node = self._root
         while node is not None and key != node.key:
             parents.append(node)
             node = node.left if key < node.key else node.right
-        if node is None:
-            raise KeyError(f'key ({key}) not found')
-        if node.right is not None:
+        if node is not None and node.right is not None:
             ancestor = node.right
             while ancestor.left is not None:
                 ancestor = ancestor.left
