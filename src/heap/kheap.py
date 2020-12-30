@@ -1,4 +1,4 @@
-from typing import Callable, Generic, Optional
+from typing import Callable, Generic, Literal, Optional
 
 from .abc import Heap, T
 
@@ -110,21 +110,37 @@ class KHeap(Generic[T], Heap[T]):
     K-Heap implementation.
     """
 
-    def __init__(self, comparator: Callable[[T, T], float], data: Optional[list[T]] = None, k: int = 4):
+    def __init__(
+        self,
+        comparator: Callable[[T, T], float],
+        data: Optional[list[T]] = None,
+        k: int = 4,
+        heapify: Literal['bottom-up', 'top-down'] = 'bottom-up',
+    ):
         """
-        Check abstract class for documentation.
+        Initialize the binary heap
 
         > complexity
-        - time: `O(n)`
-        - space: `O(1)`
+        - time: `O(n)` if `heapify == 'bottom-up'` else `O(n*log(n))`, where `n` is the initial `data` length
+        - space: `O(n)`
+
+        > parameters
+        - `comparator`: a comparator function for heap values
+        - `data`: initial data to populate the heap
+        - `heapify`: initial heapify strategy, only impacts initial `data`
         """
-        super().__init__(comparator, data)
+        super().__init__()
+        self._comparator = comparator
+        self._heap: list[T] = data if data is not None else []
         self._k = k
-        # heapify_top_down(self._heap, self._k, self._comparator)
-        heapify_bottom_up(self._heap, self._k, self._comparator)
+        heapify_function = heapify_bottom_up if heapify == 'bottom-up' else heapify_top_down
+        heapify_function(self._heap, self._k, self._comparator)
+
+    def __len__(self) -> int:
+        return len(self._heap)
 
     def __str__(self) -> str:
-        return f'k={self._k} {super().__str__()}'
+        return f'{type(self).__name__} k={self._k} {self._heap}'
 
     def offer(self, value: T):
         """
@@ -153,6 +169,18 @@ class KHeap(Generic[T], Heap[T]):
             self._heap[0] = replacement
             sift_down(self._heap, self._k, 0, self._comparator)
         return value
+
+    def peek(self) -> T:
+        """
+        Check abstract class for documentation.
+
+        > complexity
+        - time: `O(1)`
+        - space: `O(1)`
+        """
+        if len(self._heap) == 0:
+            raise IndexError('empty heap')
+        return self._heap[0]
 
 
 def test():
