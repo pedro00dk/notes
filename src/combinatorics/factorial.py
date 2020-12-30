@@ -52,7 +52,7 @@ def factorial_stirling(n: float) -> float:
     - `n`: value to compute factorial, floats are supported
     - `return`: factorial approximation of `n`
     """
-    return (2 * math.pi * n) ** (0.5) * (n / math.e) ** n
+    return (2 * math.pi * n)**(0.5) * (n / math.e)**n
 
 
 def factorial_ramanujan(n: float):
@@ -67,7 +67,7 @@ def factorial_ramanujan(n: float):
     - `n`: value to compute factorial, floats are supported
     - `return`: factorial approximation of `n`
     """
-    return math.pi ** 0.5 * (1 / 30 + n * (1 + n * (4 + n * 8))) ** (1 / 6) * (n / math.e) ** n
+    return math.pi**0.5 * (1 / 30 + n * (1 + n * (4 + n * 8)))**(1 / 6) * (n / math.e)**n
 
 
 def test():

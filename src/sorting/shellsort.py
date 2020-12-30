@@ -18,7 +18,7 @@ HIBBARD1963: GapFunction = lambda n, k: 2**k - 1                                
 PAPERNOVSTASEVICH1965: GapFunction = lambda n, k: 2**(k - 1) + 1 if k > 1 else 1           # O(n**(3/2))
 KNUTH1973: GapFunction = lambda n, k: min((3**k - 1) // 2, math.ceil(n / 3))               # O(n**(3/2))
 SEDGEWICK1982: GapFunction = lambda n, k: 4**(k) - 1 + 3 * 2**(k - 2) + 1 if k > 1 else 1  # O(n**(4/3))
-TOKUDA1992: GapFunction = lambda n, k: math.ceil((1 / 5) * (9 * (9 / 4) ** (k - 1) - 4))   # unknown
+TOKUDA1992: GapFunction = lambda n, k: math.ceil((1 / 5) * (9 * (9 / 4)**(k - 1) - 4))     # unknown
 CIURA2001: GapFunction = lambda n, k: (1, 4, 10, 23, 57, 132, 301, 701)[min(k - 1, 7)]     # unknown
 
 

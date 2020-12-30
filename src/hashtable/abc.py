@@ -43,10 +43,10 @@ LINEAR_PROBER = Prober(
 QUADRATIC_PRIME_PROBER = Prober(
     0.5,
     lambda capacity, index: PRIMES[index + 3] if index + 3 < len(PRIMES) else capacity * 2 - 1,
-    lambda capacity, hash_, trie: (hash_ + trie ** 2 + trie) % capacity,
+    lambda capacity, hash_, trie: (hash_ + trie**2 + trie) % capacity,
 )
-# lambda capacity, hash_, trie: (hash_ + trie ** 2) % capacity,
-# lambda capacity, hash_, trie: (hash_ + (trie * 0.5) ** 2 + (trie * 0.5)) % capacity
+# lambda capacity, hash_, trie: (hash_ + trie**2) % capacity,
+# lambda capacity, hash_, trie: (hash_ + (trie * 0.5)**2 + (trie * 0.5)) % capacity
 
 # Quadratic probing using triangular numbers that fully covers indices on a hashtable of capacity 2**n.
 # Probing constants for triangular numbers probe: c1 = c2 = 1/2
@@ -54,7 +54,7 @@ QUADRATIC_PRIME_PROBER = Prober(
 QUADRATIC_TRIANGULAR_PROBER = Prober(
     0.75,
     lambda capacity, index: 2**(index + 3),
-    lambda capacity, hash_, trie: (hash_ + (trie ** 2 + trie) // 2) % capacity,
+    lambda capacity, hash_, trie: (hash_ + (trie**2 + trie) // 2) % capacity,
 )
 
 
