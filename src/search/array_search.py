@@ -100,12 +100,11 @@ def interpolation_search(
     - space: `O(1)`
 
     > parameters
-    - `array: <T>[]`: array to search `key`
-    - `key: <T>`: key to be search in `array`
-    - `k: int? = 2`: number of buckets to subdivide search
-    - `comparator: ((<T>, <T>) => int)? = lambda a, b: a - b`: comparator for `<T>` type values
-    - `left: int? = 0`: starting index to search
-    - `right: int? = len(array)`: ending index to search
+    - `array`: array to search `key`
+    - `key`: key to be search in `array`
+    - `comparator`: comparator for `<T>` type values
+    - `left`: starting index to search
+    - `right`: ending index to search
 
     - `return`: index of `key` in `array`
     """
@@ -141,11 +140,11 @@ def exponential_search(
     - space: `O(1)`
 
     > parameters
-    - `array: <T>[]`: array to search `key`
-    - `key: <T>`: key to be search in `array`
-    - `comparator: ((<T>, <T>) => int)? = lambda a, b: a - b`: comparator for `<T>` type values
-    - `left: int? = 0`: starting index to search
-    - `right: int? = len(array)`: ending index to search
+    - `array`: array to search `key`
+    - `key`: key to be search in `array`
+    - `comparator`: comparator for `<T>` type values
+    - `left`: starting index to search
+    - `right`: ending index to search
 
     - `return`: index of `key` in `array`
     """
