@@ -2,6 +2,8 @@ import abc
 import collections
 from typing import Callable, Generator, Generic, Literal, Optional, TypeVar
 
+from ..heap import abc as heap_abc
+
 T = TypeVar('T', bool, int, float, str)
 U = TypeVar('U')
 
@@ -18,14 +20,16 @@ class Node(Generic[T, U]):
         self.right: Optional[Node[T, U]] = None
 
 
-class Tree(Generic[T, U], abc.ABC):
+class Tree(Generic[T, U], heap_abc.Heap[T]):
     """
     Abstract base class for binary trees.
-    This class provides basic fields used in common tree data structures, which are `root` and `size`
-    The `printer` attribute is used to generate the tree string representation
+    This class provides basic fields used in common tree data structures, which are `root` and `size`.
+    The `printer` attribute is used to generate the tree string representation.
+    This abstract base class extends the `heap` abstract base class.
     """
 
     def __init__(self):
+        super().__init__()
         self._root: Optional[Node[T, U]] = None
         self._size: int = 0
         printer: Callable[[Node[T, U], int], str] = lambda node, depth: f'{node.key}: {node.value}'
@@ -343,3 +347,24 @@ class Tree(Generic[T, U], abc.ABC):
             if parent.key > key:
                 return parent.key, parent.value
         return None
+
+    # heap abstract base class
+
+    def empty(self) -> bool:
+        return self._size == 0
+
+    def offer(self, value: T):
+        self.put(value, None)
+
+    def poll(self) -> T:
+        minimum = self.minimum()
+        if minimum is None:
+            raise IndexError('empty heap')
+        self.take(minimum[0])
+        return minimum[0]
+
+    def peek(self) -> T:
+        minimum = self.minimum()
+        if minimum is None:
+            raise IndexError('empty heap')
+        return minimum[0]

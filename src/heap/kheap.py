@@ -91,7 +91,7 @@ def heapify_bottom_up(heap: list[T], k: int, comparator: Callable[[T, T], float]
     For a max heap, `comparator` output or logic can be negated.
 
     > complexity
-    - time: `O(n)`
+    - time: `O(n*k)`
     - space: `O(1)`
 
     > parameters

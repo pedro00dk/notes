@@ -37,7 +37,7 @@ Space complexity is available in algorithms files.
     -   quicksort Hoare's partition **- average: O(n\*log(n)), worst: O(n<sup>2</sup>)**
     -   quicksort Lomuto's partition **- average: O(n\*log(n)), worst: O(n<sup>2</sup>)**
     -   quicksort dual pivot partition **- average: O(n\*log(n)), worst: O(n<sup>2</sup>)**
--   [treesort](./src/sorting/treesort.py) _see data structures trees section_ **- O(n\*O(tree.put))**
+-   [treesort](./src/sorting/treesort.py) (_see data structures trees section_) **- O(n\*O(tree.put))**
     -   bstsort **- average: O(n\*log(n)), worst: O(n<sup>2</sup>)**
     -   avlsort **- O(n\*log(n))**
     -   rbtsort **- O(n\*log(n))**
@@ -81,15 +81,36 @@ Space complexity is available in algorithms files.
         -   push **- O(1)**
         -   pop **- O(1)**
         -   peek **- O(1)**
--   [tree (base class)](./src/tree/abc.py)
-    -   traversal **- O(n)**
+-   [heap (base class)](./src/heap/abc.py)
+    -   [binary heap](./src/heap/heap.py)
+        -   sift up **- O(log(n))**
+        -   sift down **- O(log(n))**
+        -   heapify top down (init) **- O(n\*log(n))**
+        -   heapify bottom up (init) **- O(n)**
+        -   offer **- O(log(n))**
+        -   poll **- O(log(n))**
+        -   peek **- O(1)**
+    -   [k-ary heap](./src/heap/kheap.py)
+        -   sift up **- O(k\*log(n,k))**
+        -   sift down **- O(k\*log(n,k))**
+        -   heapify top down (init) **- O(n\*k\*log(n,k))**
+        -   heapify bottom up (init) **- O(n\*k)**
+        -   offer **- O(k\*log(n,k))**
+        -   poll **- O(k\*log(n,k))**
+        -   peek **- O(1)**
+    -   [benchmark](./src/heap/benchmark.py) _- includes trees, see data structures trees section_
+-   [tree (base class)](./src/tree/abc.py) _- implements heap abstract base class_
+    -   traversal (pre-order, in-order, post-order, breadth-order) **- O(n)**
     -   get **- average or balanced trees: O(log(n)), worst: O(n)**
     -   contains key **- average or balanced trees: O(log(n)), worst: O(n)**
     -   contains value **- O(n)**
-    -   ancestor **- average or balanced trees: O(log(n)), worst: O(n)**
-    -   successor **- average or balanced trees: O(log(n)), worst: O(n)**
     -   minimum **- average or balanced trees: O(log(n)), worst: O(n)**
     -   maximum **- average or balanced trees: O(log(n)), worst: O(n)**
+    -   predecessor **- average or balanced trees: O(log(n)), worst: O(n)**
+    -   successor **- average or balanced trees: O(log(n)), worst: O(n)**
+    -   offer (_heap abstract base class_) **- average or balanced trees: O(log(n)), worst: O(n)**
+    -   poll (_heap abstract base class_) **- average or balanced trees: O(log(n)), worst: O(n)**
+    -   peek (_heap abstract base class_) **- average or balanced trees: O(log(n)), worst: O(n)**
     -   [binary search tree](./src/tree/bst.py)
         -   put **- average: O(log(n)), worst: O(n)**
         -   take **- average: O(log(n)), worst: O(n)**
@@ -100,25 +121,6 @@ Space complexity is available in algorithms files.
         -   put **- O(log(n))**
         -   take **- O(log(n))**
     -   [benchmark](./src/tree/benchmark.py)
--   [heap (base class)](./src/heap/abc.py)
-    -   peek **- O(1)**
-    -   [binary heap](./src/heap/heap.py)
-        -   sift up **- O(log(n))**
-        -   sift down **- O(log(n))**
-        -   heapify top down **- O(n\*log(n))**
-        -   heapify bottom up **- O(n)**
-        -   init **- O(n)**
-        -   offer **- O(log(n))**
-        -   poll **- O(log(n))**
-    -   [k-ary heap](./src/heap/kheap.py)
-        -   sift up **- O(k\*log(n,k))**
-        -   sift down **- O(k\*log(n,k))**
-        -   heapify top down **- O(n\*k\*log(n,k))**
-        -   heapify bottom up **- O(n)**
-        -   init **- O(n)**
-        -   offer **- O(k\*log(n,k))**
-        -   poll **- O(k\*log(n,k))**
-    -   [benchmark](./src/heap/benchmark.py)
 -   [disjoint set](./src/dset.py)
     -   implemented:
         -   Numeric keys disjoint set
