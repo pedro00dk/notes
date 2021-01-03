@@ -3,8 +3,10 @@ def slowsort(array: list[float]) -> list[float]:
     Sort `array` using slowsort.
 
     > complexity
-    - time: `O(T(n)), where T(n) = T(n-1) + T(n/2)*2 + 1`
+    - time: `O(T(n))`
     - space: `O(n)`
+    - `n`: length of `array`
+    - `T(x)`: recursive function T(x) = T(x - 1) + T(x/2)*2 + 1`
 
     > parameters
     - `array`: array to be sorted

@@ -7,6 +7,7 @@ def sift_down(heap: list[float], i: int, length: int):
     > complexity
     - time: `O(log(n))`
     - space: `O(1)`
+    - `n`: length of `heap`
 
     > parameters
     - `heap`: array containing heap structure
@@ -31,6 +32,7 @@ def heapsort(array: list[float]) -> list[float]:
     > complexity
     - time: `O(n*log(n))`
     - space: `O(1)`
+    - `n`: length of `array`
 
     > parameters
     - `array`: array to be sorted

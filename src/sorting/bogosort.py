@@ -26,6 +26,7 @@ def bogosort_deterministic(array: list[float]) -> list[float]:
     > complexity
     - time: `O((n + 1)!)`
     - space: `O(n)`
+    - `n`: length of `array`
 
     > parameters
     - `array`: array to be sorted

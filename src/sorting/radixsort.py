@@ -22,8 +22,10 @@ def radixsort_lsd(array: list[int], block: Optional[int] = None) -> list[int]:
     `n`, a smaller `block` size may provide better performance.
 
     > complexity
-    - time: `O(n * w)` where `w` is `log(value_range, 2**block)`
-    - space: `O(n + w)` where `w` is `log(value_range, 2**block)`
+    - time: `O(n * w)`
+    - space: `O(n + w)`
+    - `n`: length of `array`
+    - `w`: `log(value_range, 2**block)`
 
     > parameters
     - `array`: array to be sorted
@@ -94,8 +96,10 @@ def radixsort_msd(array: list[int], block: int = 4) -> list[int]:
     A good experimental value for `block` is `4`, which is the default value.
 
     > complexity
-    - time: `O(n * w)` where `w` is `log(value_range, 2**block)`
-    - space: `O(n + w)` where `w` is `log(value_range, 2**block)`
+    - time: `O(n * w)`
+    - space: `O(n + w)`
+    - `n`: length of `array`
+    - `w`: `log(value_range, 2**block)`
 
     > parameters
     - `array`: array to be sorted

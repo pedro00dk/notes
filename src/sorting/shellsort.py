@@ -6,7 +6,7 @@ GapFunction = Callable[[int, int], int]
 # Functions to be used in the shellsort algorithm to create gap sequences.
 #
 # > parameters
-# - `n`: the array size
+# - `n`: length of `array`
 # - `k`: the current gap size (must start at 1)
 #
 # Gap functions may produce increasing or decresing gap sizes.
@@ -53,7 +53,7 @@ def shellsort(array: list[float], gap_function: GapFunction = CIURA2001):
     Sort `array` using shellsort.
 
     > complexity
-    - time: `O(n * (log(n)/log(log(n)))**2)` for any gap function
+    - time: see gap function
     - space: `O(1)`
 
     > parameters

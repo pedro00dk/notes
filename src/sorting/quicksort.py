@@ -10,6 +10,7 @@ def quicksort_hoare(array: list[float]) -> list[float]:
     > complexity
     - time: average: `O(n*log(n))`, worst: `O(n**2)`
     - space: average: `O(log(n))`, worst: `O(n)`
+    - `n`: length of `array`
 
     > parameters
     - `array`: array to be sorted
@@ -47,6 +48,7 @@ def quicksort_lomuto(array: list[float]) -> list[float]:
     > complexity
     - time: average: `O(n*log(n))`, worst: `O(n**2)`
     - space: average: `O(log(n))`, worst: `O(n)`
+    - `n`: length of `array`
 
     > parameters
     - `array`: array to be sorted
@@ -79,6 +81,7 @@ def quicksort_dual_pivot(array: list[float]) -> list[float]:
     > complexity
     - time: average: `O(n*log(n))`, worst: `O(n**2)`
     - space: average: `O(log(n))`, worst: `O(n)`
+    - `n`: length of `array`
 
     > parameters
     - `array`: array to be sorted

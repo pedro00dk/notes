@@ -77,6 +77,7 @@ class Map(Generic[K, V], abc.ABC):
     def __iter__(self) -> Generator[tuple[K, V], None, None]:
         """
         Return a generator of entries (key and value tuples) contained in the map structure.
+        If the map implementation is key order aware, tuples must be generated in order.
 
         > complexity
         - see implementations

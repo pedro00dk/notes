@@ -14,6 +14,8 @@ def bucketsort(
     > complexity
     - time: average: `O(n + (n**2/k) + k)`, worst `O(n**2)`, best: `O(n)` if `n ~ k` and uniform distribution.
     - space: `O(n * k)`
+    - `n`: length of `array`
+    - `k`: number of buckets
 
     > parameters
     - `array`: array to be sorted

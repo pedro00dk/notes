@@ -5,6 +5,7 @@ def mergesort(array: list[float]) -> list[float]:
     > complexity
     - time: `O(n*log(n))`
     - space: `O(n)`
+    - `n`: length of `array`
 
     > parameters
     - `array`: array to be sorted

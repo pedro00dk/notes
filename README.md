@@ -34,22 +34,22 @@ Space complexity is available in algorithms files.
 -   [heapsort](./src/sorting/heapsort.py) **- O(n\*log(n))**
 -   [mergesort](./src/sorting/mergesort.py) **- O(n\*log(n))**
 -   [quicksort](./src/sorting/quicksort.py)
-    -   quicksort Hoare's partition **- average: O(n\*log(n)), worst: O(n<sup>2</sup>)**
-    -   quicksort Lomuto's partition **- average: O(n\*log(n)), worst: O(n<sup>2</sup>)**
+    -   quicksort hoare's partition **- average: O(n\*log(n)), worst: O(n<sup>2</sup>)**
+    -   quicksort lomuto's partition **- average: O(n\*log(n)), worst: O(n<sup>2</sup>)**
     -   quicksort dual pivot partition **- average: O(n\*log(n)), worst: O(n<sup>2</sup>)**
--   [treesort](./src/sorting/treesort.py) (_see data structures trees section_) **- O(n\*O(tree.put))**
-    -   bstsort **- average: O(n\*log(n)), worst: O(n<sup>2</sup>)**
-    -   avlsort **- O(n\*log(n))**
-    -   rbtsort **- O(n\*log(n))**
+-   [treesort](./src/sorting/treesort.py) (_see data structures trees section_) **- O(n\*`Tree.put` + `Tree.__iter__`))**
+    -   treesort bst **- average: O(n\*log(n)), worst: O(n<sup>2</sup>)**
+    -   treesort avl **- O(n\*log(n))**
+    -   treesort rbt **- O(n\*log(n))**
 -   [shellsort](./src/sorting/shellsort.py)
-    -   Shell1959 **- O(n<sup>2</sup>)**
-    -   FrankLazarus1960 **- O(n<sup>3/2</sup>)**
-    -   Hibbard1963 **- O(n<sup>3/2</sup>)**
-    -   PapernovStasevich1965 **- O(n<sup>3/2</sup>)**
-    -   Knuth1973 **- O(n<sup>3/2</sup>)**
-    -   Sedgewick1982 **- O(n<sup>4/3</sup>)**
-    -   Tokuda1992 **- unknown**
-    -   Ciura2001 **- unknown**
+    -   shellsort Shell1959 **- O(n<sup>2</sup>)**
+    -   shellsort FrankLazarus1960 **- O(n<sup>3/2</sup>)**
+    -   shellsort Hibbard1963 **- O(n<sup>3/2</sup>)**
+    -   shellsort PapernovStasevich1965 **- O(n<sup>3/2</sup>)**
+    -   shellsort Knuth1973 **- O(n<sup>3/2</sup>)**
+    -   shellsort Sedgewick1982 **- O(n<sup>4/3</sup>)**
+    -   shellsort Tokuda1992 **- unknown**
+    -   shellsort Ciura2001 **- unknown**
 -   [countingsort](./src/sorting/countingsort.py) **- O(n + k)**
 -   [bucketsort](./src/sorting/bucketsort.py) **- average: O(n + (n<sup>2</sup>/k) + k), worst O(n<sup>2</sup>), best: O(n)**
 -   [radixsort](./src/sorting/radixsort.py)
@@ -63,13 +63,13 @@ Space complexity is available in algorithms files.
 
 ## Data Structures
 
--   [Linked[T] (abstract)](./src/linked/abc.py)
+-   [`Linked[T]` abstract](./src/linked/abc.py)
     -   `__str__` **- O(`Linked.__iter__`)**
     -   `__len__` **- abstract**
     -   `__iter__` **- abstract**
     -   `__contains__` **- O(`Linked.__iter__`)**
     -   `index` **- O(`Linked.__iter__`)**
-    -   [LinkedList[T] (extends Linked[T])](./src/linked/list.py)
+    -   [`LinkedList[T]` extends `Linked[T]`](./src/linked/list.py)
         -   `Linked.__len__` **- O(1)**
         -   `Linked.__iter__` **- O(n)**
         -   `push` **- O(n)**
@@ -77,19 +77,19 @@ Space complexity is available in algorithms files.
         -   `remove` (value deletion) **- O(n)**
         -   `get` (same as `Linked.index`, but faster) **- O(n)**
         -   `reverse` **- O(n)**
-    -   [Queue[T] (extends Linked[T])](./src/linked/queue.py)
+    -   [`Queue[T]` extends `Linked[T]`](./src/linked/queue.py)
         -   `Linked.__len__` **- O(1)**
         -   `Linked.__iter__` **- O(n)**
         -   `offer` **- O(1)**
         -   `poll` **- O(1)**
         -   `peek` **- O(1)**
-    -   [Stack (extends Linked[T])](./src/linked/stack.py)
+    -   [`Stack[T]` extends `Linked[T]`](./src/linked/stack.py)
         -   `Linked.__len__` **- O(1)**
         -   `Linked.__iter__` **- O(n)**
         -   `push` **- O(1)**
         -   `pop` **- O(1)**
         -   `peek` **- O(1)**
--   [Priority[T] (abstract)](./src/priority/abc.py)
+-   [`Priority[T]` abstract](./src/priority/abc.py)
     -   `__str__` **- O(`Priority.__iter__`)**
     -   `__len__` **- abstract**
     -   `__iter__` **- abstract**
@@ -97,7 +97,7 @@ Space complexity is available in algorithms files.
     -   `offer` **- abstract**
     -   `poll` **- abstract**
     -   `peek` **- abstract**
-    -   [Heap[T] (extends Priority[T])](./src/priority/heap.py)
+    -   [`Heap[T]` extends `Priority[T]`](./src/priority/heap.py)
         -   Utility
             -   `sift_up` **- O(log(n))**
             -   `sift_down` **- O(log(n))**
@@ -108,7 +108,7 @@ Space complexity is available in algorithms files.
         -   `Priority.offer` **- O(log(n))**
         -   `Priority.poll` **- O(log(n))**
         -   `Priority.peek` **- O(1)**
-    -   [KHeap[T] (extends Priority[T])](./src/priority/kheap.py)
+    -   [`KHeap[T]` extends `Priority[T]`](./src/priority/kheap.py)
         -   Utility
             -   `sift_up` **- O(k\*log<sub>k</sub>(n))**
             -   `sift_down` **- O(k\*log<sub>k</sub>(n))**
@@ -121,7 +121,7 @@ Space complexity is available in algorithms files.
         -   `Priority.poll` **- O(k\*log<sub>k</sub>(n))**
         -   `Priority.peek` **- O(1)**
     -   [benchmark](./src/priority/benchmark.py) _- includes trees, see data structures trees section_
--   [Map[K, V] (abstract)](./src/map/abc.py)
+-   [`Map[K, V]` abstract](./src/map/abc.py)
     -   Implemented probers
         -   Linear Probing
         -   Quadratic Prime Probing
@@ -136,20 +136,20 @@ Space complexity is available in algorithms files.
     -   `take` **- abstract**
     -   `get` **- abstract**
     -   `contains_value` **- O(`Map.__iter__`)**
-    -   [OpenAddressingHashtable[K, V] (extends Map[K, V])](./src/map/oa_hashtable.py)
+    -   [`OpenAddressingHashtable[K, V]` extends `Map[K, V]`](./src/map/oa_hashtable.py)
         -   `Map.__len__` **- O(1)**
         -   `Map.__iter__` **- O(n)**
         -   `Map.put` **- O(1) amortized**
         -   `Map.take` **- O(1) amortized**
         -   `Map.get` **- O(1) amortized**
-    -   [SequenceChainingHashtable (extends Map[K, V])](./src/map/sc_hashtable.py)
+    -   [`SequenceChainingHashtable[K, V]` extends `Map[K, V]`](./src/map/sc_hashtable.py)
         -   `Map.__len__` **- O(1)**
         -   `Map.__iter__` **- O(n)**
         -   `Map.put` **- O(1) amortized**
         -   `Map.take` **- O(1) amortized**
         -   `Map.get` **- O(1) amortized**
     -   [benchmark](./src/map/benchmark.py) _- includes trees, see data structures trees section_
--   [Tree[K, V] (abstract, extends Map[K, V] Heap[K])](./src/tree/abc.py)
+-   [`Tree[K, V]` abstract extends `Map[K, V]` `Heap[K]`](./src/tree/abc.py)
     -   `minimum` **- abstract**
     -   `maximum` **- abstract**
     -   `predecessor` **- abstract**
@@ -157,7 +157,7 @@ Space complexity is available in algorithms files.
     -   `Heap.offer` **- O(`Map.put`)**
     -   `Heap.poll` **- O(`Tree.minimum` + `Map.take`)**
     -   `Heap.peek` **- O(`Tree.minimum`)**
-    -   [Binary Search Tree - BST[K = bool, int, float, str, V] (extends Tree[K, V])](./src/tree/bst.py)
+    -   [Binary Search Tree - `BST[K = bool, int, float, str, V]` extends `Tree[K, V]`](./src/tree/bst.py)
         -   `__str__` (override `Map.__str__` and `Priority.__str__`) - **O(traverse)**
         -   `Map.__len__ , Priority.__len__` **- O(1)**
         -   `Map.__iter__ , Priority.__iter__` **- O(traverse)**
@@ -169,16 +169,16 @@ Space complexity is available in algorithms files.
         -   `Tree.predecessor` **- average: O(log(n)), worst: O(n)**
         -   `Tree.successor` **- average: O(log(n)), worst: O(n)**
         -   `traverse` (pre, in, post, breadth) - **average: O(log(n)), worst: O(n)**
-    -   [Adelson Velsky and Landis - AVL[K = bool, int, float, str, V] (extends BST[K, V])](./src/tree/avl.py)
+    -   [Adelson Velsky and Landis - `AVL[K = bool, int, float, str, V]` extends `BST[K, V]`](./src/tree/avl.py)
         -   `put` (override `Map.put` in `BST`) **- O(log(n))**
         -   `take` (override `Map.take` in `BST`) **- O(log(n))**
         -   **all functions worst case drop to O(log(n))**
-    -   [Red-Black Tree - RBT[K = bool, int, float, str, V] (extends BST[K, V])](./src/tree/rbt.py)
+    -   [Red-Black Tree - `RBT[K = bool, int, float, str, V]` extends `BST[K, V]`](./src/tree/rbt.py)
         -   `put` (override `Map.put` in `BST`) **- O(log(n))**
         -   `take` (override `Map.take` in `BST`) **- O(log(n))**
         -   **all functions worst case drop to O(log(n))**
     -   [benchmark](./src/tree/benchmark.py)
--   [DisjointSet and HashDisjointSet[T]](./src/dset.py)
+-   [`DisjointSet` and `HashDisjointSet[T]`](./src/dset.py)
     -   `__init__` **- O(n)**
     -   `__str__` **- O(n)**
     -   `__len__` **- O(1)**
@@ -188,7 +188,7 @@ Space complexity is available in algorithms files.
     -   `find` **- O(1)**
     -   `union` **- O(1)**
     -   `connected` **- O(1)**
--   [binary index tree (fenwick tree)](./src/bit.py)
+-   [Binary Index Tree (Fenwick Tree) - `BIT`](./src/bit.py)
     -   `__init__` **- O(n)**
     -   `__str__` **- O(n)**
     -   `__len__` **- O(1)**
@@ -196,7 +196,7 @@ Space complexity is available in algorithms files.
     -   `sum_range` (prefix sum range) **- O(log(n))**
     -   `add` **- O(log(n))**
     -   `set` **- O(log(n))**
--   [Graph[V, E] (adjacency list)](./src/graph/graph.py) _- see graph theory algorithms section_
+-   [`Graph[V, E]` (adjacency list)](./src/graph/graph.py) _- see graph theory algorithms section_
     -   [factory](./src/graph/factory.py)
         -   complete
         -   random undirected
@@ -312,7 +312,7 @@ Space complexity is available in algorithms files.
 
 -   [array search](./src/search/array_search.py)
     -   binary search **- O(log(n))**
-    -   k-ary search **- O(k\*log(n,k))**
+    -   k-ary search **- O(k\*log<sub>k</sub>(n))**
     -   interpolation search **- O(log(log(n))) uniformly distributed arrays, worst: O(n)**
     -   exponential search **- O(log(i))**
 -   [exact string search](./src/search/string_exact.py)

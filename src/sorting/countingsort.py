@@ -8,8 +8,10 @@ def countingsort(array: list[int]) -> list[int]:
     `bucketsort` can be used for floating-point values.
 
     > complexity
-    - time: `O(n + k)` where `k` is `value_range`
-    - space: `O(n + k)` where `k` is `value_range`
+    - time: `O(n + k)`
+    - space: `O(n + k)`
+    - `n`: length of `array`
+    - `k`: difference between smallest and greatest value in `array`
 
     > parameters
     - `array`: array to be sorted

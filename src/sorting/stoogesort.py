@@ -8,6 +8,7 @@ def stoogesort(array: list[float]) -> list[float]:
     > complexity
     - time: `O(n**(log(3)/log(1.5))) ~ O(n**2.7)`
     - space: `O(log(n, 3))`
+    - `n`: length of `array`
 
     > parameters
     - `array`: array to be sorted

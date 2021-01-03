@@ -5,6 +5,7 @@ def insertionsort(array: list[float]) -> list[float]:
     > complexity
     - time: `O(n**2)`
     - space: `O(1)`
+    - `n`: length of `array`
 
     > parameters
     - `array`: array to be sorted
