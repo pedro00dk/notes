@@ -18,6 +18,7 @@ def base_encode(data: bytes, alphabet: bytes = BASE64_ALPHABET, padding: bool = 
     > complexity
     - time: `O(n)`
     - space: `O(n)`
+    - `n`: length of `data`
 
     > parameters
     - `data`: data to encode
@@ -53,6 +54,7 @@ def base_decode(data: bytes, alphabet: bytes = BASE64_ALPHABET, padding: bool = 
     > complexity
     - time: `O(n)`
     - space: `O(n)`
+    - `n`: length of `data`
 
     > parameters
     - `data`: data to decode
@@ -105,6 +107,7 @@ def _x85_encode(
     > complexity
     - time: `O(n)`
     - space: `O(n)`
+    - `n`: length of `data`
 
     > parameters
     - `data`: data to encode
@@ -153,6 +156,7 @@ def _x85_decode(
     > complexity
     - time: `O(n)`
     - space: `O(n)`
+    - `n`: length of `data`
 
     > parameters
     - `data`: data to encode
@@ -210,6 +214,7 @@ def ascii85_encode(data: bytes, padding: bool = False, fold_space: bool = False,
     > complexity
     - time: `O(n)`
     - space: `O(n)`
+    - `n`: length of `data`
 
     > parameters
     - `data`: data to encode
@@ -235,6 +240,11 @@ def asci85_decode(data: bytes, unfold_space: bool = False, adobe: bool = False) 
     `unfold_space` is not compatible with `adobe` ascii85 decoders, but it is decodeable by this implementation.
     This implementation support line wrapping in decoding.
 
+    > complexity
+    - time: `O(n)`
+    - space: `O(n)`
+    - `n`: length of `data`
+
     > parameters
     - `data: bytes`: data to decode
     - `unfold_space: bool? = False`: unfold `b'y'` character into four spaces
@@ -258,6 +268,7 @@ def base85_encode(data: bytes, alphabet_name: Literal['git', 'zmq'] = 'git', pad
     > complexity
     - time: `O(n)`
     - space: `O(n)`
+    - `n`: length of `data`
 
     > parameters
     - `data`: data to encode
@@ -279,6 +290,7 @@ def base85_decode(data: bytes, alphabet_name: Literal['git', 'zmq'] = 'git') -> 
     > complexity
     - time: `O(n)`
     - space: `O(n)`
+    - `n`: length of `data`
 
     > parameters
     - `data: bytes`: data to encode

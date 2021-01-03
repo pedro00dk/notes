@@ -13,6 +13,7 @@ def permutation(n: int, k: Optional[int] = None) -> int:
     > complexity
     - time: `O(n)`
     - space: `O(1)`
+    - `n`: absolute value of parameter `n`
 
     > parameters
     - `n`: number of items
@@ -36,6 +37,8 @@ def permutations_cycle(items: list[T], k: Optional[int] = None) -> Generator[tup
     > complexity
     - time: `O(n**k)`, for `k == n` it can be approximated to `O(n!)`, although `O(n**n) ~ O(n!)`
     - space: `O(n)` or `O(n! * n)` if permutations are stored
+    - `n`: absolute value of parameter `n`
+    - `k`: absolute value of parameter `k`
 
     > parameters
     - `items`: items to generate the permutations
@@ -72,6 +75,7 @@ def permutations_heap(items: list[T]) -> Generator[tuple[T, ...], None, None]:
     > complexity
     - time: `O(n!)`
     - space: `O(n)` or `O(n! * n)` if permutations are stored
+    - `n`: absolute value of parameter `n`
 
     > parameters
     - `items`: items to generate the permutations

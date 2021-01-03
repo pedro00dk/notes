@@ -16,6 +16,7 @@ def binary_search(
     > complexity
     - time: `O(log(n))`
     - space: `O(1)`
+    - `n`: length of `array`
 
     > parameters
     - `array`: array to search `key`
@@ -54,6 +55,8 @@ def k_ary_search(
     > complexity
     - time: `O(k*log(n,k))`
     - space: `O(1)`
+    - `n`: length of `array`
+    - `k`: search arity, absolute value of parameter `k`
 
     > parameters
     - `array`: array to search `key`
@@ -98,6 +101,7 @@ def interpolation_search(
     > complexity
     - time: `O(log(log(n))) uniformly distributed arrays, worst: O(n)`
     - space: `O(1)`
+    - `n`: length of `array`
 
     > parameters
     - `array`: array to search `key`
@@ -136,8 +140,9 @@ def exponential_search(
     Require `array` to be sorted based on `comparator`.
 
     > complexity
-    - time: `O(log(i))` where `i` is `key` index
+    - time: `O(log(i))`
     - space: `O(1)`
+    - `i`: index of `key` in `array`
 
     > parameters
     - `array`: array to search `key`

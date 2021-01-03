@@ -4,8 +4,10 @@ def edit_distance_brute_force(text_a: bytes, text_b: bytes, i: int = 0, j: int =
     The distance used is the Levenshtein distance, which allows deletion, insertion and substitution.
 
     > complexity
-    - time: `O(3**(n + m))`, where `n` and `m` are the lengths of `text_a` and `text_b`
-    - space: `O(n + m)`, where `n` and `m` are the lengths of `text_a` and `text_b`
+    - time: `O(3**(n + m))`
+    - space: `O(n + m)`
+    - `n`: length of `text_a`
+    - `m`: length of `text_b`
 
     > parameters
     - `text_a`: data to compute distance
@@ -31,8 +33,10 @@ def edit_distance_wagner_fischer(text_a: bytes, text_b: bytes):
     The distance used is the Levenshtein distance.
 
     > complexity
-    - time: `O(n*m)`, where `n` and `m` are the lengths of `text_a` and `text_b`
-    - space: `O(n*m)`, where `n` and `m` are the lengths of `text_a` and `text_b`
+    - time: `O(n*m)`
+    - space: `O(n*m)`
+    - `n`: length of `text_a`
+    - `m`: length of `text_b`
 
     > parameters
     - `text_a`: data to compute distance
@@ -59,7 +63,10 @@ def edit_distance_wagner_fischer_opt(text_a: bytes, text_b: bytes):
     - reuse same arrays by swapping them
 
     > complexity
-    - space: `O(min(n, m))`, where `n` and `m` are the lengths of `text_a` and `text_b`
+    - time: `O(n*m)`
+    - space: `O(min(n, m))`
+    - `n`: length of `text_a`
+    - `m`: length of `text_b`
     """
     if len(text_a) < len(text_b):
         text_a, text_b = text_b, text_a

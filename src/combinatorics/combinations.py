@@ -14,6 +14,8 @@ def combination_pascal(n: int, k: int) -> int:
     > complexity
     - time: `O(min(n**k, n**(n-k)))`
     - space: `O(n)` 
+    - `n`: absolute value of parameter `n`
+    - `k`: absolute value of parameter `k`
 
     > parameters
     - `n`: number of items
@@ -38,6 +40,7 @@ def combination_perm(n: int, k: int) -> int:
     > complexity
     - time: `O(n)`
     - space: `O(1)`
+    - `n`: absolute value of parameter `n`
 
     > parameters
     - `n`: number of items
@@ -55,6 +58,9 @@ def combinations_range(items: list[T], k: int) -> Generator[tuple[T, ...], None,
     > complexity
     - time: `O(C(n, k))`
     - space: `O(n)` or `O(C(n, k) * n)` if combinations are stored
+    - `n`: length of `items`
+    - `k`: absolute value of parameter `k`
+    - `C(x, y)`: combination of x and y
 
     > parameters
     - `items`: items to generate combinations
@@ -79,6 +85,9 @@ def bit_combinations_range(n: int, k: int) -> Generator[int, None, None]:
     > complexity
     - time: `O(C(n, k))`
     - space: `O(1)` or `O(C(n, k))` if numbers are stored
+    - `n`: absolute value of parameter `n`
+    - `k`: absolute value of parameter `k`
+    - `C(x, y)`: combination of x and y
 
     > parameters:
     - `n`: number of bits
@@ -102,6 +111,9 @@ def bit_combinations_branch(n: int, k: int) -> Generator[int, None, None]:
     > complexity
     - time: `O(C(n, k))`
     - space: `O(1)` or `O(C(n, k))` if numbers are stored
+    - `n`: absolute value of parameter `n`
+    - `k`: absolute value of parameter `k`
+    - `C(x, y)`: combination of x and y
 
     > parameters
     - `n: int`: number of bits

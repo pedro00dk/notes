@@ -17,6 +17,8 @@ def sellers(text: bytes, pattern: bytes, max_distance: int) -> list[tuple[int, i
     > complexity
     - time: `O(n*p)`
     - space: `O(p)`
+    - `n`: length of `text`
+    - `p`: length of `pattern`
 
     > parameters
     - `text`: text to find pattern matches
@@ -53,6 +55,10 @@ def ukkonen(text: bytes, pattern: bytes, max_distance: int) -> list[tuple[int, i
     > complexity
     - time: `O(n + (p*c*min(p, d)))`
     - space: `O(p)`
+    - `n`: length of `text`
+    - `p`: length of `pattern`
+    - `d`: absolute value of `max_distance`
+    - `c`: alphabet size, fixed 256
 
     > parameters
     - `text`: text to find pattern matches
@@ -68,8 +74,9 @@ def ukkonen(text: bytes, pattern: bytes, max_distance: int) -> list[tuple[int, i
         possible columns to be mapped in the build_fsa algorithm.
 
         > complexity
-        - time: `O(p)`, where `c` is the alphabet size (256), and `d` is `max_distance`
+        - time: `O(p)`
         - space: `O(p)`
+        - `p`: length of `pattern`
 
         > parameters
         - `column`: the previous column of distances
@@ -94,8 +101,11 @@ def ukkonen(text: bytes, pattern: bytes, max_distance: int) -> list[tuple[int, i
         distance at that vertex as value.
 
         > complexity
-        - time: `O(p*c*min(p, d))`, where `c` is the alphabet size (256), and `d` is `max_distance`
+        - time: `O(p*c*min(p, d))`
         - space: `O(p)`
+        - `p`: length of `pattern`
+        - `d`: absolute value of `max_distance`
+        - `c`: alphabet size, fixed 256
 
         > parameters
         - `pattern`: pattern
@@ -151,8 +161,12 @@ def wu_manber(text: bytes, pattern: bytes, max_distance: int) -> list[tuple[int,
     Wu-Manber performance mainly depends on the `max_distance` argument, `pattern` length has minimal impact.
 
     > complexity
-    - time: `O(n*min(p, d) + p)`, where `d` is `max_distance`
-    - space: `O(c + min(p, d))`, where `c` is the alphabet size (256), and `d` is `max_distance`
+    - time: `O(n*min(p, d) + p)`
+    - space: `O(c + min(p, d))`
+    - `n`: length of `text`
+    - `p`: length of `pattern`
+    - `d`: absolute value of `max_distance`
+    - `c`: alphabet size, fixed 256
 
     > parameters
     - `text`: text to find pattern matches
@@ -171,8 +185,10 @@ def wu_manber(text: bytes, pattern: bytes, max_distance: int) -> list[tuple[int,
         This behavior is the opposite of the exact version.
 
         > complexity
-        - time: `O(p)`, where `d` is `max_distance`
-        - space: `O(c)`, where `c` is the alphabet size (256)
+        - time: `O(p)`
+        - space: `O(c)`
+        - `p`: length of `pattern`
+        - `c`: alphabet size, fixed 256
         """
         char_masks = [~0] * 256
         match_mask = 1 << len(pattern) - 1

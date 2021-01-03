@@ -11,6 +11,7 @@ def factorial_rec(n: int) -> int:
     > complexity
     - time: `O(n)`
     - space: `O(log(n))`
+    - `n`: absolute value of parameter `n`
 
     > parameters
     - `n`: value to compute factorial
@@ -29,6 +30,7 @@ def factorial_itr(n: int) -> int:
     > complexity
     - time: `O(n)`
     - space: `O(1)`
+    - `n`: absolute value of parameter `n`
 
     > parameters
     - `n: int`: value to compute factorial

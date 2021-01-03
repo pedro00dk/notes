@@ -15,6 +15,12 @@ def alphabet_base_encode(value: int, alphabet: bytes, maximum: Optional[int] = N
     Convert an integer `value` to any base defined by `alphabet`.
     The result value follows big-endian order.
 
+    > complexity
+    - time: `O(log(n, a))`
+    - space: `O(log(n, a))`
+    - `n`: absolute value of `value`
+    - `a`: length of `alphabet`
+
     > parameters
     - `value`: value to convert
     - `alphabet`: the base alphabet
@@ -34,6 +40,12 @@ def alphabet_base_encode(value: int, alphabet: bytes, maximum: Optional[int] = N
 def alphabet_base_decode(encoded: bytes, alphabet: bytes):
     """
     Convert an `encoded` value using `alphabet` back the integer value.
+
+    > complexity
+    - time: `O(log(n, a))`
+    - space: `O(log(n, a))`
+    - `n`: absolute value of `value`
+    - `a`: length of `alphabet`
 
     > parameters
     - `encoded`: bytes to decoded
@@ -55,8 +67,9 @@ def little_endian_base_128_encode(value: int):
     This is the basic algorithm implementation and only works with unsigned integers.
 
     > complexity
-    - time: `O(log(n))` where `n` is the absolute value of `value`, this log has base 128
-    - space: `O(log(n))` where `n` is the absolute value of `value`, this log has base 128
+    - time: `O(log(n, 128))`
+    - space: `O(log(n, 128))`
+    - `n`: absolute value of `value`
 
     > parameters
     - `value`: value to encode, negative values are not supported

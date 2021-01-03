@@ -10,6 +10,8 @@ def brute_force(text: bytes, pattern: bytes) -> list[int]:
     > complexity
     - time: `O(n * p)`
     - space: `O(1)`
+    - `n`: length of `text`
+    - `p`: length of `pattern`
 
     > parameters
     - `text`: text to search for occurrences of pattern
@@ -35,6 +37,8 @@ def rabin_karp(text: bytes, pattern: bytes, alphabet: int = 256, modulus: int = 
     > complexity
     - time: average: `O(n + p)`, worst: `O(n * p)`
     - space: `O(1)`
+    - `n`: length of `text`
+    - `p`: length of `pattern`
 
     > parameters
     - `text`: text to search for occurrences of pattern
@@ -103,6 +107,8 @@ def knuth_morris_pratt(text: bytes, pattern: bytes, optimized_border: bool = Tru
     > complexity
     - time: `O(n + p)` if `border_opt` else `O(n + p**2)`
     - space: `O(p)`
+    - `n`: length of `text`
+    - `p`: length of `pattern`
 
     > parameters
     - `text`: text to search for occurrences of pattern
@@ -163,7 +169,10 @@ def baeza_yates_gonnet(text: bytes, pattern: bytes) -> list[int]:
 
     > complexity
     - time: `O(n + p)`
-    - space: `O(c)`, where `c` is the alphabet size (256)
+    - space: `O(c)`
+    - `n`: length of `text`
+    - `p`: length of `pattern`
+    - `c`: alphabet size, fixed 256
 
     > parameters
     - `text`: text to search for occurrences of pattern
@@ -177,6 +186,8 @@ def baeza_yates_gonnet(text: bytes, pattern: bytes) -> list[int]:
         > complexity
         - time: `O(p)`
         - space: `O(c)`, where `c` is the alphabet size (256)
+        - `p`: length of `pattern`
+        - `c`: alphabet size, fixed 256
         """
         char_masks = [0] * 256
         match_mask = 1 << len(pattern) - 1
@@ -203,6 +214,9 @@ def boyer_moore(text: bytes, pattern: bytes, extended_bad_char_table: bool = Tru
     > complexity
     - time: `O(n + p)`
     - space: `O(c)` if not `extended_bad_char_table` else `O(p*c)`
+    - `n`: length of `text`
+    - `p`: length of `pattern`
+    - `c`: alphabet size, fixed 256
 
     > parameters
     - `text`: text to search for occurrences of pattern
@@ -235,7 +249,9 @@ def boyer_moore(text: bytes, pattern: bytes, extended_bad_char_table: bool = Tru
 
         > complexity
         - time: `O(p)`
-        - space: `O(c)`, where `c` is the alphabet size (256)
+        - space: `O(c)`
+        - `p`: length of `pattern`
+        - `c`: alphabet size, fixed 256
         """
         table = [-1] * 256
         for i, byte in enumerate(pattern):
@@ -280,7 +296,9 @@ def boyer_moore(text: bytes, pattern: bytes, extended_bad_char_table: bool = Tru
 
         > complexity
         - time: `O(p)`
-        - space: `O(p*c)`, where `c` is the alphabet size (256)
+        - space: `O(p*c)`
+        - `p`: length of `pattern`
+        - `c`: alphabet size, fixed 256
         """
         table = [[-1] * 256]
         for i in range(len(pattern)):
@@ -297,6 +315,7 @@ def boyer_moore(text: bytes, pattern: bytes, extended_bad_char_table: bool = Tru
         > complexity
         - time: `O(p)`
         - space: `O(p)`
+        - `p`: length of `pattern`
         """
         shift = [0] * (len(pattern) + 1)
         i = len(pattern)
@@ -343,8 +362,10 @@ def aho_corasick(text: bytes, patterns: list[bytes]) -> dict[bytes, list[int]]:
     Aho-Corasick string exact multi string searching algorithm.
 
     > complexity
-    - time: `O(n + p)`, where `p` is the sum of the length of all patterns
-    - space: `O(p)`, where `p` is the sum of the length of all patterns
+    - time: `O(n + p)`
+    - space: `O(p)`
+    - `n`: length of `text`
+    - `p`: sum of the lengths of all `patterns`
 
     > parameters
     - `text`: text to search for occurrences of pattern
@@ -360,8 +381,9 @@ def aho_corasick(text: bytes, patterns: list[bytes]) -> dict[bytes, list[int]]:
         contains a list o patterns that occur at the vertex.
 
         > complexity
-        - time: `O(p)`, where `p` is the sum of the length of all patterns
-        - space: `O(p)`, where `p` is the sum of the length of all patterns
+        - time: `O(p)`
+        - space: `O(p)`
+        - `p`: sum of the lengths of all `patterns`
 
         > parameters
         - `patterns`: list of patterns to be searched
@@ -393,8 +415,10 @@ def aho_corasick(text: bytes, patterns: list[bytes]) -> dict[bytes, list[int]]:
         Build all trie fail links, and update goals when fails happen in goal vertices.
 
         > complexity
-        - time: `O(p)`, where `p` is the sum of the length of all patterns
-        - space: `O(p*c)`, where `p` is the sum of the length of all patterns, and `c` is the alphabet size (256)
+        - time: `O(p)`
+        - space: `O(p*c)`
+        - `p`: length of `pattern`
+        - `c`: alphabet size, fixed 256
 
         > parameters
         - `trie`: the trie computed in `build_goto`

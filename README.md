@@ -342,8 +342,8 @@ Space complexity is available in algorithms files.
     -   base85 rfc1924 (printable) **- O(n)**
     -   base85 zeromq (printable) **- O(n)**
 -   [integer coding](./src/encoding/integer.py)
-    -   alphabet base (printable) **- O(log(n))**
-    -   little endian base 128 variable (non-printable, semi-compression) **- O(log(n))**
+    -   alphabet base (printable) **- O(log<sub>a</sub>(n))**
+    -   little endian base 128 variable (non-printable, semi-compression) **- O(log<sub>128</sub>(n))**
 -   [huffman coding](./src/encoding/huffman.py)
     -   huffman coding (non-printable, compression) **- O(n)**
 

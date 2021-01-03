@@ -11,8 +11,9 @@ def huffman_tree(data: bytes) -> HuffmanTree:
     Build a huffman coding tree from `data`.
 
     > complexity
-    - time: `O(n*log(n))`
-    - space: `O(n*log(n))`
+    - time: `O(n)`
+    - space: `O(n)`
+    - `n`: length of `data`
 
     > parameters
     - `data`: data to generate the huffman coding tree
@@ -140,6 +141,7 @@ def huffman_encode(data: bytes) -> bytearray:
     > complexity
     - time: `O(n)`
     - space: `O(n)`
+    - `n`: length of `data`
 
     > parameters
     - `data`: data to be encoded
@@ -174,6 +176,7 @@ def huffman_decode(encoded: bytes) -> bytearray:
     > complexity
     - time: `O(n)`
     - space: `O(n)`
+    - `n`: length of `encoded`
 
     > parameters
     - `encoded`: data to be decoded
