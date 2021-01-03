@@ -12,6 +12,8 @@ def mst_prim(graph: Graph[Any, Any]) -> Optional[tuple[float, list[tuple[int, in
     > complexity
     - time: `O(e*log(e)) ~> O(e*log(v))`
     - space: `O(v + e)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph: Graph`: graph to find tree
@@ -48,6 +50,8 @@ def mst_kruskal(graph: Graph[Any, Any]) -> Optional[tuple[float, list[tuple[int,
     > complexity
     - time: `O(e*log(e)) ~> O(e*log(v))`
     - space: `O(v + e)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to find tree
@@ -79,6 +83,8 @@ def mst_boruvka(graph: Graph[Any, Any]) -> Optional[tuple[float, list[tuple[int,
     > complexity
     - time: `O((v + e)*log(v)) ~> O(e*log(v))`
     - space: `O(v + e)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to find tree

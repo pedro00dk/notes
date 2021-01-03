@@ -12,6 +12,8 @@ def sssp_dag(graph: Graph[Any, Any], start: int) -> list[tuple[float, int]]:
     > complexity
     - time: `O(v + e)`
     - space: `O(v)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to compute single source shortest path
@@ -38,6 +40,8 @@ def sslp_dag(graph: Graph[Any, Any], start: int) -> list[tuple[float, int]]:
     > complexity
     - time: `O(v + e)`
     - space: `O(v)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to compute single source shortest path
@@ -66,6 +70,8 @@ def sssp_dijkstra(graph: Graph[Any, Any], start: int, end: Optional[int] = None)
     > complexity
     - time: `O((v + e)*log(v)) ~> O(e*log(v))`
     - space: `O(v + e)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to compute single source shortest path
@@ -127,11 +133,13 @@ def sssp_bellman_ford(
     check_negative_cycles: bool = True,
 ) -> list[tuple[float, int]]:
     """
-    Bellman Ford single source longest path algorithm.
+    Bellman Ford single source shortest path algorithm.
 
     > complexity
     - time: `O(v*e)`
     - space: `O(v)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to compute single source shortest path
@@ -168,6 +176,7 @@ def apsp_floyd_warshall(
     > complexity
     - time: `O(v**3)`
     - space: `O(v**2)`
+    - `v`: number of vertices in `graph`
 
     > parameters
     - `graph`: graph to compute single source shortest path
@@ -220,6 +229,7 @@ def floyd_warshall_rebuild_path(
     > complexity
     - time: `O(v)`
     - space: `O(v)`
+    - `v`: number of vertices in `graph`
 
     > parameters
     - `distances`: floyd warshall distances matrix

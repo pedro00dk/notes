@@ -20,6 +20,7 @@ def tsp_brute_force(
     > complexity
     - time: `O(v!)`
     - space: `O(v**2)` due to adjacency matrix creation
+    - `v`: number of vertices in `graph`
 
     > parameters
     - `graph`: graph to find itinerary
@@ -68,6 +69,7 @@ def tsp_held_karp_bitset(
     > complexity
     - time: `O((2**v)*(v**2))`
     - space: `O(v*(2**v))`
+    - `v`: number of vertices in `graph`
 
     > parameters
     - `graph`: graph to find itinerary
@@ -157,6 +159,7 @@ def tsp_held_karp_hashset(
     > complexity
     - time: `O((2**v)*(v**2))`
     - space: `O(2**v)`
+    - `v`: number of vertices in `graph`
 
     > parameters
     - `graph`: graph to find itinerary
@@ -233,6 +236,7 @@ def tsp_nearest_heighbor(
     > complexity
     - time: `O((2**v)*(v**2))`
     - space: `O(2**v)`
+    - `v`: number of vertices in `graph`
 
     > parameters
     - `graph`: graph to find itinerary (must be complete)

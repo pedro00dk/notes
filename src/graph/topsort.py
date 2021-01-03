@@ -11,6 +11,8 @@ def topsort_khan(graph: Graph[Any, Any]) -> list[int]:
     > complexity
     - time: `O(v + e)`
     - space: `O(v + e)` extra `e` due to graph copy
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to compute topological order
@@ -48,6 +50,8 @@ def topsort_dfs(graph: Graph[Any, Any]) -> list[int]:
     > complexity
     - time: `O(v + e)`
     - space: `O(v)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to compute topological order

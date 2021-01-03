@@ -55,8 +55,12 @@ def pathfinder_dfs(flow_graph: Graph[Any, Any], source: int, sink: int):
         The performance depends on the edges capacities, which means this function is not strongly polynomial.
 
         > complexity (of ford fulkerson algorithm using this core)
-        - time: `O(f*e)` where `f` is the difference from the minimum to the maximum edge capacity
+        - time: `O(f*e)`
         - space: `O(v + e)`
+        - `v`: number of vertices in `graph`
+        - `e`: number of edges in `graph`
+        - `f`: difference from the minimum to the maximum edge capacity
+
 
         > parameters
         - `flow_graph`: graph created by the maxflow main function
@@ -107,6 +111,8 @@ def pathfinder_edmonds_karp(flow_graph: Graph[Any, Any], source: int, sink: int)
         > complexity (of ford fulkerson algorithm using this core)
         - time: `O(v*e**2)`
         - space: `O(v)`
+        - `v`: number of vertices in `graph`
+        - `e`: number of edges in `graph`
 
         > parameters
         - `flow_graph`: graph created by the maxflow main function
@@ -176,8 +182,11 @@ def pathfinder_dfs_capacity_scaling(flow_graph: Graph[Any, Any], source: int, si
         The performance depends on the edges capacities, which means this core is not strongly polynomial.
 
         > complexity (of ford fulkerson algorithm using this core)
-        - time: `O(e**2*log(u))` where `f` is the difference from the minimum to the maximum edge capacity
+        - time: `O(e**2*log(u))`
         - space: `O(v + e)`
+        - `v`: number of vertices in `graph`
+        - `e`: number of edges in `graph`
+        - `u`: the largest edge capacity
 
         > parameters
         - `flow_graph`: graph created by the maxflow main function
@@ -254,8 +263,10 @@ def pathfinder_dinic(flow_graph: Graph[Any, Any], source: int, sink: int):
         searches to find short paths.
 
         > complexity (of ford fulkerson algorithm using this core)
-        - time: `O(v**2*e)` where `f` is the difference from the minimum to the maximum edge capacity
+        - time: `O(v**2*e)`
         - space: `O(v + e)`
+        - `v`: number of vertices in `graph`
+        - `e`: number of edges in `graph`
 
         > parameters
         - `flow_graph`: graph created by the maxflow main function
@@ -309,7 +320,8 @@ def maxflow_ford_fulkerson(
     flow through edges.
     THe minium cut is collected from the residual graph after pushing flow.
 
-    > complexity (check path finding functions)
+    > complexity
+    - see path finding functions
 
     > parameters
     - `graph`: graph to compute maxflow and mincut

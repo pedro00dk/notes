@@ -13,6 +13,8 @@ def euler_undirected_fleury(graph: Graph[Any, Any]) -> Optional[tuple[bool, Opti
     > complexity
     - time: `O(e**2)`
     - space: `O(v + e)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph: Graph`: graph to find eulerian path
@@ -72,6 +74,8 @@ def euler_undirected_hierholzer(
     > complexity
     - time: `O(v + e)`
     - space: `O(v + e)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to find eulerian path
@@ -131,6 +135,8 @@ def euler_directed_hierholzer(
     > complexity
     - time: `O(v + e)`
     - space: `O(v + e)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to find eulerian path

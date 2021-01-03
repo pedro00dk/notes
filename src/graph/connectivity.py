@@ -14,6 +14,8 @@ def connected_traverse(graph: Graph[Any, Any], mode: Literal['depth', 'breadth']
     > complexity
     - time: `O(v + e)`
     - space: `O(v)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to search components
@@ -62,6 +64,8 @@ def connected_disjoint_set(graph: Graph[Any, Any]) -> list[list[int]]:
     > complexity
     - time: `O(v + e)`, the extra `v` is due to disjoint set operations to extract component as a `int[][]` object
     - space: `O(v)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to search components
@@ -97,6 +101,8 @@ def biconnected_tarjan(graph: Graph[Any, Any]) -> tuple[list[tuple[int, int]], l
     > complexity
     - time: `O(v + e)`
     - space: `O(v)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to search components
@@ -155,6 +161,8 @@ def strong_connected_tarjan(graph: Graph[Any, Any]) -> list[list[int]]:
     > complexity
     - time: `O(v + e)`
     - space: `O(v)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to search components
@@ -201,6 +209,8 @@ def strong_connected_kosaraju(graph: Graph[Any, Any]) -> list[list[int]]:
     > complexity
     - time: `O(v + e)`
     - space: `O(v + e)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to search components
