@@ -13,6 +13,7 @@ class DisjointSet:
         > complexity
         - time: `O(n)`
         - space: `O(n)`
+        - `n`: absolute value of `sets`
 
         > parameters
         - `sets`: number of initial sets
@@ -22,14 +23,14 @@ class DisjointSet:
         self._sizes = [1] * sets
         self._count = sets
 
-    def __len__(self) -> int:
-        return len(self._sets)
-
     def __str__(self) -> str:
         lines = '\n'.join(
             f'{i} => {self._sets[i]} # rank: {self._ranks[i]} size: {self._sizes[i]}' for i in range(len(self._sets))
         )
         return f'DisjointSet [\n{lines}\n]'
+
+    def __len__(self) -> int:
+        return len(self._sets)
 
     def sets(self) -> int:
         """
@@ -141,11 +142,11 @@ class HashDisjointSet(Generic[T]):
         self._disjoint_set = DisjointSet()
         self.sets = self._disjoint_set.sets
 
-    def __len__(self) -> int:
-        return len(self._disjoint_set)
-
     def __str__(self) -> str:
         return f'Hash Disjoint Set {{\n{self._disjoint_set}\n{self._table}\n}}'
+
+    def __len__(self) -> int:
+        return len(self._disjoint_set)
 
     def set_size(self, key: T) -> int:
         return self._disjoint_set.set_size(self._table[key])

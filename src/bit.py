@@ -14,6 +14,7 @@ class BIT:
         > complexity
         - time: `O(n)`
         - space: `O(n)`
+        - `n`: length of `array`
 
         > parameters
         - `array`: base array for building the tree
@@ -23,11 +24,11 @@ class BIT:
             if (parent := index + self._lsb(index)) < len(self._tree):
                 self._tree[parent] += self._tree[index]
 
-    def __len__(self) -> int:
-        return len(self._tree) - 1
-
     def __str__(self) -> str:
         return f'BIT {self._tree}'
+
+    def __len__(self) -> int:
+        return len(self._tree) - 1
 
     def _lsb(self, value: int) -> int:
         """
@@ -47,6 +48,7 @@ class BIT:
         > complexity
         - time: `O(log(n))`
         - space: `O(1)`
+        - `n`: length of the tree
 
         > parameters
         - `index: int`: index to compute sum
@@ -67,6 +69,7 @@ class BIT:
         > complexity
         - time: `O(log(n))`
         - space: `O(1)`
+        - `n`: length of the tree
 
         > parameters
         - `from_index: int`: first index to compute sum (inclusive)
@@ -83,6 +86,7 @@ class BIT:
         > complexity
         - time: `O(log(n))`
         - space: `O(1)`
+        - `n`: length of the tree
 
         > parameters
         - `index: int`: index to increment value
@@ -102,6 +106,7 @@ class BIT:
         > complexity
         - time: `O(log(n))`
         - space: `O(1)`
+        - `n`: length of the tree
 
         > parameters
         - `index: int`: index to set value

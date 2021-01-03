@@ -8,9 +8,9 @@ E = TypeVar('E')
 class Vertex(Generic[V]):
     """
     Vertex container implementation.
-    The `_id` property must not be modified.
+    The `id` property must not be modified.
     The user can access and change vertex `weight` and `data`.
-    Vertex edges are mantained in a separate data structure, so the users can not edit them.
+    Edges are mantained in a separate data structure.
     """
 
     def __init__(self, id: int, weight: float, data: Optional[V] = None):
@@ -29,7 +29,7 @@ class Edge(Generic[E]):
     """
     Directed edge container implementation.
     `source`, `target` and `opposite` properties must not be modified.
-    `opposite is a reference to the back edge if the edge is undirected`.
+    `opposite` is a reference to the back edge if the edge is undirected.
     The user can access and change edge `length` and `data`.
     """
 
@@ -50,8 +50,7 @@ class Edge(Generic[E]):
 
 class Graph(Generic[V, E]):
     """
-    Graph implementation.
-    This implementation uses adjacency lists (edges lists are default lists, not linked lists).
+    Graph implementation based on adjacency lists (edges lists are default lists, not linked lists).
     Implementation details:
     - vertices and edges can only be added, deleting then is not possible
     - only vertices have identifiers
@@ -74,6 +73,16 @@ class Graph(Generic[V, E]):
         return f'Graph [\n{lines}\n]'
 
     def __iter__(self) -> Generator[Vertex[V], None, None]:
+        """
+        Return a generator to traverse through graph vertices.
+
+        > complexity
+        - time: `O(v)`
+        - space: `O(1)`
+        - `v`: number of vertices in the graph
+
+        - `return`: generator of vertices
+        """
         return self.vertices()
 
     def _depth(
@@ -93,6 +102,8 @@ class Graph(Generic[V, E]):
         > complexity
         - time: `O(v + e)`
         - space: `O(v)`
+        - `v`: number of vertices in the graph
+        - `e`: number of edges in the graph
 
         > parameters
         - `v`: root vertex id (must not be visited, otherwise it will be visited again)
@@ -126,6 +137,8 @@ class Graph(Generic[V, E]):
         > complexity
         - time: `O(v + e)`
         - space: `O(v)`
+        - `v`: number of vertices in the graph
+        - `e`: number of edges in the graph
 
         > parameters
         - `v`: root vertex id (must not be visited, otherwise it will be visited again)
@@ -162,6 +175,8 @@ class Graph(Generic[V, E]):
         > complexity
         - time: `O(v + e)`
         - space: `O(v)`
+        - `v`: number of vertices in the graph
+        - `e`: number of edges in the graph
 
         > parameters
         - `v`: root vertex id (must not be visited, otherwise it will be visited again)
@@ -175,27 +190,30 @@ class Graph(Generic[V, E]):
 
     def vertices(self) -> Generator[Vertex[V], None, None]:
         """
-        Return a iterator to traverse through graph vertices.
+        Return a generator of graph vertices.
 
         > complexity
         - time: `O(v)`
         - space: `O(1)`
+        - `v`: number of vertices in the graph
 
-        - `return`: iterator of vertices
+        - `return`: generator of vertices
         """
         return (vertex for vertex in self._vertices)
 
     def edges(self, v: Optional[int] = None) -> Generator[Edge[E], None, None]:
         """
-        Return a iterator to traverse through graph edges.
+        Return a generator of graph edges.
 
         > complexity
         - time: `O(v + e)`
         - space: `O(1)`
+        - `v`: number of vertices in the graph
+        - `e`: number of edges in the graph
 
         > parameters
-        - `v`: id of the vertex to traverse, if `None`, traverse through edges os all vertices
-        - `return`: iterator of edges
+        - `v`: id of the vertex to collect edges, if `None`, collect through edges os all vertices
+        - `return`: generator of edges
         """
         return (edge for vertex_edges in self._edges for edge in vertex_edges) if v is None else \
             (edge for edge in self._edges[v])
@@ -248,6 +266,10 @@ class Graph(Generic[V, E]):
         """
         Create a new vertex.
 
+        > complexity
+        - time: `O(1)`
+        - space: `O(1)`
+
         > parameters
         - `weight`: vertex weight
         - `data`: vertex user data
@@ -269,6 +291,10 @@ class Graph(Generic[V, E]):
         Create a new edge.
         Undirected edges are represented as two directed edges with the same data.
         Editing one of the undirected edges properties are not propagated to the other edge.
+
+        > complexity
+        - time: `O(1)`
+        - space: `O(1)`
 
         > parameters
         - `source`: source vertex identifier
@@ -298,6 +324,10 @@ class Graph(Generic[V, E]):
         """
         Return the vertex object associated with `v`.
 
+        > complexity
+        - time: `O(1)`
+        - space: `O(1)`
+
         > parameters
         - `v`: vertex id
         - `return`: vertex
@@ -307,6 +337,12 @@ class Graph(Generic[V, E]):
     def get_edges(self, v: Optional[int] = None) -> tuple[Edge[E], ...]:
         """
         Return the edge tuple list of the vertex associated with `v` or all edges if `v is None`.
+
+        > complexity
+        - time: `O(v + e)`
+        - space: `O(e)`
+        - `v`: number of vertices in the graph
+        - `e`: number of edges in the graph
 
         > parameters
         - `v`: vertex id
@@ -323,6 +359,8 @@ class Graph(Generic[V, E]):
         > complexity
         - time: `O(v + e)`
         - space: `O(v + e)`
+        - `v`: number of vertices in the graph
+        - `e`: number of edges in the graph
 
         - `return`: copy of the graph
         """
@@ -347,6 +385,8 @@ class Graph(Generic[V, E]):
         > complexity
         - time: `O(v + e)`
         - space: `O(v + e)`
+        - `v`: number of vertices in the graph
+        - `e`: number of edges in the graph
 
         - `return`: transposed copy of the graph
         """
@@ -374,6 +414,7 @@ class Graph(Generic[V, E]):
         > complexity
         - time: `O(v**2)`
         - space: `O(v**2)`
+        - `v`: number of vertices in the graph
 
         > parameters
         - `absent_edge_length`: length to use for absent edges

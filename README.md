@@ -178,22 +178,25 @@ Space complexity is available in algorithms files.
         -   `take` (override `Map.take` in `BST`) **- O(log(n))**
         -   **all functions worst case drop to O(log(n))**
     -   [benchmark](./src/tree/benchmark.py)
--   [disjoint set](./src/dset.py)
-    -   implemented:
-        -   Numeric keys disjoint set
-        -   Hashed keys disjoint set
-    -   init **- O(n)**
-    -   make set **- O(1)**
-    -   find **- O(1)**
-    -   union **- O(1)**
-    -   connected **- O(1)**
+-   [DisjointSet and HashDisjointSet[T]](./src/dset.py)
+    -   `__init__` **- O(n)**
+    -   `__str__` **- O(n)**
+    -   `__len__` **- O(1)**
+    -   `sets` (number of unique sets) **- O(1)**
+    -   `set_size` (size of a set) **- O(1)**
+    -   `make_set` **O(1)**
+    -   `find` **- O(1)**
+    -   `union` **- O(1)**
+    -   `connected` **- O(1)**
 -   [binary index tree (fenwick tree)](./src/bit.py)
-    -   init **- O(n)**
-    -   prefix sum **- O(log(n))**
-    -   prefix sum range **- O(log(n))**
-    -   add **- O(log(n))**
-    -   set **- O(log(n))**
--   [graph (adjacency list)](./src/graph/graph.py) _- see graph theory algorithms section_
+    -   `__init__` **- O(n)**
+    -   `__str__` **- O(n)**
+    -   `__len__` **- O(1)**
+    -   `sum` (prefix sum) **- O(log(n))**
+    -   `sum_range` (prefix sum range) **- O(log(n))**
+    -   `add` **- O(log(n))**
+    -   `set` **- O(log(n))**
+-   [Graph[V, E] (adjacency list)](./src/graph/graph.py) _- see graph theory algorithms section_
     -   [factory](./src/graph/factory.py)
         -   complete
         -   random undirected
@@ -201,16 +204,28 @@ Space complexity is available in algorithms files.
         -   random undirected paired _(all vertices have even degree)_
         -   random directed paired _(all vertices have out-degree - in-degree = 0)_
         -   random directed acyclic
-        -   random flow _(for max-flow/min-cut)_
-    -   traverse depth **O(v + e)**
-    -   traverse breadth **O(v + e)**
-    -   traverse vertices **O(v)**
-    -   traverse edges **O(v + e)**
-    -   make vertex **O(1)**
-    -   make edge **O(1)**
-    -   copy **O(v + e)**
-    -   transpose **O(v + e)**
-    -   adjacency matrix **O(v<sup>2</sup>)**
+        -   random flow (_for max-flow/min-cut_)
+    -   `__init__` **- O(1)**
+    -   `__str__` **- O(v + e)**
+    -   `__len__` **- O(1)**
+    -   `__iter__` **- O(v)**
+    -   `traverse` (depth, breadth) **- O(v + e)**
+    -   `vertices` (not traverse) **- O(v)**
+    -   `edges` (not traverse) **- O(v + e)**
+    -   `vertices_count` **- O(1)**
+    -   `edges_count` **- O(1)**
+    -   `unique_edges_count` **- O(1)**
+    -   `is_undirected` **- O(1)**
+    -   `is_directed` **- O(1)**
+    -   `has_directed_edges` **- O(1)**
+    -   `has_edge_cycles` **- O(1)**
+    -   `make_vertex` **- O(1)**
+    -   `make_edge` **- O(1)**
+    -   `get_vertex` **- O(1)**
+    -   `get_edges` **- O(v + e)**
+    -   `copy` **- O(v + e)**
+    -   `transposed` **- O(v + e)**
+    -   `adjacency_matrix` **- O(v<sup>2</sup>)**
 
 ## Graph Theory
 
