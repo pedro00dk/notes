@@ -1,6 +1,6 @@
-from typing import Callable, Generic, Literal, Optional
+from typing import Callable, Generator, Generic, Literal, Optional
 
-from .abc import Heap, T
+from .abc import Priority, T
 
 
 def sift_up(heap: list[T], i: int, comparator: Callable[[T, T], float]):
@@ -13,6 +13,7 @@ def sift_up(heap: list[T], i: int, comparator: Callable[[T, T], float]):
     > complexity
     - time: `O(log(n))`
     - space: `O(1)`
+    - `n`: length of `heap`
 
     > parameters
     - `heap: array containing heap structure
@@ -34,6 +35,7 @@ def sift_down(heap: list[T], i: int, comparator: Callable[[T, T], float], length
     > complexity
     - time: `O(log(n))`
     - space: `O(1)`
+    - `n`: length of `heap`
 
     > parameters
     - `heap`: array containing heap structure
@@ -64,6 +66,7 @@ def heapify_top_down(heap: list[T], comparator: Callable[[T, T], float], length:
     > complexity
     - time: `O(n*log(n))`
     - space: `O(1)`
+    - `n`: length of `heap`
 
     > parameters
     - `heap`: array containing heap structure
@@ -85,6 +88,7 @@ def heapify_bottom_up(heap: list[T], comparator: Callable[[T, T], float], length
     > complexity
     - time: `O(n)`
     - space: `O(1)`
+    - `n`: length of `heap`
 
     > parameters
     - `heap`: array containing heap structure
@@ -96,7 +100,7 @@ def heapify_bottom_up(heap: list[T], comparator: Callable[[T, T], float], length
         sift_down(heap, i, comparator, length)
 
 
-class BHeap(Generic[T], Heap[T]):
+class Heap(Generic[T], Priority[T]):
     """
     Binary Heap implementation.
     """
@@ -113,6 +117,7 @@ class BHeap(Generic[T], Heap[T]):
         > complexity
         - time: `O(n)` if `heapify == 'bottom-up'` else `O(n*log(n))`, where `n` is the initial `data` length
         - space: `O(n)`
+        - `n`: length of `data`
 
         > parameters
         - `comparator`: a comparator function for heap values
@@ -128,27 +133,44 @@ class BHeap(Generic[T], Heap[T]):
     def __len__(self) -> int:
         return len(self._heap)
 
-    def __str__(self) -> str:
-        return f'{type(self).__name__} {self._heap}'
+    def __iter__(self) -> Generator[T, None, None]:
+        """
+        Check base class.
+
+        > complexity
+        - time: `O(n*log(n))`
+        - space: `O(n)`
+        - `n`: length of the heap
+        """
+        heap = self._heap.copy()
+        for _ in range(len(heap)):
+            yield heap[0]
+            replacement = heap.pop()
+            if len(heap) == 0:
+                break
+            heap[0] = replacement
+            sift_down(heap, 0, self._comparator)
 
     def offer(self, value: T):
         """
-        Check abstract class for documentation.
+        Check base class.
 
         > complexity
         - time: `O(log(n))`
         - space: `O(1)`
+        - `n`: length of the heap
         """
         self._heap.append(value)
         sift_up(self._heap, len(self._heap) - 1, self._comparator)
 
     def poll(self) -> T:
         """
-        Check abstract class for documentation.
+        Check base class.
 
         > complexity
         - time: `O(log(n))`
         - space: `O(1)`
+        - `n`: length of the heap
         """
         if len(self._heap) == 0:
             raise IndexError('empty heap')
@@ -177,7 +199,7 @@ def test():
 
     from ..test import match
 
-    heap = BHeap[int](lambda a, b: a - b, random.sample([i for i in range(10)], 10))
+    heap = Heap[int](lambda a, b: a - b, random.sample([i for i in range(10)], 10))
     match((
         (print, (heap,)),
         (heap.offer, (10,)),

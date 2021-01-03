@@ -1,69 +1,85 @@
 from __future__ import annotations
 
-from typing import Generic, Optional, cast
+from typing import Generator, Generic, Optional, cast
 
-from .abc import Linear, Node, T
-
-
-class ListNode(Generic[T], Node[T]):
-    """
-    Node with the extra `tail` property for doubly linked lists.
-    """
-
-    def __init__(self, value: T, prev: Optional[ListNode[T]] = None, next: Optional[ListNode[T]] = None):
-        super().__init__(value)
-        self.prev: Optional[ListNode[T]] = prev
-        self.next: Optional[ListNode[T]] = next
+from .abc import Linked, T
 
 
-class LinkedList(Generic[T], Linear[T]):
+class Node(Generic[T]):
+    def __init__(self, value: T, prev: Optional[Node[T]] = None, next: Optional[Node[T]] = None):
+        self.value = value
+        self.prev = prev
+        self.next = next
+
+
+class LinkedList(Generic[T], Linked[T]):
     """
     Doubly Linked List implementation.
     """
 
     def __init__(self):
         super().__init__()
-        self._head: Optional[ListNode[T]] = None
-        self._tail: Optional[ListNode[T]] = None
+        self._head: Optional[Node[T]] = None
+        self._tail: Optional[Node[T]] = None
+        self._length = 0
 
-    def _node_index(self, index: int) -> tuple[ListNode[T], int]:
+    def __len__(self) -> int:
+        return self._length
+
+    def __iter__(self) -> Generator[T, None, None]:
+        """
+        Check base class.
+
+        > complexity
+        - time: `O(n)`
+        - space: `O(1)`
+        - `n`: length of the list
+        """
+        cursor = self._head
+        while cursor is not None:
+            yield cursor.value
+            cursor = cursor.next
+
+    def _node_index(self, index: int) -> Node[T]:
         """
         Get the node at `index`, or raise exception if index is invalid.
 
-        > optimizations
-        -  only go through half the list by checking the index beforehand.
-
         > complexity
-        > time: `O(n)`
-        > space: `O(1)`
+        - time: `O(n)`
+        - space: `O(1)`
+        - `n`: length of the list
 
         > parameters
         - `index`: node index
         - `return`: node at `index`
         """
-        self._check(index)
-        forward = index < self._size / 2
-        node = cast(ListNode[T], self._head if forward else self._tail)
-        for _ in range(index if forward else (self._size - 1 - index)):
-            node = cast(ListNode[T], node.next if forward else node.prev)
-        return node, index
+        if index < 0 or index >= self._length:
+            raise IndexError(f'index ({index}) out of range [0, {self._length})')
+        forward = index < self._length / 2
+        cursor = cast(Node[T], self._head if forward else self._tail)
+        for _ in range(index if forward else (self._length - 1 - index)):
+            cursor = cast(Node[T], cursor.next if forward else cursor.prev)
+        return cursor
 
-    def _node_value(self, value: T):
+    def _node_value(self, value: T) -> Node[T]:
         """
-        Get the first node that contains`value`, or raise exception if not found.
+        Get the first node that contains`value`, or raise exception if `value` is not found.
 
         > complexity
-        > time: `O(n)`
-        > space: `O(1)`
+        - time: `O(n)`
+        - space: `O(1)`
+        - `n`: length of the list
 
         > parameters
         - `value`: node value
         - `return`: node containing `value`
         """
-        for i, node in enumerate(self._nodes()):
-            if value == node.value:
-                return cast(ListNode[T], node), i
-        raise ValueError(f'value ({value}) not found')
+        cursor = self._head
+        while cursor is not None and cursor.value is not value and cursor.value != value:
+            cursor = cursor.next
+        if cursor is None:
+            raise ValueError(f'value ({value}) not found')
+        return cursor
 
     def _insert(self, index: int, value: T):
         """
@@ -72,27 +88,29 @@ class LinkedList(Generic[T], Linear[T]):
         > complexity
         - time: `O(n)`
         - space: `O(1)`
+        - `n`: length of the list
 
         > parameters
         - `index`: insertion index
         - `value`: value to insert
         """
-        self._check(index, True)
+        if index < 0 or index > self._length:
+            raise IndexError(f'index ({index}) out of range [0, {self._length}]')
         if self._head is None:
-            self._head = self._tail = ListNode(value)
+            self._head = self._tail = Node(value)
         elif index == 0:
-            self._head = ListNode(value, None, self._head)
-            cast(ListNode[T], self._head.next).prev = self._head
-        elif index == self._size:
-            self._tail = ListNode(value, self._tail, None)
-            cast(ListNode[T], self._tail.prev).next = self._tail
+            self._head = Node(value, None, self._head)
+            cast(Node[T], self._head.next).prev = self._head
+        elif index == self._length:
+            self._tail = Node(value, self._tail, None)
+            cast(Node[T], self._tail.prev).next = self._tail
         else:
-            current = self._node_index(index)[0]
-            node = ListNode(value, current.prev, current)
-            cast(ListNode[T], node.prev).next = cast(ListNode[T], node.next).prev = node
-        self._size += 1
+            current = self._node_index(index)
+            node = Node(value, current.prev, current)
+            cast(Node[T], node.prev).next = cast(Node[T], node.next).prev = node
+        self._length += 1
 
-    def _delete(self, node: ListNode[T]) -> T:
+    def _delete(self, node: Node[T]) -> T:
         """
         Delete the received `node` from the data structure.
 
@@ -114,7 +132,7 @@ class LinkedList(Generic[T], Linear[T]):
             self._tail.next = None
         else:
             self._head = self._tail = None
-        self._size -= 1
+        self._length -= 1
         return node.value
 
     def push(self, value: T, index: Optional[int] = None):
@@ -125,12 +143,13 @@ class LinkedList(Generic[T], Linear[T]):
         > complexity
         - time: `O(n)`
         - space: `O(1)`
+        - `n`: length of the list
 
         > parameters
         - `value`: value to insert
         - `index`: insertion index
         """
-        self._insert(index if index is not None else self._size, value)
+        self._insert(index if index is not None else self._length, value)
 
     def pop(self, index: Optional[int] = None) -> T:
         """
@@ -140,12 +159,13 @@ class LinkedList(Generic[T], Linear[T]):
         > complexity
         - time: `O(n)`
         - space: `O(1)`
+        - `n`: length of the list
 
         > parameters
         - `index`: deletion index
         - `return`: value from the deleted node
         """
-        return self._delete(self._node_index(index if index is not None else self._size - 1)[0])
+        return self._delete(self._node_index(index if index is not None else self._length - 1))
 
     def remove(self, value: T) -> T:
         """
@@ -154,12 +174,13 @@ class LinkedList(Generic[T], Linear[T]):
         > complexity
         - time: `O(n)`
         - space: `O(1)`
+        - `n`: length of the list
 
         > parameters
         - `index`: deletion index
         - `return`: value from the deleted node
         """
-        return self._delete(self._node_value(value)[0])
+        return self._delete(self._node_value(value))
 
     def get(self, index: Optional[int] = None) -> T:
         """
@@ -167,14 +188,15 @@ class LinkedList(Generic[T], Linear[T]):
         If `index` is provided, then get at `index`.
 
         > complexity
-        > time: `O(n)`
-        > space: `O(1)`
+        - time: `O(n)`
+        - space: `O(1)`
+        - `n`: length of the list
 
         > parameters
         - `index`: value index
         - `return`: value at `index`
         """
-        return self._node_index(index if index is not None else self._size - 1)[0].value
+        return self._node_index(index if index is not None else self._length - 1).value
 
     def reverse(self):
         """
@@ -184,11 +206,11 @@ class LinkedList(Generic[T], Linear[T]):
         > time: `O(n)`
         > space: `O(1)`
         """
-        node = cast(ListNode[T], self._head)
+        node = cast(Node[T], self._head)
         self._head, self._tail = self._tail, self._head
-        for _ in range(self._size):
+        for _ in range(self._length):
             node.prev, node.next = node.next, node.prev
-            node = cast(ListNode[T], node.prev)
+            node = cast(Node[T], node.prev)
 
 
 def test():

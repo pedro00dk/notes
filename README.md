@@ -63,63 +63,120 @@ Space complexity is available in algorithms files.
 
 ## Data Structures
 
--   [linear (base class)](./src/linear/abc.py)
-    -   traversal **- O(n)**
-    -   value index **- O(n)**
-    -   contains value **- O(n)**
-    -   [linked list (double)](./src/linear/list.py)
-        -   push **- O(n)**
-        -   pop (index deletion) **- O(n)**
-        -   remove (value deletion) **- O(n)**
-        -   get (index) **- O(n)**
-        -   reverse **- O(n)**
-    -   [queue](./src/linear/queue.py)
-        -   offer **- O(1)**
-        -   poll **- O(1)**
-        -   peek **- O(1)**
-    -   [stack](./src/linear/stack.py)
-        -   push **- O(1)**
-        -   pop **- O(1)**
-        -   peek **- O(1)**
--   [heap (base class)](./src/heap/abc.py)
-    -   [binary heap](./src/heap/heap.py)
-        -   sift up **- O(log(n))**
-        -   sift down **- O(log(n))**
-        -   heapify top down (init) **- O(n\*log(n))**
-        -   heapify bottom up (init) **- O(n)**
-        -   offer **- O(log(n))**
-        -   poll **- O(log(n))**
-        -   peek **- O(1)**
-    -   [k-ary heap](./src/heap/kheap.py)
-        -   sift up **- O(k\*log(n,k))**
-        -   sift down **- O(k\*log(n,k))**
-        -   heapify top down (init) **- O(n\*k\*log(n,k))**
-        -   heapify bottom up (init) **- O(n\*k)**
-        -   offer **- O(k\*log(n,k))**
-        -   poll **- O(k\*log(n,k))**
-        -   peek **- O(1)**
-    -   [benchmark](./src/heap/benchmark.py) _- includes trees, see data structures trees section_
--   [tree (base class)](./src/tree/abc.py) _- implements heap abstract base class_
-    -   traversal (pre-order, in-order, post-order, breadth-order) **- O(n)**
-    -   get **- average or balanced trees: O(log(n)), worst: O(n)**
-    -   contains key **- average or balanced trees: O(log(n)), worst: O(n)**
-    -   contains value **- O(n)**
-    -   minimum **- average or balanced trees: O(log(n)), worst: O(n)**
-    -   maximum **- average or balanced trees: O(log(n)), worst: O(n)**
-    -   predecessor **- average or balanced trees: O(log(n)), worst: O(n)**
-    -   successor **- average or balanced trees: O(log(n)), worst: O(n)**
-    -   offer (_heap abstract base class_) **- average or balanced trees: O(log(n)), worst: O(n)**
-    -   poll (_heap abstract base class_) **- average or balanced trees: O(log(n)), worst: O(n)**
-    -   peek (_heap abstract base class_) **- average or balanced trees: O(log(n)), worst: O(n)**
-    -   [binary search tree](./src/tree/bst.py)
-        -   put **- average: O(log(n)), worst: O(n)**
-        -   take **- average: O(log(n)), worst: O(n)**
-    -   [avl tree](./src/tree/avl.py)
-        -   put **- O(log(n))**
-        -   take **- O(log(n))**
-    -   [red-black tree](./src/tree/rbt.py)
-        -   put **- O(log(n))**
-        -   take **- O(log(n))**
+-   [Linked[T] (abstract)](./src/linked/abc.py)
+    -   `__str__` **- O(`Linked.__iter__`)**
+    -   `__len__` **- abstract**
+    -   `__iter__` **- abstract**
+    -   `__contains__` **- O(`Linked.__iter__`)**
+    -   `index` **- O(`Linked.__iter__`)**
+    -   [LinkedList[T] (extends Linked[T])](./src/linked/list.py)
+        -   `Linked.__len__` **- O(1)**
+        -   `Linked.__iter__` **- O(n)**
+        -   `push` **- O(n)**
+        -   `pop` (index deletion) **- O(n)**
+        -   `remove` (value deletion) **- O(n)**
+        -   `get` (same as `Linked.index`, but faster) **- O(n)**
+        -   `reverse` **- O(n)**
+    -   [Queue[T] (extends Linked[T])](./src/linked/queue.py)
+        -   `Linked.__len__` **- O(1)**
+        -   `Linked.__iter__` **- O(n)**
+        -   `offer` **- O(1)**
+        -   `poll` **- O(1)**
+        -   `peek` **- O(1)**
+    -   [Stack (extends Linked[T])](./src/linked/stack.py)
+        -   `Linked.__len__` **- O(1)**
+        -   `Linked.__iter__` **- O(n)**
+        -   `push` **- O(1)**
+        -   `pop` **- O(1)**
+        -   `peek` **- O(1)**
+-   [Priority[T] (abstract)](./src/priority/abc.py)
+    -   `__str__` **- O(`Priority.__iter__`)**
+    -   `__len__` **- abstract**
+    -   `__iter__` **- abstract**
+    -   `__contains__` **- O(`Priority.__iter__`)**
+    -   `offer` **- abstract**
+    -   `poll` **- abstract**
+    -   `peek` **- abstract**
+    -   [Heap[T] (extends Priority[T])](./src/priority/heap.py)
+        -   Utility
+            -   `sift_up` **- O(log(n))**
+            -   `sift_down` **- O(log(n))**
+            -   `heapify_top_down` (`__init__`) **- O(n\*log(n))**
+            -   `heapify_bottom_up` (`__init__`) **- O(n)**
+        -   `Priority.__len__` **- O(1)**
+        -   `Priority.__iter__` **- O(n\*log(n))**
+        -   `Priority.offer` **- O(log(n))**
+        -   `Priority.poll` **- O(log(n))**
+        -   `Priority.peek` **- O(1)**
+    -   [KHeap[T] (extends Priority[T])](./src/priority/kheap.py)
+        -   Utility
+            -   `sift_up` **- O(k\*log<sub>k</sub>(n))**
+            -   `sift_down` **- O(k\*log<sub>k</sub>(n))**
+            -   `heapify_top_down` (`__init__`) **- O(n\*k\*log<sub>k</sub>(n))**
+            -   `heapify_bottom_up` (`__init__`) **- O(n\*k)**
+        -   `__str__` (override `Priority.__str__`) **- O(`Priority.__iter__`)**
+        -   `Priority.__len__` **- O(1)**
+        -   `Priority.__iter__` **- O(n\*k\*log<sub>k</sub>(n))**
+        -   `Priority.offer` **- O(k\*log<sub>k</sub>(n))**
+        -   `Priority.poll` **- O(k\*log<sub>k</sub>(n))**
+        -   `Priority.peek` **- O(1)**
+    -   [benchmark](./src/priority/benchmark.py) _- includes trees, see data structures trees section_
+-   [Map[K, V] (abstract)](./src/map/abc.py)
+    -   Implemented probers
+        -   Linear Probing
+        -   Quadratic Prime Probing
+        -   Quadratic Triangular Probing
+    -   `__str__` **- O(`Map.__iter__`)**
+    -   `__len__` **- abstract**
+    -   `__iter__` **- abstract**
+    -   `__contains__` **- O(`Map.get`)**
+    -   `keys` **- O(`Map.__iter__`)**
+    -   `values` **- O(`Map.__iter__`)**
+    -   `put` **- abstract**
+    -   `take` **- abstract**
+    -   `get` **- abstract**
+    -   `contains_value` **- O(`Map.__iter__`)**
+    -   [OpenAddressingHashtable[K, V] (extends Map[K, V])](./src/map/oa_hashtable.py)
+        -   `Map.__len__` **- O(1)**
+        -   `Map.__iter__` **- O(n)**
+        -   `Map.put` **- O(1) amortized**
+        -   `Map.take` **- O(1) amortized**
+        -   `Map.get` **- O(1) amortized**
+    -   [SequenceChainingHashtable (extends Map[K, V])](./src/map/sc_hashtable.py)
+        -   `Map.__len__` **- O(1)**
+        -   `Map.__iter__` **- O(n)**
+        -   `Map.put` **- O(1) amortized**
+        -   `Map.take` **- O(1) amortized**
+        -   `Map.get` **- O(1) amortized**
+    -   [benchmark](./src/map/benchmark.py) _- includes trees, see data structures trees section_
+-   [Tree[K, V] (abstract, extends Map[K, V] Heap[K])](./src/tree/abc.py)
+    -   `minimum` **- abstract**
+    -   `maximum` **- abstract**
+    -   `predecessor` **- abstract**
+    -   `successor` **- abstract**
+    -   `Heap.offer` **- O(`Map.put`)**
+    -   `Heap.poll` **- O(`Tree.minimum` + `Map.take`)**
+    -   `Heap.peek` **- O(`Tree.minimum`)**
+    -   [Binary Search Tree - BST[K = bool, int, float, str, V] (extends Tree[K, V])](./src/tree/bst.py)
+        -   `__str__` (override `Map.__str__` and `Priority.__str__`) - **O(traverse)**
+        -   `Map.__len__ , Priority.__len__` **- O(1)**
+        -   `Map.__iter__ , Priority.__iter__` **- O(traverse)**
+        -   `Map.put` **- average: O(log(n)), worst: O(n)**
+        -   `Map.take` **- average: O(log(n)), worst: O(n)**
+        -   `Map.get` **- average: O(log(n)), worst: O(n)**
+        -   `Tree.minimum` **- average: O(log(n)), worst: O(n)**
+        -   `Tree.maximum` **- average: O(log(n)), worst: O(n)**
+        -   `Tree.predecessor` **- average: O(log(n)), worst: O(n)**
+        -   `Tree.successor` **- average: O(log(n)), worst: O(n)**
+        -   `traverse` (pre, in, post, breadth) - **average: O(log(n)), worst: O(n)**
+    -   [Adelson Velsky and Landis - AVL[K = bool, int, float, str, V] (extends BST[K, V])](./src/tree/avl.py)
+        -   `put` (override `Map.put` in `BST`) **- O(log(n))**
+        -   `take` (override `Map.take` in `BST`) **- O(log(n))**
+        -   **all functions worst case drop to O(log(n))**
+    -   [Red-Black Tree - RBT[K = bool, int, float, str, V] (extends BST[K, V])](./src/tree/rbt.py)
+        -   `put` (override `Map.put` in `BST`) **- O(log(n))**
+        -   `take` (override `Map.take` in `BST`) **- O(log(n))**
+        -   **all functions worst case drop to O(log(n))**
     -   [benchmark](./src/tree/benchmark.py)
 -   [disjoint set](./src/dset.py)
     -   implemented:
@@ -136,20 +193,6 @@ Space complexity is available in algorithms files.
     -   prefix sum range **- O(log(n))**
     -   add **- O(log(n))**
     -   set **- O(log(n))**
--   [hashtable (base class)](./src/hashtable/abc.py)
-    -   implemented probers:
-        -   Linear Probing
-        -   Quadratic Prime Probing
-        -   Quadratic Triangular Probing
-    -   traversal **- O(n)**
-    -   put **- O(1) amortized**
-    -   take **- O(1) amortized**
-    -   get **- O(1)**
-    -   contains key **O(1)**
-    -   contains value **- O(n)**
-    -   [open addressing hashtable](./src/hashtable/oa_hashtable.py)
-    -   [sequence chaining hashtable](./src/hashtable/sc_hashtable.py)
-    -   [benchmark](./src/hashtable/benchmark.py)
 -   [graph (adjacency list)](./src/graph/graph.py) _- see graph theory algorithms section_
     -   [factory](./src/graph/factory.py)
         -   complete

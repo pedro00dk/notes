@@ -1,13 +1,43 @@
-from typing import Generic, Optional
+from __future__ import annotations
 
-from .abc import Linear, Node, T
+from typing import Generator, Generic, Optional
+
+from .abc import Linked, T
 
 
-class Queue(Generic[T], Linear[T]):
+class Node(Generic[T]):
+    def __init__(self, value: T, next: Optional[Node[T]] = None):
+        self.value = value
+        self.next = next
+
+
+class Queue(Generic[T], Linked[T]):
+    """
+    Linked queue implementation.
+    """
+
     def __init__(self):
         super().__init__()
         self._head: Optional[Node[T]] = None
         self._tail: Optional[Node[T]] = None
+        self._length = 0
+
+    def __len__(self) -> int:
+        return self._length
+
+    def __iter__(self) -> Generator[T, None, None]:
+        """
+        Check base class.
+
+        > complexity
+        - time: `O(n)`
+        - space: `O(1)`
+        - `n`: length of the queue
+        """
+        cursor = self._head
+        while cursor is not None:
+            yield cursor.value
+            cursor = cursor.next
 
     def offer(self, value: T):
         """
@@ -25,7 +55,7 @@ class Queue(Generic[T], Linear[T]):
         else:
             self._tail.next = Node(value)
             self._tail = self._tail.next
-        self._size += 1
+        self._length += 1
 
     def poll(self):
         """
@@ -43,7 +73,7 @@ class Queue(Generic[T], Linear[T]):
         self._head = self._head.next
         if self._head is None:
             self._tail = None
-        self._size -= 1
+        self._length -= 1
         return value
 
     def peek(self):

@@ -3,22 +3,32 @@ from typing import Any, cast
 
 def test():
     from ..test import benchmark
-    from .oa_hashtable import OAHashtable
-    from .sc_hashtable import SCHashtable
+    from ..tree.abc import Tree
+    from ..tree.avl import AVL
+    from ..tree.bst import BST
+    from ..tree.rbt import RBT
+    from .oa_hashtable import OpenAddressingHashtable
+    from .sc_hashtable import SequenceChainingHashtable
 
     def test_oa_hashtable(entries: list[int], prober_name: str):
-        hashtable = OAHashtable[int, int](cast(Any, prober_name))
+        hashtable = OpenAddressingHashtable[int, int](cast(Any, prober_name))
         for i in entries:
             hashtable.put(i, i)
         for i in entries:
             hashtable.take(i)
 
     def test_sc_hashtable(entries: list[int], prober_name: str):
-        hashtable = SCHashtable[int, int](cast(Any, prober_name))
+        hashtable = SequenceChainingHashtable[int, int](cast(Any, prober_name))
         for i in entries:
             hashtable.put(i, i)
         for i in entries:
             hashtable.take(i)
+
+    def test_tree(entries: list[int], tree: Tree[int, int]):
+        for i in entries:
+            tree.put(i, i)
+        for i in entries:
+            tree.take(i)
 
     def test_native_dict(entries: list[int]):
         dct = dict[int, int]()
@@ -54,7 +64,19 @@ def test():
                 lambda entries: test_sc_hashtable(entries, 'triangular')
             ),
             (
-                '                                       native dict',
+                '                                 binary search tree',
+                lambda entries: test_tree(entries, BST[int, int]())
+            ),
+            (
+                '                                           avl tree',
+                lambda entries: test_tree(entries, AVL[int, int]())
+            ),
+            (
+                '                                     red-black tree',
+                lambda entries: test_tree(entries, RBT[int, int]())
+            ),
+            (
+                '                                        native dict',
                 lambda entries: test_native_dict(entries)
             ),
         ),

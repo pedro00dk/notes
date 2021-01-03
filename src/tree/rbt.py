@@ -1,36 +1,36 @@
-from typing import Callable, Generic, Optional, cast
+from typing import Any, Callable, Generic, Optional, cast
 
-from .abc import Node, T, Tree, U
+from ..map.abc import Map
+from ..priority.abc import Priority
+from .abc import Tree, V
+from .bst import BST, K, Node
 
 
-class RBTNode(Generic[T, U], Node[T, U]):
+class RBTNode(Generic[K, V], Node[K, V]):
     """
     Node with extra `parent` and `red` properties.
     """
 
-    def __init__(self, key: T, value: U):
+    def __init__(self, key: K, value: V):
         super().__init__(key, value)
-        self.left: Optional[RBTNode[T, U]] = None
-        self.right: Optional[RBTNode[T, U]] = None
-        self.parent: Optional[RBTNode[T, U]] = None
+        self.left: Optional[RBTNode[K, V]] = None
+        self.right: Optional[RBTNode[K, V]] = None
+        self.parent: Optional[RBTNode[K, V]] = None
         self.red: bool = True
 
 
-class RBT(Generic[T, U], Tree[T, U]):
+class RBT(Generic[K, V], BST[K, V]):
     """
     Red-Black tree implementation.
     """
 
     def __init__(self):
         super().__init__()
-        self._root: Optional[RBTNode[T, U]] = None
-        printer: Callable[[RBTNode[T, U], int], str] = \
-            lambda node, depth: f'{"R" if node.red else "B"} # {node.key}: {node.value}'
-        self._printer = printer
+        self._root: Optional[RBTNode[K, V]] = None
 
-    def put(self, key: T, value: U, replacer: Optional[Callable[[U, U], U]] = None) -> Optional[U]:
+    def put(self, key: K, value: V, replacer: Optional[Callable[[V, V], V]] = None) -> Optional[V]:
         """
-        Check abstract class for documentation.
+        Check base class.
 
         > complexity
         - time: `O(log(n))`
@@ -55,10 +55,10 @@ class RBT(Generic[T, U], Tree[T, U]):
         else:
             old_value = node.value
             node.key = key
-            node.value = replacer(value, node.value) if replacer is not None else value
+            node.value = value if replacer is None else replacer(value, node.value)
             return old_value
 
-    def _put_fix(self, created: RBTNode[T, U]):
+    def _put_fix(self, created: RBTNode[K, V]):
         """
         Fix red black properties of the tree.
         `created` node color must be red.
@@ -72,9 +72,9 @@ class RBT(Generic[T, U], Tree[T, U]):
         - `return`: tree root node
         """
         node = created
-        while self._red(parent := cast(RBTNode[T, U], self._parent(node))):
-            uncle = cast(RBTNode[T, U], self._uncle(node))
-            grand_parent = cast(RBTNode[T, U], self._grand_parent(node))
+        while self._red(parent := cast(RBTNode[K, V], self._parent(node))):
+            uncle = cast(RBTNode[K, V], self._uncle(node))
+            grand_parent = cast(RBTNode[K, V], self._grand_parent(node))
             if self._red(uncle):
                 parent.red = uncle.red = False
                 grand_parent.red = True
@@ -98,7 +98,7 @@ class RBT(Generic[T, U], Tree[T, U]):
         root.red = False
         return root
 
-    def take(self, key: T) -> U:
+    def take(self, key: K) -> V:
         """
         Check abstract class for documentation.
 
@@ -118,7 +118,7 @@ class RBT(Generic[T, U], Tree[T, U]):
             node.key = successor.key
             node.value, successor.value = successor.value, node.value
             node = successor
-        child: Optional[RBTNode[T, U]] = None
+        child: Optional[RBTNode[K, V]] = None
         if node.parent is None:
             child = self._root = node.left if node.left is not None else node.right
             if child is not None:
@@ -135,7 +135,7 @@ class RBT(Generic[T, U], Tree[T, U]):
         self._root = self._take_fix(node, child)
         return node.value
 
-    def _take_fix(self, deleted: RBTNode[T, U], replacement: Optional[RBTNode[T, U]]):
+    def _take_fix(self, deleted: RBTNode[K, V], replacement: Optional[RBTNode[K, V]]):
         """
         Fix red black properties of the tree.
         The fix only works if the `deleted` node had 0 or 1 non null child.
@@ -154,12 +154,12 @@ class RBT(Generic[T, U], Tree[T, U]):
         if self._red(deleted):
             return self._root
         if self._red(replacement):
-            cast(RBTNode[T, U], replacement).red = False
+            cast(RBTNode[K, V], replacement).red = False
             return self._root
         node = replacement
         while (parent := self._parent(node)) is not None:
-            node = cast(RBTNode[T, U], node)
-            sibling = cast(RBTNode[T, U], self._sibling(node))
+            node = cast(RBTNode[K, V], node)
+            sibling = cast(RBTNode[K, V], self._sibling(node))
             if self._red(sibling):
                 sibling.red = False
                 parent.red = True
@@ -182,49 +182,49 @@ class RBT(Generic[T, U], Tree[T, U]):
                 if node == parent.left and self._red(sibling.left) and self._blk(sibling.right):
                     self._rotate_right(sibling)
                     sibling.red = True
-                    cast(RBTNode[T, U], sibling.parent).red = False
+                    cast(RBTNode[K, V], sibling.parent).red = False
                 elif node == parent.right and self._blk(sibling.left) and self._red(sibling.right):
                     self._rotate_left(sibling)
                     sibling.red = True
-                    cast(RBTNode[T, U], sibling.parent).red = False
+                    cast(RBTNode[K, V], sibling.parent).red = False
                 sibling = self._sibling(node)
             if sibling is not None and self._blk(sibling):
                 if node == parent.left and self._red(sibling.right):
                     self._rotate_left(parent)
                     sibling.red = parent.red
-                    parent.red = cast(RBTNode[T, U], sibling.right).red = False
+                    parent.red = cast(RBTNode[K, V], sibling.right).red = False
                 elif node == parent.right and self._red(sibling.left):
                     self._rotate_right(parent)
                     sibling.red = parent.red
-                    parent.red = cast(RBTNode[T, U], sibling.left).red = False
+                    parent.red = cast(RBTNode[K, V], sibling.left).red = False
             break
         return self._top(node if node is not None else deleted)
 
-    def _top(self, node: RBTNode[T, U]) -> RBTNode[T, U]:
+    def _top(self, node: RBTNode[K, V]) -> RBTNode[K, V]:
         while node.parent is not None:
             node = node.parent
         return node
 
-    def _red(self, node: Optional[RBTNode[T, U]]) -> bool:
+    def _red(self, node: Optional[RBTNode[K, V]]) -> bool:
         return node is not None and node.red
 
-    def _blk(self, node: Optional[RBTNode[T, U]]) -> bool:
+    def _blk(self, node: Optional[RBTNode[K, V]]) -> bool:
         return node is None or not node.red
 
-    def _parent(self, node: Optional[RBTNode[T, U]]) -> Optional[RBTNode[T, U]]:
+    def _parent(self, node: Optional[RBTNode[K, V]]) -> Optional[RBTNode[K, V]]:
         return node.parent if node is not None else None
 
-    def _sibling(self, node: Optional[RBTNode[T, U]]) -> Optional[RBTNode[T, U]]:
+    def _sibling(self, node: Optional[RBTNode[K, V]]) -> Optional[RBTNode[K, V]]:
         parent = self._parent(node)
         return None if node is None or parent is None else parent.left if node == parent.right else parent.right
 
-    def _grand_parent(self, node: Optional[RBTNode[T, U]]) -> Optional[RBTNode[T, U]]:
+    def _grand_parent(self, node: Optional[RBTNode[K, V]]) -> Optional[RBTNode[K, V]]:
         return self._parent(self._parent(node))
 
-    def _uncle(self, node: Optional[RBTNode[T, U]]) -> Optional[RBTNode[T, U]]:
+    def _uncle(self, node: Optional[RBTNode[K, V]]) -> Optional[RBTNode[K, V]]:
         return self._sibling(self._parent(node))
 
-    def _rotate_left(self, node: RBTNode[T, U]) -> RBTNode[T, U]:
+    def _rotate_left(self, node: RBTNode[K, V]) -> RBTNode[K, V]:
         """
         Red-Black left rotation.
 
@@ -232,7 +232,7 @@ class RBT(Generic[T, U], Tree[T, U]):
         - `node`: the node to rotate
         - `return`: the new root of the rotated subtree
         """
-        child = cast(RBTNode[T, U], node.right)
+        child = cast(RBTNode[K, V], node.right)
         node.right = child.left
         if node.right is not None:
             node.right.parent = node
@@ -246,7 +246,7 @@ class RBT(Generic[T, U], Tree[T, U]):
                 child.parent.right = child
         return child
 
-    def _rotate_right(self, node: RBTNode[T, U]) -> RBTNode[T, U]:
+    def _rotate_right(self, node: RBTNode[K, V]) -> RBTNode[K, V]:
         """
         Red-Black right rotation.
 
@@ -254,7 +254,7 @@ class RBT(Generic[T, U], Tree[T, U]):
         - `node`: the node to rotate
         - `return`: the new root of the rotated subtree
         """
-        child = cast(RBTNode[T, U], node.left)
+        child = cast(RBTNode[K, V], node.left)
         node.left = child.right
         if node.left is not None:
             node.left.parent = node
@@ -289,6 +289,11 @@ def test():
         (tree.take, (-15,), -1000),
         (print, (tree,)),
     ))
+    print('test print functions from abstract base classes')
+    print('self:\n', tree)
+    print('tree:\n', cast(Any, Tree).__str__(tree))
+    print('map:\n', cast(Any, Map).__str__(tree))
+    print('priority queue:\n', cast(Any, Priority).__str__(tree))
     for key, *_ in tree.traverse('pre'):
         print(key, end=' ')
     print()

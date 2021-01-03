@@ -1,12 +1,42 @@
-from typing import Generic, Optional
+from __future__ import annotations
 
-from .abc import Linear, Node, T
+from typing import Generator, Generic, Optional
+
+from .abc import Linked, T
 
 
-class Stack(Generic[T], Linear[T]):
+class Node(Generic[T]):
+    def __init__(self, value: T, next: Optional[Node[T]] = None):
+        self.value = value
+        self.next = next
+
+
+class Stack(Generic[T], Linked[T]):
+    """
+    Linked stack implementation.
+    """
+
     def __init__(self):
         super().__init__()
         self._head: Optional[Node[T]] = None
+        self._length = 0
+
+    def __len__(self) -> int:
+        return self._length
+
+    def __iter__(self) -> Generator[T, None, None]:
+        """
+        Check base class.
+
+        > complexity
+        - time: `O(n)`
+        - space: `O(1)`
+        - `n`: length of the stack
+        """
+        cursor = self._head
+        while cursor is not None:
+            yield cursor.value
+            cursor = cursor.next
 
     def push(self, value: T):
         """
@@ -17,13 +47,10 @@ class Stack(Generic[T], Linear[T]):
         - space: `O(1)`
 
         > parameters
-        - `value: any`: value to insert
+        - `value`: value to insert
         """
-        if self._head is None:
-            self._head = Node(value)
-        else:
-            self._head = Node(value, self._head)
-        self._size += 1
+        self._head = Node(value, self._head)
+        self._length += 1
 
     def pop(self):
         """
@@ -39,12 +66,12 @@ class Stack(Generic[T], Linear[T]):
             raise IndexError('empty stack')
         value = self._head.value
         self._head = self._head.next
-        self._size -= 1
+        self._length -= 1
         return value
 
     def peek(self):
         """
-        Get the value at the top of the stack without removeing it.
+        Get the value at the top of the stack without removing it.
 
         > complexity
         - time: `O(1)`
@@ -53,6 +80,7 @@ class Stack(Generic[T], Linear[T]):
         - `return`: value at the top of the stack
         """
         if self._head is None:
+
             raise IndexError('empty stack')
         return self._head.value
 

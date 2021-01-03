@@ -1,6 +1,6 @@
-from typing import Callable, Generic, Literal, Optional
+from typing import Callable, Generator, Generic, Literal, Optional
 
-from .abc import Heap, T
+from .abc import Priority, T
 
 
 def sift_up(heap: list[T], k: int, i: int, comparator: Callable[[T, T], float]):
@@ -13,6 +13,8 @@ def sift_up(heap: list[T], k: int, i: int, comparator: Callable[[T, T], float]):
     > complexity
     - time: `O(k*log(n, k))`
     - space: `O(1)`
+    - `n`: length of `heap`
+    - `k`: heap arity
 
     > parameters
     - `heap`: array containing heap structure
@@ -35,6 +37,8 @@ def sift_down(heap: list[T], k: int, i: int, comparator: Callable[[T, T], float]
     > complexity
     - time: `O(k*log(n, k))`
     - space: `O(1)`
+    - `n`: length of `heap`
+    - `k`: heap arity
 
     > parameters
     - `heap`: array containing heap structure
@@ -71,6 +75,8 @@ def heapify_top_down(heap: list[T], k: int, comparator: Callable[[T, T], float],
     > complexity
     - time: `O(n*k*log(n, k))`
     - space: `O(1)`
+    - `n`: length of `heap`
+    - `k`: heap arity
 
     > parameters
     - `heap`: array containing heap structure
@@ -93,6 +99,8 @@ def heapify_bottom_up(heap: list[T], k: int, comparator: Callable[[T, T], float]
     > complexity
     - time: `O(n*k)`
     - space: `O(1)`
+    - `n`: length of `heap`
+    - `k`: heap arity
 
     > parameters
     - `heap`: array containing heap structure
@@ -105,7 +113,7 @@ def heapify_bottom_up(heap: list[T], k: int, comparator: Callable[[T, T], float]
         sift_down(heap, k, i, comparator, length)
 
 
-class KHeap(Generic[T], Heap[T]):
+class KHeap(Generic[T], Priority[T]):
     """
     K-Heap implementation.
     """
@@ -121,8 +129,10 @@ class KHeap(Generic[T], Heap[T]):
         Initialize the binary heap
 
         > complexity
-        - time: `O(n)` if `heapify == 'bottom-up'` else `O(n*log(n))`, where `n` is the initial `data` length
+        - time: `O(n)` if `heapify == 'bottom-up'` else `O(n*k*log(n, k))`, where `n` is the initial `data` length
         - space: `O(n)`
+        - `n`: length of `heap`
+        - `k`: heap arity
 
         > parameters
         - `comparator`: a comparator function for heap values
@@ -136,30 +146,53 @@ class KHeap(Generic[T], Heap[T]):
         heapify_function = heapify_bottom_up if heapify == 'bottom-up' else heapify_top_down
         heapify_function(self._heap, self._k, self._comparator)
 
+    def __str__(self) -> str:
+        return f'{type(self).__name__} k={self._k} {str([*self])}'
+
     def __len__(self) -> int:
         return len(self._heap)
 
-    def __str__(self) -> str:
-        return f'{type(self).__name__} k={self._k} {self._heap}'
+    def __iter__(self) -> Generator[T, None, None]:
+        """
+        Check base class.
+
+        > complexity
+        - time: `O(n*k*log(n, k))`
+        - space: `O(n)`
+        - `n`: length of the heap
+        - `k`: arity of the heap
+        """
+        heap = self._heap.copy()
+        for _ in range(len(heap)):
+            yield heap[0]
+            replacement = heap.pop()
+            if len(heap) == 0:
+                break
+            heap[0] = replacement
+            sift_down(heap, self._k, 0, self._comparator)
 
     def offer(self, value: T):
         """
-        Check abstract class for documentation.
+        Check base class.
 
         > complexity
         - time: `O(k*log(n, k))`
         - space: `O(1)`
+        - `n`: length of the heap
+        - `k`: arity of the heap
         """
         self._heap.append(value)
         sift_up(self._heap, self._k, len(self._heap) - 1, self._comparator)
 
     def poll(self) -> T:
         """
-        Check abstract class for documentation.
+        Check base class.
 
         > complexity
         - time: `O(k*log(n, k))`
         - space: `O(1)`
+        - `n`: length of the heap
+        - `k`: arity of the heap
         """
         if len(self._heap) == 0:
             raise IndexError('empty heap')
@@ -172,7 +205,7 @@ class KHeap(Generic[T], Heap[T]):
 
     def peek(self) -> T:
         """
-        Check abstract class for documentation.
+        Check base class.
 
         > complexity
         - time: `O(1)`

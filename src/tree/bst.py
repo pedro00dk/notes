@@ -1,24 +1,115 @@
-from typing import Callable, Generic, Optional
+import collections
+from typing import (Any, Callable, Generator, Generic, Literal, Optional,
+                    TypeVar, cast)
 
-from .abc import Node, T, Tree, U
+from ..map.abc import Map
+from ..priority.abc import Priority
+from .abc import Tree, V
+
+K = TypeVar('K', bool, int, float, str)
 
 
-class BST(Generic[T, U], Tree[T, U]):
+class Node(Generic[K, V]):
+    """
+    Base Node class for trees.
+    """
+
+    def __init__(self, key: K, value: V):
+        self.key = key
+        self.value = value
+        self.left: Optional[Node[K, V]] = None
+        self.right: Optional[Node[K, V]] = None
+
+
+class BST(Generic[K, V], Tree[K, V]):
     """
     Binary Search Tree implementation.
     """
 
     def __init__(self):
         super().__init__()
-        self._root: Optional[Node[T, U]] = None
+        self._root: Optional[Node[K, V]] = None
+        self._size: int = 0
 
-    def put(self, key: T, value: U, replacer: Optional[Callable[[U, U], U]] = None) -> Optional[U]:
+    def __str__(self) -> str:
+        printer: Callable[[K, V, int], str] = lambda key, value, depth: f'{key}: {value}'
+        tree = '\n'.join(f'{"|  " * d}├─ {printer(k, v, d)}' for k, v, d in self.traverse('pre'))
+        return f'{type(self).__name__} [\n{tree}\n]'
+
+    def __len__(self) -> int:
+        return self._size
+
+    def __iter__(self) -> Generator[tuple[K, V], None, None]:
         """
-        Check abstract class for documentation.
+        Check base class.
+
+        > complexity
+        - time: `O(n)`
+        - space: average: `O(log(n))`, worst: `O(n)`
+        - `n`: size of the tree
+        """
+        return ((key, value) for key, value, _ in self.traverse())
+
+    def _pre(self, node: Optional[Node[K, V]], depth: int = 0) -> Generator[tuple[K, V, int], None, None]:
+        if node is None:
+            return
+        yield node.key, node.value, depth
+        yield from self._pre(node.left, depth=depth + 1)
+        yield from self._pre(node.right, depth=depth + 1)
+
+    def _in(self, node: Optional[Node[K, V]], depth: int = 0) -> Generator[tuple[K, V, int], None, None]:
+        if node is None:
+            return
+        yield from self._in(node.left, depth=depth + 1)
+        yield node.key, node.value, depth
+        yield from self._in(node.right, depth=depth + 1)
+
+    def _post(self, node: Optional[Node[K, V]], depth: int = 0) -> Generator[tuple[K, V, int], None, None]:
+        if node is None:
+            return
+        yield from self._post(node.left, depth=depth + 1)
+        yield from self._post(node.right, depth=depth + 1)
+        yield node.key, node.value, depth
+
+    def _breadth(self, node: Optional[Node[K, V]], depth: int = 0) -> Generator[tuple[K, V, int], None, None]:
+        if node is None:
+            return
+        queue = collections.deque[tuple[Node[K, V], int]]()
+        queue.append((node, depth))
+        while len(queue) > 0:
+            node, depth = queue.popleft()
+            yield node.key, node.value, depth
+            if node.left is not None:
+                queue.append((node.left, depth + 1))
+            if node.right is not None:
+                queue.append((node.right, depth + 1))
+
+    def traverse(self, mode: Literal['pre', 'in', 'post', 'breadth'] = 'in') -> Generator[tuple[K, V, int], None, None]:
+        """
+        Return a generator for tree keys, values and depth of nodes in the provided `mode`.
+
+        > complexity
+        - time: `O(n)`
+        - space: average: `O(log(n))`, worst: `O(n)`
+        - `n`: size of the tree
+
+        > parameters
+        - `mode`: traversal mode
+        - `return`: generator of key, values and depths
+        """
+        return self._pre(self._root) if mode == 'pre' else \
+            self._in(self._root) if mode == 'in' else \
+            self._post(self._root) if mode == 'post' else \
+            self._breadth(self._root)
+
+    def put(self, key: K, value: V, replacer: Optional[Callable[[V, V], V]] = None) -> Optional[V]:
+        """
+        See base class.
 
         > complexity
         - time: average: `O(log(n))`, worst: `O(n)`
         - space: `O(1)`
+        - `n`: size of the tree
         """
         parent = None
         node = self._root
@@ -33,19 +124,21 @@ class BST(Generic[T, U], Tree[T, U]):
             else:
                 parent.right = Node(key, value)
             self._size += 1
+            return None
         else:
             old_value = node.value
             node.key = key
-            node.value = replacer(value, node.value) if replacer is not None else value
+            node.value = value if replacer is None else replacer(value, node.value)
             return old_value
 
-    def take(self, key: T) -> U:
+    def take(self, key: K) -> V:
         """
-        Check abstract class for documentation.
+        See base class.
 
         > complexity
         - time: average: `O(log(n))`, worst: `O(n)`
         - space: `O(1)`
+        - `n`: size of the tree
         """
         parent = None
         node = self._root
@@ -71,11 +164,104 @@ class BST(Generic[T, U], Tree[T, U]):
         self._size -= 1
         return node.value
 
+    def get(self, key: K) -> V:
+        """
+        See base class.
+
+        > complexity
+        - time: average: `O(log(n))`, worst: `O(n)`
+        - space: `O(1)`
+        - `n`: size of the tree
+        """
+        node = self._root
+        while node is not None and key != node.key:
+            node = node.left if key < node.key else node.right
+        if node is None:
+            raise KeyError(f'key ({key}) not found')
+        return node.value
+
+    def minimum(self) -> Optional[tuple[K, V]]:
+        """
+        See base class.
+
+        > complexity
+        - time: average: `O(log(n))`, worst: `O(n)`
+        - space: `O(1)`
+        - `n`: size of the tree
+        """
+        node = self._root
+        while node is not None and node.left is not None:
+            node = node.left
+        return (node.key, node.value) if node is not None else None
+
+    def maximum(self) -> Optional[tuple[K, V]]:
+        """
+        See base class.
+
+        > complexity
+        - time: average: `O(log(n))`, worst: `O(n)`
+        - space: `O(1)`
+        - `n`: size of the tree
+        """
+        node = self._root
+        while node is not None and node.right is not None:
+            node = node.right
+        return (node.key, node.value) if node is not None else None
+
+    def predecessor(self, key: K) -> Optional[tuple[K, V]]:
+        """
+        See base class.
+
+        > complexity
+        - time: average: `O(log(n))`, worst: `O(n)`
+        - space: average: `O(log(n))`, worst: `O(n)`
+        - `n`: size of the tree
+        """
+        parents: list[Node[K, V]] = []
+        node = self._root
+        while node is not None and key != node.key:
+            parents.append(node)
+            node = node.left if key < node.key else node.right
+        if node is not None and node.left is not None:
+            predecessor = node.left
+            while predecessor.right is not None:
+                predecessor = predecessor.right
+            return predecessor.key, predecessor.value
+        for parent in reversed(parents):
+            if parent.key < key:
+                return parent.key, parent.value
+        return None
+
+    def successor(self, key: K) -> Optional[tuple[K, V]]:
+        """
+        See base class.
+
+        > complexity
+        - time: average: `O(log(n))`, worst: `O(n)`
+        - space: average: `O(log(n))`, worst: `O(n)`
+        - `n`: size of the tree
+        """
+        parents: list[Node[K, V]] = []
+        node = self._root
+        while node is not None and key != node.key:
+            parents.append(node)
+            node = node.left if key < node.key else node.right
+        if node is not None and node.right is not None:
+            ancestor = node.right
+            while ancestor.left is not None:
+                ancestor = ancestor.left
+            return ancestor.key, ancestor.value
+        for parent in reversed(parents):
+            if parent.key > key:
+                return parent.key, parent.value
+        return None
+
 
 def test():
     from ..test import match
 
     tree = BST[int, Optional[int]]()
+
     match((
         (tree.put, (-15, -1000)),
         (tree.put, (-10, None)),
@@ -92,6 +278,11 @@ def test():
         (tree.take, (-15,), -1000),
         (print, (tree,)),
     ))
+    print('test print functions from abstract base classes')
+    print('self:\n', tree)
+    print('tree:\n', cast(Any, Tree).__str__(tree))
+    print('map:\n', cast(Any, Map).__str__(tree))
+    print('priority queue:\n', cast(Any, Priority).__str__(tree))
     for key, *_ in tree.traverse('pre'):
         print(key, end=' ')
     print()
