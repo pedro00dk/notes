@@ -1,5 +1,3 @@
-
-
 def test():
     import random
 
@@ -26,7 +24,7 @@ def test():
         ),
         test_inputs=(),
         bench_sizes=(0, 1, 10, 100, 1000, 10000),
-        bench_input=lambda s: random.sample([*range(s)], s),
+        bench_input=lambda s: random.sample(range(s), s),
     )
     print('sequential insertions')
     benchmark(
@@ -37,7 +35,7 @@ def test():
             ('van Emde Boas tree', lambda data: test_tree(data, VEB[None](16))),
         ),
         test_inputs=(),
-        bench_sizes=(0, 1, 10, 100, 1000, 10000),
+        bench_sizes=(0, 1, 10, 100, 1000),
         bench_input=lambda s: [*range(s)],
     )
 
