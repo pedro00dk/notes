@@ -243,7 +243,7 @@ def test():
         (print, (linked_list,)),
     ))
 
-    def test_linkedlist(count: int):
+    def test_linked_list(count: int):
         linked_list = LinkedList[int]()
         for i in range(count):
             linked_list.push(i)
@@ -269,7 +269,7 @@ def test():
 
     benchmark(
         (
-            ('  linkedlist', test_linkedlist),
+            (' linked list', test_linked_list),
             (' native list', test_native_list),
             ('native deque', test_native_deque),
         ),

@@ -475,7 +475,7 @@ def test():
     def random_bytes(size: int, alphabet_size: int):
         return bytes(random.randint(0, alphabet_size - 1) for _ in range(size))
 
-    def test_native(text: bytes, pattern: bytes):
+    def test_native_search(text: bytes, pattern: bytes):
         occurrences = []
         i = -1
         while (i := text.find(pattern, i + 1)) != -1:
@@ -493,7 +493,7 @@ def test():
             ('           boyer moore', lambda args: boyer_moore(*args, False)),
             ('       boyer moore opt', lambda args: boyer_moore(*args, True)),
             ('          aho corasick', lambda args: aho_corasick(args[0], [args[1]])),
-            ('                native', lambda args: test_native(*args)),
+            ('                native', lambda args: test_native_search(*args)),
         ),
         test_inputs=((b'hello world!', b'o w'), (b'cagtcatgcatacgtctatatcggctgc', b'cat')),
         bench_sizes=((1000, 1), (1000, 5), (1000, 10), (1000, 20), (10000, 1), (10000, 5), (10000, 10), (10000, 20)),
@@ -510,7 +510,7 @@ def test():
             ('           boyer moore', lambda args: boyer_moore(*args, False)),
             ('       boyer moore opt', lambda args: boyer_moore(*args, True)),
             ('          aho corasick', lambda args: aho_corasick(args[0], [args[1]])),
-            ('                native', lambda args: test_native(*args)),
+            ('                native', lambda args: test_native_search(*args)),
         ),
         test_inputs=(),
         bench_sizes=((1000, 1), (1000, 5), (1000, 10), (1000, 20), (10000, 1), (10000, 5), (10000, 10), (10000, 20)),
