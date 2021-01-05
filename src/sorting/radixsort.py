@@ -1,5 +1,5 @@
 import math
-from typing import Callable, Optional, cast
+from typing import Any, Optional, cast
 
 
 def radixsort_lsd(array: list[int], block: Optional[int] = None) -> list[int]:
@@ -157,23 +157,21 @@ def radixsort_msd(array: list[int], block: int = 4) -> list[int]:
 def test():
     from ..test import sort_benchmark
 
-    sort_lsd = cast(Callable[[list[float], Optional[int]], list[float]], radixsort_lsd)
-    sort_msd = cast(Callable[[list[float], Optional[int]], list[float]], radixsort_msd)
     sort_benchmark(
         (
-            ('radixsort lsd block=1', lambda array: sort_lsd(array, 1)),
-            ('radixsort lsd block=2', lambda array: sort_lsd(array, 2)),
-            ('radixsort lsd block=3', lambda array: sort_lsd(array, 3)),
-            ('radixsort lsd block=4', lambda array: sort_lsd(array, 4)),
-            ('radixsort lsd block=5', lambda array: sort_lsd(array, 5)),
-            ('radixsort lsd block=6', lambda array: sort_lsd(array, 6)),
-            ('radixsort lsd block=n', lambda array: sort_lsd(array, None)),
-            ('radixsort msd block=1', lambda array: sort_msd(array, 1)),
-            ('radixsort msd block=2', lambda array: sort_msd(array, 2)),
-            ('radixsort msd block=3', lambda array: sort_msd(array, 3)),
-            ('radixsort msd block=4', lambda array: sort_msd(array, 4)),
-            ('radixsort msd block=5', lambda array: sort_msd(array, 5)),
-            ('radixsort msd block=6', lambda array: sort_msd(array, 6)),
+            ('radixsort lsd block=1', lambda array: cast(Any, radixsort_lsd)(array, 1)),
+            ('radixsort lsd block=2', lambda array: cast(Any, radixsort_lsd)(array, 2)),
+            ('radixsort lsd block=3', lambda array: cast(Any, radixsort_lsd)(array, 3)),
+            ('radixsort lsd block=4', lambda array: cast(Any, radixsort_lsd)(array, 4)),
+            ('radixsort lsd block=5', lambda array: cast(Any, radixsort_lsd)(array, 5)),
+            ('radixsort lsd block=6', lambda array: cast(Any, radixsort_lsd)(array, 6)),
+            ('radixsort lsd block=n', lambda array: cast(Any, radixsort_lsd)(array, None)),
+            ('radixsort msd block=1', lambda array: cast(Any, radixsort_msd)(array, 1)),
+            ('radixsort msd block=2', lambda array: cast(Any, radixsort_msd)(array, 2)),
+            ('radixsort msd block=3', lambda array: cast(Any, radixsort_msd)(array, 3)),
+            ('radixsort msd block=4', lambda array: cast(Any, radixsort_msd)(array, 4)),
+            ('radixsort msd block=5', lambda array: cast(Any, radixsort_msd)(array, 5)),
+            ('radixsort msd block=6', lambda array: cast(Any, radixsort_msd)(array, 6)),
         ),
     )
 

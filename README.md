@@ -38,9 +38,10 @@ Space complexity is available in algorithms files.
     -   quicksort lomuto's partition **- average: O(n\*log(n)), worst: O(n<sup>2</sup>)**
     -   quicksort dual pivot partition **- average: O(n\*log(n)), worst: O(n<sup>2</sup>)**
 -   [treesort](./src/sorting/treesort.py) (_see data structures trees section_) **- O(n\*`Tree.put` + `Tree.__iter__`))**
-    -   treesort bst **- average: O(n\*log(n)), worst: O(n<sup>2</sup>)**
+    -   treesort binary search tree **- average: O(n\*log(n)), worst: O(n<sup>2</sup>)**
     -   treesort avl **- O(n\*log(n))**
-    -   treesort rbt **- O(n\*log(n))**
+    -   treesort red-black tree **- O(n\*log(n))**
+    -   treesort van emde boas **- O(n\*log(log(u)))**
 -   [shellsort](./src/sorting/shellsort.py)
     -   shellsort Shell1959 **- O(n<sup>2</sup>)**
     -   shellsort FrankLazarus1960 **- O(n<sup>3/2</sup>)**
@@ -51,7 +52,7 @@ Space complexity is available in algorithms files.
     -   shellsort Tokuda1992 **- unknown**
     -   shellsort Ciura2001 **- unknown**
 -   [countingsort](./src/sorting/countingsort.py) **- O(n + k)**
--   [bucketsort](./src/sorting/bucketsort.py) **- average: O(n + (n<sup>2</sup>/k) + k), worst O(n<sup>2</sup>), best: O(n)**
+-   [bucketsort](./src/sorting/bucketsort.py) **- best: O(n), average: O(n + (n<sup>2</sup>/k) + k), worst O(n<sup>2</sup>)**
 -   [radixsort](./src/sorting/radixsort.py)
     -   radixsort least-significant-digit **- O(n\*w)**
     -   radixsort most-significant-digit **- O(n\*w)**

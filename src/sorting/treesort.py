@@ -1,9 +1,6 @@
-from typing import Callable
+from typing import Any, Callable, cast
 
 from ..tree.abc import Tree
-from ..tree.avl import AVL
-from ..tree.bst import BST
-from ..tree.rbt import RBT
 
 
 def treesort(array: list[float], tree: Tree[float, int]) -> list[float]:
@@ -35,12 +32,17 @@ def treesort(array: list[float], tree: Tree[float, int]) -> list[float]:
 
 def test():
     from ..test import sort_benchmark
+    from ..tree.avl import AVL
+    from ..tree.bst import BST
+    from ..tree.rbt import RBT
+    from ..tree.veb import VEB
 
     sort_benchmark(
         (
-            ('treesort bst', lambda array: treesort(array, BST[float, int]())),
-            ('treesort avl', lambda array: treesort(array, AVL[float, int]())),
-            ('treesort rbt', lambda array: treesort(array, RBT[float, int]())),
+            ('treesort binary search tree', lambda array: treesort(array, BST[float, int]())),
+            ('               treesort avl', lambda array: treesort(array, AVL[float, int]())),
+            ('    treesort red-black tree', lambda array: treesort(array, RBT[float, int]())),
+            ('     treesort van Emde Boas', lambda array: treesort(array, cast(Any, VEB[int](32)))),
         ),
     )
 

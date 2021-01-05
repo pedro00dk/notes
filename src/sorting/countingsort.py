@@ -1,4 +1,4 @@
-from typing import Callable, cast
+from typing import Any, cast
 
 
 def countingsort(array: list[int]) -> list[int]:
@@ -38,18 +38,17 @@ def countingsort(array: list[int]) -> list[int]:
 def test():
     from ..test import sort_benchmark
 
-    sort = cast(Callable[[list[float]], list[float]], countingsort)
     print('terrible input')
-    sort_benchmark((('countingsort', sort),), value_range=lambda s: (-s * 10, s * 10))
+    sort_benchmark((('countingsort', cast(Any, countingsort)),), value_range=lambda s: (-s * 10, s * 10))
     print()
     print('bad input')
-    sort_benchmark((('countingsort', sort),), value_range=lambda s: (-s * 5, s * 5))
+    sort_benchmark((('countingsort', cast(Any, countingsort)),), value_range=lambda s: (-s * 5, s * 5))
     print()
     print('good input')
-    sort_benchmark((('countingsort', sort),), value_range=lambda s: (-s, s))
+    sort_benchmark((('countingsort', cast(Any, countingsort)),), value_range=lambda s: (-s, s))
     print()
     print('best input')
-    sort_benchmark((('countingsort', sort),), value_range=lambda s: (-10, 10))
+    sort_benchmark((('countingsort', cast(Any, countingsort)),), value_range=lambda s: (-10, 10))
     print()
 
 
