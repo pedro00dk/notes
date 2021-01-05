@@ -157,10 +157,11 @@ Space complexity is available in algorithms files.
     -   `Heap.offer` **- O(`Map.put`)**
     -   `Heap.poll` **- O(`Tree.minimum` + `Map.take`)**
     -   `Heap.peek` **- O(`Tree.minimum`)**
-    -   [Binary Search Tree - `BST[K = bool, int, float, str, V]` extends `Tree[K, V]`](./src/tree/bst.py)
+    -   [Binary Search Tree - `BST[K = (bool, int, float, str), V]` extends `Tree[K, V]`](./src/tree/bst.py)
         -   `__str__` (override `Map.__str__` and `Priority.__str__`) - **O(traverse)**
         -   `Map.__len__ , Priority.__len__` **- O(1)**
         -   `Map.__iter__ , Priority.__iter__` **- O(traverse)**
+        -   `traverse` (pre, in, post, breadth) - **average: O(log(n)), worst: O(n)**
         -   `Map.put` **- average: O(log(n)), worst: O(n)**
         -   `Map.take` **- average: O(log(n)), worst: O(n)**
         -   `Map.get` **- average: O(log(n)), worst: O(n)**
@@ -168,15 +169,26 @@ Space complexity is available in algorithms files.
         -   `Tree.maximum` **- average: O(log(n)), worst: O(n)**
         -   `Tree.predecessor` **- average: O(log(n)), worst: O(n)**
         -   `Tree.successor` **- average: O(log(n)), worst: O(n)**
-        -   `traverse` (pre, in, post, breadth) - **average: O(log(n)), worst: O(n)**
-    -   [Adelson Velsky and Landis - `AVL[K = bool, int, float, str, V]` extends `BST[K, V]`](./src/tree/avl.py)
+    -   [Adelson Velsky and Landis - `AVL[K = (bool, int, float, str), V]` extends `BST[K, V]`](./src/tree/avl.py)
         -   `put` (override `Map.put` in `BST`) **- O(log(n))**
         -   `take` (override `Map.take` in `BST`) **- O(log(n))**
         -   **all functions worst case drop to O(log(n))**
-    -   [Red-Black Tree - `RBT[K = bool, int, float, str, V]` extends `BST[K, V]`](./src/tree/rbt.py)
+    -   [Red-Black Tree - `RBT[K = (bool, int, float, str), V]` extends `BST[K, V]`](./src/tree/rbt.py)
         -   `put` (override `Map.put` in `BST`) **- O(log(n))**
         -   `take` (override `Map.take` in `BST`) **- O(log(n))**
         -   **all functions worst case drop to O(log(n))**
+    -   [van Emde Boas - `VEB[V]` extends `Tree[int, V]`](./src/tree/rbt.py)
+        -   `__str__` (override `Map.__str__` and `Priority.__str__`) - **O(traverse)**
+        -   `Map.__len__ , Priority.__len__` **- O(1)**
+        -   `Map.__iter__ , Priority.__iter__` **- O(traverse)**
+        -   `traverse` (pre, in, post, breadth) - **O(n\*log(log(u)))**
+        -   `Map.put` **- O(log(log(u)))**
+        -   `Map.take` **- O(log(log(u))**
+        -   `Map.get` **- O(log(log(u))**
+        -   `Tree.minimum` **- O(1)**
+        -   `Tree.maximum` **- O(1)**
+        -   `Tree.predecessor` **- O(log(log(u)))**
+        -   `Tree.successor` **- O(log(log(u)))**
     -   [benchmark](./src/tree/benchmark.py)
 -   [`DisjointSet` and `HashDisjointSet[T]`](./src/dset.py)
     -   `__init__` **- O(n)**
