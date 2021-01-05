@@ -1,27 +1,16 @@
+
+
 def test():
     import random
 
     from ..test import benchmark
+    from .abc import Tree
     from .avl import AVL
     from .bst import BST
     from .rbt import RBT
+    from .veb import VEB
 
-    def test_bst(entries: list[int]):
-        tree = BST[int, None]()
-        for i in entries:
-            tree.put(i, None)
-        for i in entries:
-            tree.take(i)
-
-    def test_avl(entries: list[int]):
-        tree = AVL[int, None]()
-        for i in entries:
-            tree.put(i, None)
-        for i in entries:
-            tree.take(i)
-
-    def test_rbt(entries: list[int]):
-        tree = RBT[int, None]()
+    def test_tree(entries: list[int], tree: Tree[int, None]):
         for i in entries:
             tree.put(i, None)
         for i in entries:
@@ -30,9 +19,10 @@ def test():
     print('random insertions')
     benchmark(
         (
-            ('binary search tree', test_bst),
-            ('          avl tree', test_avl),
-            ('    red-black tree', test_rbt),
+            ('binary search tree', lambda data: test_tree(data, BST[int, None]())),
+            ('          avl tree', lambda data: test_tree(data, AVL[int, None]())),
+            ('    red-black tree', lambda data: test_tree(data, RBT[int, None]())),
+            ('van Emde Boas tree', lambda data: test_tree(data, VEB[None](16))),
         ),
         test_inputs=(),
         bench_sizes=(0, 1, 10, 100, 1000, 10000),
@@ -41,9 +31,10 @@ def test():
     print('sequential insertions')
     benchmark(
         (
-            ('binary search tree', test_bst),
-            ('          avl tree', test_avl),
-            ('    red-black tree', test_rbt),
+            ('binary search tree', lambda data: test_tree(data, BST[int, None]())),
+            ('          avl tree', lambda data: test_tree(data, AVL[int, None]())),
+            ('    red-black tree', lambda data: test_tree(data, RBT[int, None]())),
+            ('van Emde Boas tree', lambda data: test_tree(data, VEB[None](16))),
         ),
         test_inputs=(),
         bench_sizes=(0, 1, 10, 100, 1000, 10000),
