@@ -53,8 +53,8 @@ class AVL(Generic[K, V], BST[K, V]):
                 node.right, old_value = rec(key, value, node.right)
                 node.height = max(node.height, node.right.height + 1)
             else:
-                old_value = node.value
                 node.key = key
+                old_value = node.value
                 node.value = value if replacer is None else replacer(value, node.value)
             return self._rotate(node), old_value
 

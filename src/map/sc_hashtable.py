@@ -118,8 +118,7 @@ class SequenceChainingHashtable(Generic[K, V], Map[K, V]):
             return None
         else:
             old_value = node.value
-            value = value if replacer is None else replacer(value, node.value)
-            node.key, node.value = key, value
+            node.key, node.value = key, (value if replacer is None else replacer(value, node.value))
             return old_value
 
     def take(self, key: K) -> V:

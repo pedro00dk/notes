@@ -53,8 +53,8 @@ class RBT(Generic[K, V], BST[K, V]):
             self._size += 1
             self._root = self._put_fix(node)
         else:
-            old_value = node.value
             node.key = key
+            old_value = node.value
             node.value = value if replacer is None else replacer(value, node.value)
             return old_value
 
