@@ -51,9 +51,15 @@ class Edge(Generic[E]):
 class Graph(Generic[V, E]):
     """
     Graph implementation based on adjacency lists (edges lists are default lists, not linked lists).
-    Implementation details:
-    - vertices and edges can only be added, deleting then is not possible
+
+    > implementation details
+    - vertices and edges can only be added, deleting them is not possible
     - only vertices have identifiers
+
+    > complexity
+    - space: `O(v + e)`
+    - `v`: number of vertices in the graph
+    - `e`: number of edges in the graph
     """
 
     def __init__(self):

@@ -22,6 +22,10 @@ class RBTNode(Generic[K, V], Node[K, V]):
 class RBT(Generic[K, V], BST[K, V]):
     """
     Red-Black tree implementation.
+
+    > complexity
+    - space: `O(n)`
+    - `n`: number of elements in the structure
     """
 
     def __init__(self):

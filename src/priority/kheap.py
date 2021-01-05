@@ -116,6 +116,10 @@ def heapify_bottom_up(heap: list[T], k: int, comparator: Callable[[T, T], float]
 class KHeap(Generic[T], Priority[T]):
     """
     K-Heap implementation.
+
+    > complexity
+    - space: `O(n)`
+    - `n`: number of elements in the structure.
     """
 
     def __init__(

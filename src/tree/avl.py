@@ -26,6 +26,10 @@ class AVLNode(Generic[K, V], Node[K, V]):
 class AVL(Generic[K, V], BST[K, V]):
     """
     AVL tree implementation.
+
+    > complexity
+    - space: `O(n)`
+    - `n`: number of elements in the structure
     """
 
     def __init__(self):

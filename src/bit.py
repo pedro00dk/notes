@@ -2,6 +2,10 @@ class BIT:
     """
     Binary Index Tree implementation.
     This data structure is also known as Fenwick Tree.
+
+    > complexity
+    - space: `O(n)`
+    - `n`: size of `array` parameter
     """
 
     def __init__(self, array: list[float]):

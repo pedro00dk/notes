@@ -24,6 +24,10 @@ class Node(Generic[K, V]):
 class BST(Generic[K, V], Tree[K, V]):
     """
     Binary Search Tree implementation.
+
+    > complexity
+    - space: `O(n)`
+    - `n`: number of elements in the structure
     """
 
     def __init__(self):

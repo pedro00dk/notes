@@ -14,6 +14,10 @@ class Node(Generic[T]):
 class Stack(Generic[T], Linked[T]):
     """
     Linked stack implementation.
+
+    > complexity
+    - space: `O(n)`
+    - `n`: number of elements in the structure
     """
 
     def __init__(self):

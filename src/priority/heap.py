@@ -103,6 +103,10 @@ def heapify_bottom_up(heap: list[T], comparator: Callable[[T, T], float], length
 class Heap(Generic[T], Priority[T]):
     """
     Binary Heap implementation.
+
+    > complexity
+    - space: `O(n)`
+    - `n`: number of elements in the structure.
     """
 
     def __init__(

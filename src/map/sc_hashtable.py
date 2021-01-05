@@ -17,6 +17,10 @@ class SequenceChainingHashtable(Generic[K, V], Map[K, V]):
     Sequence chaining Hashtable implementation.
     Probers have minimal impact in sequence chaining performance, if probers produce the same index for `trie = 0`,
     the only change is the capacity and threshold limits. 
+
+    > complexity
+    - space: `O(n)`
+    - `n`: number of elements in the structure
     """
 
     def __init__(self, prober_name: Literal['linear', 'prime', 'triangular'] = 'triangular'):

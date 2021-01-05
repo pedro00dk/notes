@@ -15,6 +15,10 @@ class Node(Generic[T]):
 class LinkedList(Generic[T], Linked[T]):
     """
     Doubly Linked List implementation.
+
+    > complexity
+    - space: `O(n)`
+    - `n`: number of elements in the structure
     """
 
     def __init__(self):

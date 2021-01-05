@@ -15,6 +15,10 @@ class Entry(Generic[K, V]):
 class OpenAddressingHashtable(Generic[K, V], Map[K, V]):
     """
     Open Addressing Hashtable implementation.
+
+    > complexity
+    - space: `O(n)`
+    - `n`: number of elements in the structure
     """
 
     def __init__(self, prober_name: Literal['linear', 'prime', 'triangular'] = 'triangular'):

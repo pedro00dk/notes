@@ -24,6 +24,10 @@ class VEB(Generic[V], Tree[int, V]):
     Only power of two word sizes are supported.
     This implementation stores both minimum and maximum values of a node not recursively, so predecessor and successor
     can be implemented symmetrically and the space usage is reduced.
+
+    > complexity
+    - space: `O(n*log(log(u)))`
+    - `n`: number of elements in the structure
     """
 
     def __init__(self, word_size: int = 64):

@@ -6,6 +6,10 @@ T = TypeVar('T')
 class DisjointSet:
     """
     Disjoint Set implementation.
+
+    > complexity
+    - space: `O(n)`
+    - `n`: number of starting sets plus created sets
     """
 
     def __init__(self, sets: int = 0):
