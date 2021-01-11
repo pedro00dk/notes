@@ -113,7 +113,7 @@ class Heap(Generic[T], Priority[T]):
         self,
         comparator: Callable[[T, T], float],
         data: Optional[list[T]] = None,
-        heapify: Literal['bottom-up', 'top-down'] = 'bottom-up',
+        strategy: Literal['bottom-up', 'top-down'] = 'bottom-up',
     ):
         """
         Initialize the binary heap
@@ -126,12 +126,12 @@ class Heap(Generic[T], Priority[T]):
         > parameters
         - `comparator`: a comparator function for heap values
         - `data`: initial data to populate the heap
-        - `heapify`: initial heapify strategy, only impacts initial `data`
+        - `strategy`: initial heapify strategy, only impacts initial `data`
         """
         super().__init__()
         self._comparator = comparator
         self._heap: list[T] = data if data is not None else []
-        heapify_function = heapify_bottom_up if heapify == 'bottom-up' else heapify_top_down
+        heapify_function = heapify_bottom_up if strategy == 'bottom-up' else heapify_top_down
         heapify_function(self._heap, self._comparator)
 
     def __len__(self) -> int:

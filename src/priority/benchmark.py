@@ -26,8 +26,6 @@ def test():
         for _ in range(len(data)):
             heap.poll()
 
-        # heap = KHeap[int](lambda a, b: a - b, data, k)
-
     def test_native_heap(data: list[int]):
         heap = data
         heapq.heapify(heap)
