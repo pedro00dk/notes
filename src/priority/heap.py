@@ -119,7 +119,7 @@ class Heap(Generic[T], Priority[T]):
         Initialize the binary heap
 
         > complexity
-        - time: `O(n)` if `heapify == 'bottom-up'` else `O(n*log(n))`, where `n` is the initial `data` length
+        - time: `O(n)` if `strategy == 'bottom-up'` else `O(n*log(n))`
         - space: `O(n)`
         - `n`: length of `data`
 

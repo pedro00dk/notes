@@ -133,9 +133,9 @@ class KHeap(Generic[T], Priority[T]):
         Initialize the binary heap
 
         > complexity
-        - time: `O(n)` if `heapify == 'bottom-up'` else `O(n*k*log(n, k))`, where `n` is the initial `data` length
+        - time: `O(n)` if `strategy == 'bottom-up'` else `O(n*k*log(n, k))`
         - space: `O(n)`
-        - `n`: length of `heap`
+        - `n`: length of `data`
         - `k`: heap arity
 
         > parameters
