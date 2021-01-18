@@ -267,3 +267,37 @@ class VEB(Generic[V], Tree[int, V]):
             return successor, value
 
         return rec(key, self._root) if self._root.max != -1 and key < self._root.max else None
+
+
+def test():
+    from ..map.abc import Map
+    from ..priority.abc import Priority
+    from ..test import match
+
+    tree = VEB[Optional[int]]()
+
+    match((
+        (tree.put, (15, 1000)),
+        (tree.put, (10, None)),
+        (tree.put, (5, None)),
+        (tree.put, (0, None)),
+        (tree.put, (30, 1000)),
+        (tree.put, (50, None)),
+        (tree.put, (40, None)),
+        (tree.get, (5,), None),
+        (tree.get, (15,), 1000),
+        (print, (tree,)),
+        (tree.take, (0,)),
+        (tree.take, (10,)),
+        (tree.take, (15,), 1000),
+        (print, (tree,)),
+    ))
+    print('test print functions from abstract base classes')
+    print('self:\n', tree)
+    print('tree:\n', cast(Any, Tree).__str__(tree))
+    print('map:\n', cast(Any, Map).__str__(tree))
+    print('priority queue:\n', cast(Any, Priority).__str__(tree))
+
+
+if __name__ == '__main__':
+    test()
