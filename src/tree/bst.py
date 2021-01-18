@@ -36,9 +36,8 @@ class BST(Generic[K, V], Tree[K, V]):
         self._size: int = 0
 
     def __str__(self) -> str:
-        printer: Callable[[K, V, int], str] = lambda key, value, depth: f'{key}: {value}'
-        tree = '\n'.join(f'{"|  " * d}├─ {printer(k, v, d)}' for k, v, d in self.traverse('pre'))
-        return f'{type(self).__name__} [\n{tree}\n]'
+        nodes = '\n'.join(f'{"|  " * depth}├─ {key}: {value}' for key, value, depth in self.traverse('pre'))
+        return f'{type(self).__name__} [\n{nodes}\n]'
 
     def __len__(self) -> int:
         return self._size
