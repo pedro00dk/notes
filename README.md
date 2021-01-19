@@ -344,6 +344,14 @@ Space complexity is available in algorithms files.
     -   sellers **- O(n\*p)**
     -   ukkonen **- O(n + (p\*min(p, d)\*c))**
     -   wu manber **- O(n\*min(p, d) + p)**
+-   offline string search
+    -   [`SuffixTree`](./src/search/suffix_tree.py) **- space: O(n)**
+        -   `__init__ naive` **- O(n<sup>2</sup>)**
+        -   `__init__ ukkonen` **- O(n)**
+        -   `__str__` **- O(n<sup>2</sup>)**
+        -   `occurrences` **- O(p+q)**
+        -   `occurrences_count` **- O(p)**
+        -   `longest_repeated_substring` **- O(n)**
 
 ## Encoding and Compression
 
@@ -370,4 +378,4 @@ Space complexity is available in algorithms files.
 -   graph: maximum matching, edge cover, facility location
 -   heaps: fibonacci heap, pairing heap
 -   compression: lz77, lz78
--   string search: suffix array, suffix tree
+-   string search: suffix array
