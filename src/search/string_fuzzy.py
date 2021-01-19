@@ -224,7 +224,7 @@ def test():
 
     from ..test import benchmark
 
-    def random_bytes(size: int, alphabet_size: int):
+    def random_bytes(size: int, alphabet_size: int) -> bytes:
         return bytes(random.randint(0, alphabet_size - 1) for _ in range(size))
 
     benchmark(

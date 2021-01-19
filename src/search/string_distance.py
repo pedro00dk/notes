@@ -27,7 +27,7 @@ def edit_distance_brute_force(text_a: bytes, text_b: bytes, i: int = 0, j: int =
     )
 
 
-def edit_distance_wagner_fischer(text_a: bytes, text_b: bytes):
+def edit_distance_wagner_fischer(text_a: bytes, text_b: bytes) -> int:
     """
     Wagner-Fisher edit distance algorithm.
     The distance used is the Levenshtein distance.
@@ -55,7 +55,7 @@ def edit_distance_wagner_fischer(text_a: bytes, text_b: bytes):
     return distances[-1][-1]
 
 
-def edit_distance_wagner_fischer_opt(text_a: bytes, text_b: bytes):
+def edit_distance_wagner_fischer_opt(text_a: bytes, text_b: bytes) -> int:
     """
     Check base Wagner-Fisher algorithm for documentation.
 
@@ -85,7 +85,7 @@ def test():
 
     from ..test import benchmark
 
-    def random_bytes(size: int, alphabet_size: int):
+    def random_bytes(size: int, alphabet_size: int) -> bytes:
         return bytes(random.randint(0, alphabet_size - 1) for _ in range(size))
 
     print('all algorithms')
