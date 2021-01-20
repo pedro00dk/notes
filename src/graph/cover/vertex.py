@@ -1,5 +1,5 @@
 import itertools
-from typing import Any, cast
+from typing import Any, Callable, Union, cast
 
 from ..graph import Edge, Graph
 
@@ -14,8 +14,11 @@ def vertex_cover_brute_force(graph: Graph[Any, Any]) -> list[int]:
         be selected if `v` has an edge to another vertex `u`, such that `u` has only that single edge.
 
     > complexity
-    - time: `O((2**k)*v*e)` where `k` is the vertex count of the best cover
+    - time: `O((2**k)*v*e)`
     - space: `O(v + e)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
+    - `k`: number of vertices of the best cover
 
     > parameters
     - `graph`: graph to find cover
@@ -56,6 +59,8 @@ def vertex_cover_greedy(graph: Graph[Any, Any]) -> list[int]:
     > complexity
     - time: `O(v + e)`
     - space: `O(v)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to find cover
@@ -78,6 +83,8 @@ def vertex_cover_greedy_double(graph: Graph[Any, Any]) -> list[int]:
     > complexity
     - time: `O(v + e)`
     - space: `O(v)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to find cover
@@ -101,6 +108,8 @@ def weighted_vertex_cover_brute_force(graph: Graph[Any, Any]) -> tuple[float, li
     > complexity
     - time: `O((2**v)*v*e)`
     - space: `O(v + e)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to find cover
@@ -145,6 +154,8 @@ def weighted_vertex_cover_greedy(graph: Graph[Any, Any]) -> tuple[float, list[in
     > complexity
     - time: `O(v + e)`
     - space: `O(v)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to find cover
@@ -174,6 +185,8 @@ def weighted_vertex_cover_pricing(graph: Graph[Any, Any]) -> tuple[float, list[i
     > complexity
     - time: `O(v + e)`
     - space: `O(v)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to find cover
@@ -196,6 +209,8 @@ def weighted_vertex_cover_pricing_sorted(graph: Graph[Any, Any]) -> tuple[float,
     > complexity
     - time: `O(e*log(e) + v)`
     - space: `O(v + e)`
+    - `v`: number of vertices in `graph`
+    - `e`: number of edges in `graph`
 
     > parameters
     - `graph`: graph to find cover
@@ -217,23 +232,31 @@ def test():
     from ...test import benchmark, heuristic_approximation
     from ..factory import random_undirected
 
-    def save_size(algorithm: Any, input: Any, sizes: Any):
+    def save_size(
+        algorithm: Callable[[Graph[Any, Any]], Union[list[int], tuple[float, list[int]]]],
+        input: Graph[Any, Any],
+        sizes: list[float]
+    ) -> Union[list[int], tuple[float, list[int]]]:
         result = algorithm(input)
-        sizes.append(len(result))
+        sizes.append(len(result) if isinstance(result, list) else len(result[1]))
         return result
 
-    def save_weight(algorithm: Any, input: Any, weights: Any):
+    def save_weight(
+        algorithm: Callable[[Graph[Any, Any]], tuple[float, list[int]]],
+        input: Graph[Any, Any],
+        weights: list[float]
+    ) -> tuple[float, list[int]]:
         result = algorithm(input)
         weights.append(result[0])
         return result
 
-    optimal_sizes = []
-    greedy_sizes = []
-    greedy_double_sizes = []
-    optimal_weights = []
-    greedy_weights = []
-    pricing_weights = []
-    pricing_sorted_weights = []
+    optimal_sizes: list[float] = []
+    greedy_sizes: list[float] = []
+    greedy_double_sizes: list[float] = []
+    optimal_weights: list[float] = []
+    greedy_weights: list[float] = []
+    pricing_weights: list[float] = []
+    pricing_sorted_weights: list[float] = []
     benchmark(
         (
             (
