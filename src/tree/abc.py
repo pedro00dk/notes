@@ -1,10 +1,16 @@
 import abc
-from typing import Generic, Optional, TypeVar
+from typing import Any, Generic, Optional, Protocol, TypeVar
 
 from ..map.abc import Map
 from ..priority.abc import Priority
 
-K = TypeVar('K')
+
+class Comparable(Protocol):
+    @abc.abstractmethod
+    def __lt__(self, other: Any) -> bool: ...
+
+
+K = TypeVar('K', bound=Comparable)
 V = TypeVar('V')
 
 
@@ -29,7 +35,6 @@ class Tree(Generic[K, V], Map[K, V], Priority[K]):
 
         - `return`: minimum key and its value
         """
-        pass
 
     @abc.abstractmethod
     def maximum(self) -> Optional[tuple[K, V]]:
@@ -42,7 +47,6 @@ class Tree(Generic[K, V], Map[K, V], Priority[K]):
 
         - `return`: maximum key and its value
         """
-        pass
 
     @abc.abstractmethod
     def predecessor(self, key: K) -> Optional[tuple[K, V]]:
@@ -59,7 +63,6 @@ class Tree(Generic[K, V], Map[K, V], Priority[K]):
         - `key`: key to retrieve predecessor
         - `return`: predecessor of `key`
         """
-        pass
 
     @abc.abstractmethod
     def successor(self, key: K) -> Optional[tuple[K, V]]:
@@ -76,7 +79,6 @@ class Tree(Generic[K, V], Map[K, V], Priority[K]):
         - `key`: key to retrieve successor
         - `return`: successor of `key`
         """
-        pass
 
     # heap abstract base class implementation
 

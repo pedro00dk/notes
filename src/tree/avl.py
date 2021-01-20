@@ -2,8 +2,8 @@ from typing import Any, Callable, Generic, Optional, cast
 
 from ..map.abc import Map
 from ..priority.abc import Priority
-from .abc import Tree, V
-from .bst import BST, K, Node
+from .abc import K, Tree, V
+from .bst import BST, Node
 
 
 class AVLNode(Generic[K, V], Node[K, V]):

@@ -70,8 +70,7 @@ class Map(Generic[K, V], abc.ABC):
         return f'{type(self).__name__} [\n{lines}\n]'
 
     @abc.abstractmethod
-    def __len__(self) -> int:
-        pass
+    def __len__(self) -> int: ...
 
     @abc.abstractmethod
     def __iter__(self) -> Generator[tuple[K, V], None, None]:
@@ -84,7 +83,6 @@ class Map(Generic[K, V], abc.ABC):
 
         - `return`: generator of map entries
         """
-        pass
 
     def __contains__(self, key: K) -> bool:
         """
@@ -148,7 +146,6 @@ class Map(Generic[K, V], abc.ABC):
             respectively, the return is the new value
         - `return`: `None` if it is a new key, otherwise the previous value associated with `key`
         """
-        pass
 
     @abc.abstractmethod
     def take(self, key: K) -> V:
@@ -165,7 +162,6 @@ class Map(Generic[K, V], abc.ABC):
         - `key`: key of the entry
         - `return`: value associated with `key`
         """
-        pass
 
     @abc.abstractmethod
     def get(self, key: K) -> V:
@@ -180,7 +176,6 @@ class Map(Generic[K, V], abc.ABC):
         - `key`: key of value to retrieve
         - `return`: value associated with `key`
         """
-        pass
 
     def contains_value(self, value: V) -> bool:
         """

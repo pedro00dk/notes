@@ -1,9 +1,7 @@
 import math
-from typing import Any, Callable, Generator, Generic, Optional, TypeVar, cast
+from typing import Any, Callable, Generator, Generic, Optional, cast
 
-from .abc import Tree
-
-V = TypeVar('V')
+from .abc import Tree, V
 
 
 class VEBNode(Generic[V]):

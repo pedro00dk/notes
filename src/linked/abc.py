@@ -13,8 +13,7 @@ class Linked(Generic[T], abc.ABC):
         return f'{type(self).__name__} {str([*self])}'
 
     @abc.abstractmethod
-    def __len__(self) -> int:
-        pass
+    def __len__(self) -> int: ...
 
     @abc.abstractmethod
     def __iter__(self) -> Generator[T, None, None]:
@@ -26,7 +25,6 @@ class Linked(Generic[T], abc.ABC):
 
         - `return`: generator of values
         """
-        pass
 
     def __contains__(self, value: T):
         """

@@ -1,12 +1,9 @@
 import collections
-from typing import (Any, Callable, Generator, Generic, Literal, Optional,
-                    TypeVar, cast)
+from typing import Any, Callable, Generator, Generic, Literal, Optional, cast
 
 from ..map.abc import Map
 from ..priority.abc import Priority
-from .abc import Tree, V
-
-K = TypeVar('K', bool, int, float, str)
+from .abc import K, Tree, V
 
 
 class Node(Generic[K, V]):

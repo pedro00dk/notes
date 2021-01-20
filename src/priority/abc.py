@@ -13,8 +13,7 @@ class Priority(Generic[T], abc.ABC):
         return f'{type(self).__name__} {str([*self])}'
 
     @abc.abstractmethod
-    def __len__(self) -> int:
-        pass
+    def __len__(self) -> int: ...
 
     @abc.abstractmethod
     def __iter__(self) -> Generator[T, None, None]:
@@ -27,7 +26,6 @@ class Priority(Generic[T], abc.ABC):
 
         - `return`: generator of values sorted by priority
         """
-        pass
 
     def __contains__(self, value: T):
         """
@@ -56,7 +54,6 @@ class Priority(Generic[T], abc.ABC):
         > parameters
         - `value`: value to insert
         """
-        pass
 
     @abc.abstractmethod
     def poll(self) -> T:
@@ -68,7 +65,6 @@ class Priority(Generic[T], abc.ABC):
 
         - `return`: deleted value
         """
-        pass
 
     @abc.abstractmethod
     def peek(self) -> T:
@@ -80,4 +76,3 @@ class Priority(Generic[T], abc.ABC):
 
         - `return`: next value
         """
-        pass
