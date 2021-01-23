@@ -1,9 +1,25 @@
-import collections
-import heapq
-from typing import Any, Optional, cast
+from __future__ import annotations
 
-HuffmanTree = tuple[int, int, Optional['HuffmanTree'], Optional['HuffmanTree']]  # (frequency, byte, left, right)
+import collections
+import dataclasses
+import heapq
+from typing import Any, cast
+
+# huffman code stores each byte (character) mapping to its compressed version
+# the compressed version is represented by the number of bits (size) and the actual value (value)
+# huffman code is used in the encoding process and can be easily canonized, serialized and deserialized
 HuffmanCode = dict[int, tuple[int, int]]  # {[byte]: (size, value)}
+
+
+@dataclasses.dataclass(order=True)
+# huffman tree stores paths to bytes where left banches represents a 0 bit and right branches represents a 1 bit
+# huffman tree is easier to be created from initial data than huffman code
+# huffman tree is used in the decoding process, for all other purposes, it is converted to a huffman code
+class HuffmanTree:
+    frequency: int
+    byte: int
+    left: HuffmanTree = cast(Any, None)
+    right: HuffmanTree = cast(Any, None)
 
 
 def huffman_tree(data: bytes) -> HuffmanTree:
@@ -17,15 +33,15 @@ def huffman_tree(data: bytes) -> HuffmanTree:
 
     > parameters
     - `data`: data to generate the huffman coding tree
-    - `return`: a tree structure made of tuples
+    - `return`: a huffman tree
     """
     frequencies = collections.Counter(data)
-    heap: list[HuffmanTree] = [(frequency, byte, None, None) for byte, frequency in frequencies.items()]
+    heap = [HuffmanTree(frequency, byte) for byte, frequency in frequencies.items()]
     heapq.heapify(heap)
     while len(heap) > 1:
         right = heapq.heappop(heap)
         left = heapq.heappop(heap)
-        heapq.heappush(heap, (left[0] + right[0], -1, left, right))
+        heapq.heappush(heap, HuffmanTree(left.frequency + right.frequency, -1, left, right))
     return heap[0]
 
 
@@ -34,16 +50,15 @@ def huffman_tree_to_code(tree: HuffmanTree) -> HuffmanCode:
     Build the huffman code table based on the huffman tree.
 
     > parameters
-    - `tree`: a tree structure made of tuples
-    - `return`: the huffman code
+    - `tree`: the huffman tree
+    - `return`: a huffman code
     """
     def build_code(node: HuffmanTree, size: int, value: int, code: HuffmanCode) -> HuffmanCode:
-        _, byte, left, right = node
-        if byte != -1:
-            code[byte] = size, value
+        if node.byte != -1:
+            code[node.byte] = size, value
             return code
-        build_code(cast(HuffmanTree, left), size + 1, value << 1, code)
-        build_code(cast(HuffmanTree, right), size + 1, (value << 1) + 1, code)
+        build_code(node.left, size + 1, value << 1, code)
+        build_code(node.right, size + 1, (value << 1) + 1, code)
         return code
 
     return build_code(tree, 0, 0, {})
@@ -56,18 +71,21 @@ def huffman_code_to_tree(code: HuffmanCode) -> HuffmanTree:
 
     > parameters
     > `code`: the huffman code
-    - `return`: a tree structure made of lists
+    - `return`: a huffman tree
     """
-    tree = [-1, -1, None, None]
+    tree = HuffmanTree(-1, -1)
     for byte, (size, value) in code.items():
-        cursor: Any = tree
+        cursor = tree
         for i in range(size - 1, -1, -1):
             bit = value >> i & 1
-            side = -2 if bit == 0 else -1  # left (-2) or right (-1) index on cursor
-            cursor[side] = cursor[side] if cursor[side] is not None else [0, -1, None, None]
-            cursor = cursor[side]
-        cursor[1] = byte
-    return cast(HuffmanTree, tree)
+            if bit == 0:
+                cursor.left = cursor.left if cursor.left is not None else HuffmanTree(0, -1)
+                cursor = cursor.left
+            else:
+                cursor.right = cursor.right if cursor.right is not None else HuffmanTree(0, -1)
+                cursor = cursor.right
+        cursor.byte = byte
+    return tree
 
 
 def canonized_huffman_code(code: HuffmanCode) -> HuffmanCode:
@@ -106,7 +124,7 @@ def serialize_huffman_code(code: HuffmanCode) -> bytearray:
     """
     serialized = bytearray()
     length = len(code)
-    serialized.append(length - 1)  # -1 to fit a size 256 alphabet into 0-255
+    serialized.append(length - 1)  # -1 to map 1-256 alphabet size into 0-255
     if length < 128:
         for byte, (size, _) in code.items():
             serialized.append(byte)
@@ -127,7 +145,7 @@ def deserialize_huffman_code(serialized: bytes) -> HuffmanCode:
     - `serialized`: serialized code
     - `return`: a canonical huffman code
     """
-    length = serialized[0] + 1  # -1 to fit a size 256 alphabet into 0-255
+    length = serialized[0] + 1  # +1 to map 0-255 to 1-256 alphabet size
     serialized = memoryview(serialized)[1:]
     partial_code: HuffmanCode = {serialized[i * 2]: (serialized[i * 2 + 1], 0) for i in range(length)} if length < 128 \
         else {i: (serialized[i], 0) for i in range(256) if serialized[i] != 0}
@@ -193,10 +211,9 @@ def huffman_decode(encoded: bytes) -> bytearray:
     for byte in encoded[4:]:
         for i in range(7, -1, -1):
             bit = (byte >> i) & 1
-            side = -2 if bit == 0 else -1  # left (-2) or right (-1) index on cursor
-            cursor = cast(HuffmanTree, cursor[side])
-            if cursor[1] != -1:
-                decoded.append(cursor[1])
+            cursor = cursor.left if bit == 0 else cursor.right
+            if cursor.byte != -1:
+                decoded.append(cursor.byte)
                 cursor = tree
     if len(decoded) < length:
         decoded.extend([[*code.keys()][0]] * (length - len(decoded)))
