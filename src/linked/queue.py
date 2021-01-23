@@ -1,14 +1,15 @@
 from __future__ import annotations
 
+import dataclasses
 from typing import Generator, Generic, Optional
 
 from .abc import Linked, T
 
 
+@dataclasses.dataclass
 class Node(Generic[T]):
-    def __init__(self, value: T, next: Optional[Node[T]] = None):
-        self.value = value
-        self.next = next
+    value: T
+    next: Optional[Node[T]] = None
 
 
 class Queue(Generic[T], Linked[T]):

@@ -1,15 +1,16 @@
 from __future__ import annotations
 
+import dataclasses
 from typing import Generator, Generic, Optional, cast
 
 from .abc import Linked, T
 
 
+@dataclasses.dataclass
 class Node(Generic[T]):
-    def __init__(self, value: T, prev: Optional[Node[T]] = None, next: Optional[Node[T]] = None):
-        self.value = value
-        self.prev = prev
-        self.next = next
+    value: T
+    prev: Optional[Node[T]] = None
+    next: Optional[Node[T]] = None
 
 
 class LinkedList(Generic[T], Linked[T]):

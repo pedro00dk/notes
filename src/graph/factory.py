@@ -176,7 +176,7 @@ def test():
         print('random undirected paired Graph:\n', random_undirected_paired(i))
         print('random directed paired Graph:\n', random_directed_paired(i))
         print('random directed Acyclic graph:\n', random_dag((i, i)))
-        print('random flow graph:\n', random_flow((i, i)))
+        print('random flow graph:\n', random_flow((i, i))[0])
 
 
 if __name__ == '__main__':

@@ -1,15 +1,18 @@
+from __future__ import annotations
+
+import dataclasses
 from typing import Any, Callable, Generator, Generic, Literal, Optional, cast
 
 from .abc import (LINEAR_PROBER, QUADRATIC_PRIME_PROBER,
                   QUADRATIC_TRIANGULAR_PROBER, K, Map, V)
 
 
+@dataclasses.dataclass
 class EntryNode(Generic[K, V]):
-    def __init__(self, hash_: int, key: K, value: V):
-        self.hash_ = hash_
-        self.key = key
-        self.value = value
-        self.next: Optional[EntryNode[K, V]] = None
+    hash_: int
+    key: K
+    value: V
+    next: Optional[EntryNode[K, V]] = None
 
 
 class SequenceChainingHashtable(Generic[K, V], Map[K, V]):

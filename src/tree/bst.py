@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import collections
+import dataclasses
 from typing import Any, Callable, Generator, Generic, Literal, Optional, cast
 
 from ..map.abc import Map
@@ -6,16 +9,15 @@ from ..priority.abc import Priority
 from .abc import K, Tree, V
 
 
+@dataclasses.dataclass
 class Node(Generic[K, V]):
     """
     Base Node class for trees.
     """
-
-    def __init__(self, key: K, value: V):
-        self.key = key
-        self.value = value
-        self.left: Optional[Node[K, V]] = None
-        self.right: Optional[Node[K, V]] = None
+    key: K
+    value: V
+    left: Optional[Node[K, V]] = None
+    right: Optional[Node[K, V]] = None
 
 
 class BST(Generic[K, V], Tree[K, V]):

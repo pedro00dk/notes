@@ -1,22 +1,25 @@
+from __future__ import annotations
+
+import dataclasses
 from typing import Any, Callable, Generic, Optional, cast
 
 from ..map.abc import Map
 from ..priority.abc import Priority
 from .abc import K, Tree, V
-from .bst import BST, Node
+from .bst import BST
 
 
-class RBTNode(Generic[K, V], Node[K, V]):
+@dataclasses.dataclass
+class RBTNode(Generic[K, V]):
     """
     Node with extra `parent` and `red` properties.
     """
-
-    def __init__(self, key: K, value: V):
-        super().__init__(key, value)
-        self.left: Optional[RBTNode[K, V]] = None
-        self.right: Optional[RBTNode[K, V]] = None
-        self.parent: Optional[RBTNode[K, V]] = None
-        self.red: bool = True
+    key: K
+    value: V
+    left: Optional[RBTNode[K, V]] = None
+    right: Optional[RBTNode[K, V]] = None
+    parent: Optional[RBTNode[K, V]] = None
+    red: bool = True
 
 
 class RBT(Generic[K, V], BST[K, V]):

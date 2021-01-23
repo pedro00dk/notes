@@ -1,10 +1,14 @@
+from __future__ import annotations
+
 import collections
+import dataclasses
 from typing import Callable, Generator, Generic, Literal, Optional, TypeVar
 
 V = TypeVar('V')
 E = TypeVar('E')
 
 
+@dataclasses.dataclass
 class Vertex(Generic[V]):
     """
     Vertex container implementation.
@@ -12,19 +16,12 @@ class Vertex(Generic[V]):
     The user can access and change vertex `weight` and `data`.
     Edges are mantained in a separate data structure.
     """
-
-    def __init__(self, id: int, weight: float, data: Optional[V] = None):
-        """
-        > parameters
-        - `id`: vertex identifier
-        - `weight`: vertex weight
-        - `data`: vertex user data
-        """
-        self.id = id
-        self.weight = weight
-        self.data = data
+    id: int
+    weight: float
+    data: Optional[V] = None
 
 
+@dataclasses.dataclass
 class Edge(Generic[E]):
     """
     Directed edge container implementation.
@@ -32,20 +29,11 @@ class Edge(Generic[E]):
     `opposite` is a reference to the back edge if the edge is undirected.
     The user can access and change edge `length` and `data`.
     """
-
-    def __init__(self, source: int, target: int, length: float, data: Optional[E] = None):
-        """
-        > parameters
-        - `source`: source vertex identifier
-        - `target`: target vertex identifier
-        - `length`: edge length
-        - `data`: edge user data
-        """
-        self.source = source
-        self.target = target
-        self.opposite: Optional[Edge[E]] = None
-        self.length = length
-        self.data = data
+    source: int
+    target: int
+    length: float
+    data: Optional[E] = None
+    opposite: Optional[Edge[E]] = None
 
 
 class Graph(Generic[V, E]):

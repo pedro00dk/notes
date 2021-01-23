@@ -1,21 +1,24 @@
+from __future__ import annotations
+
+import dataclasses
 from typing import Any, Callable, Generic, Optional, cast
 
 from ..map.abc import Map
 from ..priority.abc import Priority
 from .abc import K, Tree, V
-from .bst import BST, Node
+from .bst import BST
 
 
-class AVLNode(Generic[K, V], Node[K, V]):
+@dataclasses.dataclass
+class AVLNode(Generic[K, V]):
     """
     Node with extra `height` property.
     """
-
-    def __init__(self, key: K, value: V):
-        super().__init__(key, value)
-        self.left: Optional[AVLNode[K, V]] = None
-        self.right: Optional[AVLNode[K, V]] = None
-        self.height = 1
+    key: K
+    value: V
+    left: Optional[AVLNode[K, V]] = None
+    right: Optional[AVLNode[K, V]] = None
+    height = 1
 
     def balance(self) -> int:
         left_height = self.right.height if self.right is not None else 0

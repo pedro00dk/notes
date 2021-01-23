@@ -1,18 +1,21 @@
+from __future__ import annotations
+
+import dataclasses
 import math
 from typing import Any, Callable, Generator, Generic, Optional, cast
 
 from .abc import Tree, V
 
 
+@dataclasses.dataclass
 class VEBNode(Generic[V]):
-    def __init__(self, word_size: int):
-        self.word_size = word_size
-        self.min = -1
-        self.max = -1
-        self.min_value: V = cast(Any, None)
-        self.max_value: V = cast(Any, None)
-        self.summary: VEBNode[V] = cast(Any, None)
-        self.clusters: dict[int, VEBNode[V]] = {}
+    word_size: int
+    min = -1
+    max = -1
+    min_value: V = cast(Any, None)
+    max_value: V = cast(Any, None)
+    summary: VEBNode[V] = cast(Any, None)
+    clusters: dict[int, VEBNode[V]] = dataclasses.field(default_factory=dict)
 
 
 class VEB(Generic[V], Tree[int, V]):

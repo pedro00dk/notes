@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import collections
+import dataclasses
 import itertools
 from typing import Any, Generator, Literal, Optional, cast
 
@@ -10,29 +11,25 @@ with `str` objects, rather than `bytes` objects.
 """
 
 
+@dataclasses.dataclass
 class Node:
     """
     Represents a node of the suffix tree.
     Each node contains the information necessary to verify if a match arrives on it.
+
+    > parameters
+    - `id`: node unique id, used internally by the suffix tree
+    - `left`: the starting index of the match from the parent node to arrive at the current node
+    - `right`: the endding index (exclusive) of the match from the parent node to arrive at the current node
+    - `match`: the starting index of a suffix in `tid` represented by this node (matching index), this also means
+        the node is a leaf, internal nodes must set this to -1 to initialize the `children` property
     """
-
-    def __init__(self, id: int, left: int, right: int, match: int = -1):
-        """
-        Initialize the node.
-
-        > parameters
-        - `id`: node unique id, used internally by the suffix tree
-        - `left`: the starting index of the match from the parent node to arrive at the current node
-        - `right`: the endding index (exclusive) of the match from the parent node to arrive at the current node
-        - `match`: the starting index of a suffix in `tid` represented by this node (matching index), this also means
-            the node is a leaf, internal nodes must set this to -1 to initialize the `children` property
-        """
-        self.id = id
-        self.left = left
-        self.right = right
-        self.match = match
-        self.parent: Node = cast(Any, None)
-        self.children: dict[str, Node] = cast(Any, None if match != -1 else {})
+    id: int
+    left: int
+    right: int
+    match: int = -1
+    parent: Node = cast(Any, None)
+    children: dict[str, Node] = dataclasses.field(default_factory=dict)
 
 
 def match_slices(text_a: str, left_a: int, right_a: int, text_b: str, left_b: int, right_b: int) -> int:
@@ -398,9 +395,9 @@ def test():
             ('suffix tree ukkonen', lambda text: SuffixTree(text, 'ukkonen')),
         ),
         test_inputs=('hello world!', 'cagtcatgcatacgtctatatcggctgc'),
-        bench_sizes=(0, 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000),
+        bench_sizes=(0, 1, 10, 100, 1000, 10000, 100000),
         bench_input=lambda s: ''.join(random.choices(string.printable, k=s)),
-        bench_repeat=1,
+        bench_repeat=10,
     )
 
 
