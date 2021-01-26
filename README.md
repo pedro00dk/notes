@@ -99,7 +99,7 @@ Space complexity is available in algorithms files.
     -   `poll` **- abstract**
     -   `peek` **- abstract**
     -   [`Heap[T]` extends `Priority[T]`](./src/priority/heap.py) **- space: O(n)**
-        -   Utility
+        -   utility
             -   `sift_up` **- O(log(n))**
             -   `sift_down` **- O(log(n))**
             -   `heapify_top_down` (`__init__`) **- O(n\*log(n))**
@@ -110,7 +110,7 @@ Space complexity is available in algorithms files.
         -   `Priority.poll` **- O(log(n))**
         -   `Priority.peek` **- O(1)**
     -   [`KHeap[T]` extends `Priority[T]`](./src/priority/kheap.py) **- space: O(n)**
-        -   Utility
+        -   utility
             -   `sift_up` **- O(k\*log<sub>k</sub>(n))**
             -   `sift_down` **- O(k\*log<sub>k</sub>(n))**
             -   `heapify_top_down` (`__init__`) **- O(n\*k\*log<sub>k</sub>(n))**
@@ -150,7 +150,7 @@ Space complexity is available in algorithms files.
         -   `Map.take` **- O(1) amortized**
         -   `Map.get` **- O(1) amortized**
     -   [benchmark](./src/map/benchmark.py) _- includes trees, see data structures trees section_
--   [`Tree[K, V]` abstract extends `Map[K, V]` `Heap[K]`](./src/tree/abc.py)
+-   [`Tree[K = Comparable, V]` abstract extends `Map[K, V]` `Heap[K]`](./src/tree/abc.py)
     -   `minimum` **- abstract**
     -   `maximum` **- abstract**
     -   `predecessor` **- abstract**
@@ -158,7 +158,7 @@ Space complexity is available in algorithms files.
     -   `Heap.offer` **- O(`Map.put`)**
     -   `Heap.poll` **- O(`Tree.minimum` + `Map.take`)**
     -   `Heap.peek` **- O(`Tree.minimum`)**
-    -   [Binary Search Tree - `BST[K = (bool, int, float, str), V]` extends `Tree[K, V]`](./src/tree/bst.py) **- space: O(n)**
+    -   [Binary Search Tree - `BST[K = Comparable, V]` extends `Tree[K, V]`](./src/tree/bst.py) **- space: O(n)**
         -   `__str__` (override `Map.__str__` and `Priority.__str__`) - **O(traverse)**
         -   `Map.__len__ , Priority.__len__` **- O(1)**
         -   `Map.__iter__ , Priority.__iter__` **- O(traverse)**
@@ -170,11 +170,11 @@ Space complexity is available in algorithms files.
         -   `Tree.maximum` **- average: O(log(n)), worst: O(n)**
         -   `Tree.predecessor` **- average: O(log(n)), worst: O(n)**
         -   `Tree.successor` **- average: O(log(n)), worst: O(n)**
-    -   [Adelson Velsky and Landis - `AVL[K = (bool, int, float, str), V]` extends `BST[K, V]`](./src/tree/avl.py) **- space: O(n)**
+    -   [Adelson Velsky and Landis - `AVL[K = Comparable, V]` extends `BST[K, V]`](./src/tree/avl.py) **- space: O(n)**
         -   `put` (override `Map.put` in `BST`) **- O(log(n))**
         -   `take` (override `Map.take` in `BST`) **- O(log(n))**
         -   **all functions worst case drop to O(log(n))**
-    -   [Red-Black Tree - `RBT[K = (bool, int, float, str), V]` extends `BST[K, V]`](./src/tree/rbt.py) **- space: O(n)**
+    -   [Red-Black Tree - `RBT[K = Comparable, V]` extends `BST[K, V]`](./src/tree/rbt.py) **- space: O(n)**
         -   `put` (override `Map.put` in `BST`) **- O(log(n))**
         -   `take` (override `Map.take` in `BST`) **- O(log(n))**
         -   **all functions worst case drop to O(log(n))**
@@ -328,6 +328,30 @@ Space complexity is available in algorithms files.
     -   k-ary search **- O(k\*log<sub>k</sub>(n))**
     -   interpolation search **- O(log(log(n))) uniformly distributed arrays, worst: O(n)**
     -   exponential search **- O(log(i))**
+-   [range minimum query (rmq) <-> lowest common ancestor (lca) `RangeMinimumQuery[T = Comparable]` abstract](./src/search/rmq_lca/abc.py)
+    -   `__init__` **- abstract**
+    -   `rmq` **- abstract**
+    -   `size` **- abstract**
+    -   `is_plus_minus_1` (class method) **- abstract**
+    -   utility
+        -   rmq to lca (CartesianTree construction) **- O(n)**
+        -   lca to rmq **- O(n)**
+        -   lca to rmq plus minus 1 **- O(n)**
+    -   **the following rmq solving data structures can solve lca by transforming it in a rmq problem with CartesianTree**
+    -   **some of the rmq solving data structures only support plus-minus-1 rmq, CartesianTree can transform rmq in plus-minus-1 rmq**
+    -   [`RangeMinimumQueryNaive[T = Comparable] extends RangeMinimumQuery[T]`](./src/search/rmq_lca/naive.py) **- space: O(n<sup>2</sup>)**
+        -   `RangeMinimumQuery.__init__` **- O(n<sup>2</sup>)**
+        -   `RangeMinimumQuery.rmq` **- O(1)**
+    -   [`RangeMinimumQueryV2[T = Comparable] extends RangeMinimumQuery[T]`](./src/search/rmq_lca/v2.py) **- space: O(n\*log(n))**
+        -   `RangeMinimumQuery.__init__` **- O(n\*log(n))**
+        -   `RangeMinimumQuery.rmq` **- O(1)**
+    -   [`RangeMinimumQueryV3[T = Comparable] extends RangeMinimumQuery[T]`](./src/search/rmq_lca/v3.py) **- space: O(n)**
+        -   `RangeMinimumQuery.__init__` **- O(n)**
+        -   `RangeMinimumQuery.rmq` **- O(log(n))**
+    -   [`RangeMinimumQueryV4 extends RangeMinimumQuery[int]`](./src/search/rmq_lca/v4.py) **- space: O(n)**
+        -   `RangeMinimumQuery.__init__` **- O(n)**
+        -   `RangeMinimumQuery.rmq` **- O(1)**
+    -   [benchmark](./src/search/rmq_lca/benchmark.py)
 -   [exact string search](./src/search/string_exact.py)
     -   brute force **- O(n\*p)**
     -   rabin karp **- O(n + p), worst: O(n\*p)**
