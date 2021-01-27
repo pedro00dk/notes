@@ -56,7 +56,6 @@ def test():
         bench_sizes=(10000, 100000),
         bench_input=lambda s: [random.randint(-1000, 1000) for _ in range(s)],
     )
-
     length = 10000
     data = [random.randint(-1000, 1000) for _ in range(length)]
     _, _, root, _, get_children = rmq_to_lca(data)
@@ -67,7 +66,6 @@ def test():
     rmq_v2 = RangeMinimumQueryV2(data)
     rmq_v3 = RangeMinimumQueryV3(data)
     rmq_v4 = RangeMinimumQueryV4(data_plus_minus_1)
-
     print('query benchmark')
     benchmark(
         (

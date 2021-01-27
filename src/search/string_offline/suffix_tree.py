@@ -35,29 +35,6 @@ class Node:
     children: dict[str, Node] = dataclasses.field(default_factory=dict)
 
 
-def match_slices(text_a: str, left_a: int, right_a: int, text_b: str, left_b: int, right_b: int) -> int:
-    """
-    Match the following slices `text_a[left_a: right_a] == text_b[left_b: right_b]`.
-    The matching is done manually, without using string slices which would create copies of the slices.
-    Right indices are exclusive
-
-    > complexity
-    - time: `O(min(a, b))`
-    - space: `O(1)`
-    - `a`: absolute value of `right_a - left_a`
-    - `b`: absolute value of `right_b - left_b`
-
-    > parameters
-    - see function description
-    - `return`: length of the matching prefix
-    """
-    i = 0
-    length = min(right_a - left_a, right_b - left_b)
-    while i < length and text_a[i + left_a] == text_b[i + left_b]:
-        i += 1
-    return i
-
-
 class SuffixTree:
     """
     Suffix tree implementation.
@@ -106,6 +83,28 @@ class SuffixTree:
         all_nodes = '\n'.join(nodes)
         return f'{type(self).__name__} [\n{all_nodes}\n]'
 
+    def _match_slices(self, text_a: str, left_a: int, right_a: int, text_b: str, left_b: int, right_b: int) -> int:
+        """
+        Match the following slices `text_a[left_a: right_a] == text_b[left_b: right_b]`.
+        The matching is done manually, without using string slices which would create copies of the slices.
+        Right indices are exclusive.
+
+        > complexity
+        - time: `O(min(a, b))`
+        - space: `O(1)`
+        - `a`: absolute value of `right_a - left_a`
+        - `b`: absolute value of `right_b - left_b`
+
+        > parameters
+        - see function description
+        - `return`: length of the matching prefix
+        """
+        i = 0
+        length = min(right_a - left_a, right_b - left_b)
+        while i < length and text_a[i + left_a] == text_b[i + left_b]:
+            i += 1
+        return i
+
     def _build_suffix_tree_naive(self) -> Node:
         """
         Build the suffix tree using the naive strategy.
@@ -121,7 +120,7 @@ class SuffixTree:
             cursor = root
             while self._text[j] in cursor.children:
                 child: Node = cursor.children[self._text[j]]
-                match_length = match_slices(self._text, j, len(self._text), self._text, child.left, child.right)
+                match_length = self._match_slices(self._text, j, len(self._text), self._text, child.left, child.right)
                 j += match_length
                 if match_length == child.right - child.left:
                     cursor = child
@@ -307,7 +306,7 @@ class SuffixTree:
         cursor = self._root
         while pattern[j] in cursor.children:
             child: Node = cursor.children[pattern[j]]
-            match_length = match_slices(pattern, j, len(pattern), self._text, child.left, child.right)
+            match_length = self._match_slices(pattern, j, len(pattern), self._text, child.left, child.right)
             j += match_length
             cursor = child
             if match_length == child.right - child.left and j < len(pattern):
