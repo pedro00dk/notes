@@ -7,11 +7,7 @@ from typing import Any, Generator, Literal, Optional, cast
 
 from ...search.rmq_lca.abc import lca_to_rmq
 from ...search.rmq_lca.v4 import RangeMinimumQueryV4
-
-"""
-Different from other string search modules (string_exact.py, string_distance.py, string_fuzzy.py), this module works
-with `str` objects, rather than `bytes` objects.
-"""
+from .abc import StringOffline, match_slices
 
 
 @dataclasses.dataclass
@@ -35,16 +31,18 @@ class Node:
     children: dict[str, Node] = dataclasses.field(default_factory=dict)
 
 
-class SuffixTree:
+class SuffixTree(StringOffline):
     """
     Suffix tree implementation.
+
+    > complexity
+    - space: `O(n)`
+    - `n`: length of `text` argument in `__init__`
     """
 
     def __init__(self, text: str, strategy: Literal['naive', 'ukkonen'] = 'ukkonen'):
         """
-        Build the suffix tree according to the `strategy` and `fast` options selected.
-        `strategy` may be `naive`, which provides a quadratic build time on the sum of lengths of `texts`, or `ukkonen`,
-        which runs in linear time on the sum of lengths of `texts`.
+
         The space used is proportional to the length of `text` independently of `strategy`.
 
         > complexity
@@ -58,12 +56,11 @@ class SuffixTree:
         """
         self._text = text + chr(0x10ffff)
         self._id_gen = itertools.count()
-        build_function = self._build_suffix_tree_ukkonen if strategy == 'ukkonen' else self._build_suffix_tree_naive
+        build_function = self._build_ukkonen if strategy == 'ukkonen' else self._build_naive
         self._root = build_function()
         self._node_count = next(self._id_gen)
         # fast query preprocessing utilities
-        # these functions behaviors could be implemented by the build functions
-        # but this would make them harder to understand
+        # these functions could be implemented by the build functions but this would make them harder to understand
         # although all have linear time and space complexity, they impact heavily on performance (~3 times slower)
         self._node_depths = self._compute_node_depths()  # required: longest_repeated_substring, longest_common_prefix
         self._subtree_leaves = self._compute_subtree_leaves()  # required: occurrences_count, longest_repeated_substring
@@ -83,29 +80,7 @@ class SuffixTree:
         all_nodes = '\n'.join(nodes)
         return f'{type(self).__name__} [\n{all_nodes}\n]'
 
-    def _match_slices(self, text_a: str, left_a: int, right_a: int, text_b: str, left_b: int, right_b: int) -> int:
-        """
-        Match the following slices `text_a[left_a: right_a] == text_b[left_b: right_b]`.
-        The matching is done manually, without using string slices which would create copies of the slices.
-        Right indices are exclusive.
-
-        > complexity
-        - time: `O(min(a, b))`
-        - space: `O(1)`
-        - `a`: absolute value of `right_a - left_a`
-        - `b`: absolute value of `right_b - left_b`
-
-        > parameters
-        - see function description
-        - `return`: length of the matching prefix
-        """
-        i = 0
-        length = min(right_a - left_a, right_b - left_b)
-        while i < length and text_a[i + left_a] == text_b[i + left_b]:
-            i += 1
-        return i
-
-    def _build_suffix_tree_naive(self) -> Node:
+    def _build_naive(self) -> Node:
         """
         Build the suffix tree using the naive strategy.
 
@@ -120,7 +95,7 @@ class SuffixTree:
             cursor = root
             while self._text[j] in cursor.children:
                 child: Node = cursor.children[self._text[j]]
-                match_length = self._match_slices(self._text, j, len(self._text), self._text, child.left, child.right)
+                match_length = match_slices(self._text, j, len(self._text), self._text, child.left, child.right)
                 j += match_length
                 if match_length == child.right - child.left:
                     cursor = child
@@ -138,7 +113,7 @@ class SuffixTree:
             leaf.parent = cursor
         return root
 
-    def _build_suffix_tree_ukkonen(self) -> Node:
+    def _build_ukkonen(self) -> Node:
         """
         Build the suffix tree using ukkonen algorithm.
         This implementation is not online, since it immediately sets the final right value of the leafs.
@@ -306,7 +281,7 @@ class SuffixTree:
         cursor = self._root
         while pattern[j] in cursor.children:
             child: Node = cursor.children[pattern[j]]
-            match_length = self._match_slices(pattern, j, len(pattern), self._text, child.left, child.right)
+            match_length = match_slices(pattern, j, len(pattern), self._text, child.left, child.right)
             j += match_length
             cursor = child
             if match_length == child.right - child.left and j < len(pattern):

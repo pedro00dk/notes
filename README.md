@@ -74,9 +74,9 @@ Space complexity is available in algorithms files.
         -   `Linked.__len__` **- O(1)**
         -   `Linked.__iter__` **- O(n)**
         -   `push` **- O(n)**
-        -   `pop` (index deletion) **- O(n)**
-        -   `remove` (value deletion) **- O(n)**
-        -   `get` (same as `Linked.index`, but faster) **- O(n)**
+        -   `pop` _(index deletion)_ **- O(n)**
+        -   `remove` _(value deletion)_ **- O(n)**
+        -   `get` _(same as `Linked.index`, but faster)_ **- O(n)**
         -   `reverse` **- O(n)**
     -   [`Queue[T]` extends `Linked[T]`](./src/linked/queue.py) **- space: O(n)**
         -   `Linked.__len__` **- O(1)**
@@ -102,8 +102,10 @@ Space complexity is available in algorithms files.
         -   utility
             -   `sift_up` **- O(log(n))**
             -   `sift_down` **- O(log(n))**
-            -   `heapify_top_down` (`__init__`) **- O(n\*log(n))**
-            -   `heapify_bottom_up` (`__init__`) **- O(n)**
+            -   `heapify_top_down` **- O(n\*log(n))**
+            -   `heapify_bottom_up` **- O(n)**
+        -   `__init__` _(top-down)_ **- O(n\*log(n))**
+        -   `__init__` _(bottom-up)_ **- O(n)**
         -   `Priority.__len__` **- O(1)**
         -   `Priority.__iter__` **- O(n\*log(n))**
         -   `Priority.offer` **- O(log(n))**
@@ -113,9 +115,11 @@ Space complexity is available in algorithms files.
         -   utility
             -   `sift_up` **- O(k\*log<sub>k</sub>(n))**
             -   `sift_down` **- O(k\*log<sub>k</sub>(n))**
-            -   `heapify_top_down` (`__init__`) **- O(n\*k\*log<sub>k</sub>(n))**
-            -   `heapify_bottom_up` (`__init__`) **- O(n\*k)**
-        -   `__str__` (override `Priority.__str__`) **- O(`Priority.__iter__`)**
+            -   `heapify_top_down` **- O(n\*k\*log<sub>k</sub>(n))**
+            -   `heapify_bottom_up` **- O(n\*k)**
+        -   `__init__` _(top-down)_ **- O(n\*k\*log<sub>k</sub>(n))**
+        -   `__init__` _(bottom-up)_ **- O(n\*k)**
+        -   `__str__` _(override `Priority.__str__`)_ **- O(`Priority.__iter__`)**
         -   `Priority.__len__` **- O(1)**
         -   `Priority.__iter__` **- O(n\*k\*log<sub>k</sub>(n))**
         -   `Priority.offer` **- O(k\*log<sub>k</sub>(n))**
@@ -123,10 +127,10 @@ Space complexity is available in algorithms files.
         -   `Priority.peek` **- O(1)**
     -   [benchmark](./src/priority/benchmark.py) _- includes trees, see data structures trees section_
 -   [`Map[K, V]` abstract](./src/map/abc.py)
-    -   Implemented probers
-        -   Linear Probing
-        -   Quadratic Prime Probing
-        -   Quadratic Triangular Probing
+    -   implemented probers
+        -   linear probing
+        -   quadratic prime probing
+        -   quadratic triangular probing
     -   `__str__` **- O(`Map.__iter__`)**
     -   `__len__` **- abstract**
     -   `__iter__` **- abstract**
@@ -182,7 +186,7 @@ Space complexity is available in algorithms files.
         -   `__str__` (override `Map.__str__` and `Priority.__str__`) - **O(traverse)**
         -   `Map.__len__ , Priority.__len__` **- O(1)**
         -   `Map.__iter__ , Priority.__iter__` **- O(traverse)**
-        -   `traverse` (pre, in, post, breadth) - **O(n\*log(log(u)))**
+        -   `traverse` _(pre, in, post, breadth)_ - **O(n\*log(log(u)))**
         -   `Map.put` **- O(log(log(u)))**
         -   `Map.take` **- O(log(log(u))**
         -   `Map.get` **- O(log(log(u))**
@@ -195,8 +199,8 @@ Space complexity is available in algorithms files.
     -   `__init__` **- O(n)**
     -   `__str__` **- O(n)**
     -   `__len__` **- O(1)**
-    -   `sets` (number of unique sets) **- O(1)**
-    -   `set_size` (size of a set) **- O(1)**
+    -   `sets` _(number of unique sets)_ **- O(1)**
+    -   `set_size` _(size of a set)_ **- O(1)**
     -   `make_set` **O(1)**
     -   `find` **- O(1)**
     -   `union` **- O(1)**
@@ -205,8 +209,8 @@ Space complexity is available in algorithms files.
     -   `__init__` **- O(n)**
     -   `__str__` **- O(n)**
     -   `__len__` **- O(1)**
-    -   `sum` (prefix sum) **- O(log(n))**
-    -   `sum_range` (prefix sum range) **- O(log(n))**
+    -   `sum` _(prefix sum)_ **- O(log(n))**
+    -   `sum_range` _(prefix sum range)_ **- O(log(n))**
     -   `add` **- O(log(n))**
     -   `set` **- O(log(n))**
 -   [`Graph[V, E]` (adjacency list)](./src/graph/graph.py) _- see graph theory algorithms section_ **- space: O(v + e)**
@@ -214,9 +218,9 @@ Space complexity is available in algorithms files.
     -   `__str__` **- O(v + e)**
     -   `__len__` **- O(1)**
     -   `__iter__` **- O(v)**
-    -   `traverse` (depth, breadth) **- O(v + e)**
-    -   `vertices` (not traverse) **- O(v)**
-    -   `edges` (not traverse) **- O(v + e)**
+    -   `traverse` _(depth, breadth)_ **- O(v + e)**
+    -   `vertices` _(not traverse)_ **- O(v)**
+    -   `edges` _(not traverse)_ **- O(v + e)**
     -   `vertices_count` **- O(1)**
     -   `edges_count` **- O(1)**
     -   `unique_edges_count` **- O(1)**
@@ -267,14 +271,14 @@ Space complexity is available in algorithms files.
             -   single source (longest) **- O(v + e)**
         -   all graphs
             -   single source dijkstra **- O(e\*log(v))**
-            -   single source dijkstra (optimized, visited + skip stale) **- O(e\*log(v))**
+            -   single source dijkstra _(optimized, visited + skip stale)_ **- O(e\*log(v))**
             -   single source bellman ford **- O(v\*e)**
             -   all pairs floyd warshall **- O(v<sup>3</sup>)**
     -   [traveling salesman problem](./src/graph/path/tsp.py)
         -   brute force **- O(v!)**
         -   held-karp bitset **- O(2<sup>v</sup>\*v<sup>2</sup>)**
         -   held-karp hashset **- O(2<sup>v</sup>\*v<sup>2</sup>)**
-        -   nearest neighbors (heuristic) **- O(v<sup>2</sup>)**
+        -   nearest neighbors _(heuristic)_ **- O(v<sup>2</sup>)**
     -   [eulerian cycle/path](./src/graph/path/euler.py)
         -   undirected graphs
             -   fleury **- O(e<sup>2</sup>)**
@@ -296,12 +300,12 @@ Space complexity is available in algorithms files.
 -   [cover](./src/graph/cover/)
     -   [vertex cover](./src/graph/cover/vertex.py)
         -   brute force **- O(2<sup>k</sup>\*v\*e)**
-        -   greedy (heuristic) **- O(v + e)**
-        -   greedy double (heuristic) **- O(v + e)**
+        -   greedy _(heuristic)_ **- O(v + e)**
+        -   greedy double _(heuristic)_ **- O(v + e)**
         -   weighted brute force **- O(2<sup>v</sup>\*v\*e)**
-        -   weighted greedy (heuristic) **- O(v + e)**
-        -   weighted pricing method (heuristic) **- O(v + e)**
-        -   weighted pricing sorted method (heuristic) **- O(e\*log(e) + v)**
+        -   weighted greedy _(heuristic)_ **- O(v + e)**
+        -   weighted pricing method _(heuristic)_ **- O(v + e)**
+        -   weighted pricing sorted method _(heuristic)_ **- O(e\*log(e) + v)**
 
 ## Enumeration Combinatorics
 
@@ -332,13 +336,12 @@ Space complexity is available in algorithms files.
     -   `__init__` **- abstract**
     -   `rmq` **- abstract**
     -   `size` **- abstract**
-    -   `is_plus_minus_1` (class method) **- abstract**
+    -   `is_plus_minus_1` _(class method)_ **- abstract**
     -   utility
-        -   rmq to lca (CartesianTree construction) **- O(n)**
+        -   rmq to lca _(`CartesianTree` construction)_ **- O(n)**
         -   lca to rmq **- O(n)**
         -   lca to rmq plus minus 1 **- O(n)**
-    -   **the following rmq solving data structures can solve lca by transforming it in a rmq problem with CartesianTree**
-    -   **some of the rmq solving data structures only support plus-minus-1 rmq, CartesianTree can transform rmq in plus-minus-1 rmq**
+    -   **all following rmq data structures also solve lca by transforming it in a rmq problem with `CartesianTree`**
     -   [`RangeMinimumQueryNaive[T = Comparable] extends RangeMinimumQuery[T]`](./src/search/rmq_lca/naive.py) **- space: O(n<sup>2</sup>)**
         -   `RangeMinimumQuery.__init__` **- O(n<sup>2</sup>)**
         -   `RangeMinimumQuery.rmq` **- O(1)**
@@ -348,6 +351,7 @@ Space complexity is available in algorithms files.
     -   [`RangeMinimumQueryV3[T = Comparable] extends RangeMinimumQuery[T]`](./src/search/rmq_lca/v3.py) **- space: O(n)**
         -   `RangeMinimumQuery.__init__` **- O(n)**
         -   `RangeMinimumQuery.rmq` **- O(log(n))**
+    -   **`RangeMinimumQueryV4` only solves plus-minus-1 rmq, `CartesianTree` can be used to transform rmq in plus-minus-1 rmq**
     -   [`RangeMinimumQueryV4 extends RangeMinimumQuery[int]`](./src/search/rmq_lca/v4.py) **- space: O(n)**
         -   `RangeMinimumQuery.__init__` **- O(n)**
         -   `RangeMinimumQuery.rmq` **- O(1)**
@@ -356,42 +360,51 @@ Space complexity is available in algorithms files.
     -   brute force **- O(n\*p)**
     -   rabin karp **- O(n + p), worst: O(n\*p)**
     -   knuth morris pratt **- O(n + p)**
-    -   baeza yates gonnet (shift-or) **- O(n + p)**
+    -   baeza yates gonnet _(shift-or)_ **- O(n + p)**
     -   boyer moore **- O(n + p)**
-    -   boyer moore (optimized, extended bad char table) **- O(n + p)**
+    -   boyer moore _(optimized, extended bad char table)_ **- O(n + p)**
     -   aho corasick **- O(n + p)**
 -   [string edit distance](./src/search/string_distance.py)
     -   brute force **- O(3<sup>n + m</sup>)**
     -   wagner fischer **- O(n\*m)**
-    -   wagner fischer (optimized, reuse distance table) **- O(n\*m)**
+    -   wagner fischer _(optimized, reuse distance table)_ **- O(n\*m)**
 -   [approximate/fuzzy string search](./src/search/string_fuzzy.py)
     -   sellers **- O(n\*p)**
     -   ukkonen **- O(n + (p\*min(p, d)\*c))**
     -   wu manber **- O(n\*min(p, d) + p)**
--   [offline string search](./src/search/string_offline/)
-    -   [`SuffixTree`](./src/search/string_offline/suffix_tree.py) **- space: O(n)**
-        -   `__init__ naive` **- O(n<sup>2</sup>)**
-        -   `__init__ ukkonen` **- O(n)**
-        -   `__str__` **- O(n<sup>2</sup>)**
-        -   `occurrences` **- O(p+q)**
-        -   `occurrences_count` **- O(p)**
-        -   `longest_repeated_substring` **- O(n)**
-        -   `longest_common_prefix` (constant time achieved using `RangeMinimumQueryV4`) **- O(1)**
+-   [offline string search `StringOffline` abstract](./src/search/string_offline/abc.py)
+    -   `__init__` _(naive)_ **- abstract**
+    -   `__str__` **- abstract**
+    -   `occurrences` **- abstract**
+    -   `occurrences_count` **- abstract**
+    -   `longest_repeated_substring` **- abstract**
+    -   `longest_common_prefix` **- abstract**
+    -   utility
+        -   match_slices **- O(min(a, b))**
+        -   compare_slices **- O(min(a, b))**
+    -   [`SuffixTree extends StringOffline`](./src/search/string_offline/suffix_array.py) **- space: O(n)**
+        -   `StringOffline.__init__` _(naive)_ **- O(n<sup>2</sup>)**
+        -   `StringOffline.__init__` _(ukkonen)_ **- O(n)**
+        -   `StringOffline.__str__` **- O(n<sup>2</sup>)**
+        -   `StringOffline.occurrences` **- O(p+q)**
+        -   `StringOffline.occurrences_count` **- O(p)**
+        -   `StringOffline.longest_repeated_substring` **- O(n)**
+        -   `StringOffline.longest_common_prefix` _(constant time achieved using `RangeMinimumQueryV4`)_ **- O(1)**
 
 ## Encoding and Compression
 
 -   [base coding](./src/encoding/base.py)
-    -   base64 rfc4648 (printable) **- O(n)**
-    -   base32 rfc4648 (printable) **- O(n)**
-    -   base16 rfc4648 (printable) **- O(n)**
-    -   ascii85 (printable) **- O(n)**
-    -   base85 rfc1924 (printable) **- O(n)**
-    -   base85 zeromq (printable) **- O(n)**
+    -   base64 rfc4648 _(printable)_ **- O(n)**
+    -   base32 rfc4648 _(printable)_ **- O(n)**
+    -   base16 rfc4648 _(printable)_ **- O(n)**
+    -   ascii85 _(printable)_ **- O(n)**
+    -   base85 rfc1924 _(printable)_ **- O(n)**
+    -   base85 zeromq _(printable)_ **- O(n)**
 -   [integer coding](./src/encoding/integer.py)
-    -   alphabet base (printable) **- O(log<sub>a</sub>(n))**
-    -   little endian base 128 variable (non-printable, semi-compression) **- O(log<sub>128</sub>(n))**
+    -   alphabet base _(printable)_ **- O(log<sub>a</sub>(n))**
+    -   little endian base 128 variable _(non-printable, semi-compression)_ **- O(log<sub>128</sub>(n))**
 -   [huffman coding](./src/encoding/huffman.py)
-    -   huffman coding (non-printable, compression) **- O(n)**
+    -   huffman coding _(non-printable, compression)_ **- O(n)**
 
 ---
 
