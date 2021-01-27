@@ -210,14 +210,6 @@ Space complexity is available in algorithms files.
     -   `add` **- O(log(n))**
     -   `set` **- O(log(n))**
 -   [`Graph[V, E]` (adjacency list)](./src/graph/graph.py) _- see graph theory algorithms section_ **- space: O(v + e)**
-    -   [factory](./src/graph/factory.py)
-        -   complete
-        -   random undirected
-        -   random directed
-        -   random undirected paired _(all vertices have even degree)_
-        -   random directed paired _(all vertices have out-degree - in-degree = 0)_
-        -   random directed acyclic
-        -   random flow (_for max-flow/min-cut_)
     -   `__init__` **- O(1)**
     -   `__str__` **- O(v + e)**
     -   `__len__` **- O(1)**
@@ -239,6 +231,14 @@ Space complexity is available in algorithms files.
     -   `copy` **- O(v + e)**
     -   `transposed` **- O(v + e)**
     -   `adjacency_matrix` **- O(v<sup>2</sup>)**
+    -   [factory](./src/graph/factory.py)
+        -   complete
+        -   random undirected
+        -   random directed
+        -   random undirected paired _(all vertices have even degree)_
+        -   random directed paired _(all vertices have out-degree - in-degree = 0)_
+        -   random directed acyclic
+        -   random flow (_for max-flow/min-cut_)
 
 ## Graph Theory
 
@@ -260,7 +260,7 @@ Space complexity is available in algorithms files.
     -   depth first search **- O(v + e)**
     -   strongly connected tarjan _(from connectivity algorithms, used as topsort algorithm)_ **- O(v + e)**
     -   strongly connected kosaraju _(from connectivity algorithms, used as topsort algorithm)_ **- O(v + e)**
--   [path finding](./src/graph/path)
+-   [path finding](./src/graph/path/)
     -   [shortest path](./src/graph/path/ssp.py)
         -   directed acyclic graphs
             -   single source **- O(v + e)**
@@ -287,13 +287,13 @@ Space complexity is available in algorithms files.
         -   brute force _(from traveling salesman, used as hamiltonian path algorithm)_ **- O(v!)**
         -   held-karp bitset _(from traveling salesman, used as hamiltonian path algorithm)_ **- O(2<sup>v</sup>\*v<sup>2</sup>)**
         -   held-karp hashset _(from traveling salesman, used as hamiltonian path algorithm)_ **- O(2<sup>v</sup>\*v<sup>2</sup>)**
--   [max-flow/min-cut](./src/graph/maxflow)
+-   [max-flow/min-cut](./src/graph/maxflow.py)
     -   ford fulkerson
         -   depth first search **- O(f\*e)**
         -   edmonds karp **- O(v\*e<sup>2</sup>)**
         -   depth first search with capacity scaling **- O(e<sup>2</sup>\*log(u))**
         -   dinic **- O(v<sup>2</sup>\*e)**
--   [cover](./src/graph/cover)
+-   [cover](./src/graph/cover/)
     -   [vertex cover](./src/graph/cover/vertex.py)
         -   brute force **- O(2<sup>k</sup>\*v\*e)**
         -   greedy (heuristic) **- O(v + e)**
@@ -368,8 +368,8 @@ Space complexity is available in algorithms files.
     -   sellers **- O(n\*p)**
     -   ukkonen **- O(n + (p\*min(p, d)\*c))**
     -   wu manber **- O(n\*min(p, d) + p)**
--   offline string search
-    -   [`SuffixTree`](./src/search/suffix_tree.py) **- space: O(n)**
+-   [offline string search](./src/search/string_offline/)
+    -   [`SuffixTree`](./src/search/string_offline/suffix_tree.py) **- space: O(n)**
         -   `__init__ naive` **- O(n<sup>2</sup>)**
         -   `__init__ ukkonen` **- O(n)**
         -   `__str__` **- O(n<sup>2</sup>)**

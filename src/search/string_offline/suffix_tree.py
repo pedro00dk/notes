@@ -5,8 +5,8 @@ import dataclasses
 import itertools
 from typing import Any, Generator, Literal, Optional, cast
 
-from ..search.rmq_lca.abc import lca_to_rmq
-from ..search.rmq_lca.v4 import RangeMinimumQueryV4
+from ...search.rmq_lca.abc import lca_to_rmq
+from ...search.rmq_lca.v4 import RangeMinimumQueryV4
 
 """
 Different from other string search modules (string_exact.py, string_distance.py, string_fuzzy.py), this module works
@@ -399,7 +399,7 @@ def test():
     import random
     import string
 
-    from ..test import benchmark, match
+    from ...test import benchmark, match
 
     for strategy in ('naive', 'ukkonen'):
         print('strategy:', strategy)
