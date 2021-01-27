@@ -17,7 +17,7 @@ class RangeMinimumQueryNaive(Generic[T], RangeMinimumQuery[T]):
 
     def __init__(self, data: list[T]):
         """
-        See base class.
+        Check base class.
 
         > complexity
         - time: `O(n**2)`
@@ -41,7 +41,7 @@ class RangeMinimumQueryNaive(Generic[T], RangeMinimumQuery[T]):
 
     def rmq(self, i: int, j: int) -> int:
         """
-        See base class.
+        Check base class.
 
         > complexity
         - time: `O(1)`

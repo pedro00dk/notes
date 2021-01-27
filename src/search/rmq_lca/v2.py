@@ -20,7 +20,7 @@ class RangeMinimumQueryV2(Generic[T], RangeMinimumQuery[T]):
 
     def __init__(self, data: list[T]):
         """
-        See base class.
+        Check base class.
 
         > complexity
         - time: `O(n*log(n))`
@@ -42,7 +42,7 @@ class RangeMinimumQueryV2(Generic[T], RangeMinimumQuery[T]):
 
     def rmq(self, i: int, j: int) -> int:
         """
-        See base class.
+        Check base class.
 
         > complexity
         - time: `O(1)`

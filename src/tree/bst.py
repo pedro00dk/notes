@@ -106,7 +106,7 @@ class BST(Generic[K, V], Tree[K, V]):
 
     def put(self, key: K, value: V, replacer: Optional[Callable[[V, V], V]] = None) -> Optional[V]:
         """
-        See base class.
+        Check base class.
 
         > complexity
         - time: average: `O(log(n))`, worst: `O(n)`
@@ -135,7 +135,7 @@ class BST(Generic[K, V], Tree[K, V]):
 
     def take(self, key: K) -> V:
         """
-        See base class.
+        Check base class.
 
         > complexity
         - time: average: `O(log(n))`, worst: `O(n)`
@@ -168,7 +168,7 @@ class BST(Generic[K, V], Tree[K, V]):
 
     def get(self, key: K) -> V:
         """
-        See base class.
+        Check base class.
 
         > complexity
         - time: average: `O(log(n))`, worst: `O(n)`
@@ -184,7 +184,7 @@ class BST(Generic[K, V], Tree[K, V]):
 
     def minimum(self) -> Optional[tuple[K, V]]:
         """
-        See base class.
+        Check base class.
 
         > complexity
         - time: average: `O(log(n))`, worst: `O(n)`
@@ -198,7 +198,7 @@ class BST(Generic[K, V], Tree[K, V]):
 
     def maximum(self) -> Optional[tuple[K, V]]:
         """
-        See base class.
+        Check base class.
 
         > complexity
         - time: average: `O(log(n))`, worst: `O(n)`
@@ -212,7 +212,7 @@ class BST(Generic[K, V], Tree[K, V]):
 
     def predecessor(self, key: K) -> Optional[tuple[K, V]]:
         """
-        See base class.
+        Check base class.
 
         > complexity
         - time: average: `O(log(n))`, worst: `O(n)`
@@ -236,7 +236,7 @@ class BST(Generic[K, V], Tree[K, V]):
 
     def successor(self, key: K) -> Optional[tuple[K, V]]:
         """
-        See base class.
+        Check base class.
 
         > complexity
         - time: average: `O(log(n))`, worst: `O(n)`
