@@ -291,17 +291,13 @@ class SuffixTree(StringOffline):
 
     def occurrences(self, pattern: str) -> list[int]:
         """
-        Compute the occurrences of `pattern` and return indices of occurrences.
+        Check base class.
 
         > complexity
         - time: `O(p+q)`
         - space: `O(q)`
         - `p`: length of `pattern`
         - `q`: number of occurrences
-
-        > parameters
-        - `pattern`: pattern
-        - `return`: list of occurrences
         """
         cursor = self._search(pattern)
         if cursor is None:
@@ -310,16 +306,12 @@ class SuffixTree(StringOffline):
 
     def occurrences_count(self, pattern: str) -> int:
         """
-        Compute the number of occurrences of `pattern`.
+        Check base class.
 
         > complexity
         - time: `O(p)`
         - space: `O(1)`
         - `p`: length of `pattern`
-
-        > parameters
-        - `pattern`: pattern
-        - `return`: number of occurrences
         """
         cursor = self._search(pattern)
         if cursor is None:
@@ -328,19 +320,13 @@ class SuffixTree(StringOffline):
 
     def longest_repeated_substring(self, repetitions: int = 2) -> list[int]:
         """
-        Return the longest repeated substring occurrences in all texts given a minimum number of `repetitions`.
-        If the empty string is the longest repeated substring, due to empty texts or large `repetitions` values, an
-        empty list is returned
+        Check base class.
 
         > complexity
         - time: `O(n+q)`
         - space: `O(q)`
         - `n`: number of nodes in the suffix tree, which is proportional to the length of `self._text`
         - `q`: number of occurrences
-
-        > parameters
-        - `repetitions`: minimum number of repetitions of the string
-        - `return`: occurrences of the longest string
         """
         if repetitions < 2:
             raise Exception('repetitions must be at least 2')
@@ -354,12 +340,11 @@ class SuffixTree(StringOffline):
 
     def longest_common_prefix(self, i: int, j: int) -> int:
         """
-        Given two starting indices `i` and `j` from text, find the longest common prefix of them.
+        Check base class.
 
-        > parameters
-        - `i`: index in text
-        - `j`: index in text
-        - `return`: length of the matching prefix
+        > complexity
+        - time: `O(1)`
+        - space: `O(1)`
         """
         i, j = (i, j) if i < j else (j, i)
         if not (0 <= i <= j < len(self._text)):
