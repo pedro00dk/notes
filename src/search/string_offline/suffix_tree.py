@@ -144,32 +144,35 @@ class SuffixTree:
         Build the suffix tree using ukkonen algorithm.
         This implementation is not online, since it immediately sets the final right value of the leafs.
 
+        Different from Node class, the right index used in ukkonen construction functions is inclusive.
+
         > complexity
         - time: `O(n)`
         - space: `O(n)`
         - `n`: length of `self._text`
         """
-        def update(cursor: Node, left: int, right: int, i: int, slinks: dict[int, Node]) -> tuple[Node, int, int]:
+        def update(cursor: Node, left: int, right: int, slinks: dict[int, Node], match: int) -> tuple[Node, int, int, int]:
             previous_border: Optional[Node] = None
-            is_terminal, border = test_and_split(cursor, left, right, i)
+            is_terminal, border = test_and_split(cursor, left, right)
             while not is_terminal:
-                leaf_node = Node(next(self._id_gen), i, len(self._text), i)  # fix
-                border.children[self._text[i]] = leaf_node
+                leaf_node = Node(next(self._id_gen), right, len(self._text), match)
+                match += 1
+                border.children[self._text[right]] = leaf_node
                 leaf_node.parent = border
                 if previous_border is not None:
                     slinks[previous_border.id] = border
                 previous_border = border
                 cursor, left, right = canonise(slinks[cursor.id], left, right)
-                is_terminal, border = test_and_split(cursor, left, right, i)
+                is_terminal, border = test_and_split(cursor, left, right)
             if previous_border and border:
                 slinks[previous_border.id] = border
-            return cursor, left, right
+            return cursor, left, right, match
 
-        def test_and_split(cursor: Node, left: int, right: int, i: int) -> tuple[bool, Node]:
-            if right <= left:
-                return cursor.id == -1 or cursor.children is not None and self._text[i] in cursor.children, cursor
+        def test_and_split(cursor: Node, left: int, right: int) -> tuple[bool, Node]:
+            if right == left:
+                return cursor.id == -1 or cursor.children is not None and self._text[right] in cursor.children, cursor
             child = cursor.children[self._text[left]]
-            if self._text[child.left + (right - left)] == self._text[i]:
+            if self._text[child.left + (right - left)] == self._text[right]:
                 return True, cursor
             split_node = Node(next(self._id_gen), child.left, child.left + (right - left))
             child.left += right - left
@@ -177,11 +180,10 @@ class SuffixTree:
             split_node.children[self._text[child.left]] = child
             split_node.parent = cursor
             child.parent = split_node
-            cursor = split_node
             return False, split_node
 
         def canonise(cursor: Node, left: int, right: int) -> tuple[Node, int, int]:
-            if right <= left:
+            if right == left:
                 return cursor, left, right
             child = cursor.children[self._text[left]]
             while child.right - child.left <= right - left:
@@ -200,9 +202,10 @@ class SuffixTree:
         cursor = root
         left = 0
         right = 0
-        for i in range(len(self._text)):
-            cursor, left, right = update(cursor, left, right, i, suffix_links)
-            cursor, left, right = canonise(cursor, left, i + 1)
+        match = 0
+        for _ in range(len(self._text)):
+            cursor, left, right, match = update(cursor, left, right, suffix_links, match)
+            cursor, left, right = canonise(cursor, left, right + 1)
         root.parent = cast(Any, None)
         return root
 
@@ -377,7 +380,7 @@ class SuffixTree:
 
     def longest_common_prefix(self, i: int, j: int) -> int:
         """
-        Given two starting indices `i` and `j` from text, find the longest prefix of them.
+        Given two starting indices `i` and `j` from text, find the longest common prefix of them.
 
         > parameters
         - `i`: index in text
@@ -418,7 +421,6 @@ def test():
             (suffix_tree.longest_common_prefix, (6, 10)),
         ))
         print()
-
     benchmark(
         (
             ('  suffix tree naive', lambda text: SuffixTree(text, 'naive')),
