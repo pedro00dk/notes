@@ -376,6 +376,7 @@ Space complexity is available in algorithms files.
         -   `occurrences` **- O(p+q)**
         -   `occurrences_count` **- O(p)**
         -   `longest_repeated_substring` **- O(n)**
+        -   `longest_common_prefix` (constant time achieved using `RangeMinimumQueryV4`) **- O(1)**
 
 ## Encoding and Compression
 

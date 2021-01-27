@@ -5,6 +5,9 @@ import dataclasses
 import itertools
 from typing import Any, Generator, Literal, Optional, cast
 
+from ..search.rmq_lca.abc import lca_to_rmq
+from ..search.rmq_lca.v4 import RangeMinimumQueryV4
+
 """
 Different from other string search modules (string_exact.py, string_distance.py, string_fuzzy.py), this module works
 with `str` objects, rather than `bytes` objects.
@@ -84,9 +87,14 @@ class SuffixTree:
         # fast query preprocessing utilities
         # these functions behaviors could be implemented by the build functions
         # but this would make them harder to understand
-        self._node_depths = self._compute_node_depths()  # required: longest_repeated_substring
+        # although all have linear time and space complexity, they impact heavily on performance (~3 times slower)
+        self._node_depths = self._compute_node_depths()  # required: longest_repeated_substring, longest_common_prefix
         self._subtree_leaves = self._compute_subtree_leaves()  # required: occurrences_count, longest_repeated_substring
         self._leaves_references = self._compute_leaves_references()  # required: longest_common_prefix
+        self._rmq_data, self._rmq_backward_mapper, self._rmq_forward_mapper = lca_to_rmq(
+            self._root, lambda node: node.id, lambda node: iter(node.children.values()), lambda node: node, False, True
+        )
+        self._rmq = RangeMinimumQueryV4(self._rmq_data)  # required: longest_common_prefix
 
     def __str__(self) -> str:
         nodes: list[str] = []
@@ -367,6 +375,25 @@ class SuffixTree:
                 depth = node_depth
         return [node.match for node in self._pre(current) if node.match != -1] if depth > 0 else []
 
+    def longest_common_prefix(self, i: int, j: int) -> int:
+        """
+        Given two starting indices `i` and `j` from text, find the longest prefix of them.
+
+        > parameters
+        - `i`: index in text
+        - `j`: index in text
+        - `return`: length of the matching prefix
+        """
+        i, j = (i, j) if i < j else (j, i)
+        if not (0 <= i <= j < len(self._text)):
+            raise IndexError(f'text index i ({i}) or j ({j}) out of range [0, {len(self._text)})')
+        i_match_node = self._leaves_references[i]
+        j_match_node = self._leaves_references[j]
+        lowest_common_ancestor = self._rmq_backward_mapper[
+            self._rmq.rmq(self._rmq_forward_mapper[i_match_node.id][0], self._rmq_forward_mapper[j_match_node.id][0])
+        ]
+        return self._node_depths[lowest_common_ancestor.id]
+
 
 def test():
     import random
@@ -386,6 +413,9 @@ def test():
             (suffix_tree.occurrences_count, ('ss',)),
             (suffix_tree.longest_repeated_substring, (2,)),
             (suffix_tree.longest_repeated_substring, (4,)),
+            (suffix_tree.longest_common_prefix, (0, 0)),
+            (suffix_tree.longest_common_prefix, (0, 3)),
+            (suffix_tree.longest_common_prefix, (6, 10)),
         ))
         print()
 
