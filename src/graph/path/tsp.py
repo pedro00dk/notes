@@ -136,7 +136,7 @@ def tsp_held_karp_bitset(
 
     # get best path from subset containing all vertices except start
     subset = final_subset
-    path = []
+    path: list[int] = []
     while parent != -1 and parent != start:  # parent is none if graph contains only one vertex
         path.append(parent)
         subset ^= (1 << parent)
@@ -174,7 +174,7 @@ def tsp_held_karp_hashset(
     if start < 0 or start >= graph.vertices_count():
         raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
     matrix = graph.adjacency_matrix(absent_edge_length)
-    paths = {}
+    paths: dict[tuple[int, frozenset[int]], tuple[float, int]] = {}
 
     # add first paths from start to each vertex
     for v in range(graph.vertices_count()):
@@ -213,7 +213,7 @@ def tsp_held_karp_hashset(
 
     # get best path from subset containing all vertices except start
     subset = final_subset
-    path = []
+    path: list[int] = []
     while parent != -1 and parent != start:  # parent is none if graph contains only one vertex
         path.append(parent)
         subset = subset.difference((parent,))
@@ -272,13 +272,13 @@ def test():
     from ...test import benchmark, heuristic_approximation
     from ..factory import complete
 
-    def save_cost(algorithm: Any, input: Any, costs: Any):
+    def save_cost(algorithm: Any, input: Graph[Any, Any], costs: list[float]):
         result = algorithm(input)
         costs.append(result[0])
         return result
 
-    optimal_costs = []
-    nearest_neighbor_costs = []
+    optimal_costs: list[float] = []
+    nearest_neighbor_costs: list[float] = []
     print('all algorithms')
     benchmark(
         (

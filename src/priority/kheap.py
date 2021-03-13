@@ -223,10 +223,10 @@ class KHeap(Generic[T], Priority[T]):
 def test():
     import random
 
-    from ..test import match
+    from ..test import verify
 
     heap = KHeap[int](lambda a, b: a - b, random.sample([i for i in range(10)], 10), 4)
-    match((
+    verify((
         (print, (heap,)),
         (heap.offer, (10,)),
         (heap.offer, (11,)),

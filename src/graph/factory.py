@@ -103,7 +103,7 @@ def random_dag(
     el_range: tuple[int, int] = (1, 1),
 ) -> Graph[None, None]:
     graph = Graph[None, None]()
-    previous_vertices = []
+    previous_vertices: list[int] = []
     ranks = random.randint(*ranks_range)
     for _ in range(ranks):
         rank_vertices_count = random.randint(*vertices_range)
@@ -126,7 +126,7 @@ def random_flow(
     el_range: tuple[int, int] = (1, 1),
 ) -> tuple[Graph[None, None], int, int]:
     graph = Graph[None, None]()
-    ranks_vertices = []
+    ranks_vertices: list[list[int]] = []
     ranks = random.randint(*ranks_range)
     for rank in range(ranks + 2):
         if rank == 0:

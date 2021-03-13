@@ -218,10 +218,10 @@ class AVL(Generic[K, V], BST[K, V]):
 
 
 def test():
-    from ..test import match
+    from ..test import verify
 
     tree = AVL[int, Optional[int]]()
-    match((
+    verify((
         (tree.put, (-15, -1000)),
         (tree.put, (-10, None)),
         (tree.put, (-5, None)),

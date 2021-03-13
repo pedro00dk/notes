@@ -29,7 +29,7 @@ def bucketsort(
     min_value = min(array)
     max_value = max(array)
     value_range = max_value - min_value + 1
-    buckets = [[] for _ in range(k)]
+    buckets: list[list[float]] = [[] for _ in range(k)]
     for value in array:
         buckets[int((value - min_value) / value_range * k)].append(value)
     for bucket in buckets:

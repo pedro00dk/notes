@@ -83,6 +83,7 @@ class SuffixTree(StringOffline):
     def _build_naive(self) -> Node:
         """
         Build the suffix tree using the naive strategy.
+        For each suffix, a path from the root is followed, and new nodes are created when necessary.
 
         > complexity
         - time: `O(n**2)`
@@ -117,6 +118,7 @@ class SuffixTree(StringOffline):
         """
         Build the suffix tree using ukkonen algorithm.
         This implementation is not online, since it immediately sets the final right value of the leafs.
+        Although, it can be converted to the online version by making the node.right property a reference.
 
         Different from Node class, the right index used in ukkonen construction functions is inclusive.
 
@@ -336,7 +338,7 @@ class SuffixTree(StringOffline):
             if self._subtree_leaves[node.id] >= repetitions and (node_depth := self._node_depths[node.id]) > depth:
                 current = node
                 depth = node_depth
-        return [node.match for node in self._pre(current) if node.match != -1] if depth > 0 else []
+        return [node.match for node in self._pre(current) if node.match != -1] if depth > 0 else list[int]()
 
     def longest_common_prefix(self, i: int, j: int) -> int:
         """
@@ -361,13 +363,13 @@ def test():
     import random
     import string
 
-    from ...test import benchmark, match
+    from ...test import benchmark, verify
 
     for strategy in ('naive', 'ukkonen'):
         print('strategy:', strategy)
         suffix_tree = SuffixTree('senselessness', cast(Any, strategy))
         print(suffix_tree)
-        match((
+        verify((
             (suffix_tree.occurrences, ('s',)),
             (suffix_tree.occurrences, ('e',)),
             (suffix_tree.occurrences, ('ss',)),

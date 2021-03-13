@@ -69,11 +69,11 @@ class RangeMinimumQueryV2(Generic[T], RangeMinimumQuery[T]):
 
 
 def test():
-    from ...test import match
+    from ...test import verify
 
     data = [8, 7, 2, 8, 6, 9, 4, 5, 2]
     rmq = RangeMinimumQueryV2(data)
-    match((
+    verify((
         (rmq.rmq, (0, 0), 0),
         (rmq.rmq, (0, 2), 2),
         (rmq.rmq, (2, 5), 2),

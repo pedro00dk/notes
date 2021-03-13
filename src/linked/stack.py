@@ -93,9 +93,9 @@ class Stack(Generic[T], Linked[T]):
 def test():
     import collections
 
-    from ..test import benchmark, match
+    from ..test import benchmark, verify
     stack = Stack[int]()
-    match((
+    verify((
         (stack.push, (0,)),
         (stack.push, (1,)),
         (stack.push, (2,)),

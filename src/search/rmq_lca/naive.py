@@ -27,7 +27,7 @@ class RangeMinimumQueryNaive(Generic[T], RangeMinimumQuery[T]):
         if len(data) == 0:
             raise Exception('data must contain at least one element')
         self._data = data
-        self._table = [
+        self._table: list[list[int]] = [
             [],
             [*range(len(data))],
             *([-1] * (len(data) - (range_size - 1)) for range_size in range(2, len(data) + 1)),
@@ -63,11 +63,11 @@ class RangeMinimumQueryNaive(Generic[T], RangeMinimumQuery[T]):
 
 
 def test():
-    from ...test import match
+    from ...test import verify
 
     data = [8, 7, 2, 8, 6, 9, 4, 5, 2]
     rmq = RangeMinimumQueryNaive(data)
-    match((
+    verify((
         (rmq.rmq, (0, 0), 0),
         (rmq.rmq, (0, 2), 2),
         (rmq.rmq, (2, 5), 2),

@@ -30,7 +30,7 @@ def euler_undirected_fleury(graph: Graph[Any, Any]) -> Optional[tuple[bool, Opti
     if len(odd_vertices) > 2:
         return None
     start = odd_vertices[0] if len(odd_vertices) > 0 else 0
-    path = []
+    path: list[int] = []
     connected_components = len(connected_traverse(graph))
     v = start
     while True:
@@ -152,8 +152,8 @@ def euler_directed_hierholzer(
     for edge in graph.edges():
         incoming_edges[edge.target] += 1
         outcoming_edges[edge.source] += 1
-    start_vertices = []
-    end_vertices = []
+    start_vertices: list[int] = []
+    end_vertices: list[int] = []
     for v in range(graph.vertices_count()):
         delta = outcoming_edges[v] - incoming_edges[v]
         if delta == 0:

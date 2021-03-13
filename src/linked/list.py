@@ -221,10 +221,10 @@ class LinkedList(Generic[T], Linked[T]):
 def test():
     import collections
 
-    from ..test import benchmark, match
+    from ..test import benchmark, verify
 
     linked_list = LinkedList[int]()
-    match((
+    verify((
         (linked_list.push, (2, 0)),
         (linked_list.push, (1, 0)),
         (linked_list.push, (0, 0)),

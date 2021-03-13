@@ -174,10 +174,10 @@ class HashDisjointSet(Generic[T]):
 
 
 def test():
-    from .test import match
+    from .test import verify
 
     disjoint_set = HashDisjointSet['str']()
-    match((
+    verify((
         (disjoint_set.make_set, ('a',)),
         (disjoint_set.make_set, ('e',)),
         (disjoint_set.make_set, ('i',)),

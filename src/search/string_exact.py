@@ -476,7 +476,7 @@ def test():
         return bytes(random.randint(0, alphabet_size - 1) for _ in range(size))
 
     def test_native_search(text: bytes, pattern: bytes):
-        occurrences = []
+        occurrences: list[int] = []
         i = -1
         while (i := text.find(pattern, i + 1)) != -1:
             occurrences.append(i)
@@ -502,13 +502,13 @@ def test():
     print('alphabet size = 256')
     benchmark(
         (
-            ('           brute force', lambda args: brute_force(*args)),
-            ('            rabin karp', lambda args: rabin_karp(*args)),
-            ('    knuth morris pratt', lambda args: knuth_morris_pratt(*args, False)),
-            ('knuth morris pratt opt', lambda args: knuth_morris_pratt(*args, True)),
-            ('    baeza yates gonnet', lambda args: baeza_yates_gonnet(*args)),
-            ('           boyer moore', lambda args: boyer_moore(*args, False)),
-            ('       boyer moore opt', lambda args: boyer_moore(*args, True)),
+            ('           brute force', lambda args: brute_force(args[0], args[1])),
+            ('            rabin karp', lambda args: rabin_karp(args[0], args[1])),
+            ('    knuth morris pratt', lambda args: knuth_morris_pratt(args[0], args[1], False)),
+            ('knuth morris pratt opt', lambda args: knuth_morris_pratt(args[0], args[1], True)),
+            ('    baeza yates gonnet', lambda args: baeza_yates_gonnet(args[0], args[1])),
+            ('           boyer moore', lambda args: boyer_moore(args[0], args[1], False)),
+            ('       boyer moore opt', lambda args: boyer_moore(args[0], args[1], True)),
             ('          aho corasick', lambda args: aho_corasick(args[0], [args[1]])),
             ('                native', lambda args: test_native_search(*args)),
         ),

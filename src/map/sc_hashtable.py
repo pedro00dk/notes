@@ -173,11 +173,11 @@ class SequenceChainingHashtable(Generic[K, V], Map[K, V]):
 def test():
     import random
 
-    from ..test import match
+    from ..test import verify
 
     for prober_name in ('linear', 'prime', 'triangular'):
         hashtable = SequenceChainingHashtable[int, int](cast(Any, prober_name))
-        match((
+        verify((
             *((hashtable.put, (str(i), i * 2), None) for i in random.sample([i for i in range(100)], 100)),
             (print, (hashtable,)),
             *((hashtable.take, (str(i),), i * 2) for i in random.sample([i for i in range(100)], 100) if i % 3 == 0),

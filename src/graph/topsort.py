@@ -26,7 +26,7 @@ def topsort_khan(graph: Graph[Any, Any]) -> list[int]:
         incoming_edges[edge.target] += 1
         total_edges += 1
     root_vertices = [v for v, count in enumerate(incoming_edges) if count == 0]
-    order = []
+    order: list[int] = []
     while len(root_vertices) > 0:
         v = root_vertices.pop()
         order.append(v)

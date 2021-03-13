@@ -12,9 +12,9 @@ Operation = Union[CheckedOperation, UncheckedOperation]
 AnyBytes = Union[bytes, bytearray, memoryview, mmap.mmap]
 
 
-def match(operations: tuple[Operation, ...]):
+def verify(operations: tuple[Operation, ...]):
     """
-    Execution functions and compare their results with a expected value.
+    Execute functions and compare their results with a expected value.
     The expected value may not be passed.
 
     > parameters
@@ -72,7 +72,7 @@ def benchmark(
         print('# size:', size)
         inputs = [bench_input(size) for _ in range(bench_repeat)]
         for label, function in algorithms:
-            times = []
+            times: list[float] = []
             for input in inputs:
                 input = input if preprocess_input is None else preprocess_input(input)
                 time = timeit.timeit(stmt='function(input)', globals={**globals(), **locals()}, number=bench_tries)

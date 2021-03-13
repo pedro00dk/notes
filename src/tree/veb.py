@@ -273,11 +273,11 @@ class VEB(Generic[V], Tree[int, V]):
 def test():
     from ..map.abc import Map
     from ..priority.abc import Priority
-    from ..test import match
+    from ..test import verify
 
     tree = VEB[Optional[int]]()
 
-    match((
+    verify((
         (tree.put, (15, 1000)),
         (tree.put, (10, None)),
         (tree.put, (5, None)),

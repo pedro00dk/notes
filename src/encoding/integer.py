@@ -107,7 +107,7 @@ def little_endian_base_128_decode(encoded: bytes, start: int = 0):
 
 
 def test():
-    from ..test import match
+    from ..test import verify
 
     def test_alphabet_base(value: int, alphabet: bytes):
         encoded = alphabet_base_encode(value, alphabet)
@@ -119,7 +119,7 @@ def test():
         decoded = little_endian_base_128_decode(encoded)
         return decoded, len(encoded)
 
-    match(
+    verify(
         (
             (test_alphabet_base, (0, OCTAL_ALPHABET), (0, 1)),
             (test_alphabet_base, (1, OCTAL_ALPHABET), (1, 1)),

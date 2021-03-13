@@ -98,7 +98,7 @@ class RangeMinimumQueryV4(RangeMinimumQuery[int]):
 
 
 def test():
-    from ...test import match
+    from ...test import verify
 
     data = [8, 7, 2, 8, 6, 9, 4, 5, 2]
     _, _, root, _, get_children = rmq_to_lca(data)
@@ -110,7 +110,7 @@ def test():
     def rmq_map_plus_minus_1(i: int, j: int):
         return backward_mapper[rmq.rmq(forward_mapper[i][0], forward_mapper[j][0])]
 
-    match((
+    verify((
         (rmq_map_plus_minus_1, (0, 0), 0),
         (rmq_map_plus_minus_1, (0, 2), 2),
         (rmq_map_plus_minus_1, (2, 5), 2),

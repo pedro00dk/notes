@@ -93,7 +93,7 @@ def mst_boruvka(graph: Graph[Any, Any]) -> Optional[tuple[float, list[tuple[int,
     if not graph.is_undirected():
         raise Exception('graph must be undirected')
     cost = 0
-    edges = []
+    edges: list[Edge[Any]] = []
     disjoint_set = DisjointSet(graph.vertices_count())
     shortest_edges = cast(list[Optional[Edge[Any]]], [None] * graph.vertices_count())
     found_union = True

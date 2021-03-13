@@ -201,10 +201,10 @@ class Heap(Generic[T], Priority[T]):
 def test():
     import random
 
-    from ..test import match
+    from ..test import verify
 
     heap = Heap[int](lambda a, b: a - b, random.sample([i for i in range(10)], 10))
-    match((
+    verify((
         (print, (heap,)),
         (heap.offer, (10,)),
         (heap.offer, (11,)),

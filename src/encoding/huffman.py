@@ -223,14 +223,14 @@ def huffman_decode(encoded: bytes) -> bytearray:
 
 
 def test():
-    from ..test import match
+    from ..test import verify
 
     def test_huffman(data: bytes):
         encoded = huffman_encode(data)
         decoded = huffman_decode(encoded)
         return decoded, encoded
 
-    match((
+    verify((
         (test_huffman, (b'man',)),
         (test_huffman, (b'hello world!',)),
         (test_huffman, (b'pedro',)),

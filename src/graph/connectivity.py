@@ -50,7 +50,7 @@ def connected_traverse(graph: Graph[Any, Any], mode: Literal['depth', 'breadth']
     for v in range(graph.vertices_count()):
         if visited[v]:
             continue
-        component = []
+        component: list[int] = []
         traversal(v, component)
         components.append(component)
     return components
@@ -78,7 +78,7 @@ def connected_disjoint_set(graph: Graph[Any, Any]) -> list[list[int]]:
         disjoint_set.union(edge.source, edge.target)
     components: list[list[int]] = [[] for _ in range(disjoint_set.sets())]
     index = 0
-    indices = {}
+    indices: dict[int, int] = {}
     for v in range(graph.vertices_count()):
         component = disjoint_set.find(v)
         if component not in indices:
@@ -219,7 +219,7 @@ def strong_connected_kosaraju(graph: Graph[Any, Any]) -> list[list[int]]:
     if not graph.is_directed():
         raise Exception('graph must be directed')
     visited = [False] * graph.vertices_count()
-    stack = []
+    stack: list[int] = []
 
     def dfs_stack(v: int):
         visited[v] = True
@@ -248,7 +248,7 @@ def strong_connected_kosaraju(graph: Graph[Any, Any]) -> list[list[int]]:
         v = stack.pop()
         if visited[v]:
             continue
-        component = []
+        component: list[int] = []
         dfs_component(v, component)
         components.append(component)
     return components

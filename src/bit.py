@@ -123,10 +123,10 @@ class BIT:
 
 
 def test():
-    from .test import match
+    from .test import verify
 
     bit = BIT([3, 4, -2, 7, 3, 11, 5, -8, -9, 2, 4, -8])
-    match((
+    verify((
         (print, (bit,)),
         (bit.sum_range, (0, 1), 7),
         (bit.sum_range, (0, 2), 5),

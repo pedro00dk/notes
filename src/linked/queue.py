@@ -99,10 +99,10 @@ class Queue(Generic[T], Linked[T]):
 def test():
     import collections
 
-    from ..test import benchmark, match
+    from ..test import benchmark, verify
 
     queue = Queue[int]()
-    match((
+    verify((
         (queue.offer, (0,)),
         (queue.offer, (1,)),
         (queue.offer, (2,)),

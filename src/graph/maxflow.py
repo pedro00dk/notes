@@ -349,7 +349,7 @@ def maxflow_ford_fulkerson(
         visited_marker += 1
         if not keep:
             break
-    mincut = []
+    mincut: list[tuple[int, int, float]] = []
     queue = collections.deque[int]()
     queue.append(source)
     visited[source] = visited_marker
