@@ -14,19 +14,6 @@ class StringOffline(abc.ABC):
     """
 
     @abc.abstractmethod
-    def __init__(self, text: str, strategy: str):
-        """
-        Build the data structure according to the `strategy` options selected.
-
-        > complexity
-        - see implementations
-
-        > parameters
-        - `texts`: text to be indexed
-        - `strategy`: build strategy
-        """
-
-    @abc.abstractmethod
     def __str__(self) -> str: ...
 
     @abc.abstractmethod

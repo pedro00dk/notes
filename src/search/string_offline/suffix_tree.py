@@ -40,9 +40,9 @@ class SuffixTree(StringOffline):
     - `n`: length of `text` argument in `__init__`
     """
 
-    def __init__(self, text: str, strategy: Literal['naive', 'ukkonen'] = 'ukkonen'):
+    def __init__(self, text: str, strategy: Literal['naive', 'ukkonen']):
         """
-
+        Initialize the suffix tree given the received `text` and `strategy`.
         The space used is proportional to the length of `text` independently of `strategy`.
 
         > complexity
@@ -56,7 +56,10 @@ class SuffixTree(StringOffline):
         """
         self._text = text + chr(0x10ffff)
         self._id_gen = itertools.count()
-        build_function = self._build_ukkonen if strategy == 'ukkonen' else self._build_naive
+        build_function = {
+            'ukkonen': self._build_ukkonen,
+            'naive': self._build_naive
+        }[strategy]
         self._root = build_function()
         self._node_count = next(self._id_gen)
         # fast query preprocessing utilities

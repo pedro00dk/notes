@@ -382,6 +382,17 @@ Space complexity is available in algorithms files.
     -   utility
         -   match_slices **- O(min(a, b))**
         -   compare_slices **- O(min(a, b))**
+    -   [`SuffixArray extends StringOffline`](./src/search/string_offline/suffix_array.py) **- space: O(n)**
+        -   `StringOffline.__init__` _(naive)_ **- O(n<sup>2</sup>\*log(n))**
+        -   `StringOffline.__init__` _(karp miller rosenberg)_ **- O(n\*log(n)<sup>2</sup>)**
+        -   `StringOffline.__init__` _(karp miller rosenberg optimized)_ **- O(n\*log(n))** **TODO**
+        -   `StringOffline.__init__` _(lcp: naive)_ **- + O(n<sup>2</sup>)**
+        -   `StringOffline.__init__` _(lcp: kasai)_ **- + O(n\*log(n))**
+        -   `StringOffline.__str__` **- O(n<sup>2</sup>)**
+        -   `StringOffline.occurrences` **TODO**
+        -   `StringOffline.occurrences_count` **TODO**
+        -   `StringOffline.longest_repeated_substring` **TODO**
+        -   `StringOffline.longest_common_prefix` **TODO**
     -   [`SuffixTree extends StringOffline`](./src/search/string_offline/suffix_array.py) **- space: O(n)**
         -   `StringOffline.__init__` _(naive)_ **- O(n<sup>2</sup>)**
         -   `StringOffline.__init__` _(ukkonen)_ **- O(n)**
