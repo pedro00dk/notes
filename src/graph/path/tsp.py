@@ -178,7 +178,7 @@ def tsp_held_karp_hashset(
 
     # add first paths from start to each vertex
     for v in range(graph.vertices_count()):
-        paths[(v, frozenset())] = (matrix[start][v], start)
+        paths[(v, frozenset[int]())] = (matrix[start][v], start)
 
     # compute best path of all subsets based on smaller subsets
     for k in range(1, graph.vertices_count()):

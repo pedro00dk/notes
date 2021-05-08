@@ -359,7 +359,7 @@ class Graph(Generic[V, E]):
         - `return`: copy of the graph
         """
         graph = Graph[V, E]()
-        visited_edges = set()
+        visited_edges = set[int]()
         for vertex in self.vertices():
             graph.make_vertex(vertex.weight, vertex.data)
         for edge in self.edges():
@@ -385,7 +385,7 @@ class Graph(Generic[V, E]):
         - `return`: transposed copy of the graph
         """
         transposed_graph = Graph[V, E]()
-        visited_edges = set()
+        visited_edges = set[int]()
         for vertex in self.vertices():
             transposed_graph.make_vertex(vertex.weight, vertex.data)
         for edge in self.edges():
