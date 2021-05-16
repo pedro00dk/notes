@@ -314,7 +314,7 @@ class Graph(Generic[V, E]):
             back_edge.opposite = edge
         return edge, back_edge
 
-    def get_vertex(self, v: int):
+    def get_vertex(self, v: int) -> Vertex[V]:
         """
         Return the vertex object associated with `v`.
 
@@ -328,9 +328,22 @@ class Graph(Generic[V, E]):
         """
         return self._vertices[v]
 
+    def get_vertices(self) -> tuple[Vertex[V], ...]:
+        """
+        Return all graph vertices.
+
+        > complexity
+        - time: `O(v)`
+        - space: `O(v)`
+
+        > parameters
+        - `return`: vertices
+        """
+        return (*self.vertices(),)
+
     def get_edges(self, v: Optional[int] = None) -> tuple[Edge[E], ...]:
         """
-        Return the edge tuple list of the vertex associated with `v` or all edges if `v is None`.
+        Return the edges of the vertex associated with `v` or all edges if `v is None`.
 
         > complexity
         - time: `O(v + e)`
@@ -341,11 +354,11 @@ class Graph(Generic[V, E]):
         > parameters
         - `v`: vertex id
         - `v`: vertex id, if `None` get all edges
-        - `return`: edge tuple list
+        - `return`: edges
         """
         return (*self.edges(v),)
 
-    def copy(self):
+    def copy(self) -> Graph[V, E]:
         """
         Return a copy of the graph.
         Edges may be in a different order.
@@ -371,7 +384,7 @@ class Graph(Generic[V, E]):
             visited_edges.add(id(edge.opposite))
         return graph
 
-    def transposed(self):
+    def transposed(self) -> Graph[V, E]:
         """
         Return a copy of the graph with edges transposed.
         Edges may be in a different order.

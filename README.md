@@ -231,6 +231,7 @@ Space complexity is available in algorithms files.
     -   `make_vertex` **- O(1)**
     -   `make_edge` **- O(1)**
     -   `get_vertex` **- O(1)**
+    -   `get_vertices` **- O(v)**
     -   `get_edges` **- O(v + e)**
     -   `copy` **- O(v + e)**
     -   `transposed` **- O(v + e)**
