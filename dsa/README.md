@@ -1,4 +1,4 @@
-# Notes - Data Structures and Algorithms
+# Data Structures and Algorithms
 
 Collection of data structures and algorithms implemented in Python.
 
