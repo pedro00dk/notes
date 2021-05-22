@@ -34,28 +34,28 @@ def test():
 
     benchmark(
         (
-            ('                      heap', lambda data: test_priority(data, Heap[int](lambda a, b: a - b))),
-            ('            heap (heapify)', lambda d: test_heap(d, lambda d: Heap[int](lambda a, b: a - b, d))),
-            ('          k-ary heap (k=2)', lambda data: test_priority(data, KHeap[int](lambda a, b: a - b, k=2))),
-            (' k-ary heap (k=2, heapify)', lambda d: test_heap(d, lambda d: KHeap[int](lambda a, b: a - b, d, 2))),
-            ('          k-ary heap (k=4)', lambda data: test_priority(data, KHeap[int](lambda a, b: a - b, k=4))),
-            (' k-ary heap (k=4, heapify)', lambda d: test_heap(d, lambda d: KHeap[int](lambda a, b: a - b, d, 4))),
-            ('          k-ary heap (k=8)', lambda data: test_priority(data, KHeap[int](lambda a, b: a - b, k=8))),
-            (' k-ary heap (k=8, heapify)', lambda d: test_heap(d, lambda d: KHeap[int](lambda a, b: a - b, d, 8))),
-            ('         k-ary heap (k=16)', lambda data: test_priority(data, KHeap[int](lambda a, b: a - b, k=16))),
-            ('k-ary heap (k=16, heapify)', lambda d: test_heap(d, lambda d: KHeap[int](lambda a, b: a - b, d, 16))),
-            ('        binary search tree', lambda data: test_priority(data, BST[int, None]())),
-            ('                  avl tree', lambda data: test_priority(data, AVL[int, None]())),
-            ('            red-black tree', lambda data: test_priority(data, RBT[int, None]())),
-            ('        van Emde Boas tree', lambda data: test_priority(data, VEB[None]())),
-            ('               native heap', lambda data: test_native_heap(data)),
+            ("                      heap", lambda data: test_priority(data, Heap[int](lambda a, b: a - b))),
+            ("            heap (heapify)", lambda d: test_heap(d, lambda d: Heap[int](lambda a, b: a - b, d))),
+            ("          k-ary heap (k=2)", lambda data: test_priority(data, KHeap[int](lambda a, b: a - b, k=2))),
+            (" k-ary heap (k=2, heapify)", lambda d: test_heap(d, lambda d: KHeap[int](lambda a, b: a - b, d, 2))),
+            ("          k-ary heap (k=4)", lambda data: test_priority(data, KHeap[int](lambda a, b: a - b, k=4))),
+            (" k-ary heap (k=4, heapify)", lambda d: test_heap(d, lambda d: KHeap[int](lambda a, b: a - b, d, 4))),
+            ("          k-ary heap (k=8)", lambda data: test_priority(data, KHeap[int](lambda a, b: a - b, k=8))),
+            (" k-ary heap (k=8, heapify)", lambda d: test_heap(d, lambda d: KHeap[int](lambda a, b: a - b, d, 8))),
+            ("         k-ary heap (k=16)", lambda data: test_priority(data, KHeap[int](lambda a, b: a - b, k=16))),
+            ("k-ary heap (k=16, heapify)", lambda d: test_heap(d, lambda d: KHeap[int](lambda a, b: a - b, d, 16))),
+            ("        binary search tree", lambda data: test_priority(data, BST[int, None]())),
+            ("                  avl tree", lambda data: test_priority(data, AVL[int, None]())),
+            ("            red-black tree", lambda data: test_priority(data, RBT[int, None]())),
+            ("        van Emde Boas tree", lambda data: test_priority(data, VEB[None]())),
+            ("               native heap", lambda data: test_native_heap(data)),
         ),
         test_inputs=(),
         bench_sizes=(0, 1, 10, 100, 1000, 10000),
         bench_input=lambda s: [*random.sample(range(s), s)],
-        preprocess_input=list[int].copy
+        preprocess_input=list[int].copy,
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

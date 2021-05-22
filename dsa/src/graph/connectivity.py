@@ -6,7 +6,7 @@ from ..dset import DisjointSet
 from .graph import Graph
 
 
-def connected_traverse(graph: Graph[Any, Any], mode: Literal['depth', 'breadth'] = 'depth') -> list[list[int]]:
+def connected_traverse(graph: Graph[Any, Any], mode: Literal["depth", "breadth"] = "depth") -> list[list[int]]:
     """
     Find connected components in `graph` using traversals to expand components.
     `graph` must be undirected, otherwise, the algorithm can not assure the components are strongly connected.
@@ -23,7 +23,7 @@ def connected_traverse(graph: Graph[Any, Any], mode: Literal['depth', 'breadth']
     - `return`: list containing connected vertices ids
     """
     if not graph.is_undirected():
-        raise Exception('graph must be undirected')
+        raise Exception("graph must be undirected")
     visited = [False] * graph.vertices_count()
     components: list[list[int]] = []
 
@@ -46,7 +46,7 @@ def connected_traverse(graph: Graph[Any, Any], mode: Literal['depth', 'breadth']
                     queue.append(edge.target)
                     visited[edge.target] = True
 
-    traversal = dfs if mode == 'depth' else bfs
+    traversal = dfs if mode == "depth" else bfs
     for v in range(graph.vertices_count()):
         if visited[v]:
             continue
@@ -72,7 +72,7 @@ def connected_disjoint_set(graph: Graph[Any, Any]) -> list[list[int]]:
     - `return`: list containing connected vertices ids
     """
     if not graph.is_undirected():
-        raise Exception('graph must be undirected')
+        raise Exception("graph must be undirected")
     disjoint_set = DisjointSet(graph.vertices_count())
     for edge in graph.edges():
         disjoint_set.union(edge.source, edge.target)
@@ -109,7 +109,7 @@ def biconnected_tarjan(graph: Graph[Any, Any]) -> tuple[list[tuple[int, int]], l
     - `return`: tuple containing bridges, articulations and edges of biconnected components
     """
     if not graph.is_undirected():
-        raise Exception('graph must be undirected')
+        raise Exception("graph must be undirected")
     next_order = 0
     order = cast(list[int], [None] * graph.vertices_count())  # also encode visited (order[v] is not None)
     low = cast(list[int], [None] * graph.vertices_count())
@@ -143,7 +143,7 @@ def biconnected_tarjan(graph: Graph[Any, Any]) -> tuple[list[tuple[int, int]], l
                     articulations.add(v)
                 bicomponent = [edge_tuple, *itertools.takewhile(lambda e: e != edge_tuple, reversed(stack))]
                 bicomponents.append(bicomponent)
-                del stack[-len(bicomponents[-1]):]
+                del stack[-len(bicomponents[-1]) :]
 
     for v in range(graph.vertices_count()):
         if order[v] is None:
@@ -169,7 +169,7 @@ def strong_connected_tarjan(graph: Graph[Any, Any]) -> list[list[int]]:
     - `return`: list containing strongly connected components
     """
     if not graph.is_directed():
-        raise Exception('graph must be directed')
+        raise Exception("graph must be directed")
     next_order = 0
     order = cast(list[int], [None] * graph.vertices_count())  # also encode visited and stacked (not None, != -1)
     low = cast(list[int], [None] * graph.vertices_count())
@@ -189,7 +189,7 @@ def strong_connected_tarjan(graph: Graph[Any, Any]) -> list[list[int]]:
         if low[v] != order[v]:
             return
         components.append([v, *itertools.takewhile(lambda u: u != v, reversed(stack))])
-        del stack[-len(components[-1]):]
+        del stack[-len(components[-1]) :]
         for u in components[-1]:
             order[u] = -1
 
@@ -217,7 +217,7 @@ def strong_connected_kosaraju(graph: Graph[Any, Any]) -> list[list[int]]:
     - `return`: list containing strongly connected vertices ids
     """
     if not graph.is_directed():
-        raise Exception('graph must be directed')
+        raise Exception("graph must be directed")
     visited = [False] * graph.vertices_count()
     stack: list[int] = []
 
@@ -261,28 +261,28 @@ def test():
     def test_biconnected_tarjan(graph: Graph[Any, Any]):
         bridges, articulations, components = biconnected_tarjan(graph)
         return {
-            'components': [(*set(v for e in c for v in e),) for c in components],
-            'articulations': articulations,
-            'bridges': bridges,
+            "components": [(*set(v for e in c for v in e),) for c in components],
+            "articulations": articulations,
+            "bridges": bridges,
         }
 
-    print('undirected graphs')
+    print("undirected graphs")
     benchmark(
         (
-            ('  connected traverse depth', lambda graph: connected_traverse(graph, mode='depth')),
-            ('connected traverse breadth', lambda graph: connected_traverse(graph, mode='breadth')),
-            ('    connected disjoint set', connected_disjoint_set),
-            ('        biconnected tarjan', test_biconnected_tarjan),
+            ("  connected traverse depth", lambda graph: connected_traverse(graph, mode="depth")),
+            ("connected traverse breadth", lambda graph: connected_traverse(graph, mode="breadth")),
+            ("    connected disjoint set", connected_disjoint_set),
+            ("        biconnected tarjan", test_biconnected_tarjan),
         ),
         test_inputs=(*(random_undirected(i, 0.1) for i in (5, 10, 15, 20)),),
         bench_sizes=(0, 1, 10, 100, 1000),
         bench_input=lambda s: random_undirected(s, 0.05),
     )
-    print('directed graphs')
+    print("directed graphs")
     benchmark(
         (
-            ('  strong connected tarjan', strong_connected_tarjan),
-            ('strong connected kosaraju', strong_connected_kosaraju),
+            ("  strong connected tarjan", strong_connected_tarjan),
+            ("strong connected kosaraju", strong_connected_kosaraju),
         ),
         test_inputs=(*(random_directed(i, 0.1) for i in (5, 10, 15, 20)),),
         bench_sizes=(0, 1, 10, 100, 1000),
@@ -290,5 +290,5 @@ def test():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

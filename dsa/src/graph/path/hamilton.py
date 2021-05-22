@@ -5,8 +5,7 @@ from .tsp import tsp_brute_force, tsp_held_karp_bitset, tsp_held_karp_hashset
 
 
 def hamiltonian_path(
-    graph: Graph[Any, Any],
-    tsp_algorithm: Callable[[Graph[Any, Any], int, float], tuple[float, list[int]]]
+    graph: Graph[Any, Any], tsp_algorithm: Callable[[Graph[Any, Any], int, float], tuple[float, list[int]]]
 ) -> Optional[tuple[bool, list[int]]]:
     """
     Hamiltonian path algorithm based on traveling salesman algorithm.
@@ -31,17 +30,18 @@ def hamiltonian_path(
     for i in range(len(path) - 1):
         if matrix[path[i]][path[i + 1]] == absent_edge_length:
             absent.append((i, i + 1))
-    return (False, path[absent[0][1]:] + path[:absent[0][0]]) if len(absent) == 1 else None
+    return (False, path[absent[0][1] :] + path[: absent[0][0]]) if len(absent) == 1 else None
 
 
 def test():
     from ...test import benchmark
     from ..factory import random_undirected
+
     benchmark(
         (
-            (' hamiltonian path > tsp brute force', lambda graph: hamiltonian_path(graph, tsp_brute_force)),
-            ('      hamiltonina path > tsp bitset', lambda graph: hamiltonian_path(graph, tsp_held_karp_bitset)),
-            ('     hamiltonina path > tsp hashset', lambda graph: hamiltonian_path(graph, tsp_held_karp_hashset)),
+            (" hamiltonian path > tsp brute force", lambda graph: hamiltonian_path(graph, tsp_brute_force)),
+            ("      hamiltonina path > tsp bitset", lambda graph: hamiltonian_path(graph, tsp_held_karp_bitset)),
+            ("     hamiltonina path > tsp hashset", lambda graph: hamiltonian_path(graph, tsp_held_karp_hashset)),
         ),
         test_inputs=(*(random_undirected(i, density=0.8) for i in (4, 5, 6, 7)),),
         bench_sizes=(*range(1, 11),),
@@ -49,5 +49,5 @@ def test():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

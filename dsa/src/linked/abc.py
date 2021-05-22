@@ -1,7 +1,7 @@
 import abc
 from typing import Generator, Generic, TypeVar
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class Linked(Generic[T], abc.ABC):
@@ -10,10 +10,11 @@ class Linked(Generic[T], abc.ABC):
     """
 
     def __str__(self) -> str:
-        return f'{type(self).__name__} {str([*self])}'
+        return f"{type(self).__name__} {str([*self])}"
 
     @abc.abstractmethod
-    def __len__(self) -> int: ...
+    def __len__(self) -> int:
+        ...
 
     @abc.abstractmethod
     def __iter__(self) -> Generator[T, None, None]:
@@ -59,4 +60,4 @@ class Linked(Generic[T], abc.ABC):
         for i, v in enumerate(self):
             if value == v:
                 return i
-        raise ValueError(f'value {str(value)} not found')
+        raise ValueError(f"value {str(value)} not found")

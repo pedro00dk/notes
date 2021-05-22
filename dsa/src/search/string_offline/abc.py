@@ -14,7 +14,8 @@ class StringOffline(abc.ABC):
     """
 
     @abc.abstractmethod
-    def __str__(self) -> str: ...
+    def __str__(self) -> str:
+        ...
 
     @abc.abstractmethod
     def occurrences(self, pattern: str) -> list[int]:

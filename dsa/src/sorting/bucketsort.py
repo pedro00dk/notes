@@ -4,9 +4,7 @@ from .insertionsort import insertionsort
 
 
 def bucketsort(
-    array: list[float],
-    k: Optional[int] = None,
-    subsort: Callable[[list[float]], list[float]] = insertionsort
+    array: list[float], k: Optional[int] = None, subsort: Callable[[list[float]], list[float]] = insertionsort
 ):
     """
     Sort `array` using bucketsort.
@@ -43,18 +41,18 @@ def test():
 
     sort_benchmark(
         (
-            (' bucketsort k=8*n', lambda array: bucketsort(array, len(array) * 8)),
-            (' bucketsort k=4*n', lambda array: bucketsort(array, len(array) * 4)),
-            (' bucketsort k=2*n', lambda array: bucketsort(array, len(array) * 2)),
-            ('   bucketsort k=n', lambda array: bucketsort(array)),
-            (' bucketsort k=n/2', lambda array: bucketsort(array, len(array) // 2)),
-            (' bucketsort k=n/4', lambda array: bucketsort(array, len(array) // 4)),
-            (' bucketsort k=n/8', lambda array: bucketsort(array, len(array) // 8)),
-            ('bucketsort k=n/16', lambda array: bucketsort(array, len(array) // 16)),
-            ('bucketsort k=n/32', lambda array: bucketsort(array, len(array) // 32)),
+            (" bucketsort k=8*n", lambda array: bucketsort(array, len(array) * 8)),
+            (" bucketsort k=4*n", lambda array: bucketsort(array, len(array) * 4)),
+            (" bucketsort k=2*n", lambda array: bucketsort(array, len(array) * 2)),
+            ("   bucketsort k=n", lambda array: bucketsort(array)),
+            (" bucketsort k=n/2", lambda array: bucketsort(array, len(array) // 2)),
+            (" bucketsort k=n/4", lambda array: bucketsort(array, len(array) // 4)),
+            (" bucketsort k=n/8", lambda array: bucketsort(array, len(array) // 8)),
+            ("bucketsort k=n/16", lambda array: bucketsort(array, len(array) // 16)),
+            ("bucketsort k=n/32", lambda array: bucketsort(array, len(array) // 32)),
         ),
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

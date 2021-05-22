@@ -113,7 +113,7 @@ class Heap(Generic[T], Priority[T]):
         self,
         comparator: Callable[[T, T], float],
         data: Optional[list[T]] = None,
-        strategy: Literal['bottom-up', 'top-down'] = 'bottom-up',
+        strategy: Literal["bottom-up", "top-down"] = "bottom-up",
     ):
         """
         Initialize the binary heap
@@ -131,7 +131,7 @@ class Heap(Generic[T], Priority[T]):
         super().__init__()
         self._comparator = comparator
         self._heap: list[T] = data if data is not None else []
-        heapify_function = heapify_bottom_up if strategy == 'bottom-up' else heapify_top_down
+        heapify_function = heapify_bottom_up if strategy == "bottom-up" else heapify_top_down
         heapify_function(self._heap, self._comparator)
 
     def __len__(self) -> int:
@@ -177,7 +177,7 @@ class Heap(Generic[T], Priority[T]):
         - `n`: length of the heap
         """
         if len(self._heap) == 0:
-            raise IndexError('empty heap')
+            raise IndexError("empty heap")
         value = self._heap[0]
         replacement = self._heap.pop()
         if len(self._heap) > 0:
@@ -194,7 +194,7 @@ class Heap(Generic[T], Priority[T]):
         - space: `O(1)`
         """
         if len(self._heap) == 0:
-            raise IndexError('empty heap')
+            raise IndexError("empty heap")
         return self._heap[0]
 
 
@@ -204,29 +204,31 @@ def test():
     from ..test import verify
 
     heap = Heap[int](lambda a, b: a - b, random.sample([i for i in range(10)], 10))
-    verify((
-        (print, (heap,)),
-        (heap.offer, (10,)),
-        (heap.offer, (11,)),
-        (heap.offer, (12,)),
-        (heap.offer, (13,)),
-        (heap.offer, (14,)),
-        (heap.offer, (15,)),
-        (print, (heap,)),
-        (heap.poll, (), 0),
-        (heap.poll, (), 1),
-        (print, (heap,)),
-        (heap.poll, (), 2),
-        (heap.poll, (), 3),
-        (heap.poll, (), 4),
-        (print, (heap,)),
-        (heap.poll, (), 5),
-        (heap.poll, (), 6),
-        (heap.poll, (), 7),
-        (heap.poll, (), 8),
-        (print, (heap,)),
-    ))
+    verify(
+        (
+            (print, (heap,)),
+            (heap.offer, (10,)),
+            (heap.offer, (11,)),
+            (heap.offer, (12,)),
+            (heap.offer, (13,)),
+            (heap.offer, (14,)),
+            (heap.offer, (15,)),
+            (print, (heap,)),
+            (heap.poll, (), 0),
+            (heap.poll, (), 1),
+            (print, (heap,)),
+            (heap.poll, (), 2),
+            (heap.poll, (), 3),
+            (heap.poll, (), 4),
+            (print, (heap,)),
+            (heap.poll, (), 5),
+            (heap.poll, (), 6),
+            (heap.poll, (), 7),
+            (heap.poll, (), 8),
+            (print, (heap,)),
+        )
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

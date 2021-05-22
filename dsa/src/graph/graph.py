@@ -4,8 +4,8 @@ import collections
 import dataclasses
 from typing import Callable, Generator, Generic, Literal, Optional, TypeVar
 
-V = TypeVar('V')
-E = TypeVar('E')
+V = TypeVar("V")
+E = TypeVar("E")
 
 
 @dataclasses.dataclass
@@ -16,6 +16,7 @@ class Vertex(Generic[V]):
     The user can access and change vertex `weight` and `data`.
     Edges are mantained in a separate data structure.
     """
+
     id: int
     weight: float
     data: Optional[V] = None
@@ -29,6 +30,7 @@ class Edge(Generic[E]):
     `opposite` is a reference to the back edge if the edge is undirected.
     The user can access and change edge `length` and `data`.
     """
+
     source: int
     target: int
     length: float
@@ -61,10 +63,11 @@ class Graph(Generic[V, E]):
         return len(self._vertices)
 
     def __str__(self) -> str:
-        lines = '\n'.join(
+        lines = "\n".join(
             f'{v.id} w={v.weight} => {", ".join(f"({e.target} l={e.length})" for e in es)}'
-            for v, es in zip(self._vertices, self._edges))
-        return f'Graph [\n{lines}\n]'
+            for v, es in zip(self._vertices, self._edges)
+        )
+        return f"Graph [\n{lines}\n]"
 
     def __iter__(self) -> Generator[Vertex[V], None, None]:
         """
@@ -157,7 +160,7 @@ class Graph(Generic[V, E]):
     def traverse(
         self,
         v: int,
-        mode: Literal['depth', 'breadth'] = 'depth',
+        mode: Literal["depth", "breadth"] = "depth",
         visited: Optional[list[bool]] = None,
         yield_back: bool = False,
     ) -> Generator[tuple[Vertex[V], Optional[Vertex[V]], Optional[Edge[E]], int], None, None]:
@@ -180,7 +183,7 @@ class Graph(Generic[V, E]):
         - `return`: iterator of vertices, parents, edges and depth
         """
         visited = visited if visited is not None else [False] * self.vertices_count()
-        return self._depth(v, visited, yield_back) if mode == 'depth' else self._breadth(v, visited, yield_back)
+        return self._depth(v, visited, yield_back) if mode == "depth" else self._breadth(v, visited, yield_back)
 
     def vertices(self) -> Generator[Vertex[V], None, None]:
         """
@@ -209,8 +212,11 @@ class Graph(Generic[V, E]):
         - `v`: id of the vertex to collect edges, if `None`, collect through edges os all vertices
         - `return`: generator of edges
         """
-        return (edge for vertex_edges in self._edges for edge in vertex_edges) if v is None else \
-            (edge for edge in self._edges[v])
+        return (
+            (edge for vertex_edges in self._edges for edge in vertex_edges)
+            if v is None
+            else (edge for edge in self._edges[v])
+        )
 
     def vertices_count(self) -> int:
         """
@@ -276,7 +282,8 @@ class Graph(Generic[V, E]):
 
     def make_edge(
         self,
-        source: int, target: int,
+        source: int,
+        target: int,
         length: float = 1,
         data: Optional[E] = None,
         directed: bool = False,
@@ -299,7 +306,7 @@ class Graph(Generic[V, E]):
         - `return`: the created edge or both edges if undirected
         """
         if source < 0 or source >= self.vertices_count() or target < 0 or target >= self.vertices_count():
-            raise IndexError(f'source ({source}) or target ({target}) vertex out of range [0, {self.vertices_count()})')
+            raise IndexError(f"source ({source}) or target ({target}) vertex out of range [0, {self.vertices_count()})")
         edge = Edge(source, target, length, data)
         self._edges[source].append(edge)
         self._all_edges += 1 + int(not directed)
@@ -412,7 +419,7 @@ class Graph(Generic[V, E]):
 
     def adjacency_matrix(
         self,
-        absent_edge_length: float = float('inf'),
+        absent_edge_length: float = float("inf"),
         tiebreak: Callable[[float, float], float] = min,
     ) -> list[list[float]]:
         """
@@ -430,9 +437,11 @@ class Graph(Generic[V, E]):
         """
         matrix = [[absent_edge_length] * self.vertices_count() for _ in range(self.vertices_count())]
         for edge in self.edges():
-            matrix[edge.source][edge.target] = edge.length \
-                if matrix[edge.source][edge.target] == absent_edge_length \
+            matrix[edge.source][edge.target] = (
+                edge.length
+                if matrix[edge.source][edge.target] == absent_edge_length
                 else tiebreak(edge.length, matrix[edge.source][edge.target])
+            )
         for v in range(self.vertices_count()):
             matrix[v][v] = matrix[v][v] if matrix[v][v] != absent_edge_length else 0
         return matrix

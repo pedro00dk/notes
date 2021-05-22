@@ -18,10 +18,7 @@ def complete(
 
 
 def random_undirected(
-    vertices: int = 5,
-    density: float = 0.5,
-    vw_range: tuple[int, int] = (1, 1),
-    el_range: tuple[int, int] = (1, 1)
+    vertices: int = 5, density: float = 0.5, vw_range: tuple[int, int] = (1, 1), el_range: tuple[int, int] = (1, 1)
 ) -> Graph[None, None]:
     graph = Graph[None, None]()
     for _ in range(vertices):
@@ -158,26 +155,26 @@ def test():
     g = complete(5)
     print(g)
     for vertex in g.vertices():
-        print(vertex.id, end=' ')
+        print(vertex.id, end=" ")
     print()
     for edge in g.edges():
-        print(f'{edge.source}>{edge.target}', end=' ')
+        print(f"{edge.source}>{edge.target}", end=" ")
     print()
-    for vertex, *_ in g.traverse(0, 'depth'):
-        print(vertex.id, end=' ')
+    for vertex, *_ in g.traverse(0, "depth"):
+        print(vertex.id, end=" ")
     print()
-    for vertex, *_ in g.traverse(0, 'breadth'):
-        print(vertex.id, end=' ')
+    for vertex, *_ in g.traverse(0, "breadth"):
+        print(vertex.id, end=" ")
     print()
     for i in range(1, 11, 3):
-        print('Complete graph:\n', complete(i))
-        print('random undirected Graph:\n', random_undirected(i))
-        print('random directed Graph:\n', random_directed(i))
-        print('random undirected paired Graph:\n', random_undirected_paired(i))
-        print('random directed paired Graph:\n', random_directed_paired(i))
-        print('random directed Acyclic graph:\n', random_dag((i, i)))
-        print('random flow graph:\n', random_flow((i, i))[0])
+        print("Complete graph:\n", complete(i))
+        print("random undirected Graph:\n", random_undirected(i))
+        print("random directed Graph:\n", random_directed(i))
+        print("random undirected paired Graph:\n", random_undirected_paired(i))
+        print("random directed paired Graph:\n", random_directed_paired(i))
+        print("random directed Acyclic graph:\n", random_dag((i, i)))
+        print("random flow graph:\n", random_flow((i, i))[0])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

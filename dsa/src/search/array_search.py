@@ -37,7 +37,7 @@ def binary_search(
             left = center + 1
         else:
             return center
-    raise KeyError(f'key ({key}) not found')
+    raise KeyError(f"key ({key}) not found")
 
 
 def k_ary_search(
@@ -83,7 +83,7 @@ def k_ary_search(
                 left = center + 1
             else:
                 return center
-    raise KeyError(f'key ({key}) not found')
+    raise KeyError(f"key ({key}) not found")
 
 
 def interpolation_search(
@@ -125,7 +125,7 @@ def interpolation_search(
             return center
     if comparator(key, array[left]) == 0:
         return left
-    raise KeyError(f'key ({key}) not found')
+    raise KeyError(f"key ({key}) not found")
 
 
 def exponential_search(
@@ -166,29 +166,31 @@ def test():
 
     from ..test import benchmark, verify
 
-    verify((
-        (binary_search, ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6), 6),
-        (binary_search, ([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8), 4),
-        (binary_search, ([1, 10, 100, 1000, 10000, 100000, 1000000], 10), 1),
-        (k_ary_search, ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6), 6),
-        (k_ary_search, ([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8), 4),
-        (k_ary_search, ([1, 10, 100, 1000, 10000, 100000, 1000000], 10), 1),
-        (interpolation_search, ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6), 6),
-        (interpolation_search, ([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8), 4),
-        (interpolation_search, ([1, 10, 100, 1000, 10000, 100000, 1000000], 10), 1),
-        (exponential_search, ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6), 6),
-        (exponential_search, ([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8), 4),
-        (exponential_search, ([1, 10, 100, 1000, 10000, 100000, 1000000], 10), 1),
-    ))
+    verify(
+        (
+            (binary_search, ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6), 6),
+            (binary_search, ([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8), 4),
+            (binary_search, ([1, 10, 100, 1000, 10000, 100000, 1000000], 10), 1),
+            (k_ary_search, ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6), 6),
+            (k_ary_search, ([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8), 4),
+            (k_ary_search, ([1, 10, 100, 1000, 10000, 100000, 1000000], 10), 1),
+            (interpolation_search, ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6), 6),
+            (interpolation_search, ([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8), 4),
+            (interpolation_search, ([1, 10, 100, 1000, 10000, 100000, 1000000], 10), 1),
+            (exponential_search, ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6), 6),
+            (exponential_search, ([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20], 8), 4),
+            (exponential_search, ([1, 10, 100, 1000, 10000, 100000, 1000000], 10), 1),
+        )
+    )
     benchmark(
         (
-            ('       binary search', lambda array: binary_search(array, random.sample(array, 1)[0])),
-            ('  k-ary search (k=2)', lambda array: k_ary_search(array, random.sample(array, 1)[0], k=2)),
-            ('  k-ary search (k=4)', lambda array: k_ary_search(array, random.sample(array, 1)[0], k=4)),
-            ('  k-ary search (k=8)', lambda array: k_ary_search(array, random.sample(array, 1)[0], k=8)),
-            (' k-ary search (k=16)', lambda array: k_ary_search(array, random.sample(array, 1)[0], k=16)),
-            ('interpolation search', lambda array: interpolation_search(array, random.sample(array, 1)[0])),
-            ('  exponential search', lambda array: exponential_search(array, random.sample(array, 1)[0])),
+            ("       binary search", lambda array: binary_search(array, random.sample(array, 1)[0])),
+            ("  k-ary search (k=2)", lambda array: k_ary_search(array, random.sample(array, 1)[0], k=2)),
+            ("  k-ary search (k=4)", lambda array: k_ary_search(array, random.sample(array, 1)[0], k=4)),
+            ("  k-ary search (k=8)", lambda array: k_ary_search(array, random.sample(array, 1)[0], k=8)),
+            (" k-ary search (k=16)", lambda array: k_ary_search(array, random.sample(array, 1)[0], k=16)),
+            ("interpolation search", lambda array: interpolation_search(array, random.sample(array, 1)[0])),
+            ("  exponential search", lambda array: exponential_search(array, random.sample(array, 1)[0])),
         ),
         test_inputs=(),
         bench_sizes=(1, 10, 100, 1000, 10000, 100000),
@@ -198,5 +200,5 @@ def test():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

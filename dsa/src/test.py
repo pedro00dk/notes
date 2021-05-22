@@ -3,9 +3,9 @@ import random
 import timeit
 from typing import Any, Callable, Optional, TypeVar, Union
 
-T = TypeVar('T')
-U = TypeVar('U')
-V = TypeVar('V')
+T = TypeVar("T")
+U = TypeVar("U")
+V = TypeVar("V")
 CheckedOperation = tuple[Callable[..., Any], tuple[Any, ...], Any]
 UncheckedOperation = tuple[Callable[..., Any], tuple[Any, ...]]
 Operation = Union[CheckedOperation, UncheckedOperation]
@@ -28,8 +28,8 @@ def verify(operations: tuple[Operation, ...]):
         print(
             action.__name__,
             f'  args: {", ".join(str(arg) for arg in arguments)}',
-            f'result: {result}' if result is not None else '',
-            f'expected: {expected[0]}' if len(expected) > 0 and result != expected[0] else '',
+            f"result: {result}" if result is not None else "",
+            f"expected: {expected[0]}" if len(expected) > 0 and result != expected[0] else "",
         )
 
 
@@ -59,7 +59,7 @@ def benchmark(
     - `preprocess_input`: function that preprocess inputs, usually copying the input if the algorithm mutates it, the
         preprocessing runs per repeat, not trie
     """
-    print('### test')
+    print("### test")
     for input in test_inputs:
         print("# input", input_str(input))
         for label, function in algorithms:
@@ -67,15 +67,15 @@ def benchmark(
             output = function(input)
             print(label, output_str(output))
         print()
-    print('### benchmark')
+    print("### benchmark")
     for size in bench_sizes:
-        print('# size:', size)
+        print("# size:", size)
         inputs = [bench_input(size) for _ in range(bench_repeat)]
         for label, function in algorithms:
             times: list[float] = []
             for input in inputs:
                 input = input if preprocess_input is None else preprocess_input(input)
-                time = timeit.timeit(stmt='function(input)', globals={**globals(), **locals()}, number=bench_tries)
+                time = timeit.timeit(stmt="function(input)", globals={**globals(), **locals()}, number=bench_tries)
                 times.append(time)
             print(label, sum(times))
         print()
@@ -86,7 +86,7 @@ def sort_benchmark(
     test_size: int = 20,
     bench_sizes: tuple[int, ...] = (0, 1, 10, 100, 1000, 10000),
     bench_repeat: int = 100,
-    value_range: Callable[[int], tuple[int, int]] = lambda s: (0, s**2)
+    value_range: Callable[[int], tuple[int, int]] = lambda s: (0, s ** 2),
 ):
     """
     Benchmark one or multiple sorting algorithms against each other.
@@ -104,7 +104,7 @@ def sort_benchmark(
         bench_sizes,
         lambda size: [random.randint(*value_range(size)) for _ in range(size)],
         bench_repeat,
-        preprocess_input=list[float].copy
+        preprocess_input=list[float].copy,
     )
 
 
@@ -120,19 +120,16 @@ def heuristic_approximation(label: str, optimal_results: list[float], heuristic_
     pairs = zip(optimal_results, heuristic_results)
     approximations = [h / opt if opt != 0 else 1 for opt, h in pairs]
     perfect_results = sum(1 for approximation in approximations if approximation == 1)
-    print('# heuristic ', label)
-    print('   number of runs:', len(optimal_results))
-    print('  perfect results:', perfect_results, f'{"%.2f" % (perfect_results / len(optimal_results) * 100)}%')
-    print('          minimum:', min(approximations))
-    print('          maximum:', max(approximations))
-    print('          average:', sum(approximations) / len(approximations))
+    print("# heuristic ", label)
+    print("   number of runs:", len(optimal_results))
+    print("  perfect results:", perfect_results, f'{"%.2f" % (perfect_results / len(optimal_results) * 100)}%')
+    print("          minimum:", min(approximations))
+    print("          maximum:", max(approximations))
+    print("          average:", sum(approximations) / len(approximations))
 
 
 def read(
-    *,
-    path: Optional[str] = None,
-    string: Optional[str] = None,
-    byte: Optional[Union[bytes, bytearray]] = None
+    *, path: Optional[str] = None, string: Optional[str] = None, byte: Optional[Union[bytes, bytearray]] = None
 ) -> tuple[AnyBytes, Callable[[], Any]]:
     """
     Returns an indexable bytes object from a file path, string, bytes or bytearray, this function allows running
@@ -151,11 +148,11 @@ def read(
     - `return`: buffer to access mmap, string, bytes or bytearray, and a finalize function to close resources
     """
     if path is not None:
-        reader = open(path, 'rb')
+        reader = open(path, "rb")
         mm = mmap.mmap(reader.fileno(), 0, prot=mmap.PROT_READ)
         return mm, lambda: (mm.close(), reader.close())
     if string is not None:
-        return bytes(string, 'utf-8'), lambda: ()
+        return bytes(string, "utf-8"), lambda: ()
     if byte is not None:
         return byte, lambda: ()
-    raise Exception('no source was provided')
+    raise Exception("no source was provided")

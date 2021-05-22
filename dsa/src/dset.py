@@ -1,6 +1,6 @@
 from typing import Generic, TypeVar
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class DisjointSet:
@@ -28,10 +28,10 @@ class DisjointSet:
         self._count = sets
 
     def __str__(self) -> str:
-        lines = '\n'.join(
-            f'{i} => {self._sets[i]} # rank: {self._ranks[i]} size: {self._sizes[i]}' for i in range(len(self._sets))
+        lines = "\n".join(
+            f"{i} => {self._sets[i]} # rank: {self._ranks[i]} size: {self._sizes[i]}" for i in range(len(self._sets))
         )
-        return f'DisjointSet [\n{lines}\n]'
+        return f"DisjointSet [\n{lines}\n]"
 
     def __len__(self) -> int:
         return len(self._sets)
@@ -85,7 +85,7 @@ class DisjointSet:
         - `return`: root key of the set containing `key`
         """
         if key < 0 or key >= len(self._sets):
-            raise KeyError(f'key ({key}) out of range [0, {len(self._sets)})')
+            raise KeyError(f"key ({key}) out of range [0, {len(self._sets)})")
         root = key
         while root != self._sets[root]:
             root = self._sets[root]
@@ -147,7 +147,7 @@ class HashDisjointSet(Generic[T]):
         self.sets = self._disjoint_set.sets
 
     def __str__(self) -> str:
-        return f'Hash Disjoint Set {{\n{self._disjoint_set}\n{self._table}\n}}'
+        return f"Hash Disjoint Set {{\n{self._disjoint_set}\n{self._table}\n}}"
 
     def __len__(self) -> int:
         return len(self._disjoint_set)
@@ -176,44 +176,46 @@ class HashDisjointSet(Generic[T]):
 def test():
     from .test import verify
 
-    disjoint_set = HashDisjointSet['str']()
-    verify((
-        (disjoint_set.make_set, ('a',)),
-        (disjoint_set.make_set, ('e',)),
-        (disjoint_set.make_set, ('i',)),
-        (disjoint_set.make_set, ('o',)),
-        (disjoint_set.make_set, ('u',)),
-        (disjoint_set.make_set, ('0',)),
-        (disjoint_set.make_set, ('1',)),
-        (disjoint_set.make_set, ('2',)),
-        (disjoint_set.make_set, ('3',)),
-        (disjoint_set.make_set, ('4',)),
-        (print, (disjoint_set,)),
-        (disjoint_set.union, ('a', 'e')),
-        (disjoint_set.union, ('i', 'o')),
-        (disjoint_set.union, ('a', 'o')),
-        (disjoint_set.union, ('u', 'a')),
-        (disjoint_set.union, ('0', '1')),
-        (disjoint_set.union, ('2', '3')),
-        (disjoint_set.union, ('4', '0')),
-        (disjoint_set.union, ('1', '2')),
-        (print, (disjoint_set,)),
-        (disjoint_set.connected, ('a', 'i'), True),
-        (disjoint_set.connected, ('e', 'o'), True),
-        (disjoint_set.connected, ('e', 'u'), True),
-        (disjoint_set.connected, ('3', 'u'), False),
-        (disjoint_set.connected, ('0', 'e'), False),
-        (disjoint_set.connected, ('1', '4'), True),
-        (disjoint_set.connected, ('1', '2'), True),
-        (disjoint_set.connected, ('2', '0'), True),
-        (disjoint_set.connected, ('i', '4'), False),
-        (disjoint_set.connected, ('u', '1'), False),
-        (len, (disjoint_set,), 10),
-        (disjoint_set.sets, (), 2),
-        (disjoint_set.set_size, ('a',), 5),
-        (disjoint_set.set_size, ('0',), 5),
-    ))
+    disjoint_set = HashDisjointSet["str"]()
+    verify(
+        (
+            (disjoint_set.make_set, ("a",)),
+            (disjoint_set.make_set, ("e",)),
+            (disjoint_set.make_set, ("i",)),
+            (disjoint_set.make_set, ("o",)),
+            (disjoint_set.make_set, ("u",)),
+            (disjoint_set.make_set, ("0",)),
+            (disjoint_set.make_set, ("1",)),
+            (disjoint_set.make_set, ("2",)),
+            (disjoint_set.make_set, ("3",)),
+            (disjoint_set.make_set, ("4",)),
+            (print, (disjoint_set,)),
+            (disjoint_set.union, ("a", "e")),
+            (disjoint_set.union, ("i", "o")),
+            (disjoint_set.union, ("a", "o")),
+            (disjoint_set.union, ("u", "a")),
+            (disjoint_set.union, ("0", "1")),
+            (disjoint_set.union, ("2", "3")),
+            (disjoint_set.union, ("4", "0")),
+            (disjoint_set.union, ("1", "2")),
+            (print, (disjoint_set,)),
+            (disjoint_set.connected, ("a", "i"), True),
+            (disjoint_set.connected, ("e", "o"), True),
+            (disjoint_set.connected, ("e", "u"), True),
+            (disjoint_set.connected, ("3", "u"), False),
+            (disjoint_set.connected, ("0", "e"), False),
+            (disjoint_set.connected, ("1", "4"), True),
+            (disjoint_set.connected, ("1", "2"), True),
+            (disjoint_set.connected, ("2", "0"), True),
+            (disjoint_set.connected, ("i", "4"), False),
+            (disjoint_set.connected, ("u", "1"), False),
+            (len, (disjoint_set,), 10),
+            (disjoint_set.sets, (), 2),
+            (disjoint_set.set_size, ("a",), 5),
+            (disjoint_set.set_size, ("0",), 5),
+        )
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

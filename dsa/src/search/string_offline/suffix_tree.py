@@ -23,6 +23,7 @@ class Node:
     - `match`: the starting index of a suffix in `tid` represented by this node (matching index), this also means
         the node is a leaf, internal nodes must set this to -1 to initialize the `children` property
     """
+
     id: int
     left: int
     right: int
@@ -40,7 +41,7 @@ class SuffixTree(StringOffline):
     - `n`: length of `text` argument in `__init__`
     """
 
-    def __init__(self, text: str, strategy: Literal['naive', 'ukkonen']):
+    def __init__(self, text: str, strategy: Literal["naive", "ukkonen"]):
         """
         Initialize the suffix tree given the received `text` and `strategy`.
         The space used is proportional to the length of `text` independently of `strategy`.
@@ -54,12 +55,9 @@ class SuffixTree(StringOffline):
         - `texts`: list of texts to be indexed
         - `strategy`: build strategy
         """
-        self._text = text + chr(0x10ffff)
+        self._text = text + chr(0x10FFFF)
         self._id_gen = itertools.count()
-        build_function = {
-            'ukkonen': self._build_ukkonen,
-            'naive': self._build_naive
-        }[strategy]
+        build_function = {"ukkonen": self._build_ukkonen, "naive": self._build_naive}[strategy]
         self._root = build_function()
         self._node_count = next(self._id_gen)
         # fast query preprocessing utilities
@@ -76,12 +74,12 @@ class SuffixTree(StringOffline):
     def __str__(self) -> str:
         nodes: list[str] = []
         for node in self._pre(self._root):
-            text_slice = self._text[node.left: node.right]
-            leaf = f'<{node.match}>' if node.match != -1 else ''
+            text_slice = self._text[node.left : node.right]
+            leaf = f"<{node.match}>" if node.match != -1 else ""
             parent_depth = self._node_depths[node.parent.id] if node.parent is not None else 0
             nodes.append(f'{" " * parent_depth}├{text_slice} - {leaf}')
-        all_nodes = '\n'.join(nodes)
-        return f'{type(self).__name__} [\n{all_nodes}\n]'
+        all_nodes = "\n".join(nodes)
+        return f"{type(self).__name__} [\n{all_nodes}\n]"
 
     def _build_naive(self) -> Node:
         """
@@ -130,7 +128,10 @@ class SuffixTree(StringOffline):
         - space: `O(n)`
         - `n`: length of `self._text`
         """
-        def update(cursor: Node, left: int, right: int, slinks: dict[int, Node], match: int) -> tuple[Node, int, int, int]:
+
+        def update(
+            cursor: Node, left: int, right: int, slinks: dict[int, Node], match: int
+        ) -> tuple[Node, int, int, int]:
             previous_border: Optional[Node] = None
             is_terminal, border = test_and_split(cursor, left, right)
             while not is_terminal:
@@ -281,7 +282,7 @@ class SuffixTree(StringOffline):
         - `return`: node of the `pattern` occurrence
         """
         if len(pattern) == 0:
-            raise Exception('empty pattern')
+            raise Exception("empty pattern")
         j = 0
         cursor = self._root
         while pattern[j] in cursor.children:
@@ -334,7 +335,7 @@ class SuffixTree(StringOffline):
         - `q`: number of occurrences
         """
         if repetitions < 2:
-            raise Exception('repetitions must be at least 2')
+            raise Exception("repetitions must be at least 2")
         current = self._root
         depth = self._node_depths[current.id]
         for node in self._pre(self._root):
@@ -353,7 +354,7 @@ class SuffixTree(StringOffline):
         """
         i, j = (i, j) if i < j else (j, i)
         if not (0 <= i <= j < len(self._text)):
-            raise IndexError(f'text index i ({i}) or j ({j}) out of range [0, {len(self._text)})')
+            raise IndexError(f"text index i ({i}) or j ({j}) out of range [0, {len(self._text)})")
         i_match_node = self._leaves_references[i]
         j_match_node = self._leaves_references[j]
         lowest_common_ancestor = self._rmq_backward_mapper[
@@ -368,34 +369,36 @@ def test():
 
     from ...test import benchmark, verify
 
-    for strategy in ('naive', 'ukkonen'):
-        print('strategy:', strategy)
-        suffix_tree = SuffixTree('senselessness', cast(Any, strategy))
+    for strategy in ("naive", "ukkonen"):
+        print("strategy:", strategy)
+        suffix_tree = SuffixTree("senselessness", cast(Any, strategy))
         print(suffix_tree)
-        verify((
-            (suffix_tree.occurrences, ('s',)),
-            (suffix_tree.occurrences, ('e',)),
-            (suffix_tree.occurrences, ('ss',)),
-            (suffix_tree.occurrences_count, ('s',)),
-            (suffix_tree.occurrences_count, ('ss',)),
-            (suffix_tree.longest_repeated_substring, (2,)),
-            (suffix_tree.longest_repeated_substring, (4,)),
-            (suffix_tree.longest_common_prefix, (0, 0)),
-            (suffix_tree.longest_common_prefix, (0, 3)),
-            (suffix_tree.longest_common_prefix, (6, 10)),
-        ))
+        verify(
+            (
+                (suffix_tree.occurrences, ("s",)),
+                (suffix_tree.occurrences, ("e",)),
+                (suffix_tree.occurrences, ("ss",)),
+                (suffix_tree.occurrences_count, ("s",)),
+                (suffix_tree.occurrences_count, ("ss",)),
+                (suffix_tree.longest_repeated_substring, (2,)),
+                (suffix_tree.longest_repeated_substring, (4,)),
+                (suffix_tree.longest_common_prefix, (0, 0)),
+                (suffix_tree.longest_common_prefix, (0, 3)),
+                (suffix_tree.longest_common_prefix, (6, 10)),
+            )
+        )
         print()
     benchmark(
         (
-            ('  suffix tree naive', lambda text: SuffixTree(text, 'naive')),
-            ('suffix tree ukkonen', lambda text: SuffixTree(text, 'ukkonen')),
+            ("  suffix tree naive", lambda text: SuffixTree(text, "naive")),
+            ("suffix tree ukkonen", lambda text: SuffixTree(text, "ukkonen")),
         ),
-        test_inputs=('hello world!', 'cagtcatgcatacgtctatatcggctgc'),
+        test_inputs=("hello world!", "cagtcatgcatacgtctatatcggctgc"),
         bench_sizes=(0, 1, 10, 100, 1000, 10000, 100000),
-        bench_input=lambda s: ''.join(random.choices(string.printable, k=s)),
+        bench_input=lambda s: "".join(random.choices(string.printable, k=s)),
         bench_repeat=10,
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

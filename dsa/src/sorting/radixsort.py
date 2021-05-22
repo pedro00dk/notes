@@ -32,6 +32,7 @@ def radixsort_lsd(array: list[int], block: Optional[int] = None) -> list[int]:
     - `block`: the amount of bits to use as radix, defaults to the number of bits needed to represent `array` length
     - `return`: `array` sorted
     """
+
     def radix_countingsort(array: list[int], output: list[int], base: int, block: int, index: int, min_value: int):
         """
         Countingsort implementation for radixsort lsd partial subsort.
@@ -58,7 +59,7 @@ def radixsort_lsd(array: list[int], block: Optional[int] = None) -> list[int]:
     max_value = max(array)
     value_range = max_value - min_value + 1
     block = max(block if block is not None else math.ceil(math.log2(max(len(array), 1))), 1)
-    base = 2**block
+    base = 2 ** block
     word = math.ceil(math.log(max(value_range, 2), base))
     input = array
     output = [0] * len(array)
@@ -106,7 +107,10 @@ def radixsort_msd(array: list[int], block: int = 4) -> list[int]:
     - `block`: the amount of bits to use as radix, defaults to 4
     - `return`: `array` sorted
     """
-    def radix_countingsort(array: list[int], output: list[int], first: int, last: int, base: int, block: int, index: int, min_value: int):
+
+    def radix_countingsort(
+        array: list[int], output: list[int], first: int, last: int, base: int, block: int, index: int, min_value: int
+    ):
         """
         Countingsort implementation for radixsort msb partial subsort.
         This implementation partially sorts the array using the provided mask region.
@@ -128,9 +132,18 @@ def radixsort_msd(array: list[int], block: int = 4) -> list[int]:
             frequencies[masked] -= 1
         return frequencies
 
-    def rec(input: list[int], output: list[int], first: int, last: int, base: int, block: int, word_remaining: int, min_value: int):
+    def rec(
+        input: list[int],
+        output: list[int],
+        first: int,
+        last: int,
+        base: int,
+        block: int,
+        word_remaining: int,
+        min_value: int,
+    ):
         frequencies = radix_countingsort(input, output, first, last, base, block, word_remaining, min_value)
-        input[first:last + 1] = (output[i] for i in range(first, last + 1))
+        input[first : last + 1] = (output[i] for i in range(first, last + 1))
         word_remaining -= 1
         if word_remaining < 0:
             return
@@ -146,7 +159,7 @@ def radixsort_msd(array: list[int], block: int = 4) -> list[int]:
     max_value = max(array)
     value_range = max_value - min_value + 1
     block = max(block if block is not None else math.ceil(math.log2(max(len(array), 1))), 1)
-    base = 2**block
+    base = 2 ** block
     word = math.ceil(math.log(max(value_range, 2), base))
     input = array
     output = [0] * len(array)
@@ -159,22 +172,22 @@ def test():
 
     sort_benchmark(
         (
-            ('radixsort lsd block=1', lambda array: cast(Any, radixsort_lsd)(array, 1)),
-            ('radixsort lsd block=2', lambda array: cast(Any, radixsort_lsd)(array, 2)),
-            ('radixsort lsd block=3', lambda array: cast(Any, radixsort_lsd)(array, 3)),
-            ('radixsort lsd block=4', lambda array: cast(Any, radixsort_lsd)(array, 4)),
-            ('radixsort lsd block=5', lambda array: cast(Any, radixsort_lsd)(array, 5)),
-            ('radixsort lsd block=6', lambda array: cast(Any, radixsort_lsd)(array, 6)),
-            ('radixsort lsd block=n', lambda array: cast(Any, radixsort_lsd)(array, None)),
-            ('radixsort msd block=1', lambda array: cast(Any, radixsort_msd)(array, 1)),
-            ('radixsort msd block=2', lambda array: cast(Any, radixsort_msd)(array, 2)),
-            ('radixsort msd block=3', lambda array: cast(Any, radixsort_msd)(array, 3)),
-            ('radixsort msd block=4', lambda array: cast(Any, radixsort_msd)(array, 4)),
-            ('radixsort msd block=5', lambda array: cast(Any, radixsort_msd)(array, 5)),
-            ('radixsort msd block=6', lambda array: cast(Any, radixsort_msd)(array, 6)),
+            ("radixsort lsd block=1", lambda array: cast(Any, radixsort_lsd)(array, 1)),
+            ("radixsort lsd block=2", lambda array: cast(Any, radixsort_lsd)(array, 2)),
+            ("radixsort lsd block=3", lambda array: cast(Any, radixsort_lsd)(array, 3)),
+            ("radixsort lsd block=4", lambda array: cast(Any, radixsort_lsd)(array, 4)),
+            ("radixsort lsd block=5", lambda array: cast(Any, radixsort_lsd)(array, 5)),
+            ("radixsort lsd block=6", lambda array: cast(Any, radixsort_lsd)(array, 6)),
+            ("radixsort lsd block=n", lambda array: cast(Any, radixsort_lsd)(array, None)),
+            ("radixsort msd block=1", lambda array: cast(Any, radixsort_msd)(array, 1)),
+            ("radixsort msd block=2", lambda array: cast(Any, radixsort_msd)(array, 2)),
+            ("radixsort msd block=3", lambda array: cast(Any, radixsort_msd)(array, 3)),
+            ("radixsort msd block=4", lambda array: cast(Any, radixsort_msd)(array, 4)),
+            ("radixsort msd block=5", lambda array: cast(Any, radixsort_msd)(array, 5)),
+            ("radixsort msd block=6", lambda array: cast(Any, radixsort_msd)(array, 6)),
         ),
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

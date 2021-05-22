@@ -50,8 +50,8 @@ def heapsort(array: list[float]) -> list[float]:
 def test():
     from ..test import sort_benchmark
 
-    sort_benchmark((('heapsort', heapsort),))
+    sort_benchmark((("heapsort", heapsort),))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

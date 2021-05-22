@@ -32,7 +32,7 @@ class RangeMinimumQueryV4(RangeMinimumQuery[int]):
         - `n`: length of `data`
         """
         if len(data) == 0:
-            raise Exception('data must contain at least one element')
+            raise Exception("data must contain at least one element")
         self._data = data
         self._promoted_rmq = RangeMinimumQueryV3(data)
         self._range_size = max(math.ceil(math.log2(len(data)) / 2), 1)
@@ -47,7 +47,7 @@ class RangeMinimumQueryV4(RangeMinimumQuery[int]):
             self._group_codes.append(group_code)
             if group_code in self._code_maps:
                 continue
-            self._code_maps[group_code] = RangeMinimumQueryNaive(data[start: end + 1])  # V2 could also be used
+            self._code_maps[group_code] = RangeMinimumQueryNaive(data[start : end + 1])  # V2 could also be used
 
     def rmq(self, i: int, j: int) -> int:
         """
@@ -59,7 +59,7 @@ class RangeMinimumQueryV4(RangeMinimumQuery[int]):
         """
         i, j = (i, j) if i < j else (j, i)
         if not (0 <= i <= j < len(self._data)):
-            raise IndexError(f'indices i ({i}) and j ({j}) out of range [0:{len(self._data)})')
+            raise IndexError(f"indices i ({i}) and j ({j}) out of range [0:{len(self._data)})")
         group_i = i // self._range_size
         group_i_prime = group_i + (1 if i > group_i * self._range_size else 0)
         group_j = j // self._range_size
@@ -110,16 +110,18 @@ def test():
     def rmq_map_plus_minus_1(i: int, j: int):
         return backward_mapper[rmq.rmq(forward_mapper[i][0], forward_mapper[j][0])]
 
-    verify((
-        (rmq_map_plus_minus_1, (0, 0), 0),
-        (rmq_map_plus_minus_1, (0, 2), 2),
-        (rmq_map_plus_minus_1, (2, 5), 2),
-        (rmq_map_plus_minus_1, (4, 5), 4),
-        (rmq_map_plus_minus_1, (5, 7), 6),
-        (rmq_map_plus_minus_1, (8, 8), 8),
-        (rmq_map_plus_minus_1, (2, 8), 2),
-    ))
+    verify(
+        (
+            (rmq_map_plus_minus_1, (0, 0), 0),
+            (rmq_map_plus_minus_1, (0, 2), 2),
+            (rmq_map_plus_minus_1, (2, 5), 2),
+            (rmq_map_plus_minus_1, (4, 5), 4),
+            (rmq_map_plus_minus_1, (5, 7), 6),
+            (rmq_map_plus_minus_1, (8, 8), 8),
+            (rmq_map_plus_minus_1, (2, 8), 2),
+        )
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

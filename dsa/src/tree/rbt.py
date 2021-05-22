@@ -14,6 +14,7 @@ class RBTNode(Generic[K, V]):
     """
     Node with extra `parent` and `red` properties.
     """
+
     key: K
     value: V
     left: Optional[RBTNode[K, V]] = None
@@ -117,7 +118,7 @@ class RBT(Generic[K, V], BST[K, V]):
         while node is not None and key != node.key:
             node = node.left if key < node.key else node.right
         if node is None:
-            raise KeyError(f'key ({key}) not found')
+            raise KeyError(f"key ({key}) not found")
         if node.left is not None and node.right is not None:
             successor = node.right
             while successor.left is not None:
@@ -175,13 +176,23 @@ class RBT(Generic[K, V], BST[K, V]):
                 else:
                     self._rotate_right(parent)
                 sibling = self._sibling(node)
-            if self._blk(node.parent) and sibling is not None and self._blk(sibling) and \
-                    self._blk(sibling.left) and self._blk(sibling.right):
+            if (
+                self._blk(node.parent)
+                and sibling is not None
+                and self._blk(sibling)
+                and self._blk(sibling.left)
+                and self._blk(sibling.right)
+            ):
                 sibling.red = True
                 node = parent
                 continue
-            if self._red(node.parent) and sibling is not None and self._blk(sibling) and \
-                    self._blk(sibling.left) and self._blk(sibling.right):
+            if (
+                self._red(node.parent)
+                and sibling is not None
+                and self._blk(sibling)
+                and self._blk(sibling.left)
+                and self._blk(sibling.right)
+            ):
                 sibling.red = True
                 parent.red = False
                 break
@@ -280,40 +291,42 @@ def test():
     from ..test import verify
 
     tree = RBT[int, Optional[int]]()
-    verify((
-        (tree.put, (-15, -1000)),
-        (tree.put, (-10, None)),
-        (tree.put, (-5, None)),
-        (tree.put, (0, None)),
-        (tree.put, (5, 1000)),
-        (tree.put, (10, None)),
-        (tree.put, (15, None)),
-        (tree.get, (5,), 1000),
-        (tree.get, (-15,), -1000),
-        (print, (tree,)),
-        (tree.take, (0,)),
-        (tree.take, (-10,)),
-        (tree.take, (-15,), -1000),
-        (print, (tree,)),
-    ))
-    print('test print functions from abstract base classes')
-    print('self:\n', tree)
-    print('tree:\n', cast(Any, Tree).__str__(tree))
-    print('map:\n', cast(Any, Map).__str__(tree))
-    print('priority queue:\n', cast(Any, Priority).__str__(tree))
-    for key, *_ in tree.traverse('pre'):
-        print(key, end=' ')
+    verify(
+        (
+            (tree.put, (-15, -1000)),
+            (tree.put, (-10, None)),
+            (tree.put, (-5, None)),
+            (tree.put, (0, None)),
+            (tree.put, (5, 1000)),
+            (tree.put, (10, None)),
+            (tree.put, (15, None)),
+            (tree.get, (5,), 1000),
+            (tree.get, (-15,), -1000),
+            (print, (tree,)),
+            (tree.take, (0,)),
+            (tree.take, (-10,)),
+            (tree.take, (-15,), -1000),
+            (print, (tree,)),
+        )
+    )
+    print("test print functions from abstract base classes")
+    print("self:\n", tree)
+    print("tree:\n", cast(Any, Tree).__str__(tree))
+    print("map:\n", cast(Any, Map).__str__(tree))
+    print("priority queue:\n", cast(Any, Priority).__str__(tree))
+    for key, *_ in tree.traverse("pre"):
+        print(key, end=" ")
     print()
-    for key, *_ in tree.traverse('in'):
-        print(key, end=' ')
+    for key, *_ in tree.traverse("in"):
+        print(key, end=" ")
     print()
-    for key, *_ in tree.traverse('post'):
-        print(key, end=' ')
+    for key, *_ in tree.traverse("post"):
+        print(key, end=" ")
     print()
-    for key, *_ in tree.traverse('breadth'):
-        print(key, end=' ')
+    for key, *_ in tree.traverse("breadth"):
+        print(key, end=" ")
     print()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

@@ -3,8 +3,7 @@ from __future__ import annotations
 import dataclasses
 from typing import Any, Callable, Generator, Generic, Literal, Optional, cast
 
-from .abc import (LINEAR_PROBER, QUADRATIC_PRIME_PROBER,
-                  QUADRATIC_TRIANGULAR_PROBER, K, Map, V)
+from .abc import LINEAR_PROBER, QUADRATIC_PRIME_PROBER, QUADRATIC_TRIANGULAR_PROBER, K, Map, V
 
 
 @dataclasses.dataclass
@@ -19,23 +18,27 @@ class SequenceChainingHashtable(Generic[K, V], Map[K, V]):
     """
     Sequence chaining Hashtable implementation.
     Probers have minimal impact in sequence chaining performance, if probers produce the same index for `trie = 0`,
-    the only change is the capacity and threshold limits. 
+    the only change is the capacity and threshold limits.
 
     > complexity
     - space: `O(n)`
     - `n`: number of elements in the structure
     """
 
-    def __init__(self, prober_name: Literal['linear', 'prime', 'triangular'] = 'triangular'):
+    def __init__(self, prober_name: Literal["linear", "prime", "triangular"] = "triangular"):
         """
         > parameters
         - `prober_name`: prober name
         """
         super().__init__()
         self._prober_name = prober_name
-        self._prober = LINEAR_PROBER if self._prober_name == 'linear' else \
-            QUADRATIC_PRIME_PROBER if self._prober_name == 'prime' else \
-            QUADRATIC_TRIANGULAR_PROBER
+        self._prober = (
+            LINEAR_PROBER
+            if self._prober_name == "linear"
+            else QUADRATIC_PRIME_PROBER
+            if self._prober_name == "prime"
+            else QUADRATIC_TRIANGULAR_PROBER
+        )
         self._capacity_index: int = 0
         self._capacity = self._prober.capacity(0, self._capacity_index)
         self._length: int = 0
@@ -145,7 +148,7 @@ class SequenceChainingHashtable(Generic[K, V], Map[K, V]):
             parent = node
             node = node.next
         if node is None:
-            raise KeyError(f'key ({key}) not found')
+            raise KeyError(f"key ({key}) not found")
         if parent is None:
             self._table[index] = node.next
         else:
@@ -166,7 +169,7 @@ class SequenceChainingHashtable(Generic[K, V], Map[K, V]):
         while node is not None and key != node.key:
             node = node.next
         if node is None:
-            raise KeyError(f'key ({key}) not found')
+            raise KeyError(f"key ({key}) not found")
         return node.value
 
 
@@ -175,15 +178,21 @@ def test():
 
     from ..test import verify
 
-    for prober_name in ('linear', 'prime', 'triangular'):
+    for prober_name in ("linear", "prime", "triangular"):
         hashtable = SequenceChainingHashtable[int, int](cast(Any, prober_name))
-        verify((
-            *((hashtable.put, (str(i), i * 2), None) for i in random.sample([i for i in range(100)], 100)),
-            (print, (hashtable,)),
-            *((hashtable.take, (str(i),), i * 2) for i in random.sample([i for i in range(100)], 100) if i % 3 == 0),
-            (print, (hashtable,)),
-        ))
+        verify(
+            (
+                *((hashtable.put, (str(i), i * 2), None) for i in random.sample([i for i in range(100)], 100)),
+                (print, (hashtable,)),
+                *(
+                    (hashtable.take, (str(i),), i * 2)
+                    for i in random.sample([i for i in range(100)], 100)
+                    if i % 3 == 0
+                ),
+                (print, (hashtable,)),
+            )
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

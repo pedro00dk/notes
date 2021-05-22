@@ -7,7 +7,7 @@ from ..graph import Graph
 def tsp_brute_force(
     graph: Graph[Any, Any],
     start: int = 0,
-    absent_edge_length: float = float('inf'),
+    absent_edge_length: float = float("inf"),
 ) -> tuple[float, list[int]]:
     """
     Brute force traveling salesman problem implementation.
@@ -31,12 +31,12 @@ def tsp_brute_force(
     - `return`: the best distance and best path
     """
     if graph.vertices_count() == 0:
-        raise Exception('graph must contain at least 1 vertex')
+        raise Exception("graph must contain at least 1 vertex")
     if start < 0 or start >= graph.vertices_count():
-        raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
+        raise IndexError(f"start vertex ({start}) out of range [0, {graph.vertices_count()})")
     matrix = graph.adjacency_matrix(absent_edge_length)
     vertices = [v for v in range(graph.vertices_count()) if v != start or graph.vertices_count() == 1]
-    distance = float('inf')
+    distance = float("inf")
     path: tuple[int, ...] = ()
     for permutation in itertools.permutations(vertices):
         permutation_distance = matrix[permutation[-1]][start] + matrix[start][permutation[0]]
@@ -52,7 +52,7 @@ def tsp_brute_force(
 def tsp_held_karp_bitset(
     graph: Graph[Any, Any],
     start: int = 0,
-    absent_edge_length: float = float('inf'),
+    absent_edge_length: float = float("inf"),
 ) -> tuple[float, list[int]]:
     """
     Held-Karp traveling salesman problem implementation.
@@ -80,13 +80,12 @@ def tsp_held_karp_bitset(
     - `return`: the best distance and best path
     """
     if graph.vertices_count() == 0:
-        raise Exception('graph must contain at least 1 vertex')
+        raise Exception("graph must contain at least 1 vertex")
     if start < 0 or start >= graph.vertices_count():
-        raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
+        raise IndexError(f"start vertex ({start}) out of range [0, {graph.vertices_count()})")
     matrix = graph.adjacency_matrix(absent_edge_length)
     paths = cast(
-        list[list[tuple[float, int]]],
-        [[None] * (1 << graph.vertices_count()) for _ in range(graph.vertices_count())]
+        list[list[tuple[float, int]]], [[None] * (1 << graph.vertices_count()) for _ in range(graph.vertices_count())]
     )
 
     def bit_combinations(n: int, k: int):
@@ -108,7 +107,7 @@ def tsp_held_karp_bitset(
             for v in range(graph.vertices_count()):  # vertex to increase path
                 if v == start or subset & (1 << v) != 0:
                     continue
-                best_subpath_distance = float('inf')
+                best_subpath_distance = float("inf")
                 best_parent = -1
                 for u in range(graph.vertices_count()):  # vertex already in path
                     if u == start or u == v or subset & (1 << u) == 0:
@@ -122,7 +121,7 @@ def tsp_held_karp_bitset(
 
     # get best distance from subset containing all vertices except start, to start
     final_subset = (1 << graph.vertices_count()) - 1 ^ (1 << start)
-    distance = float('inf') if final_subset != 0 else 0   # 0 means graph contains only one vertex
+    distance = float("inf") if final_subset != 0 else 0  # 0 means graph contains only one vertex
     parent = -1
     for u in range(graph.vertices_count()):
         if u == start:
@@ -139,7 +138,7 @@ def tsp_held_karp_bitset(
     path: list[int] = []
     while parent != -1 and parent != start:  # parent is none if graph contains only one vertex
         path.append(parent)
-        subset ^= (1 << parent)
+        subset ^= 1 << parent
         parent = paths[parent][subset][1]
     path.append(start)
     return distance, [*reversed(path)]
@@ -148,7 +147,7 @@ def tsp_held_karp_bitset(
 def tsp_held_karp_hashset(
     graph: Graph[Any, Any],
     start: int = 0,
-    absent_edge_length: float = float('inf'),
+    absent_edge_length: float = float("inf"),
 ) -> tuple[float, list[int]]:
     """
     Held-Karp traveling salesman problem implementation.
@@ -170,9 +169,9 @@ def tsp_held_karp_hashset(
     - `return`: the best distance and best path
     """
     if graph.vertices_count() == 0:
-        raise Exception('graph must contain at least 1 vertex')
+        raise Exception("graph must contain at least 1 vertex")
     if start < 0 or start >= graph.vertices_count():
-        raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
+        raise IndexError(f"start vertex ({start}) out of range [0, {graph.vertices_count()})")
     matrix = graph.adjacency_matrix(absent_edge_length)
     paths: dict[tuple[int, frozenset[int]], tuple[float, int]] = {}
 
@@ -189,7 +188,7 @@ def tsp_held_karp_hashset(
             for v in range(graph.vertices_count()):  # vertex to increase path
                 if v == start or v in subset:
                     continue
-                best_subpath_distance = float('inf')
+                best_subpath_distance = float("inf")
                 best_parent = -1
                 for u in subset:  # vertex already in path
                     subpath_distance = paths[(u, subset.difference((u,)))][0] + matrix[u][v]
@@ -201,7 +200,7 @@ def tsp_held_karp_hashset(
 
     # get best distance from subset containing all vertices except start, to start
     final_subset = frozenset(range(graph.vertices_count())).difference((start,))
-    distance = float('inf') if len(final_subset) > 0 else 0  # 0 means graph contains only one vertex
+    distance = float("inf") if len(final_subset) > 0 else 0  # 0 means graph contains only one vertex
     parent = -1
     for u in final_subset:
         subpath_distance = paths[(u, final_subset.difference((u,)))][0] + matrix[u][start]
@@ -244,15 +243,15 @@ def tsp_nearest_heighbor(
     - `return`: the best distance and best path (heuristic)
     """
     if graph.vertices_count() == 0:
-        raise Exception('graph must contain at least 1 vertex')
+        raise Exception("graph must contain at least 1 vertex")
     if start < 0 or start >= graph.vertices_count():
-        raise IndexError(f'start vertex ({start}) out of range [0, {graph.vertices_count()})')
+        raise IndexError(f"start vertex ({start}) out of range [0, {graph.vertices_count()})")
     visited = [False] * graph.vertices_count()
     distance = 0
     path = [start]
     visited[start] = True
     for _ in range(graph.vertices_count() - 1):
-        best_segment_distance = float('inf')
+        best_segment_distance = float("inf")
         best_target = None
         for edge in graph.edges(path[-1]):
             if visited[edge.target] or edge.length >= best_segment_distance:
@@ -260,7 +259,7 @@ def tsp_nearest_heighbor(
             best_segment_distance = edge.length
             best_target = edge.target
         if best_target == None:
-            raise Exception('graph must be complete')
+            raise Exception("graph must be complete")
         distance += best_segment_distance
         path.append(best_target)
         visited[best_target] = True
@@ -279,38 +278,38 @@ def test():
 
     optimal_costs: list[float] = []
     nearest_neighbor_costs: list[float] = []
-    print('all algorithms')
+    print("all algorithms")
     benchmark(
         (
-            ('     tsp brute force', lambda graph: save_cost(tsp_brute_force, graph, optimal_costs)),
-            ('          tsp bitset', tsp_held_karp_bitset),
-            ('         tsp hashset', tsp_held_karp_hashset),
-            ('tsp nearest neighbor', lambda graph: save_cost(tsp_nearest_heighbor, graph, nearest_neighbor_costs)),
+            ("     tsp brute force", lambda graph: save_cost(tsp_brute_force, graph, optimal_costs)),
+            ("          tsp bitset", tsp_held_karp_bitset),
+            ("         tsp hashset", tsp_held_karp_hashset),
+            ("tsp nearest neighbor", lambda graph: save_cost(tsp_nearest_heighbor, graph, nearest_neighbor_costs)),
         ),
         test_inputs=(*(complete(i, el_range=(0, 10)) for i in (2, 4, 6)),),
         bench_sizes=(*range(1, 11),),
         bench_input=lambda s: complete(s, el_range=(0, 100)),
     )
-    print('without brute force')
+    print("without brute force")
     benchmark(
         (
-            ('          tsp bitset', lambda graph: save_cost(tsp_held_karp_bitset, graph, optimal_costs)),
-            ('         tsp hashset', tsp_held_karp_hashset),
-            ('tsp nearest neighbor', lambda graph: save_cost(tsp_nearest_heighbor, graph, nearest_neighbor_costs)),
+            ("          tsp bitset", lambda graph: save_cost(tsp_held_karp_bitset, graph, optimal_costs)),
+            ("         tsp hashset", tsp_held_karp_hashset),
+            ("tsp nearest neighbor", lambda graph: save_cost(tsp_nearest_heighbor, graph, nearest_neighbor_costs)),
         ),
         test_inputs=(),
         bench_sizes=(*range(11, 15),),
         bench_input=lambda s: complete(s, el_range=(0, 100)),
     )
-    print('only heuristics')
+    print("only heuristics")
     benchmark(
-        (('tsp nearest neighbor', tsp_nearest_heighbor),),
+        (("tsp nearest neighbor", tsp_nearest_heighbor),),
         test_inputs=(),
         bench_sizes=(20, 50, 100),
         bench_input=lambda s: complete(s, el_range=(0, 100)),
     )
-    heuristic_approximation('nearest neighbors', optimal_costs, nearest_neighbor_costs)
+    heuristic_approximation("nearest neighbors", optimal_costs, nearest_neighbor_costs)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

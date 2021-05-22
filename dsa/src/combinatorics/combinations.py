@@ -4,7 +4,7 @@ from typing import Generator, TypeVar
 from .factorial import factorial_itr
 from .permutations import permutation
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 def combination_pascal(n: int, k: int) -> int:
@@ -13,7 +13,7 @@ def combination_pascal(n: int, k: int) -> int:
 
     > complexity
     - time: `O(min(n**k, n**(n-k)))`
-    - space: `O(n)` 
+    - space: `O(n)`
     - `n`: absolute value of parameter `n`
     - `k`: absolute value of parameter `k`
 
@@ -67,6 +67,7 @@ def combinations_range(items: list[T], k: int) -> Generator[tuple[T, ...], None,
     - `k`: size of combinations
     - `return`: `items` combinations of `k` size
     """
+
     def rec(items: list[T], k: int, combination: list[T], at: int) -> Generator[tuple[T, ...], None, None]:
         if len(items) == 0 or k == 0:
             yield (*combination,)
@@ -94,6 +95,7 @@ def bit_combinations_range(n: int, k: int) -> Generator[int, None, None]:
     - `k`: number of `1` bits
     - `return`: `n` sized bits combinations with `k` bits set
     """
+
     def rec(bits: int, n: int, k: int, at: int) -> Generator[int, None, None]:
         if k == 0:
             yield bits
@@ -120,6 +122,7 @@ def bit_combinations_branch(n: int, k: int) -> Generator[int, None, None]:
     - `k: int`: number of `1` bits
     - `return`: `n` sized bits combinations with `k` bits set
     """
+
     def rec(bits: int, n: int, k: int, at: int) -> Generator[int, None, None]:
         if k == 0 or n == 0:
             yield bits
@@ -145,14 +148,14 @@ def test():
 
     benchmark(
         (
-            ('           count pascal', lambda args: combination_pascal(*args)),
-            ('             count perm', lambda args: combination_perm(*args)),
-            ('           count native', lambda args: math.comb(*args)),
-            ('           combinations', lambda args: [*combinations_range([*range(args[0])], args[1])]),
-            ('    combinations native', lambda args: [*itertools.combinations([*range(args[0])], args[1])]),
-            (' bit combinations range', lambda args: [*bit_combinations_range(*args)]),
-            ('bit combinations branch', lambda args: [*bit_combinations_branch(*args)]),
-            ('bit combinations native', lambda args: [*bit_combinations_native(*args)]),
+            ("           count pascal", lambda args: combination_pascal(*args)),
+            ("             count perm", lambda args: combination_perm(*args)),
+            ("           count native", lambda args: math.comb(*args)),
+            ("           combinations", lambda args: [*combinations_range([*range(args[0])], args[1])]),
+            ("    combinations native", lambda args: [*itertools.combinations([*range(args[0])], args[1])]),
+            (" bit combinations range", lambda args: [*bit_combinations_range(*args)]),
+            ("bit combinations branch", lambda args: [*bit_combinations_branch(*args)]),
+            ("bit combinations native", lambda args: [*bit_combinations_native(*args)]),
         ),
         test_inputs=((5, 2), (0, 0), (2, 0), (2, 1), (4, 3), (6, 2), (6, 5), (8, 6), (6, 3)),
         bench_sizes=(0, 1, *range(2, 21, 2)),
@@ -160,5 +163,5 @@ def test():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

@@ -20,13 +20,13 @@ def mst_prim(graph: Graph[Any, Any]) -> Optional[tuple[float, list[tuple[int, in
     - `return`: tree cost and edges (source, target, length), or `None` if the graph contains more than one component
     """
     if not graph.is_undirected():
-        raise Exception('graph must be undirected')
+        raise Exception("graph must be undirected")
     cost = 0
     edges: list[Edge[Any]] = []
     visited = [False] * graph.vertices_count()
     heap: list[tuple[float, float, Edge[Any]]] = []
     for edge in graph.edges(0) if graph.vertices_count() > 0 else ():
-        heapq.heappush(heap, (edge.length, float('nan'), edge))  # exploit heapq impl with NaN, stopping comparisons
+        heapq.heappush(heap, (edge.length, float("nan"), edge))  # exploit heapq impl with NaN, stopping comparisons
     if graph.vertices_count() > 0:
         visited[0] = True
     while len(heap) > 0 and len(edges) < graph.vertices_count() - 1:
@@ -38,9 +38,12 @@ def mst_prim(graph: Graph[Any, Any]) -> Optional[tuple[float, list[tuple[int, in
         edges.append(edge)
         for edge in graph.edges(edge.target):
             if not visited[edge.target]:
-                heapq.heappush(heap, (edge.length, float('nan'), edge))
-    return (cost, [(edge.source, edge.target, edge.length) for edge in edges]) \
-        if len(edges) == graph.vertices_count() - 1 else None
+                heapq.heappush(heap, (edge.length, float("nan"), edge))
+    return (
+        (cost, [(edge.source, edge.target, edge.length) for edge in edges])
+        if len(edges) == graph.vertices_count() - 1
+        else None
+    )
 
 
 def mst_kruskal(graph: Graph[Any, Any]) -> Optional[tuple[float, list[tuple[int, int, float]]]]:
@@ -58,7 +61,7 @@ def mst_kruskal(graph: Graph[Any, Any]) -> Optional[tuple[float, list[tuple[int,
     - `return`: tree cost and edges (source, target, length), or `None` if the graph contains more than one component
     """
     if not graph.is_undirected():
-        raise Exception('graph must be undirected')
+        raise Exception("graph must be undirected")
     cost = 0
     edges: list[Edge[Any]] = []
     sorted_edges = [*graph.edges()]
@@ -72,8 +75,11 @@ def mst_kruskal(graph: Graph[Any, Any]) -> Optional[tuple[float, list[tuple[int,
         cost += edge.length
         edges.append(edge)
         disjoint_set.union(edge.source, edge.target)
-    return (cost, [(edge.source, edge.target, edge.length) for edge in edges]) \
-        if len(edges) == graph.vertices_count() - 1 else None
+    return (
+        (cost, [(edge.source, edge.target, edge.length) for edge in edges])
+        if len(edges) == graph.vertices_count() - 1
+        else None
+    )
 
 
 def mst_boruvka(graph: Graph[Any, Any]) -> Optional[tuple[float, list[tuple[int, int, float]]]]:
@@ -91,7 +97,7 @@ def mst_boruvka(graph: Graph[Any, Any]) -> Optional[tuple[float, list[tuple[int,
     - `return`: tree cost and edges (source, target, length), or `None` if the graph contains more than one component
     """
     if not graph.is_undirected():
-        raise Exception('graph must be undirected')
+        raise Exception("graph must be undirected")
     cost = 0
     edges: list[Edge[Any]] = []
     disjoint_set = DisjointSet(graph.vertices_count())
@@ -119,18 +125,22 @@ def mst_boruvka(graph: Graph[Any, Any]) -> Optional[tuple[float, list[tuple[int,
             disjoint_set.union(shortest_edge.source, shortest_edge.target)
             found_union = True
         shortest_edges = cast(list[Optional[Edge[Any]]], [None] * graph.vertices_count())
-    return (cost, [(edge.source, edge.target, edge.length) for edge in edges]) \
-        if len(edges) == graph.vertices_count() - 1 else None
+    return (
+        (cost, [(edge.source, edge.target, edge.length) for edge in edges])
+        if len(edges) == graph.vertices_count() - 1
+        else None
+    )
 
 
 def test():
     from ..test import benchmark
     from .factory import complete
+
     benchmark(
         (
-            ('   mst prim', mst_prim),
-            ('mst kruskal', mst_kruskal),
-            ('mst boruvka', mst_boruvka),
+            ("   mst prim", mst_prim),
+            ("mst kruskal", mst_kruskal),
+            ("mst boruvka", mst_boruvka),
         ),
         test_inputs=(*(complete(i, el_range=(0, 100)) for i in (5, 10, 15, 20)),),
         bench_sizes=(0, 1, 10, 100),
@@ -138,5 +148,5 @@ def test():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

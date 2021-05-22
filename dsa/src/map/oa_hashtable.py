@@ -1,8 +1,7 @@
 import dataclasses
 from typing import Any, Callable, Generator, Generic, Literal, Optional, cast
 
-from .abc import (LINEAR_PROBER, QUADRATIC_PRIME_PROBER,
-                  QUADRATIC_TRIANGULAR_PROBER, K, Map, V)
+from .abc import LINEAR_PROBER, QUADRATIC_PRIME_PROBER, QUADRATIC_TRIANGULAR_PROBER, K, Map, V
 
 
 @dataclasses.dataclass
@@ -22,16 +21,20 @@ class OpenAddressingHashtable(Generic[K, V], Map[K, V]):
     - `n`: number of elements in the structure
     """
 
-    def __init__(self, prober_name: Literal['linear', 'prime', 'triangular'] = 'triangular'):
+    def __init__(self, prober_name: Literal["linear", "prime", "triangular"] = "triangular"):
         """
         > parameters
         - `prober_name`: prober name
         """
         super().__init__()
         self._prober_name = prober_name
-        self._prober = LINEAR_PROBER if self._prober_name == 'linear' else \
-            QUADRATIC_PRIME_PROBER if self._prober_name == 'prime' else \
-            QUADRATIC_TRIANGULAR_PROBER
+        self._prober = (
+            LINEAR_PROBER
+            if self._prober_name == "linear"
+            else QUADRATIC_PRIME_PROBER
+            if self._prober_name == "prime"
+            else QUADRATIC_TRIANGULAR_PROBER
+        )
         self._capacity_index: int = 0
         self._capacity = self._prober.capacity(0, self._capacity_index)
         self._length: int = 0
@@ -100,9 +103,14 @@ class OpenAddressingHashtable(Generic[K, V], Map[K, V]):
         for trie in range(self._capacity):
             index = self._prober.probe(self._capacity, hash_, trie)
             entry = self._table[index]
-            if entry is None or \
-                    free and entry.deleted or \
-                    not entry.deleted and entry.hash_ == hash_ and entry.key == key:
+            if (
+                entry is None
+                or free
+                and entry.deleted
+                or not entry.deleted
+                and entry.hash_ == hash_
+                and entry.key == key
+            ):
                 break
         return hash_, index, entry
 
@@ -135,7 +143,7 @@ class OpenAddressingHashtable(Generic[K, V], Map[K, V]):
             self._rebuild(False)
         _, _, entry = self._find(key, False)
         if entry is None:
-            raise KeyError(f'key ({key}) not found')
+            raise KeyError(f"key ({key}) not found")
         value = entry.value
         entry.deleted = True
         del entry.key
@@ -153,7 +161,7 @@ class OpenAddressingHashtable(Generic[K, V], Map[K, V]):
         """
         _, _, entry = self._find(key, False)
         if entry is None:
-            raise KeyError(f'key ({key}) not found')
+            raise KeyError(f"key ({key}) not found")
         return entry.value
 
 
@@ -162,15 +170,21 @@ def test():
 
     from ..test import verify
 
-    for prober_name in ('linear', 'prime', 'triangular'):
+    for prober_name in ("linear", "prime", "triangular"):
         hashtable = OpenAddressingHashtable[int, int](cast(Any, prober_name))
-        verify((
-            *((hashtable.put, (str(i), i * 2), None) for i in random.sample([i for i in range(100)], 100)),
-            (print, (hashtable,)),
-            *((hashtable.take, (str(i),), i * 2) for i in random.sample([i for i in range(100)], 100) if i % 3 == 0),
-            (print, (hashtable,)),
-        ))
+        verify(
+            (
+                *((hashtable.put, (str(i), i * 2), None) for i in random.sample([i for i in range(100)], 100)),
+                (print, (hashtable,)),
+                *(
+                    (hashtable.take, (str(i),), i * 2)
+                    for i in random.sample([i for i in range(100)], 100)
+                    if i % 3 == 0
+                ),
+                (print, (hashtable,)),
+            )
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

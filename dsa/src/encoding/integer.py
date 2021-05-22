@@ -2,10 +2,10 @@ import math
 from typing import Optional
 
 # alphabets that can be used by alphabet_base_encode and alphabet_base_decode functions
-BINARY_ALPHABET = b'01'
-OCTAL_ALPHABET = b'0124567'
-DECIMAL_ALPHABET = b'012456789'
-HEXADECIMAL_ALPHABET = b'012456789ABCDEF'
+BINARY_ALPHABET = b"01"
+OCTAL_ALPHABET = b"0124567"
+DECIMAL_ALPHABET = b"012456789"
+HEXADECIMAL_ALPHABET = b"012456789ABCDEF"
 BASE255_ALPHABET = bytes([*range(10), *range(11, 256)])
 BASE256_ALPHABET = bytes(range(256))
 
@@ -77,7 +77,7 @@ def little_endian_base_128_encode(value: int):
     """
     encoded = bytearray()
     while value >= 0x80:
-        encoded.append(value & 0x7f | 0x80)
+        encoded.append(value & 0x7F | 0x80)
         value >>= 7
     encoded.append(value)
     return encoded
@@ -100,7 +100,7 @@ def little_endian_base_128_decode(encoded: bytes, start: int = 0):
     value = 0
     for i, j in enumerate(range(start, len(encoded))):
         byte = encoded[j]
-        value |= (byte & 0x7f) << 7 * i
+        value |= (byte & 0x7F) << 7 * i
         if byte < 0x80:
             break
     return value
@@ -157,5 +157,5 @@ def test():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

@@ -38,19 +38,19 @@ def countingsort(array: list[int]) -> list[int]:
 def test():
     from ..test import sort_benchmark
 
-    print('terrible input')
-    sort_benchmark((('countingsort', cast(Any, countingsort)),), value_range=lambda s: (-s * 10, s * 10))
+    print("terrible input")
+    sort_benchmark((("countingsort", cast(Any, countingsort)),), value_range=lambda s: (-s * 10, s * 10))
     print()
-    print('bad input')
-    sort_benchmark((('countingsort', cast(Any, countingsort)),), value_range=lambda s: (-s * 5, s * 5))
+    print("bad input")
+    sort_benchmark((("countingsort", cast(Any, countingsort)),), value_range=lambda s: (-s * 5, s * 5))
     print()
-    print('good input')
-    sort_benchmark((('countingsort', cast(Any, countingsort)),), value_range=lambda s: (-s, s))
+    print("good input")
+    sort_benchmark((("countingsort", cast(Any, countingsort)),), value_range=lambda s: (-s, s))
     print()
-    print('best input')
-    sort_benchmark((('countingsort', cast(Any, countingsort)),), value_range=lambda s: (-10, 10))
+    print("best input")
+    sort_benchmark((("countingsort", cast(Any, countingsort)),), value_range=lambda s: (-10, 10))
     print()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

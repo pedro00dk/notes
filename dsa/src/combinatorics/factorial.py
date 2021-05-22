@@ -54,7 +54,7 @@ def factorial_stirling(n: float) -> float:
     - `n`: value to compute factorial, floats are supported
     - `return`: factorial approximation of `n`
     """
-    return (2 * math.pi * n)**(0.5) * (n / math.e)**n
+    return (2 * math.pi * n) ** (0.5) * (n / math.e) ** n
 
 
 def factorial_ramanujan(n: float):
@@ -69,7 +69,7 @@ def factorial_ramanujan(n: float):
     - `n`: value to compute factorial, floats are supported
     - `return`: factorial approximation of `n`
     """
-    return math.pi**0.5 * (1 / 30 + n * (1 + n * (4 + n * 8)))**(1 / 6) * (n / math.e)**n
+    return math.pi ** 0.5 * (1 / 30 + n * (1 + n * (4 + n * 8))) ** (1 / 6) * (n / math.e) ** n
 
 
 def test():
@@ -77,11 +77,11 @@ def test():
 
     benchmark(
         (
-            ('factorial recursive', factorial_rec),
-            ('factorial iterative', factorial_itr),
-            (' factorial stirling', factorial_stirling),
-            ('factorial ramanujan', factorial_ramanujan),
-            ('   factorial native', math.factorial),
+            ("factorial recursive", factorial_rec),
+            ("factorial iterative", factorial_itr),
+            (" factorial stirling", factorial_stirling),
+            ("factorial ramanujan", factorial_ramanujan),
+            ("   factorial native", math.factorial),
         ),
         test_inputs=(0, 1, *range(2, 11, 2)),
         bench_sizes=(*range(0, 101, 10),),
@@ -90,5 +90,5 @@ def test():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

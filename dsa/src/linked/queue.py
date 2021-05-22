@@ -73,7 +73,7 @@ class Queue(Generic[T], Linked[T]):
         - `return`: deleted value
         """
         if self._head is None:
-            raise IndexError('empty queue')
+            raise IndexError("empty queue")
         value = self._head.value
         self._head = self._head.next
         if self._head is None:
@@ -92,7 +92,7 @@ class Queue(Generic[T], Linked[T]):
         - `return`: value at the begginging of the queue
         """
         if self._head is None:
-            raise IndexError('empty queue')
+            raise IndexError("empty queue")
         return self._head.value
 
 
@@ -102,26 +102,28 @@ def test():
     from ..test import benchmark, verify
 
     queue = Queue[int]()
-    verify((
-        (queue.offer, (0,)),
-        (queue.offer, (1,)),
-        (queue.offer, (2,)),
-        (queue.offer, (3,)),
-        (queue.offer, (4,)),
-        (queue.offer, (5,)),
-        (print, (queue,)),
-        (queue.poll, (), 0),
-        (queue.poll, (), 1),
-        (queue.peek, (), 2),
-        (print, (queue,)),
-        (queue.poll, (), 2),
-        (queue.poll, (), 3),
-        (queue.peek, (), 4),
-        (print, (queue,)),
-        (queue.poll, (), 4),
-        (queue.poll, (), 5),
-        (print, (queue,)),
-    ))
+    verify(
+        (
+            (queue.offer, (0,)),
+            (queue.offer, (1,)),
+            (queue.offer, (2,)),
+            (queue.offer, (3,)),
+            (queue.offer, (4,)),
+            (queue.offer, (5,)),
+            (print, (queue,)),
+            (queue.poll, (), 0),
+            (queue.poll, (), 1),
+            (queue.peek, (), 2),
+            (print, (queue,)),
+            (queue.poll, (), 2),
+            (queue.poll, (), 3),
+            (queue.peek, (), 4),
+            (print, (queue,)),
+            (queue.poll, (), 4),
+            (queue.poll, (), 5),
+            (print, (queue,)),
+        )
+    )
 
     def test_queue(count: int):
         queue = Queue[int]()
@@ -146,9 +148,9 @@ def test():
 
     benchmark(
         (
-            ('       queue', test_queue),
-            (' native list', test_native_list),
-            ('native deque', test_native_deque),
+            ("       queue", test_queue),
+            (" native list", test_native_list),
+            ("native deque", test_native_deque),
         ),
         test_inputs=(),
         bench_sizes=(0, 1, 10, 100, 1000, 10000, 100000),
@@ -156,5 +158,5 @@ def test():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

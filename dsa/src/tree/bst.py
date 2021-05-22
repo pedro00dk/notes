@@ -14,6 +14,7 @@ class Node(Generic[K, V]):
     """
     Base Node class for trees.
     """
+
     key: K
     value: V
     left: Optional[Node[K, V]] = None
@@ -35,8 +36,8 @@ class BST(Generic[K, V], Tree[K, V]):
         self._size: int = 0
 
     def __str__(self) -> str:
-        nodes = '\n'.join(f'{"|  " * depth}├─ {key}: {value}' for key, value, depth in self.traverse('pre'))
-        return f'{type(self).__name__} [\n{nodes}\n]'
+        nodes = "\n".join(f'{"|  " * depth}├─ {key}: {value}' for key, value, depth in self.traverse("pre"))
+        return f"{type(self).__name__} [\n{nodes}\n]"
 
     def __len__(self) -> int:
         return self._size
@@ -86,7 +87,7 @@ class BST(Generic[K, V], Tree[K, V]):
             if node.right is not None:
                 queue.append((node.right, depth + 1))
 
-    def traverse(self, mode: Literal['pre', 'in', 'post', 'breadth'] = 'in') -> Generator[tuple[K, V, int], None, None]:
+    def traverse(self, mode: Literal["pre", "in", "post", "breadth"] = "in") -> Generator[tuple[K, V, int], None, None]:
         """
         Return a generator for tree keys, values and depth of nodes in the provided `mode`.
 
@@ -99,10 +100,15 @@ class BST(Generic[K, V], Tree[K, V]):
         - `mode`: traversal mode
         - `return`: generator of key, values and depths
         """
-        return self._pre(self._root) if mode == 'pre' else \
-            self._in(self._root) if mode == 'in' else \
-            self._post(self._root) if mode == 'post' else \
-            self._breadth(self._root)
+        return (
+            self._pre(self._root)
+            if mode == "pre"
+            else self._in(self._root)
+            if mode == "in"
+            else self._post(self._root)
+            if mode == "post"
+            else self._breadth(self._root)
+        )
 
     def put(self, key: K, value: V, replacer: Optional[Callable[[V, V], V]] = None) -> Optional[V]:
         """
@@ -148,7 +154,7 @@ class BST(Generic[K, V], Tree[K, V]):
             parent = node
             node = node.left if key < node.key else node.right
         if node is None:
-            raise KeyError(f'key ({key}) not found')
+            raise KeyError(f"key ({key}) not found")
         if node.left is not None and node.right is not None:
             parent = node
             successor = node.right
@@ -179,7 +185,7 @@ class BST(Generic[K, V], Tree[K, V]):
         while node is not None and key != node.key:
             node = node.left if key < node.key else node.right
         if node is None:
-            raise KeyError(f'key ({key}) not found')
+            raise KeyError(f"key ({key}) not found")
         return node.value
 
     def minimum(self) -> Optional[tuple[K, V]]:
@@ -264,40 +270,42 @@ def test():
 
     tree = BST[int, Optional[int]]()
 
-    verify((
-        (tree.put, (-15, -1000)),
-        (tree.put, (-10, None)),
-        (tree.put, (-5, None)),
-        (tree.put, (0, None)),
-        (tree.put, (5, 1000)),
-        (tree.put, (10, None)),
-        (tree.put, (15, None)),
-        (tree.get, (5,), 1000),
-        (tree.get, (-15,), -1000),
-        (print, (tree,)),
-        (tree.take, (0,)),
-        (tree.take, (-10,)),
-        (tree.take, (-15,), -1000),
-        (print, (tree,)),
-    ))
-    print('test print functions from abstract base classes')
-    print('self:\n', tree)
-    print('tree:\n', cast(Any, Tree).__str__(tree))
-    print('map:\n', cast(Any, Map).__str__(tree))
-    print('priority queue:\n', cast(Any, Priority).__str__(tree))
-    for key, *_ in tree.traverse('pre'):
-        print(key, end=' ')
+    verify(
+        (
+            (tree.put, (-15, -1000)),
+            (tree.put, (-10, None)),
+            (tree.put, (-5, None)),
+            (tree.put, (0, None)),
+            (tree.put, (5, 1000)),
+            (tree.put, (10, None)),
+            (tree.put, (15, None)),
+            (tree.get, (5,), 1000),
+            (tree.get, (-15,), -1000),
+            (print, (tree,)),
+            (tree.take, (0,)),
+            (tree.take, (-10,)),
+            (tree.take, (-15,), -1000),
+            (print, (tree,)),
+        )
+    )
+    print("test print functions from abstract base classes")
+    print("self:\n", tree)
+    print("tree:\n", cast(Any, Tree).__str__(tree))
+    print("map:\n", cast(Any, Map).__str__(tree))
+    print("priority queue:\n", cast(Any, Priority).__str__(tree))
+    for key, *_ in tree.traverse("pre"):
+        print(key, end=" ")
     print()
-    for key, *_ in tree.traverse('in'):
-        print(key, end=' ')
+    for key, *_ in tree.traverse("in"):
+        print(key, end=" ")
     print()
-    for key, *_ in tree.traverse('post'):
-        print(key, end=' ')
+    for key, *_ in tree.traverse("post"):
+        print(key, end=" ")
     print()
-    for key, *_ in tree.traverse('breadth'):
-        print(key, end=' ')
+    for key, *_ in tree.traverse("breadth"):
+        print(key, end=" ")
     print()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

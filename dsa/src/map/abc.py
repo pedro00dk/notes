@@ -2,8 +2,8 @@ import abc
 import dataclasses
 from typing import Callable, Generator, Generic, Optional, TypeVar
 
-K = TypeVar('K')
-V = TypeVar('V')
+K = TypeVar("K")
+V = TypeVar("V")
 
 
 class Map(Generic[K, V], abc.ABC):
@@ -12,13 +12,14 @@ class Map(Generic[K, V], abc.ABC):
     """
 
     def __str__(self) -> str:
-        lines = '\n'.join(f'k: {key}, v: {value}' for key, value in self)
-        return f'{type(self).__name__} [\n{lines}\n]'
+        lines = "\n".join(f"k: {key}, v: {value}" for key, value in self)
+        return f"{type(self).__name__} [\n{lines}\n]"
 
-    @ abc.abstractmethod
-    def __len__(self) -> int: ...
+    @abc.abstractmethod
+    def __len__(self) -> int:
+        ...
 
-    @ abc.abstractmethod
+    @abc.abstractmethod
     def __iter__(self) -> Generator[tuple[K, V], None, None]:
         """
         Return a generator of entries (key and value tuples) contained in the map structure.
@@ -76,7 +77,7 @@ class Map(Generic[K, V], abc.ABC):
         """
         return (value for _, value in self)
 
-    @ abc.abstractmethod
+    @abc.abstractmethod
     def put(self, key: K, value: V, replacer: Optional[Callable[[V, V], V]] = None) -> Optional[V]:
         """
         Insert a new entry containing `key` and `value` in the map.
@@ -93,7 +94,7 @@ class Map(Generic[K, V], abc.ABC):
         - `return`: `None` if it is a new key, otherwise the previous value associated with `key`
         """
 
-    @ abc.abstractmethod
+    @abc.abstractmethod
     def take(self, key: K) -> V:
         """
         Remove from the entry containing `key` from the map and return its value.
@@ -109,7 +110,7 @@ class Map(Generic[K, V], abc.ABC):
         - `return`: value associated with `key`
         """
 
-    @ abc.abstractmethod
+    @abc.abstractmethod
     def get(self, key: K) -> V:
         """
         Retrieve the value associated with `key`.
@@ -152,6 +153,7 @@ class Prober:
     - `capacity`: a function to generate capacities for rebuilds, the first capacity and index must be 0
     - `probe`: is a function that creates indices from a hash and number of tries to place entries in the hashtable
     """
+
     load: float
     capacity: Callable[[int, int], int]
     probe: Callable[[int, int, int], int]
@@ -159,11 +161,38 @@ class Prober:
 
 # prime numbers near to the 2**powers for power range of [1, 32]
 PRIMES = (
-    2, 3, 7, 17, 31, 67, 131, 257, 509, 1021, 2053, 4093, 8191, 16381, 32771, 65537, 131071, 262147, 524287, 1048573,
-    2097143, 4194301, 8388617, 16777213, 33554467, 67108859, 134217757, 268435459, 536870909, 1073741827, 2147483647,
-    4294967291
-
-
+    2,
+    3,
+    7,
+    17,
+    31,
+    67,
+    131,
+    257,
+    509,
+    1021,
+    2053,
+    4093,
+    8191,
+    16381,
+    32771,
+    65537,
+    131071,
+    262147,
+    524287,
+    1048573,
+    2097143,
+    4194301,
+    8388617,
+    16777213,
+    33554467,
+    67108859,
+    134217757,
+    268435459,
+    536870909,
+    1073741827,
+    2147483647,
+    4294967291,
 )
 
 # Linear probing using prime size capacities.
@@ -182,7 +211,7 @@ LINEAR_PROBER = Prober(
 QUADRATIC_PRIME_PROBER = Prober(
     0.5,
     lambda capacity, index: PRIMES[index + 3] if index + 3 < len(PRIMES) else capacity * 2 - 1,
-    lambda capacity, hash_, trie: (hash_ + trie**2 + trie) % capacity,
+    lambda capacity, hash_, trie: (hash_ + trie ** 2 + trie) % capacity,
 )
 # lambda capacity, hash_, trie: (hash_ + trie**2) % capacity,
 # lambda capacity, hash_, trie: (hash_ + (trie * 0.5)**2 + (trie * 0.5)) % capacity
@@ -192,6 +221,6 @@ QUADRATIC_PRIME_PROBER = Prober(
 # However, because of the even capacity, it may increase collisions among keys even and odd keys independently.
 QUADRATIC_TRIANGULAR_PROBER = Prober(
     0.75,
-    lambda capacity, index: 2**(index + 3),
-    lambda capacity, hash_, trie: (hash_ + (trie**2 + trie) // 2) % capacity,
+    lambda capacity, index: 2 ** (index + 3),
+    lambda capacity, hash_, trie: (hash_ + (trie ** 2 + trie) // 2) % capacity,
 )

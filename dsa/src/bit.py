@@ -29,7 +29,7 @@ class BIT:
                 self._tree[parent] += self._tree[index]
 
     def __str__(self) -> str:
-        return f'BIT {self._tree}'
+        return f"BIT {self._tree}"
 
     def __len__(self) -> int:
         return len(self._tree) - 1
@@ -126,25 +126,27 @@ def test():
     from .test import verify
 
     bit = BIT([3, 4, -2, 7, 3, 11, 5, -8, -9, 2, 4, -8])
-    verify((
-        (print, (bit,)),
-        (bit.sum_range, (0, 1), 7),
-        (bit.sum_range, (0, 2), 5),
-        (bit.sum_range, (5, 7), 8),
-        (bit.sum_range, (8, 10), -3),
-        (bit.sum_range, (11, 11), -8),
-        (print, (bit,)),
-        (bit.add, (0, 10)),
-        (bit.set, (5, -10)),
-        (bit.add, (10, 10)),
-        (print, (bit,)),
-        (bit.sum_range, (0, 1), 17),
-        (bit.sum_range, (0, 2), 15),
-        (bit.sum_range, (5, 7), -13),
-        (bit.sum_range, (8, 10), 7),
-        (bit.sum_range, (11, 11), -8),
-    ))
+    verify(
+        (
+            (print, (bit,)),
+            (bit.sum_range, (0, 1), 7),
+            (bit.sum_range, (0, 2), 5),
+            (bit.sum_range, (5, 7), 8),
+            (bit.sum_range, (8, 10), -3),
+            (bit.sum_range, (11, 11), -8),
+            (print, (bit,)),
+            (bit.add, (0, 10)),
+            (bit.set, (5, -10)),
+            (bit.add, (10, 10)),
+            (print, (bit,)),
+            (bit.sum_range, (0, 1), 17),
+            (bit.sum_range, (0, 2), 15),
+            (bit.sum_range, (5, 7), -13),
+            (bit.sum_range, (8, 10), 7),
+            (bit.sum_range, (11, 11), -8),
+        )
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

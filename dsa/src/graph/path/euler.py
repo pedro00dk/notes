@@ -22,9 +22,9 @@ def euler_undirected_fleury(graph: Graph[Any, Any]) -> Optional[tuple[bool, Opti
     - `return`: if path is a cycle and the vertices, or `None` if graph does not have a path
     """
     if graph.vertices_count() == 0:
-        raise Exception('graph must contain at least 1 vertex')
+        raise Exception("graph must contain at least 1 vertex")
     if not graph.is_undirected():
-        raise Exception('graph must be undirected')
+        raise Exception("graph must be undirected")
     remaining_edges = [graph.edges_count(v) for v in range(graph.vertices_count())]
     odd_vertices = [v for v, edges in enumerate(remaining_edges) if edges % 2 != 0]
     if len(odd_vertices) > 2:
@@ -83,9 +83,9 @@ def euler_undirected_hierholzer(
     - `return`: if path is a cycle and the vertices, or `None` if graph does not have a path
     """
     if graph.vertices_count() == 0:
-        raise Exception('graph must contain at least 1 vertex')
+        raise Exception("graph must contain at least 1 vertex")
     if not graph.is_undirected():
-        raise Exception('graph must be undirected')
+        raise Exception("graph must be undirected")
     remaining_edges = [graph.edges_count(v) for v in range(graph.vertices_count())]
     odd_vertices = [v for v, edges in enumerate(remaining_edges) if edges % 2 != 0]
     if len(odd_vertices) > 2:
@@ -93,6 +93,7 @@ def euler_undirected_hierholzer(
     start = odd_vertices[0] if len(odd_vertices) > 0 else 0
     path = collections.deque[int]()
     if recursive:
+
         def dfs(v: int):
             while remaining_edges[v] > 0:
                 e = remaining_edges[v] = remaining_edges[v] - 1
@@ -103,6 +104,7 @@ def euler_undirected_hierholzer(
                 edge.data = cast(Edge[Any], edge.opposite).data = True
                 dfs(edge.target)
             path.appendleft(v)
+
         dfs(start)
     else:
         stack = [start]
@@ -144,9 +146,9 @@ def euler_directed_hierholzer(
     - `return`: if path is a cycle and the vertices, or `None` if graph does not have a path
     """
     if graph.vertices_count() == 0:
-        raise Exception('graph must contain at least 1 vertex')
+        raise Exception("graph must contain at least 1 vertex")
     if not graph.is_directed():
-        raise Exception('graph must be directed')
+        raise Exception("graph must be directed")
     incoming_edges = [0] * graph.vertices_count()
     outcoming_edges = [0] * graph.vertices_count()
     for edge in graph.edges():
@@ -166,6 +168,7 @@ def euler_directed_hierholzer(
     start = start_vertices[0] if len(start_vertices) > 0 else 0
     path = collections.deque[int]()
     if recursive:
+
         def dfs(v: int):
             while outcoming_edges[v] > 0:
                 e = outcoming_edges[v] = outcoming_edges[v] - 1
@@ -173,6 +176,7 @@ def euler_directed_hierholzer(
                 edge = graph._edges[v][e]  # type: ignore
                 dfs(edge.target)
             path.appendleft(v)
+
         dfs(start)
     else:
         stack = [start]
@@ -196,23 +200,23 @@ def test():
     from ..factory import random_directed_paired, random_undirected_paired
 
     sys.setrecursionlimit(10000)
-    print('undirected graphs')
+    print("undirected graphs")
     benchmark(
         (
-            ('              undirected fleury', lambda graph: euler_undirected_fleury(graph)),
-            ('undirected hierholzer recursive', lambda graph: euler_undirected_hierholzer(graph, True)),
-            ('undirected hierholzer iterative', lambda graph: euler_undirected_hierholzer(graph, False)),
+            ("              undirected fleury", lambda graph: euler_undirected_fleury(graph)),
+            ("undirected hierholzer recursive", lambda graph: euler_undirected_hierholzer(graph, True)),
+            ("undirected hierholzer iterative", lambda graph: euler_undirected_hierholzer(graph, False)),
         ),
         test_inputs=(*(random_undirected_paired(i) for i in (5, 10, 15, 20)),),
         bench_sizes=(1, 10, 100),
         bench_input=lambda s: random_undirected_paired(s),
         preprocess_input=Graph[Any, Any].copy,
     )
-    print('directed graphs')
+    print("directed graphs")
     benchmark(
         (
-            ('directed hierholzer recursive', lambda graph: euler_directed_hierholzer(graph, True)),
-            ('directed hierholzer iterative', lambda graph: euler_directed_hierholzer(graph, False)),
+            ("directed hierholzer recursive", lambda graph: euler_directed_hierholzer(graph, True)),
+            ("directed hierholzer iterative", lambda graph: euler_directed_hierholzer(graph, False)),
         ),
         test_inputs=(*(random_undirected_paired(i) for i in (5, 10, 15, 20)),),
         bench_sizes=(1, 10, 100),
@@ -220,5 +224,5 @@ def test():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

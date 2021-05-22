@@ -11,6 +11,7 @@ def mergesort(array: list[float]) -> list[float]:
     - `array`: array to be sorted
     - `return`: `array` sorted
     """
+
     def rec(array: list[float], left: int, right: int, temp: list[float]):
         center = (left + right) // 2
         if right - left + 1 > 2:
@@ -45,8 +46,8 @@ def mergesort(array: list[float]) -> list[float]:
 def test():
     from ..test import sort_benchmark
 
-    sort_benchmark((('mergesort', mergesort),))
+    sort_benchmark((("mergesort", mergesort),))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

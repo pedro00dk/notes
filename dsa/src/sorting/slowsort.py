@@ -12,6 +12,7 @@ def slowsort(array: list[float]) -> list[float]:
     - `array`: array to be sorted
     - `return`: `array` sorted
     """
+
     def rec(array: list[float], first: int, last: int):
         if first >= last:
             return
@@ -31,8 +32,8 @@ def slowsort(array: list[float]) -> list[float]:
 def test():
     from ..test import sort_benchmark
 
-    sort_benchmark((('slowsort', slowsort),), bench_sizes=(0, 1, 10, 100, 1000))
+    sort_benchmark((("slowsort", slowsort),), bench_sizes=(0, 1, 10, 100, 1000))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

@@ -14,6 +14,7 @@ class AVLNode(Generic[K, V]):
     """
     Node with extra `height` property.
     """
+
     key: K
     value: V
     left: Optional[AVLNode[K, V]] = None
@@ -48,6 +49,7 @@ class AVL(Generic[K, V], BST[K, V]):
         - space: `O(log(n))`
         - `n`: size of the tree
         """
+
         def rec(key: K, value: V, node: Optional[AVLNode[K, V]]) -> tuple[AVLNode[K, V], Optional[V]]:
             if node is None:
                 node = AVLNode(key, value)
@@ -76,21 +78,22 @@ class AVL(Generic[K, V], BST[K, V]):
         - time: `O(log(n))`
         - space: `O(log(n))`
         """
+
         def rec(key: K, node: Optional[AVLNode[K, V]]) -> tuple[Optional[AVLNode[K, V]], V]:
             if node is None:
-                raise KeyError(f'key ({key}) not found')
+                raise KeyError(f"key ({key}) not found")
             if key < node.key:
                 node.left, value = rec(key, node.left)
-                node.height = max(
+                node.height = 1 + max(
                     node.left.height if node.left is not None else 0,
                     node.right.height if node.right is not None else 0,
-                ) + 1
+                )
             elif key > node.key:
                 node.right, value = rec(key, node.right)
-                node.height = max(
+                node.height = 1 + max(
                     node.left.height if node.left is not None else 0,
                     node.right.height if node.right is not None else 0,
-                ) + 1
+                )
             elif node.left is not None and node.right is not None:
                 successor = node.right
                 while successor.left is not None:
@@ -173,11 +176,14 @@ class AVL(Generic[K, V], BST[K, V]):
         child = cast(AVLNode[K, V], node.right)
         node.right = child.left
         child.left = node
-        node.height = max(
+        node.height = 1 + max(
             node.left.height if node.left is not None else 0,
             node.right.height if node.right is not None else 0,
-        ) + 1
-        child.height = max(node.height, child.right.height if child.right is not None else 0) + 1
+        )
+        child.height = 1 + max(
+            node.height,
+            child.right.height if child.right is not None else 0,
+        )
         return child
 
     def _rotate_right(self, node: AVLNode[K, V]):
@@ -209,11 +215,14 @@ class AVL(Generic[K, V], BST[K, V]):
         child = cast(AVLNode[K, V], node.left)
         node.left = child.right
         child.right = node
-        node.height = max(
+        node.height = 1 + max(
             node.left.height if node.left is not None else 0,
             node.right.height if node.right is not None else 0,
-        ) + 1
-        child.height = max(node.height, child.left.height if child.left is not None else 0) + 1
+        )
+        child.height = 1 + max(
+            node.height,
+            child.left.height if child.left is not None else 0,
+        )
         return child
 
 
@@ -221,39 +230,41 @@ def test():
     from ..test import verify
 
     tree = AVL[int, Optional[int]]()
-    verify((
-        (tree.put, (-15, -1000)),
-        (tree.put, (-10, None)),
-        (tree.put, (-5, None)),
-        (tree.put, (0, None)),
-        (tree.put, (5, 1000)),
-        (tree.put, (10, None)),
-        (tree.put, (15, None)),
-        (tree.get, (5,), 1000),
-        (tree.get, (-15,), -1000),
-        (print, (tree,)),
-        (tree.take, (0,)),
-        (tree.take, (-10,)),
-        (tree.take, (-15,), -1000),
-        (print, (tree,)),
-    ))
-    print('test print functions from abstract base classes')
-    print('self:\n', tree)
-    print('tree:\n', cast(Any, Tree).__str__(tree))
-    print('map:\n', cast(Any, Map).__str__(tree))
-    print('priority queue:\n', cast(Any, Priority).__str__(tree))
-    for key, *_ in tree.traverse('pre'):
-        print(key, end=' ')
+    verify(
+        (
+            (tree.put, (-15, -1000)),
+            (tree.put, (-10, None)),
+            (tree.put, (-5, None)),
+            (tree.put, (0, None)),
+            (tree.put, (5, 1000)),
+            (tree.put, (10, None)),
+            (tree.put, (15, None)),
+            (tree.get, (5,), 1000),
+            (tree.get, (-15,), -1000),
+            (print, (tree,)),
+            (tree.take, (0,)),
+            (tree.take, (-10,)),
+            (tree.take, (-15,), -1000),
+            (print, (tree,)),
+        )
+    )
+    print("test print functions from abstract base classes")
+    print("self:\n", tree)
+    print("tree:\n", cast(Any, Tree).__str__(tree))
+    print("map:\n", cast(Any, Map).__str__(tree))
+    print("priority queue:\n", cast(Any, Priority).__str__(tree))
+    for key, *_ in tree.traverse("pre"):
+        print(key, end=" ")
     print()
-    for key, *_ in tree.traverse('in'):
-        print(key, end=' ')
+    for key, *_ in tree.traverse("in"):
+        print(key, end=" ")
     print()
-    for key, *_ in tree.traverse('post'):
-        print(key, end=' ')
+    for key, *_ in tree.traverse("post"):
+        print(key, end=" ")
     print()
-    for key, *_ in tree.traverse('breadth'):
-        print(key, end=' ')
+    for key, *_ in tree.traverse("breadth"):
+        print(key, end=" ")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

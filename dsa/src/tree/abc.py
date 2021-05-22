@@ -6,14 +6,21 @@ from ..priority.abc import Priority
 
 
 class Comparable(Protocol):
-    def __lt__(self, _other: Any) -> bool: ...
-    def __le__(self, _other: Any) -> bool: ...
-    def __gt__(self, _other: Any) -> bool: ...
-    def __ge__(self, _other: Any) -> bool: ...
+    def __lt__(self, _other: Any) -> bool:
+        ...
+
+    def __le__(self, _other: Any) -> bool:
+        ...
+
+    def __gt__(self, _other: Any) -> bool:
+        ...
+
+    def __ge__(self, _other: Any) -> bool:
+        ...
 
 
-K = TypeVar('K', bound=Comparable)
-V = TypeVar('V')
+K = TypeVar("K", bound=Comparable)
+V = TypeVar("V")
 
 
 class Tree(Generic[K, V], Map[K, V], Priority[K]):
@@ -107,7 +114,7 @@ class Tree(Generic[K, V], Map[K, V], Priority[K]):
         """
         minimum = self.minimum()
         if minimum is None:
-            raise IndexError('empty heap')
+            raise IndexError("empty heap")
         self.take(minimum[0])
         return minimum[0]
 
@@ -122,5 +129,5 @@ class Tree(Generic[K, V], Map[K, V], Priority[K]):
         """
         minimum = self.minimum()
         if minimum is None:
-            raise IndexError('empty heap')
+            raise IndexError("empty heap")
         return minimum[0]

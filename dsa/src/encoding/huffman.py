@@ -53,6 +53,7 @@ def huffman_tree_to_code(tree: HuffmanTree) -> HuffmanCode:
     - `tree`: the huffman tree
     - `return`: a huffman code
     """
+
     def build_code(node: HuffmanTree, size: int, value: int, code: HuffmanCode) -> HuffmanCode:
         if node.byte != -1:
             code[node.byte] = size, value
@@ -147,8 +148,11 @@ def deserialize_huffman_code(serialized: bytes) -> HuffmanCode:
     """
     length = serialized[0] + 1  # +1 to map 0-255 to 1-256 alphabet size
     serialized = memoryview(serialized)[1:]
-    partial_code: HuffmanCode = {serialized[i * 2]: (serialized[i * 2 + 1], 0) for i in range(length)} if length < 128 \
+    partial_code: HuffmanCode = (
+        {serialized[i * 2]: (serialized[i * 2 + 1], 0) for i in range(length)}
+        if length < 128
         else {i: (serialized[i], 0) for i in range(256) if serialized[i] != 0}
+    )
     return canonized_huffman_code(partial_code)
 
 
@@ -169,7 +173,7 @@ def huffman_encode(data: bytes) -> bytearray:
         return bytearray()
     code = canonized_huffman_code(huffman_tree_to_code(huffman_tree(data)))
     encoded = serialize_huffman_code(code)
-    encoded.extend(len(data).to_bytes(4, 'little'))
+    encoded.extend(len(data).to_bytes(4, "little"))
     cache = 0
     shift = 0
     for byte in data:
@@ -204,8 +208,8 @@ def huffman_decode(encoded: bytes) -> bytearray:
         return bytearray()
     code = deserialize_huffman_code(encoded)
     tree = huffman_code_to_tree(code)
-    encoded = memoryview(encoded)[len(code) * 2 + 1 if len(code) < 128 else 257:]  # skipping serialized code part
-    length = int.from_bytes(encoded[:4], 'little')
+    encoded = memoryview(encoded)[len(code) * 2 + 1 if len(code) < 128 else 257 :]  # skipping serialized code part
+    length = int.from_bytes(encoded[:4], "little")
     decoded = bytearray()
     cursor = tree
     for byte in encoded[4:]:
@@ -218,7 +222,7 @@ def huffman_decode(encoded: bytes) -> bytearray:
     if len(decoded) < length:
         decoded.extend([[*code.keys()][0]] * (length - len(decoded)))
     if len(decoded) > length:
-        decoded[length:] = b''
+        decoded[length:] = b""
     return decoded
 
 
@@ -230,12 +234,14 @@ def test():
         decoded = huffman_decode(encoded)
         return decoded, encoded
 
-    verify((
-        (test_huffman, (b'man',)),
-        (test_huffman, (b'hello world!',)),
-        (test_huffman, (b'pedro',)),
-    ))
+    verify(
+        (
+            (test_huffman, (b"man",)),
+            (test_huffman, (b"hello world!",)),
+            (test_huffman, (b"pedro",)),
+        )
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

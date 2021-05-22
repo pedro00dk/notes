@@ -19,7 +19,7 @@ def topsort_khan(graph: Graph[Any, Any]) -> list[int]:
     - `return`: topological order
     """
     if not graph.is_directed():
-        raise Exception('graph must be directed')
+        raise Exception("graph must be directed")
     incoming_edges = [0] * graph.vertices_count()
     total_edges = 0
     for edge in graph.edges():
@@ -39,7 +39,7 @@ def topsort_khan(graph: Graph[Any, Any]) -> list[int]:
             if incoming_edges[edge.target] == 0:
                 root_vertices.append(edge.target)
     if total_edges > 0:
-        raise Exception('graph must be acyclic')
+        raise Exception("graph must be acyclic")
     return order
 
 
@@ -58,13 +58,13 @@ def topsort_dfs(graph: Graph[Any, Any]) -> list[int]:
     - `return`: topological order
     """
     if not graph.is_directed():
-        raise Exception('graph must be directed')
+        raise Exception("graph must be directed")
     visited = [0] * graph.vertices_count()  # 0: unvisited, 1: visited, 2: all children visited
     order: list[int] = []
 
     def dfs(v: int):
         if visited[v] == 1:  # visited
-            raise Exception('graph must be acyclic')
+            raise Exception("graph must be acyclic")
         visited[v] = 1
         for edge in graph.edges(v):
             if visited[edge.target] != 2:  # not all children visited
@@ -81,15 +81,15 @@ def topsort_dfs(graph: Graph[Any, Any]) -> list[int]:
 
 def test():
     from ..test import benchmark
-    from .connectivity import (strong_connected_kosaraju,
-                               strong_connected_tarjan)
+    from .connectivity import strong_connected_kosaraju, strong_connected_tarjan
     from .factory import random_dag
+
     benchmark(
         (
-            ('    topological sort khan', lambda graph: topsort_khan(graph)),
-            ('     topological sort dfs', topsort_dfs),
-            ('  topological sort tarjan', lambda graph: [*reversed([v for v, in strong_connected_tarjan(graph)])]),
-            ('topological sort kosaraju', lambda graph: [v for v, in strong_connected_kosaraju(graph)]),
+            ("    topological sort khan", lambda graph: topsort_khan(graph)),
+            ("     topological sort dfs", topsort_dfs),
+            ("  topological sort tarjan", lambda graph: [*reversed([v for v, in strong_connected_tarjan(graph)])]),
+            ("topological sort kosaraju", lambda graph: [v for v, in strong_connected_kosaraju(graph)]),
         ),
         test_inputs=(*(random_dag() for _ in range(5)),),
         bench_sizes=(0, 1, 10, 100),
@@ -98,5 +98,5 @@ def test():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

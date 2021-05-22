@@ -1,6 +1,6 @@
 from typing import Generator, Optional, TypeVar
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 def permutation(n: int, k: Optional[int] = None) -> int:
@@ -57,7 +57,7 @@ def permutations_cycle(items: list[T], k: Optional[int] = None) -> Generator[tup
         for i in range(k - 1, -1, -1):
             cycles[i] += 1
             if cycles[i] == n:
-                indices[i:] = indices[i + 1:] + indices[i:i + 1]
+                indices[i:] = indices[i + 1 :] + indices[i : i + 1]
                 cycles[i] = i
                 if i > 0:
                     continue
@@ -81,6 +81,7 @@ def permutations_heap(items: list[T]) -> Generator[tuple[T, ...], None, None]:
     - `items`: items to generate the permutations
     - `return`: `items` permutations
     """
+
     def rec(items: list[T], k: int) -> Generator[tuple[T, ...], None, None]:
         if k == 1:
             yield (*items,)
@@ -105,11 +106,11 @@ def test():
 
     benchmark(
         (
-            ('        count permutations', lambda n: permutation(n, n)),
-            (' count permutations native', lambda n: math.perm(n, n)),
-            ('       permutations cycles', lambda n: [*permutations_cycle([*range(n)])]),
-            ('         permutations heap', lambda n: [*permutations_heap([*range(n)])]),
-            ('       permutations native', lambda n: [*itertools.permutations(range(n))]),
+            ("        count permutations", lambda n: permutation(n, n)),
+            (" count permutations native", lambda n: math.perm(n, n)),
+            ("       permutations cycles", lambda n: [*permutations_cycle([*range(n)])]),
+            ("         permutations heap", lambda n: [*permutations_heap([*range(n)])]),
+            ("       permutations native", lambda n: [*itertools.permutations(range(n))]),
         ),
         test_inputs=(*range(5),),
         bench_sizes=(0, 1, *range(2, 11, 2)),
@@ -117,5 +118,5 @@ def test():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

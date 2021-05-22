@@ -59,7 +59,7 @@ class LinkedList(Generic[T], Linked[T]):
         - `return`: node at `index`
         """
         if index < 0 or index >= self._length:
-            raise IndexError(f'index ({index}) out of range [0, {self._length})')
+            raise IndexError(f"index ({index}) out of range [0, {self._length})")
         forward = index < self._length / 2
         cursor = cast(Node[T], self._head if forward else self._tail)
         for _ in range(index if forward else (self._length - 1 - index)):
@@ -83,7 +83,7 @@ class LinkedList(Generic[T], Linked[T]):
         while cursor is not None and cursor.value is not value and cursor.value != value:
             cursor = cursor.next
         if cursor is None:
-            raise ValueError(f'value ({value}) not found')
+            raise ValueError(f"value ({value}) not found")
         return cursor
 
     def _insert(self, index: int, value: T):
@@ -100,7 +100,7 @@ class LinkedList(Generic[T], Linked[T]):
         - `value`: value to insert
         """
         if index < 0 or index > self._length:
-            raise IndexError(f'index ({index}) out of range [0, {self._length}]')
+            raise IndexError(f"index ({index}) out of range [0, {self._length}]")
         if self._head is None:
             self._head = self._tail = Node(value)
         elif index == 0:
@@ -224,29 +224,43 @@ def test():
     from ..test import benchmark, verify
 
     linked_list = LinkedList[int]()
-    verify((
-        (linked_list.push, (2, 0)),
-        (linked_list.push, (1, 0)),
-        (linked_list.push, (0, 0)),
-        (linked_list.push, (5,)),
-        (linked_list.push, (6,)),
-        (linked_list.push, (7,)),
-        (linked_list.push, (3, 3,)),
-        (linked_list.push, (4, 4,)),
-        (print, (linked_list,)),
-        (linked_list.get, (6,), 6),
-        (linked_list.get, (2,), 2),
-        (linked_list.pop, (4,), 4),
-        (linked_list.pop, (3,), 3),
-        (print, (linked_list,)),
-        (linked_list.pop, (), 7),
-        (linked_list.pop, (0,), 0),
-        (print, (linked_list,)),
-        (linked_list.reverse, ()),
-        (linked_list.index, (5,), 1),
-        (linked_list.index, (2,), 2),
-        (print, (linked_list,)),
-    ))
+    verify(
+        (
+            (linked_list.push, (2, 0)),
+            (linked_list.push, (1, 0)),
+            (linked_list.push, (0, 0)),
+            (linked_list.push, (5,)),
+            (linked_list.push, (6,)),
+            (linked_list.push, (7,)),
+            (
+                linked_list.push,
+                (
+                    3,
+                    3,
+                ),
+            ),
+            (
+                linked_list.push,
+                (
+                    4,
+                    4,
+                ),
+            ),
+            (print, (linked_list,)),
+            (linked_list.get, (6,), 6),
+            (linked_list.get, (2,), 2),
+            (linked_list.pop, (4,), 4),
+            (linked_list.pop, (3,), 3),
+            (print, (linked_list,)),
+            (linked_list.pop, (), 7),
+            (linked_list.pop, (0,), 0),
+            (print, (linked_list,)),
+            (linked_list.reverse, ()),
+            (linked_list.index, (5,), 1),
+            (linked_list.index, (2,), 2),
+            (print, (linked_list,)),
+        )
+    )
 
     def test_linked_list(count: int):
         linked_list = LinkedList[int]()
@@ -274,9 +288,9 @@ def test():
 
     benchmark(
         (
-            (' linked list', test_linked_list),
-            (' native list', test_native_list),
-            ('native deque', test_native_deque),
+            (" linked list", test_linked_list),
+            (" native list", test_native_list),
+            ("native deque", test_native_deque),
         ),
         test_inputs=(),
         bench_sizes=(0, 1, 10, 100, 1000, 10000, 100000),
@@ -284,5 +298,5 @@ def test():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

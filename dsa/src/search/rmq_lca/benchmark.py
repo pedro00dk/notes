@@ -1,4 +1,3 @@
-
 def test():
     import random
 
@@ -33,24 +32,24 @@ def test():
             i, j = (i, j) if i < j else (j, i)
             backward_mapper[rmq.rmq(forward_mapper[i][0], forward_mapper[j][-1])]
 
-    print('build benchmark')
+    print("build benchmark")
     benchmark(
         (
-            ('range minimum query naive', lambda data: RangeMinimumQueryNaive[int](data)),
-            ('range minimum query v2', lambda data: RangeMinimumQueryV2[int](data)),
-            ('range minimum query v3', lambda data: RangeMinimumQueryV3[int](data)),
-            ('range minimum query v4', lambda data: test_v4_build(data)),
+            ("range minimum query naive", lambda data: RangeMinimumQueryNaive[int](data)),
+            ("range minimum query v2", lambda data: RangeMinimumQueryV2[int](data)),
+            ("range minimum query v3", lambda data: RangeMinimumQueryV3[int](data)),
+            ("range minimum query v4", lambda data: test_v4_build(data)),
         ),
         test_inputs=(),
         bench_sizes=(1, 10, 100, 1000),
         bench_input=lambda s: [random.randint(-1000, 1000) for _ in range(s)],
     )
-    print('build benchmark without naive')
+    print("build benchmark without naive")
     benchmark(
         (
-            ('range minimum query v2', lambda data: RangeMinimumQueryV2[int](data)),
-            ('range minimum query v3', lambda data: RangeMinimumQueryV3[int](data)),
-            ('range minimum query v4', lambda data: test_v4_build(data)),
+            ("range minimum query v2", lambda data: RangeMinimumQueryV2[int](data)),
+            ("range minimum query v3", lambda data: RangeMinimumQueryV3[int](data)),
+            ("range minimum query v4", lambda data: test_v4_build(data)),
         ),
         test_inputs=(),
         bench_sizes=(10000, 100000),
@@ -66,13 +65,13 @@ def test():
     rmq_v2 = RangeMinimumQueryV2(data)
     rmq_v3 = RangeMinimumQueryV3(data)
     rmq_v4 = RangeMinimumQueryV4(data_plus_minus_1)
-    print('query benchmark')
+    print("query benchmark")
     benchmark(
         (
-            ('range minimum query naive', lambda queries: test_query(rmq_naive, queries)),
-            ('range minimum query v2', lambda queries: test_query(rmq_v2, queries)),
-            ('range minimum query v3', lambda queries: test_query(rmq_v3, queries)),
-            ('range minimum query v4', lambda queries: test_v4_query(rmq_v4, backward_mapper, forward_mapper, queries)),
+            ("range minimum query naive", lambda queries: test_query(rmq_naive, queries)),
+            ("range minimum query v2", lambda queries: test_query(rmq_v2, queries)),
+            ("range minimum query v3", lambda queries: test_query(rmq_v3, queries)),
+            ("range minimum query v4", lambda queries: test_v4_query(rmq_v4, backward_mapper, forward_mapper, queries)),
         ),
         test_inputs=(),
         bench_sizes=(100000,),
@@ -80,5 +79,5 @@ def test():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

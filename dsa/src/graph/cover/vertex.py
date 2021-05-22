@@ -25,12 +25,12 @@ def vertex_cover_brute_force(graph: Graph[Any, Any]) -> list[int]:
     - `return`: selection of vertices that cover all edges
     """
     if not graph.is_undirected():
-        raise Exception('graph must be undirected')
+        raise Exception("graph must be undirected")
     selected = [0.0] * graph.vertices_count()
     selected_marker = 1  # selected marker used to avoid reseting selected list after each failed combination
     for v in range(graph.vertices_count()):
         if selected[v] < selected_marker and graph.edges_count(v) == 1:
-            selected[graph._edges[v][0].target] = float('inf')  # type: ignore
+            selected[graph._edges[v][0].target] = float("inf")  # type: ignore
     selectable_vertices = [v for v, s in enumerate(selected) if s < selected_marker]
     uncovered_edges: list[Edge[Any]] = []
     for edge in graph.edges():
@@ -116,7 +116,7 @@ def weighted_vertex_cover_brute_force(graph: Graph[Any, Any]) -> tuple[float, li
     - `return`: selection of vertices that cover all edges with minimal cost
     """
     if not graph.is_undirected():
-        raise Exception('graph must be undirected')
+        raise Exception("graph must be undirected")
     selected = [0] * graph.vertices_count()
     selected_marker = 1  # selected marker used to avoid reseting selected list after each failed combination
     uncovered_edges: list[Edge[Any]] = []
@@ -125,7 +125,7 @@ def weighted_vertex_cover_brute_force(graph: Graph[Any, Any]) -> tuple[float, li
             uncovered_edges.append(edge)
             opposite = cast(Edge[Any], edge.opposite)
             edge.data = opposite.data = True  # avoid putting the opposite edge in uncovered edges
-    best_cost = float('inf')
+    best_cost = float("inf")
     best_cover = ()
     for i in range(graph.vertices_count()):
         for combination in itertools.combinations(range(graph.vertices_count()), i):
@@ -163,8 +163,10 @@ def weighted_vertex_cover_greedy(graph: Graph[Any, Any]) -> tuple[float, list[in
     """
     selected = [False] * graph.vertices_count()
     remaining_edges = [graph.edges_count(v) for v in range(graph.vertices_count())]
-    vertex_costs = [graph.get_vertex(v).weight / remaining_edges[v] if remaining_edges[v]
-                    > 0 else float('inf') for v in range(graph.vertices_count())]
+    vertex_costs = [
+        graph.get_vertex(v).weight / remaining_edges[v] if remaining_edges[v] > 0 else float("inf")
+        for v in range(graph.vertices_count())
+    ]
     for edge in graph.edges():
         if selected[edge.source] or selected[edge.target]:
             continue
@@ -172,7 +174,7 @@ def weighted_vertex_cover_greedy(graph: Graph[Any, Any]) -> tuple[float, list[in
         u = edge.source if v == edge.target else edge.target
         selected[v] = True
         remaining_edges[u] -= 1
-        vertex_costs[u] = graph.get_vertex(u).weight / remaining_edges[u] if remaining_edges[u] > 0 else float('inf')
+        vertex_costs[u] = graph.get_vertex(u).weight / remaining_edges[u] if remaining_edges[u] > 0 else float("inf")
     cover = [v for v, s in enumerate(selected) if s]
     cost = sum(graph.get_vertex(v).weight for v in cover)
     return cost, cover
@@ -217,8 +219,9 @@ def weighted_vertex_cover_pricing_sorted(graph: Graph[Any, Any]) -> tuple[float,
     - `return`: selection of vertices that cover all edges (heuristic)
     """
     remaining_price = [graph.get_vertex(v).weight for v in range(graph.vertices_count())]
-    sorted_edges = sorted(graph.edges(), key=lambda edge: min(
-        remaining_price[edge.source], remaining_price[edge.target]))
+    sorted_edges = sorted(
+        graph.edges(), key=lambda edge: min(remaining_price[edge.source], remaining_price[edge.target])
+    )
     for edge in sorted_edges:
         min_price = min(remaining_price[edge.source], remaining_price[edge.target])
         remaining_price[edge.source] -= min_price
@@ -235,16 +238,14 @@ def test():
     def save_size(
         algorithm: Callable[[Graph[Any, Any]], Union[list[int], tuple[float, list[int]]]],
         input: Graph[Any, Any],
-        sizes: list[float]
+        sizes: list[float],
     ) -> Union[list[int], tuple[float, list[int]]]:
         result = algorithm(input)
         sizes.append(len(result) if isinstance(result, list) else len(result[1]))
         return result
 
     def save_weight(
-        algorithm: Callable[[Graph[Any, Any]], tuple[float, list[int]]],
-        input: Graph[Any, Any],
-        weights: list[float]
+        algorithm: Callable[[Graph[Any, Any]], tuple[float, list[int]]], input: Graph[Any, Any], weights: list[float]
     ) -> tuple[float, list[int]]:
         result = algorithm(input)
         weights.append(result[0])
@@ -260,32 +261,29 @@ def test():
     benchmark(
         (
             (
-                '            vertex cover brute force',
-                lambda graph: save_size(vertex_cover_brute_force, graph, optimal_sizes)
+                "            vertex cover brute force",
+                lambda graph: save_size(vertex_cover_brute_force, graph, optimal_sizes),
+            ),
+            ("                 vertex cover greedy", lambda graph: save_size(vertex_cover_greedy, graph, greedy_sizes)),
+            (
+                "          vertex cover greedy double",
+                lambda graph: save_size(vertex_cover_greedy_double, graph, greedy_double_sizes),
             ),
             (
-                '                 vertex cover greedy',
-                lambda graph: save_size(vertex_cover_greedy, graph, greedy_sizes)
+                "   weighted vertex cover brute force",
+                lambda graph: save_weight(weighted_vertex_cover_brute_force, graph, optimal_weights),
             ),
             (
-                '          vertex cover greedy double',
-                lambda graph: save_size(vertex_cover_greedy_double, graph, greedy_double_sizes)
+                "        weighted vertex cover greedy",
+                lambda graph: save_weight(weighted_vertex_cover_greedy, graph, greedy_weights),
             ),
             (
-                '   weighted vertex cover brute force',
-                lambda graph: save_weight(weighted_vertex_cover_brute_force, graph, optimal_weights)
+                "       weighted vertex cover pricing",
+                lambda graph: save_weight(weighted_vertex_cover_pricing, graph, pricing_weights),
             ),
             (
-                '        weighted vertex cover greedy',
-                lambda graph: save_weight(weighted_vertex_cover_greedy, graph, greedy_weights)
-            ),
-            (
-                '       weighted vertex cover pricing',
-                lambda graph: save_weight(weighted_vertex_cover_pricing, graph, pricing_weights)
-            ),
-            (
-                'weighted vertex cover pricing sorted',
-                lambda graph: save_weight(weighted_vertex_cover_pricing_sorted, graph, pricing_sorted_weights)
+                "weighted vertex cover pricing sorted",
+                lambda graph: save_weight(weighted_vertex_cover_pricing_sorted, graph, pricing_sorted_weights),
             ),
         ),
         test_inputs=(*(random_undirected(i, vw_range=(1, 10)) for i in (4, 5, 6, 7)),),
@@ -293,12 +291,12 @@ def test():
         bench_input=lambda s: random_undirected(s, vw_range=(1, 10)),
         preprocess_input=Graph[Any, Any].copy,
     )
-    heuristic_approximation('greedy', optimal_sizes, greedy_sizes)
-    heuristic_approximation('greedy double', optimal_sizes, greedy_double_sizes)
-    heuristic_approximation('weighted greedy', optimal_weights, greedy_weights)
-    heuristic_approximation('weighted pricing', optimal_weights, pricing_weights)
-    heuristic_approximation('weighted pricing sorted', optimal_weights, pricing_sorted_weights)
+    heuristic_approximation("greedy", optimal_sizes, greedy_sizes)
+    heuristic_approximation("greedy double", optimal_sizes, greedy_double_sizes)
+    heuristic_approximation("weighted greedy", optimal_weights, greedy_weights)
+    heuristic_approximation("weighted pricing", optimal_weights, pricing_weights)
+    heuristic_approximation("weighted pricing sorted", optimal_weights, pricing_sorted_weights)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

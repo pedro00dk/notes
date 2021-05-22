@@ -88,22 +88,22 @@ def test():
     def random_bytes(size: int, alphabet_size: int) -> bytes:
         return bytes(random.randint(0, alphabet_size - 1) for _ in range(size))
 
-    print('all algorithms')
+    print("all algorithms")
     benchmark(
         (
-            ('        edit distance brute force', lambda args: edit_distance_brute_force(*args)),
-            ('     edit distance wagner-fischer', lambda args: edit_distance_wagner_fischer(*args)),
-            (' edit distance wagner-fischer opt', lambda args: edit_distance_wagner_fischer_opt(*args)),
+            ("        edit distance brute force", lambda args: edit_distance_brute_force(*args)),
+            ("     edit distance wagner-fischer", lambda args: edit_distance_wagner_fischer(*args)),
+            (" edit distance wagner-fischer opt", lambda args: edit_distance_wagner_fischer_opt(*args)),
         ),
-        test_inputs=((b'kitten', b'sitting'), (b'saturday', b'monday'), (b'', b'')),
+        test_inputs=((b"kitten", b"sitting"), (b"saturday", b"monday"), (b"", b"")),
         bench_sizes=((0, 0), (1, 1), (5, 3), (10, 5)),
         bench_input=lambda s: (random_bytes(s[0], 256), random_bytes(s[1], 256)),
     )
-    print('without brute force')
+    print("without brute force")
     benchmark(
         (
-            ('     edit distance wagner-fischer', lambda args: edit_distance_wagner_fischer(*args)),
-            (' edit distance wagner-fischer opt', lambda args: edit_distance_wagner_fischer_opt(*args)),
+            ("     edit distance wagner-fischer", lambda args: edit_distance_wagner_fischer(*args)),
+            (" edit distance wagner-fischer opt", lambda args: edit_distance_wagner_fischer_opt(*args)),
         ),
         test_inputs=(),
         bench_sizes=((20, 8), (20, 16), (100, 35), (100, 70), (1000, 350), (1000, 700)),
@@ -111,5 +111,5 @@ def test():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

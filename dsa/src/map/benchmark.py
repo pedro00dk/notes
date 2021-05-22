@@ -24,47 +24,47 @@ def test():
     benchmark(
         (
             (
-                '                open addressing hashtable - linear',
-                lambda data: test_map(data, OpenAddressingHashtable[int, int]('linear')),
+                "                open addressing hashtable - linear",
+                lambda data: test_map(data, OpenAddressingHashtable[int, int]("linear")),
             ),
             (
-                '       open addressing hashtable - quadratic prime',
-                lambda data: test_map(data, OpenAddressingHashtable[int, int]('prime')),
+                "       open addressing hashtable - quadratic prime",
+                lambda data: test_map(data, OpenAddressingHashtable[int, int]("prime")),
             ),
             (
-                '  open addressing hashtable - quadratic triangular',
-                lambda data: test_map(data, OpenAddressingHashtable[int, int]('triangular')),
+                "  open addressing hashtable - quadratic triangular",
+                lambda data: test_map(data, OpenAddressingHashtable[int, int]("triangular")),
             ),
             (
-                '              sequence chaining hashtable - linear',
-                lambda data: test_map(data, SequenceChainingHashtable[int, int]('linear')),
+                "              sequence chaining hashtable - linear",
+                lambda data: test_map(data, SequenceChainingHashtable[int, int]("linear")),
             ),
             (
-                '     sequence chaining hashtable - quadratic prime',
-                lambda data: test_map(data, SequenceChainingHashtable[int, int]('prime')),
+                "     sequence chaining hashtable - quadratic prime",
+                lambda data: test_map(data, SequenceChainingHashtable[int, int]("prime")),
             ),
             (
-                'sequence chaining hashtable - quadratic triangular',
-                lambda data: test_map(data, SequenceChainingHashtable[int, int]('triangular')),
+                "sequence chaining hashtable - quadratic triangular",
+                lambda data: test_map(data, SequenceChainingHashtable[int, int]("triangular")),
             ),
             (
-                '                                binary search tree',
+                "                                binary search tree",
                 lambda data: test_map(data, BST[int, int]()),
             ),
             (
-                '                                          avl tree',
+                "                                          avl tree",
                 lambda data: test_map(data, AVL[int, int]()),
             ),
             (
-                '                                    red-black tree',
+                "                                    red-black tree",
                 lambda data: test_map(data, RBT[int, int]()),
             ),
             (
-                '                                van Emde Boas tree',
+                "                                van Emde Boas tree",
                 lambda data: test_map(data, VEB[int](16)),
             ),
             (
-                '                                       native dict',
+                "                                       native dict",
                 lambda data: test_native(data),
             ),
         ),
@@ -74,5 +74,5 @@ def test():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

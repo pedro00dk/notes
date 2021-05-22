@@ -16,6 +16,7 @@ def quicksort_hoare(array: list[float]) -> list[float]:
     - `array`: array to be sorted
     - `return`: `array` sorted
     """
+
     def rec(array: list[float], left: int, right: int):
         if left >= right:
             return
@@ -54,6 +55,7 @@ def quicksort_lomuto(array: list[float]) -> list[float]:
     - `array`: array to be sorted
     - `return`: `array` sorted
     """
+
     def rec(array: list[float], left: int, right: int):
         if left >= right:
             return
@@ -87,6 +89,7 @@ def quicksort_dual_pivot(array: list[float]) -> list[float]:
     - `array`: array to be sorted
     - `return`: `array` sorted
     """
+
     def rec(array: list[float], left: int, right: int):
         if left >= right:
             return
@@ -129,12 +132,12 @@ def test():
 
     sort_benchmark(
         (
-            ('     quicksort hoare', quicksort_hoare),
-            ('    quicksort lomuto', quicksort_lomuto),
-            ('quicksort dual pivot', quicksort_dual_pivot),
+            ("     quicksort hoare", quicksort_hoare),
+            ("    quicksort lomuto", quicksort_lomuto),
+            ("quicksort dual pivot", quicksort_dual_pivot),
         ),
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

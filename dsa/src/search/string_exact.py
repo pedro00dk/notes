@@ -19,7 +19,7 @@ def brute_force(text: bytes, pattern: bytes) -> list[int]:
     - `return`: list containing the starting index of all occurrences
     """
     if len(pattern) == 0:
-        raise Exception('empty pattern')
+        raise Exception("empty pattern")
     occurrences: list[int] = []
     for i in range(len(text) - len(pattern) + 1):
         j = 0
@@ -84,7 +84,7 @@ def rabin_karp(text: bytes, pattern: bytes, alphabet: int = 256, modulus: int = 
         return j == len(pattern)
 
     if len(pattern) == 0:
-        raise Exception('empty pattern')
+        raise Exception("empty pattern")
     if len(text) < len(pattern):
         return []
     occurrences: list[int] = []
@@ -116,6 +116,7 @@ def knuth_morris_pratt(text: bytes, pattern: bytes, optimized_border: bool = Tru
     - `optimized_border`: use optimized border computation algorithm
     - `return`: list containing the starting index of all occurrences
     """
+
     def compute_border_lengths_brute_force(pattern: bytes) -> list[int]:
         """
         Compute the size of the pattern borders (longest proper prefixes which are also proper suffixes or vice versa)
@@ -124,7 +125,7 @@ def knuth_morris_pratt(text: bytes, pattern: bytes, optimized_border: bool = Tru
         border_lengths = [-1] * (len(pattern) + 1)
         for i in range(1, len(pattern) + 1):
             j = i - 1
-            while pattern[:j] != pattern[i - j:i]:
+            while pattern[:j] != pattern[i - j : i]:
                 j -= 1
             border_lengths[i] = j
         return border_lengths
@@ -146,10 +147,11 @@ def knuth_morris_pratt(text: bytes, pattern: bytes, optimized_border: bool = Tru
         return border_lengths
 
     if len(pattern) == 0:
-        raise Exception('empty pattern')
+        raise Exception("empty pattern")
     occurrences: list[int] = []
-    border_lengths = compute_border_lengths_opt(
-        pattern) if optimized_border else compute_border_lengths_brute_force(pattern)
+    border_lengths = (
+        compute_border_lengths_opt(pattern) if optimized_border else compute_border_lengths_brute_force(pattern)
+    )
     i = 0
     j = 0
     while i <= len(text) - len(pattern):
@@ -179,6 +181,7 @@ def baeza_yates_gonnet(text: bytes, pattern: bytes) -> list[int]:
     - `pattern: bytes`: pattern
     - `return`: list containing the starting index of all occurrences
     """
+
     def compute_char_masks(pattern: bytes) -> tuple[list[int], int]:
         """
         Compute character masks for the pattern, to be used in the shifting operations, and the match mask.
@@ -196,7 +199,7 @@ def baeza_yates_gonnet(text: bytes, pattern: bytes) -> list[int]:
         return char_masks, match_mask
 
     if len(pattern) == 0:
-        raise Exception('empty pattern')
+        raise Exception("empty pattern")
     occurrences: list[int] = []
     char_masks, match_mask = compute_char_masks(pattern)
     current_mask = 0
@@ -223,6 +226,7 @@ def boyer_moore(text: bytes, pattern: bytes, extended_bad_char_table: bool = Tru
     - `pattern`: pattern
     - `return`: list containing the starting index of all occurrences
     """
+
     def compute_basic_bad_char_table(pattern: bytes) -> list[list[int]]:
         """
         Compute the basic bad character table.
@@ -290,7 +294,7 @@ def boyer_moore(text: bytes, pattern: bytes, extended_bad_char_table: bool = Tru
         +---+---+---+---+---+---+
         | 4 | 1 | 2 | 3 | 5 |-1 | <- mismatch at index 6 (o) prefix: 'avocad'
         +---+---+---+---+---+---+
-        | 4 | 1 | 6 | 3 | 5 |-1 | <- before any comparisons prefix: 'avocado' (not used, just for checking, this is the one used by the basic algorithm) 
+        | 4 | 1 | 6 | 3 | 5 |-1 | <- before any comparisons prefix: 'avocado' (not used, just for checking, this is the one used by the basic algorithm)
         +---+---+---+---+---+---+
         ```
 
@@ -339,10 +343,11 @@ def boyer_moore(text: bytes, pattern: bytes, extended_bad_char_table: bool = Tru
         return shift
 
     if len(pattern) == 0:
-        raise Exception('empty pattern')
+        raise Exception("empty pattern")
     occurrences: list[int] = []
-    bad_char_table = compute_extended_bad_char_table(pattern) \
-        if extended_bad_char_table else compute_basic_bad_char_table(pattern)
+    bad_char_table = (
+        compute_extended_bad_char_table(pattern) if extended_bad_char_table else compute_basic_bad_char_table(pattern)
+    )
     good_suffix_table = compute_good_suffix_table(pattern)
     i = 0
     while i <= len(text) - len(pattern):
@@ -372,6 +377,7 @@ def aho_corasick(text: bytes, patterns: list[bytes]) -> dict[bytes, list[int]]:
     - `patterns`: list of patterns to search
     - `return`: dictionary containing patterns and list with starting indices of the occurrences
     """
+
     def build_goto(patterns: list[bytes]) -> tuple[dict[tuple[int, int], int], list[list[bytes]]]:
         """
         Build all trie forward links (goto link) based on `patterns`.
@@ -394,7 +400,7 @@ def aho_corasick(text: bytes, patterns: list[bytes]) -> dict[bytes, list[int]]:
         vertex = 0
         for pattern in patterns:
             if len(pattern) == 0:
-                raise Exception('empty pattern')
+                raise Exception("empty pattern")
             cursor = 0
             for byte in pattern:
                 if (cursor, byte) in trie:
@@ -482,35 +488,35 @@ def test():
             occurrences.append(i)
         return occurrences
 
-    print('alphabet size = 4')
+    print("alphabet size = 4")
     benchmark(
         (
-            ('           brute force', lambda args: brute_force(*args)),
-            ('            rabin karp', lambda args: rabin_karp(*args)),
-            ('    knuth morris pratt', lambda args: knuth_morris_pratt(*args, False)),
-            ('knuth morris pratt opt', lambda args: knuth_morris_pratt(*args, True)),
-            ('    baeza yates gonnet', lambda args: baeza_yates_gonnet(*args)),
-            ('           boyer moore', lambda args: boyer_moore(*args, False)),
-            ('       boyer moore opt', lambda args: boyer_moore(*args, True)),
-            ('          aho corasick', lambda args: aho_corasick(args[0], [args[1]])),
-            ('                native', lambda args: test_native_search(*args)),
+            ("           brute force", lambda args: brute_force(*args)),
+            ("            rabin karp", lambda args: rabin_karp(*args)),
+            ("    knuth morris pratt", lambda args: knuth_morris_pratt(*args, False)),
+            ("knuth morris pratt opt", lambda args: knuth_morris_pratt(*args, True)),
+            ("    baeza yates gonnet", lambda args: baeza_yates_gonnet(*args)),
+            ("           boyer moore", lambda args: boyer_moore(*args, False)),
+            ("       boyer moore opt", lambda args: boyer_moore(*args, True)),
+            ("          aho corasick", lambda args: aho_corasick(args[0], [args[1]])),
+            ("                native", lambda args: test_native_search(*args)),
         ),
-        test_inputs=((b'hello world!', b'o w'), (b'cagtcatgcatacgtctatatcggctgc', b'cat')),
+        test_inputs=((b"hello world!", b"o w"), (b"cagtcatgcatacgtctatatcggctgc", b"cat")),
         bench_sizes=((1000, 1), (1000, 5), (1000, 10), (1000, 20), (10000, 1), (10000, 5), (10000, 10), (10000, 20)),
         bench_input=lambda s: (random_bytes(s[0], 4), random_bytes(s[1], 4)),
     )
-    print('alphabet size = 256')
+    print("alphabet size = 256")
     benchmark(
         (
-            ('           brute force', lambda args: brute_force(args[0], args[1])),
-            ('            rabin karp', lambda args: rabin_karp(args[0], args[1])),
-            ('    knuth morris pratt', lambda args: knuth_morris_pratt(args[0], args[1], False)),
-            ('knuth morris pratt opt', lambda args: knuth_morris_pratt(args[0], args[1], True)),
-            ('    baeza yates gonnet', lambda args: baeza_yates_gonnet(args[0], args[1])),
-            ('           boyer moore', lambda args: boyer_moore(args[0], args[1], False)),
-            ('       boyer moore opt', lambda args: boyer_moore(args[0], args[1], True)),
-            ('          aho corasick', lambda args: aho_corasick(args[0], [args[1]])),
-            ('                native', lambda args: test_native_search(*args)),
+            ("           brute force", lambda args: brute_force(args[0], args[1])),
+            ("            rabin karp", lambda args: rabin_karp(args[0], args[1])),
+            ("    knuth morris pratt", lambda args: knuth_morris_pratt(args[0], args[1], False)),
+            ("knuth morris pratt opt", lambda args: knuth_morris_pratt(args[0], args[1], True)),
+            ("    baeza yates gonnet", lambda args: baeza_yates_gonnet(args[0], args[1])),
+            ("           boyer moore", lambda args: boyer_moore(args[0], args[1], False)),
+            ("       boyer moore opt", lambda args: boyer_moore(args[0], args[1], True)),
+            ("          aho corasick", lambda args: aho_corasick(args[0], [args[1]])),
+            ("                native", lambda args: test_native_search(*args)),
         ),
         test_inputs=(),
         bench_sizes=((1000, 1), (1000, 5), (1000, 10), (1000, 20), (10000, 1), (10000, 5), (10000, 10), (10000, 20)),
@@ -518,5 +524,5 @@ def test():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

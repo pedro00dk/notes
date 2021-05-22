@@ -34,9 +34,9 @@ class VEB(Generic[V], Tree[int, V]):
     def __init__(self, word_size: int = 64):
         log_word_size = math.log2(word_size)
         if log_word_size != round(log_word_size):
-            raise Exception(f'word_size must be a power of 2 ({word_size})')
+            raise Exception(f"word_size must be a power of 2 ({word_size})")
         self._word_size = word_size
-        self._universe = 2**word_size
+        self._universe = 2 ** word_size
         self._root = VEBNode[V](self._word_size)
         self._size = 0
 
@@ -68,6 +68,7 @@ class VEB(Generic[V], Tree[int, V]):
         - `w`: tree `word_size`
         - `u`: tree `universe`, which is `word_size**2`
         """
+
         def rec(key: int, value: V, node: VEBNode[V], summary: bool) -> Optional[V]:
             if node.min == node.max:
                 if node.min == -1:
@@ -111,7 +112,7 @@ class VEB(Generic[V], Tree[int, V]):
             return rec(low, value, node.clusters[high], summary or False)
 
         if not (0 <= key < self._universe):
-            raise Exception(f'key ({key}) out of universe [0, {self._universe})')
+            raise Exception(f"key ({key}) out of universe [0, {self._universe})")
         return rec(key, value, self._root, False)
 
     def take(self, key: int) -> V:
@@ -124,6 +125,7 @@ class VEB(Generic[V], Tree[int, V]):
         - `w`: tree `word_size`
         - `u`: tree `universe`, which is `word_size**2`
         """
+
         def rec(complete_key: int, key: int, node: VEBNode[V], summary: bool) -> V:
             if key == node.min:
                 if node.min == node.max:
@@ -154,7 +156,7 @@ class VEB(Generic[V], Tree[int, V]):
             high = key >> (node.word_size >> 1)
             low = key & ((1 << (node.word_size >> 1)) - 1)
             if high not in node.clusters:
-                raise KeyError(f'key ({complete_key}) not found')
+                raise KeyError(f"key ({complete_key}) not found")
             value = rec(complete_key, low, node.clusters[high], summary or False)
             if node.clusters[high].min == -1:
                 del node.clusters[high]
@@ -163,7 +165,7 @@ class VEB(Generic[V], Tree[int, V]):
             return value
 
         if not (0 <= key < self._universe):
-            raise Exception(f'key ({key}) out of universe [0, {self._universe})')
+            raise Exception(f"key ({key}) out of universe [0, {self._universe})")
         return rec(key, key, self._root, False)
 
     def get(self, key: int) -> V:
@@ -176,6 +178,7 @@ class VEB(Generic[V], Tree[int, V]):
         - `w`: tree `word_size`
         - `u`: tree `universe`, which is `word_size**2`
         """
+
         def rec(complete_key: int, key: int, node: VEBNode[V]) -> V:
             if key == node.min:
                 return node.min_value
@@ -184,7 +187,7 @@ class VEB(Generic[V], Tree[int, V]):
             high = key >> (node.word_size >> 1)
             low = key & ((1 << (node.word_size >> 1)) - 1)
             if high not in node.clusters:
-                raise KeyError(f'key ({complete_key}) not found')
+                raise KeyError(f"key ({complete_key}) not found")
             return rec(complete_key, low, node.clusters[high])
 
         return rec(key, key, self._root)
@@ -219,12 +222,13 @@ class VEB(Generic[V], Tree[int, V]):
         - `w`: tree `word_size`
         - `u`: tree `universe`, which is `word_size**2`
         """
+
         def rec(key: int, node: VEBNode[V]) -> tuple[int, V]:
             if key > node.max:
                 return node.max, node.max_value
             if key > node.min and (
-                node.summary is None or
-                key <= (node.summary.min << (node.word_size >> 1)) | node.clusters[node.summary.min].min
+                node.summary is None
+                or key <= (node.summary.min << (node.word_size >> 1)) | node.clusters[node.summary.min].min
             ):
                 return node.min, node.min_value
             high = key >> (node.word_size >> 1)
@@ -249,12 +253,13 @@ class VEB(Generic[V], Tree[int, V]):
         - `w`: tree `word_size`
         - `u`: tree `universe`, which is `word_size**2`
         """
+
         def rec(key: int, node: VEBNode[V]) -> tuple[int, V]:
             if key < node.min:
                 return node.min, node.min_value
             if key < node.max and (
-                node.summary is None or
-                key >= (node.summary.max << (node.word_size >> 1)) | node.clusters[node.summary.max].max
+                node.summary is None
+                or key >= (node.summary.max << (node.word_size >> 1)) | node.clusters[node.summary.max].max
             ):
                 return node.max, node.max_value
             high = key >> (node.word_size >> 1)
@@ -277,28 +282,30 @@ def test():
 
     tree = VEB[Optional[int]]()
 
-    verify((
-        (tree.put, (15, 1000)),
-        (tree.put, (10, None)),
-        (tree.put, (5, None)),
-        (tree.put, (0, None)),
-        (tree.put, (30, 1000)),
-        (tree.put, (50, None)),
-        (tree.put, (40, None)),
-        (tree.get, (5,), None),
-        (tree.get, (15,), 1000),
-        (print, (tree,)),
-        (tree.take, (0,)),
-        (tree.take, (10,)),
-        (tree.take, (15,), 1000),
-        (print, (tree,)),
-    ))
-    print('test print functions from abstract base classes')
-    print('self:\n', tree)
-    print('tree:\n', cast(Any, Tree).__str__(tree))
-    print('map:\n', cast(Any, Map).__str__(tree))
-    print('priority queue:\n', cast(Any, Priority).__str__(tree))
+    verify(
+        (
+            (tree.put, (15, 1000)),
+            (tree.put, (10, None)),
+            (tree.put, (5, None)),
+            (tree.put, (0, None)),
+            (tree.put, (30, 1000)),
+            (tree.put, (50, None)),
+            (tree.put, (40, None)),
+            (tree.get, (5,), None),
+            (tree.get, (15,), 1000),
+            (print, (tree,)),
+            (tree.take, (0,)),
+            (tree.take, (10,)),
+            (tree.take, (15,), 1000),
+            (print, (tree,)),
+        )
+    )
+    print("test print functions from abstract base classes")
+    print("self:\n", tree)
+    print("tree:\n", cast(Any, Tree).__str__(tree))
+    print("map:\n", cast(Any, Map).__str__(tree))
+    print("priority queue:\n", cast(Any, Priority).__str__(tree))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

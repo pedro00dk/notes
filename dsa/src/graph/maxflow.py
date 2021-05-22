@@ -43,12 +43,9 @@ def pathfinder_dfs(flow_graph: Graph[Any, Any], source: int, sink: int):
     - `sink`: graph sink source
     - `return`: function for finding augmenting paths and pushing flow
     """
+
     def find_augmenting_path(
-        flow_graph: Graph[Any, Any],
-        v: int,
-        flow: float,
-        visited: list[int],
-        visited_marker: int
+        flow_graph: Graph[Any, Any], v: int, flow: float, visited: list[int], visited_marker: int
     ) -> tuple[float, bool]:
         """
         This function finds augmenting paths using a depth first search and increases the path flow.
@@ -98,12 +95,9 @@ def pathfinder_edmonds_karp(flow_graph: Graph[Any, Any], source: int, sink: int)
     - `sink`: graph sink source
     - `return`: function for finding algmenting paths and pushing flow
     """
+
     def find_augmenting_path(
-        flow_graph: Graph[Any, Any],
-        v: int,
-        flow: float,
-        visited: list[int],
-        visited_marker: int
+        flow_graph: Graph[Any, Any], v: int, flow: float, visited: list[int], visited_marker: int
     ) -> tuple[float, bool]:
         """
         This function finds augmenting paths using a breadth first search and increases the path flow.
@@ -166,11 +160,7 @@ def pathfinder_dfs_capacity_scaling(flow_graph: Graph[Any, Any], source: int, si
     delta = 1 << math.floor(math.log2(u))
 
     def find_augmenting_path(
-        flow_graph: Graph[Any, Any],
-        v: int,
-        flow: float,
-        visited: list[int],
-        visited_marker: int
+        flow_graph: Graph[Any, Any], v: int, flow: float, visited: list[int], visited_marker: int
     ) -> tuple[float, bool]:
         """
         This function finds augmenting paths using a depth first search and increases the path flow.
@@ -252,11 +242,7 @@ def pathfinder_dinic(flow_graph: Graph[Any, Any], source: int, sink: int):
                 levels[edge.target] = levels[v] + 1
 
     def find_augmenting_path(
-        flow_graph: Graph[Any, Any],
-        v: int,
-        flow: float,
-        visited: list[int],
-        visited_marker: int
+        flow_graph: Graph[Any, Any], v: int, flow: float, visited: list[int], visited_marker: int
     ) -> tuple[float, bool]:
         """
         This function finds augmenting paths using a breadth first search to build a level graph and then depth first
@@ -301,16 +287,13 @@ def pathfinder_dinic(flow_graph: Graph[Any, Any], source: int, sink: int):
 
 
 def maxflow_ford_fulkerson(
-        graph: Graph[Any, Any],
-        source: int = 0,
-        sink: Optional[int] = None,
-        pathfinder: Callable[
-            [Graph[Any, Any], int, int],
-            Callable[
-                [Graph[Any, Any], int, float, list[int], int],
-                tuple[float, bool]
-            ]
-        ] = pathfinder_dfs):
+    graph: Graph[Any, Any],
+    source: int = 0,
+    sink: Optional[int] = None,
+    pathfinder: Callable[
+        [Graph[Any, Any], int, int], Callable[[Graph[Any, Any], int, float, list[int], int], tuple[float, bool]]
+    ] = pathfinder_dfs,
+):
     """
     Ford Fulkerson maxflow/mincut algorithm.
     This algorithm mutates the graph to implement optimizations (`edge.data` field).
@@ -331,7 +314,7 @@ def maxflow_ford_fulkerson(
     - `return`: maxflow and edges in the mincut (source, target, capacity)
     """
     if not graph.is_directed():
-        raise Exception('graph must be directed')
+        raise Exception("graph must be directed")
     sink = sink if sink is not None else graph.vertices_count() - 1
     flow_graph = Graph[Any, Any]()
     for vertex in graph.vertices():
@@ -344,7 +327,7 @@ def maxflow_ford_fulkerson(
     maxflow = 0
     find_augmenting_path = pathfinder(flow_graph, source, sink)
     while True:
-        bottleneck, keep = find_augmenting_path(flow_graph, source, float('inf'), visited, visited_marker)
+        bottleneck, keep = find_augmenting_path(flow_graph, source, float("inf"), visited, visited_marker)
         maxflow += bottleneck
         visited_marker += 1
         if not keep:
@@ -372,33 +355,37 @@ def maxflow_ford_fulkerson(
 def test():
     from ..test import benchmark
     from .factory import random_flow
+
     benchmark(
         (
             (
-                '                 maxflow ford fulkerson dfs',
-                lambda graph: maxflow_ford_fulkerson(graph, pathfinder=pathfinder_dfs)
+                "                 maxflow ford fulkerson dfs",
+                lambda graph: maxflow_ford_fulkerson(graph, pathfinder=pathfinder_dfs),
             ),
             (
-                '        maxflow ford fulkerson edmonds karp',
-                lambda graph: maxflow_ford_fulkerson(graph, pathfinder=pathfinder_edmonds_karp)
+                "        maxflow ford fulkerson edmonds karp",
+                lambda graph: maxflow_ford_fulkerson(graph, pathfinder=pathfinder_edmonds_karp),
             ),
             (
-                'maxflow ford fulkerson dfs capacity scaling',
-                lambda graph: maxflow_ford_fulkerson(graph, pathfinder=pathfinder_dfs_capacity_scaling)
+                "maxflow ford fulkerson dfs capacity scaling",
+                lambda graph: maxflow_ford_fulkerson(graph, pathfinder=pathfinder_dfs_capacity_scaling),
             ),
             (
-                '               maxflow ford fulkerson dinic',
-                lambda graph: maxflow_ford_fulkerson(graph, pathfinder=pathfinder_dinic)
+                "               maxflow ford fulkerson dinic",
+                lambda graph: maxflow_ford_fulkerson(graph, pathfinder=pathfinder_dinic),
             ),
         ),
-        test_inputs=(*(
-            random_flow((i, i), (i // 2, i // 2), ancestor_probability=0, el_range=(10, 50))[0] for i in (2, 3, 4, 5)
-        ),),
+        test_inputs=(
+            *(
+                random_flow((i, i), (i // 2, i // 2), ancestor_probability=0, el_range=(10, 50))[0]
+                for i in (2, 3, 4, 5)
+            ),
+        ),
         bench_sizes=(0, 1, 10, 100),
         bench_input=lambda s: random_flow((s // 10, s // 5), (5, 10), el_range=(10, 50))[0],
         preprocess_input=Graph[Any, Any].copy,
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

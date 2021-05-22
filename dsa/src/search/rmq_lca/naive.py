@@ -25,7 +25,7 @@ class RangeMinimumQueryNaive(Generic[T], RangeMinimumQuery[T]):
         - `n`: length of `data`
         """
         if len(data) == 0:
-            raise Exception('data must contain at least one element')
+            raise Exception("data must contain at least one element")
         self._data = data
         self._table: list[list[int]] = [
             [],
@@ -49,7 +49,7 @@ class RangeMinimumQueryNaive(Generic[T], RangeMinimumQuery[T]):
         """
         i, j = (i, j) if i < j else (j, i)
         if not (0 <= i <= j < len(self._data)):
-            raise IndexError(f'indices i ({i}) and j ({j}) out of range [0:{len(self._data)})')
+            raise IndexError(f"indices i ({i}) and j ({j}) out of range [0:{len(self._data)})")
         size = (j - i) + 1
         index = self._table[size][i]
         return index
@@ -67,16 +67,18 @@ def test():
 
     data = [8, 7, 2, 8, 6, 9, 4, 5, 2]
     rmq = RangeMinimumQueryNaive(data)
-    verify((
-        (rmq.rmq, (0, 0), 0),
-        (rmq.rmq, (0, 2), 2),
-        (rmq.rmq, (2, 5), 2),
-        (rmq.rmq, (4, 5), 4),
-        (rmq.rmq, (5, 7), 6),
-        (rmq.rmq, (8, 8), 8),
-        (rmq.rmq, (2, 8), 2),
-    ))
+    verify(
+        (
+            (rmq.rmq, (0, 0), 0),
+            (rmq.rmq, (0, 2), 2),
+            (rmq.rmq, (2, 5), 2),
+            (rmq.rmq, (4, 5), 4),
+            (rmq.rmq, (5, 7), 6),
+            (rmq.rmq, (8, 8), 8),
+            (rmq.rmq, (2, 8), 2),
+        )
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

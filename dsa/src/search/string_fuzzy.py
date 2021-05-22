@@ -24,12 +24,12 @@ def sellers(text: bytes, pattern: bytes, max_distance: int) -> list[tuple[int, i
     - `text`: text to find pattern matches
     - `pattern`: pattern
     - `max_distance`: maximum value of the edit distance to report an occurrence
-    - `return`: a list of tuples containing the final index of the match (not the first index like exact algorithms) and 
+    - `return`: a list of tuples containing the final index of the match (not the first index like exact algorithms) and
         the edit distance of that match
     """
 
     if len(pattern) == 0:
-        raise Exception('empty pattern')
+        raise Exception("empty pattern")
     occurrences: list[tuple[int, int]] = []
     max_distance = min(max_distance, len(pattern))
     distances = [[*range(len(pattern) + 1)], [0] * (len(pattern) + 1)]
@@ -64,9 +64,10 @@ def ukkonen(text: bytes, pattern: bytes, max_distance: int) -> list[tuple[int, i
     - `text`: text to find pattern matches
     - `pattern`: pattern
     - `max_distance`: maximum value of the edit distance to report an occurrence
-    - `return`: a list of tuples containing the final index of the match (not the first index like exact algorithms) and 
+    - `return`: a list of tuples containing the final index of the match (not the first index like exact algorithms) and
         the edit distance of that match
     """
+
     def compute_next_column(column: tuple[int, ...], byte: int, pattern: bytes, max_distance: int) -> tuple[int, ...]:
         """
         Compute the column of distances given a previous column, a byte possibly from the text, and the pattern.
@@ -138,7 +139,7 @@ def ukkonen(text: bytes, pattern: bytes, max_distance: int) -> list[tuple[int, i
         return trie, goals
 
     if len(pattern) == 0:
-        raise Exception('empty pattern')
+        raise Exception("empty pattern")
     occurrences: list[tuple[int, int]] = []
     max_distance = min(max_distance, len(pattern))
     trie, goals = build_fsa(pattern, max_distance)
@@ -172,9 +173,10 @@ def wu_manber(text: bytes, pattern: bytes, max_distance: int) -> list[tuple[int,
     - `text`: text to find pattern matches
     - `pattern`: pattern
     - `max_distance`: maximum value of the edit distance to report an occurrence
-    - `return`: a list of tuples containing the final index of the match (not the first index like exact algorithms) and 
+    - `return`: a list of tuples containing the final index of the match (not the first index like exact algorithms) and
         the edit distance of that match
     """
+
     def compute_char_masks(pattern: bytes) -> tuple[list[int], int]:
         """
         Compute character masks for the pattern, to be used in the shifting operations, and the match mask.
@@ -197,7 +199,7 @@ def wu_manber(text: bytes, pattern: bytes, max_distance: int) -> list[tuple[int,
         return char_masks, match_mask
 
     if len(pattern) == 0:
-        raise Exception('empty pattern')
+        raise Exception("empty pattern")
     occurrences: list[tuple[int, int]] = []
     max_distance = min(max_distance, len(pattern))
     char_masks, match_mask = compute_char_masks(pattern)
@@ -207,11 +209,12 @@ def wu_manber(text: bytes, pattern: bytes, max_distance: int) -> list[tuple[int,
         current_masks[0] = (current_masks[0] << 1) | char_masks[byte]
         for j in range(1, max_distance + 1):
             temp = current_masks[j]
-            current_masks[j] = \
-                ((current_masks[j] << 1) | char_masks[byte]) & \
-                (current_masks[j - 1] << 1) & \
-                (previous_mask << 1) & \
-                previous_mask
+            current_masks[j] = (
+                ((current_masks[j] << 1) | char_masks[byte])
+                & (current_masks[j - 1] << 1)
+                & (previous_mask << 1)
+                & previous_mask
+            )
             previous_mask = temp
         if current_masks[max_distance] & match_mask == 0:
             distance = max_distance + 1 - sum(mask & match_mask == 0 for mask in current_masks)
@@ -229,16 +232,16 @@ def test():
 
     benchmark(
         (
-            ('  sellers', lambda args: sellers(args[0], args[1], args[2])),
-            ('  ukkonen', lambda args: ukkonen(args[0], args[1], args[2])),
-            ('wu manber', lambda args: wu_manber(args[0], args[1], args[2])),
+            ("  sellers", lambda args: sellers(args[0], args[1], args[2])),
+            ("  ukkonen", lambda args: ukkonen(args[0], args[1], args[2])),
+            ("wu manber", lambda args: wu_manber(args[0], args[1], args[2])),
         ),
-        test_inputs=((b'if you would like', b'love', 2), (b'cagtcatgcatacgtctatatcggctgc', b'ctata', 1)),
+        test_inputs=((b"if you would like", b"love", 2), (b"cagtcatgcatacgtctatatcggctgc", b"ctata", 1)),
         bench_sizes=((1000, 5, 2), (1000, 5, 5), (1000, 10, 2), (1000, 10, 5), (1000, 10, 10)),
         bench_input=lambda s: (random_bytes(s[0], 256), random_bytes(s[1], 256), s[2]),
         bench_repeat=10,
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

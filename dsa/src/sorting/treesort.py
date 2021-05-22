@@ -8,7 +8,7 @@ def treesort(array: list[float], tree: Tree[float, int]) -> list[float]:
     Sort `array` using treesort.
 
     > complexity
-    - time: `O(n*Tree.put + Tree.__iter__)` 
+    - time: `O(n*Tree.put + Tree.__iter__)`
     - space: `O(n)`
     - `n`: length of `array`
 
@@ -18,7 +18,7 @@ def treesort(array: list[float], tree: Tree[float, int]) -> list[float]:
     - `return`: `array` sorted
     """
     if len(tree) > 0:
-        raise Exception('tree must be empty')
+        raise Exception("tree must be empty")
     replacer: Callable[[int, int], int] = lambda count, old_count: old_count + count
     for value in array:
         tree.put(value, 1, replacer)
@@ -39,13 +39,13 @@ def test():
 
     sort_benchmark(
         (
-            ('treesort binary search tree', lambda array: treesort(array, BST[float, int]())),
-            ('               treesort avl', lambda array: treesort(array, AVL[float, int]())),
-            ('    treesort red-black tree', lambda array: treesort(array, RBT[float, int]())),
-            ('     treesort van Emde Boas', lambda array: treesort(array, cast(Any, VEB[int](32)))),
+            ("treesort binary search tree", lambda array: treesort(array, BST[float, int]())),
+            ("               treesort avl", lambda array: treesort(array, AVL[float, int]())),
+            ("    treesort red-black tree", lambda array: treesort(array, RBT[float, int]())),
+            ("     treesort van Emde Boas", lambda array: treesort(array, cast(Any, VEB[int](32)))),
         ),
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

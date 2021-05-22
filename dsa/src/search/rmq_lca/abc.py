@@ -7,15 +7,22 @@ from typing import Any, Callable, Generic, Iterator, Protocol, TypeVar, cast
 
 
 class Comparable(Protocol):
-    def __lt__(self, _other: Any) -> bool: ...
-    def __le__(self, _other: Any) -> bool: ...
-    def __gt__(self, _other: Any) -> bool: ...
-    def __ge__(self, _other: Any) -> bool: ...
+    def __lt__(self, _other: Any) -> bool:
+        ...
+
+    def __le__(self, _other: Any) -> bool:
+        ...
+
+    def __gt__(self, _other: Any) -> bool:
+        ...
+
+    def __ge__(self, _other: Any) -> bool:
+        ...
 
 
-T = TypeVar('T', bound=Comparable)
-U = TypeVar('U')
-N = TypeVar('N')
+T = TypeVar("T", bound=Comparable)
+U = TypeVar("U")
+N = TypeVar("N")
 
 
 class RangeMinimumQuery(Generic[T], abc.ABC):
@@ -25,7 +32,7 @@ class RangeMinimumQuery(Generic[T], abc.ABC):
     rmq plus-minus-1 is supported through the `is_plus_minus_1` function.
     """
 
-    @ abc.abstractmethod
+    @abc.abstractmethod
     def __init__(self, data: list[T]):
         """
         Initialize and the rmq internal data structure based on `data` content.
@@ -37,7 +44,7 @@ class RangeMinimumQuery(Generic[T], abc.ABC):
         - `data`: list to be indexed for range minimum queries
         """
 
-    @ abc.abstractmethod
+    @abc.abstractmethod
     def rmq(self, i: int, j: int) -> int:
         """
         Compute the minimum index and value of the data `i:j` interval (inclusive)
@@ -51,7 +58,7 @@ class RangeMinimumQuery(Generic[T], abc.ABC):
         - `return`: tuple containing index of minimum value and the minimum value itself
         """
 
-    @ abc.abstractmethod
+    @abc.abstractmethod
     def size(self) -> int:
         """
         Return the size of `data` used to create the rmq data structure.
@@ -60,7 +67,7 @@ class RangeMinimumQuery(Generic[T], abc.ABC):
         - `return`: size of `data`
         """
 
-    @ abc.abstractclassmethod
+    @abc.abstractclassmethod
     def is_plus_minus_1(cls) -> bool:
         """
         Indicates if the implementation supports only the plus-minus-1 version of the range minimum query problem.
@@ -93,11 +100,11 @@ class CartesianTree:
 def rmq_to_lca(
     array: list[T],
 ) -> tuple[
-        list[T],
-        list[CartesianTree],
-        CartesianTree,
-        Callable[[CartesianTree], CartesianTree],
-        Callable[[CartesianTree], Iterator[CartesianTree]],
+    list[T],
+    list[CartesianTree],
+    CartesianTree,
+    Callable[[CartesianTree], CartesianTree],
+    Callable[[CartesianTree], Iterator[CartesianTree]],
 ]:
     """
     Transform `array` in a binary cartesian tree where lowest common ancestor calls can be executed.
@@ -119,7 +126,7 @@ def rmq_to_lca(
             `None` elements if the left or right subtrees do not exist
     """
     if len(array) < 1:
-        raise Exception('data must contain at least one element')
+        raise Exception("data must contain at least one element")
     root = CartesianTree(0)
     mapper: list[CartesianTree] = [root]
     cursor = root
@@ -179,7 +186,7 @@ def lca_to_rmq(
             array that represent that node
     """
     if not is_binary and not plus_minus_1:
-        raise Exception('lca in non binary trees can only be converted to rmq plus-minus-1 problems')
+        raise Exception("lca in non binary trees can only be converted to rmq plus-minus-1 problems")
     rmq: list[int] = []
     backward_mapper: list[U] = []
     forward_mapper: dict[int, list[int]] = collections.defaultdict(lambda: [])

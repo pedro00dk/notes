@@ -68,7 +68,7 @@ class Stack(Generic[T], Linked[T]):
         - `return`: deleted value
         """
         if self._head is None:
-            raise IndexError('empty stack')
+            raise IndexError("empty stack")
         value = self._head.value
         self._head = self._head.next
         self._length -= 1
@@ -86,7 +86,7 @@ class Stack(Generic[T], Linked[T]):
         """
         if self._head is None:
 
-            raise IndexError('empty stack')
+            raise IndexError("empty stack")
         return self._head.value
 
 
@@ -94,27 +94,30 @@ def test():
     import collections
 
     from ..test import benchmark, verify
+
     stack = Stack[int]()
-    verify((
-        (stack.push, (0,)),
-        (stack.push, (1,)),
-        (stack.push, (2,)),
-        (stack.push, (3,)),
-        (stack.push, (4,)),
-        (stack.push, (5,)),
-        (print, (stack,)),
-        (stack.pop, (), 5),
-        (stack.pop, (), 4),
-        (stack.peek, (), 3),
-        (print, (stack,)),
-        (stack.pop, (), 3),
-        (stack.pop, (), 2),
-        (stack.peek, (), 1),
-        (print, (stack,)),
-        (stack.pop, (), 1),
-        (stack.pop, (), 0),
-        (print, (stack,)),
-    ))
+    verify(
+        (
+            (stack.push, (0,)),
+            (stack.push, (1,)),
+            (stack.push, (2,)),
+            (stack.push, (3,)),
+            (stack.push, (4,)),
+            (stack.push, (5,)),
+            (print, (stack,)),
+            (stack.pop, (), 5),
+            (stack.pop, (), 4),
+            (stack.peek, (), 3),
+            (print, (stack,)),
+            (stack.pop, (), 3),
+            (stack.pop, (), 2),
+            (stack.peek, (), 1),
+            (print, (stack,)),
+            (stack.pop, (), 1),
+            (stack.pop, (), 0),
+            (print, (stack,)),
+        )
+    )
 
     def test_stack(count: int):
         stack = Stack[int]()
@@ -139,9 +142,9 @@ def test():
 
     benchmark(
         (
-            ('       stack', test_stack),
-            (' native list', test_native_list),
-            ('native deque', test_native_deque),
+            ("       stack", test_stack),
+            (" native list", test_native_list),
+            ("native deque", test_native_deque),
         ),
         test_inputs=(),
         bench_sizes=(0, 1, 10, 100, 1000, 10000, 100000),
@@ -149,5 +152,5 @@ def test():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

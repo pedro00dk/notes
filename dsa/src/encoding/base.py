@@ -2,12 +2,12 @@ import math
 from typing import Any, Literal, Optional, cast
 
 # RFC4648 alphabets for the base_encode and base_decode algorithms
-BASE16_ALPHABET = b'0123456789ABCDEF'
-BASE32_ALPHABET = b'ABCEDFGHIJKLMNOPQRSTUVWXYZ234567'
-BASE32_EXTHEX_ALPHABET = b'0123456789ABCDEFGHIJKLMNOPQRSTUV'
-BASE64_ALPHABET = b'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-BASE64_URLSAFE_ALPHABET = b'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'
-PADCHAR = b'='
+BASE16_ALPHABET = b"0123456789ABCDEF"
+BASE32_ALPHABET = b"ABCEDFGHIJKLMNOPQRSTUVWXYZ234567"
+BASE32_EXTHEX_ALPHABET = b"0123456789ABCDEFGHIJKLMNOPQRSTUV"
+BASE64_ALPHABET = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+BASE64_URLSAFE_ALPHABET = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+PADCHAR = b"="
 PADCHAR_ASCII = ord(PADCHAR)
 
 
@@ -71,12 +71,12 @@ def base_decode(data: bytes, alphabet: bytes = BASE64_ALPHABET, padding: bool = 
     cache = 0
     shift = 0
     if padding and len(data) % encoded_word_bytes != 0:
-        raise Exception('data must be padded')
+        raise Exception("data must be padded")
     pad_size = 0
     for pad_size, byte in enumerate(memoryview(data)[::-1]):
         if byte != PADCHAR_ASCII:
             break
-    for byte in memoryview(data)[:-pad_size if pad_size > 0 else None]:
+    for byte in memoryview(data)[: -pad_size if pad_size > 0 else None]:
         cache = (cache << bits) | decoder[byte]
         shift += bits
         for shift in range(shift - 8, -1, -8):
@@ -88,8 +88,8 @@ def base_decode(data: bytes, alphabet: bytes = BASE64_ALPHABET, padding: bool = 
 
 # default ascii85, RFC1924 base85, and zeromq alphabets
 ASCII85_ALPHABET = bytes(i for i in range(33, 118))
-BASE85_ALPHABET = b'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~'
-ZMQ85_ALPHABET = b'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#'
+BASE85_ALPHABET = b"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~"
+ZMQ85_ALPHABET = b"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#"
 
 
 def _x85_encode(
@@ -98,7 +98,7 @@ def _x85_encode(
     alphabet: bytes,
     padding: bool = False,
     fold_null: Optional[bytes] = None,
-    fold_space: Optional[bytes] = None
+    fold_space: Optional[bytes] = None,
 ) -> bytearray:
     """
     Helper encoder for both ascii85 and base85 algorithms.
@@ -121,21 +121,21 @@ def _x85_encode(
     available_bytes = 0
     for i in range(0, len(data), 4):
         available_bytes = min(len(data) - i, 4)
-        word = int.from_bytes(data[i: i + 4], 'big') << (4 - available_bytes) * 8
+        word = int.from_bytes(data[i : i + 4], "big") << (4 - available_bytes) * 8
         if fold_null is not None and word == 0 and (available_bytes == 4 or padding):
             encoded.extend(fold_null)
             continue
         if fold_space is not None and word == 0x202020:
             encoded.extend(fold_space)
             continue
-        encoded.append(alphabet[word // 85**4 % 85])
-        encoded.append(alphabet[word // 85**3 % 85])
-        encoded.append(alphabet[word // 85**2 % 85])
-        encoded.append(alphabet[word // 85**1 % 85])
-        encoded.append(alphabet[word // 85**0 % 85])
+        encoded.append(alphabet[word // 85 ** 4 % 85])
+        encoded.append(alphabet[word // 85 ** 3 % 85])
+        encoded.append(alphabet[word // 85 ** 2 % 85])
+        encoded.append(alphabet[word // 85 ** 1 % 85])
+        encoded.append(alphabet[word // 85 ** 0 % 85])
     if not padding and 0 < available_bytes < 4:
         pad_bytes = 5 - math.ceil(available_bytes * (5 / 4))
-        encoded[-pad_bytes:] = b''
+        encoded[-pad_bytes:] = b""
     return encoded
 
 
@@ -147,7 +147,7 @@ def _x85_decode(
     alphabet: bytes,
     unfold_null: Optional[bytes] = None,
     unfold_space: Optional[bytes] = None,
-    skip: bytes = b' \t\n\r\v'
+    skip: bytes = b" \t\n\r\v",
 ) -> bytearray:
     """
     Helper decoder for both ascii85 and base85 algorithms.
@@ -181,26 +181,26 @@ def _x85_decode(
             continue
         if byte == unfold_null_ascii:
             if available_bytes > 0:
-                raise Exception('null folding character found inside word')
-            decoded.extend(b'\0\0\0\0')
+                raise Exception("null folding character found inside word")
+            decoded.extend(b"\0\0\0\0")
             continue
         if byte == unfold_space_ascii:
             if available_bytes > 0:
-                raise Exception('space folding character found inside word')
-            decoded.extend(b'\x20\x20\x20\x20')
+                raise Exception("space folding character found inside word")
+            decoded.extend(b"\x20\x20\x20\x20")
             continue
         cache = cache * 85 + decoder[byte]
         available_bytes += 1
         if available_bytes < 5:
             continue
-        decoded.extend(cache.to_bytes(4, 'big'))
+        decoded.extend(cache.to_bytes(4, "big"))
         cache = 0
         available_bytes = 0
     if available_bytes > 0:
         for i in range(available_bytes, 5):
             cache = cache * 85 + 84
         pad_bytes = 4 - math.floor(available_bytes * (4 / 5))
-        decoded.extend(cache.to_bytes(4, 'big')[:-pad_bytes])
+        decoded.extend(cache.to_bytes(4, "big")[:-pad_bytes])
     return decoded
 
 
@@ -225,10 +225,10 @@ def ascii85_encode(data: bytes, padding: bool = False, fold_space: bool = False,
     """
     encoded = bytearray()
     if adobe:
-        encoded.extend(b'<~')
-    result = _x85_encode(data, encoded, ASCII85_ALPHABET, padding, b'z', b'y' if fold_space else None)
+        encoded.extend(b"<~")
+    result = _x85_encode(data, encoded, ASCII85_ALPHABET, padding, b"z", b"y" if fold_space else None)
     if adobe:
-        encoded.extend(b'~>')
+        encoded.extend(b"~>")
     return result
 
 
@@ -251,14 +251,14 @@ def asci85_decode(data: bytes, unfold_space: bool = False, adobe: bool = False) 
     - `adobe: bool? = False`: check adobe prefix `b'<~'` and suffix `b'~>'` in the encoded data
     - `return`: decoded data
     """
-    if adobe and (not data.startswith(b'<~') or not data.endswith(b'~>')):
-        raise Exception('data does not contain adobe prefix or suffix')
+    if adobe and (not data.startswith(b"<~") or not data.endswith(b"~>")):
+        raise Exception("data does not contain adobe prefix or suffix")
     start = 0 if not adobe else 2
     end = len(data) if not adobe else -2
-    return _x85_decode(data, start, end, bytearray(), ASCII85_ALPHABET, b'z', b'y' if unfold_space else None)
+    return _x85_decode(data, start, end, bytearray(), ASCII85_ALPHABET, b"z", b"y" if unfold_space else None)
 
 
-def base85_encode(data: bytes, alphabet_name: Literal['git', 'zmq'] = 'git', padding: bool = False) -> bytearray:
+def base85_encode(data: bytes, alphabet_name: Literal["git", "zmq"] = "git", padding: bool = False) -> bytearray:
     """
     Base85 encoding algorithm.
     This algorithm accepts two alphabets, a based on the git binary diffs (RFC1924), and an alphabet proposed by zeromq,
@@ -276,11 +276,11 @@ def base85_encode(data: bytes, alphabet_name: Literal['git', 'zmq'] = 'git', pad
     - `padding`: add null padding to `data` (works differently from base64 or base32)
     - `return`: encoded data
     """
-    alphabet = BASE85_ALPHABET if alphabet_name == 'git' else ZMQ85_ALPHABET
+    alphabet = BASE85_ALPHABET if alphabet_name == "git" else ZMQ85_ALPHABET
     return _x85_encode(data, bytearray(), alphabet, padding)
 
 
-def base85_decode(data: bytes, alphabet_name: Literal['git', 'zmq'] = 'git') -> bytearray:
+def base85_decode(data: bytes, alphabet_name: Literal["git", "zmq"] = "git") -> bytearray:
     """
     Base85 decoding algorithm.
     This algorithm accepts two alphabets, a based on the git binary diffs (RFC1924), and an alphabet proposed by zeromq,
@@ -298,8 +298,8 @@ def base85_decode(data: bytes, alphabet_name: Literal['git', 'zmq'] = 'git') -> 
 
     - `return`: encoded data
     """
-    alphabet = BASE85_ALPHABET if alphabet_name == 'git' else ZMQ85_ALPHABET
-    return _x85_decode(data, 0, len(data), bytearray(), alphabet, skip=b'')
+    alphabet = BASE85_ALPHABET if alphabet_name == "git" else ZMQ85_ALPHABET
+    return _x85_decode(data, 0, len(data), bytearray(), alphabet, skip=b"")
 
 
 def test():
@@ -323,24 +323,24 @@ def test():
 
     benchmark(
         (
-            ('        base16', lambda data: test_base(data, BASE16_ALPHABET)),
-            ('        base32', lambda data: test_base(data, BASE32_ALPHABET)),
-            (' base32 exthex', lambda data: test_base(data, BASE32_EXTHEX_ALPHABET)),
-            ('        base64', lambda data: test_base(data, BASE64_ALPHABET)),
-            ('base64 urlsafe', lambda data: test_base(data, BASE64_URLSAFE_ALPHABET)),
-            ('       ascii85', lambda data: test_func(data, ascii85_encode, asci85_decode)),
-            ('        base85', lambda data: test_func(data, base85_encode, base85_decode)),
-            (' native base16', lambda data: test_func(data, base64.b16encode, base64.b16decode)),
-            (' native base32', lambda data: test_func(data, base64.b32encode, base64.b32decode)),
-            (' native base64', lambda data: test_func(data, base64.b64encode, base64.b64decode)),
-            (' native base85', lambda data: test_func(data, base64.b85encode, base64.b85decode)),
-            ('native ascii85', lambda data: test_func(data, base64.a85encode, base64.a85decode)),
+            ("        base16", lambda data: test_base(data, BASE16_ALPHABET)),
+            ("        base32", lambda data: test_base(data, BASE32_ALPHABET)),
+            (" base32 exthex", lambda data: test_base(data, BASE32_EXTHEX_ALPHABET)),
+            ("        base64", lambda data: test_base(data, BASE64_ALPHABET)),
+            ("base64 urlsafe", lambda data: test_base(data, BASE64_URLSAFE_ALPHABET)),
+            ("       ascii85", lambda data: test_func(data, ascii85_encode, asci85_decode)),
+            ("        base85", lambda data: test_func(data, base85_encode, base85_decode)),
+            (" native base16", lambda data: test_func(data, base64.b16encode, base64.b16decode)),
+            (" native base32", lambda data: test_func(data, base64.b32encode, base64.b32decode)),
+            (" native base64", lambda data: test_func(data, base64.b64encode, base64.b64decode)),
+            (" native base85", lambda data: test_func(data, base64.b85encode, base64.b85decode)),
+            ("native ascii85", lambda data: test_func(data, base64.a85encode, base64.a85decode)),
         ),
-        test_inputs=(b'Man', b'hello world!', b'Pedro'),
+        test_inputs=(b"Man", b"hello world!", b"Pedro"),
         bench_sizes=(100, 1000, 10000, 100000),
         bench_input=lambda s: random_bytes(s, 256),
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

@@ -12,14 +12,14 @@ GapFunction = Callable[[int, int], int]
 # Gap functions may produce increasing or decresing gap sizes.
 # Increasing sequences stop when the gap is greater than `n`, or two equal gaps where generated.
 # Decreasing sequences stop at 1.
-SHELL1959: GapFunction = lambda n, k: max(n // (2 * k), 1)                                 # O(n**2)
-FRANKLAZARUS1960: GapFunction = lambda n, k: 2 * math.floor(n / 2**k) + 1                  # O(n**(3/2))
-HIBBARD1963: GapFunction = lambda n, k: 2**k - 1                                           # O(n**(3/2))
-PAPERNOVSTASEVICH1965: GapFunction = lambda n, k: 2**(k - 1) + 1 if k > 1 else 1           # O(n**(3/2))
-KNUTH1973: GapFunction = lambda n, k: min((3**k - 1) // 2, math.ceil(n / 3))               # O(n**(3/2))
-SEDGEWICK1982: GapFunction = lambda n, k: 4**(k) - 1 + 3 * 2**(k - 2) + 1 if k > 1 else 1  # O(n**(4/3))
-TOKUDA1992: GapFunction = lambda n, k: math.ceil((1 / 5) * (9 * (9 / 4)**(k - 1) - 4))     # unknown
-CIURA2001: GapFunction = lambda n, k: (1, 4, 10, 23, 57, 132, 301, 701)[min(k - 1, 7)]     # unknown
+SHELL1959: GapFunction = lambda n, k: max(n // (2 * k), 1)  # O(n**2)
+FRANKLAZARUS1960: GapFunction = lambda n, k: 2 * math.floor(n / 2 ** k) + 1  # O(n**(3/2))
+HIBBARD1963: GapFunction = lambda n, k: 2 ** k - 1  # O(n**(3/2))
+PAPERNOVSTASEVICH1965: GapFunction = lambda n, k: 2 ** (k - 1) + 1 if k > 1 else 1  # O(n**(3/2))
+KNUTH1973: GapFunction = lambda n, k: min((3 ** k - 1) // 2, math.ceil(n / 3))  # O(n**(3/2))
+SEDGEWICK1982: GapFunction = lambda n, k: 4 ** (k) - 1 + 3 * 2 ** (k - 2) + 1 if k > 1 else 1  # O(n**(4/3))
+TOKUDA1992: GapFunction = lambda n, k: math.ceil((1 / 5) * (9 * (9 / 4) ** (k - 1) - 4))  # unknown
+CIURA2001: GapFunction = lambda n, k: (1, 4, 10, 23, 57, 132, 301, 701)[min(k - 1, 7)]  # unknown
 
 
 def gapgen(length: int, gap_function: GapFunction) -> list[int]:
@@ -78,18 +78,18 @@ def test():
 
     sort_benchmark(
         (
-            ('             shellsort Shell 1959', lambda array: shellsort(array, gap_function=SHELL1959)),
-            ('      shellsort FrankLazarus 1960', lambda array: shellsort(array, gap_function=FRANKLAZARUS1960)),
-            ('           shellsort Hibbard 1963', lambda array: shellsort(array, gap_function=HIBBARD1963)),
-            ('shellsort Papernov Stasevich 1965', lambda array: shellsort(array, gap_function=PAPERNOVSTASEVICH1965)),
-            ('             shellsort Knuth 1973', lambda array: shellsort(array, gap_function=KNUTH1973)),
-            ('         shellsort Sedgewick 1982', lambda array: shellsort(array, gap_function=SEDGEWICK1982)),
-            ('            shellsort Tokuda 1992', lambda array: shellsort(array, gap_function=TOKUDA1992)),
-            ('             shellsort Ciura 2001', lambda array: shellsort(array, gap_function=CIURA2001)),
+            ("             shellsort Shell 1959", lambda array: shellsort(array, gap_function=SHELL1959)),
+            ("      shellsort FrankLazarus 1960", lambda array: shellsort(array, gap_function=FRANKLAZARUS1960)),
+            ("           shellsort Hibbard 1963", lambda array: shellsort(array, gap_function=HIBBARD1963)),
+            ("shellsort Papernov Stasevich 1965", lambda array: shellsort(array, gap_function=PAPERNOVSTASEVICH1965)),
+            ("             shellsort Knuth 1973", lambda array: shellsort(array, gap_function=KNUTH1973)),
+            ("         shellsort Sedgewick 1982", lambda array: shellsort(array, gap_function=SEDGEWICK1982)),
+            ("            shellsort Tokuda 1992", lambda array: shellsort(array, gap_function=TOKUDA1992)),
+            ("             shellsort Ciura 2001", lambda array: shellsort(array, gap_function=CIURA2001)),
         ),
         bench_sizes=(0, 1, 10, 100, 1000),
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()
