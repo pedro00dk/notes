@@ -36,9 +36,9 @@ macro_rules! vector_default {
     };
 }
 
-macro_rules! vector_operation {
+macro_rules! vector_operator {
     (unary $v:ident { $($field:ident),+ } $trt:ident::$func:ident) => {
-        impl<T: $trt<Output=T>> $trt for $v<T> {
+        impl<T: $trt<Output = T>> $trt for $v<T> {
             type Output = Self;
             fn $func(self) -> Self::Output {
                 Self::Output { $($field: $trt::$func(self.$field)),+ }
@@ -49,13 +49,13 @@ macro_rules! vector_operation {
         impl<T: $trt<Output = T>> $trt for $v<T> {
             type Output = Self;
             fn $func(self, rhs: Self) -> Self::Output {
-                Self { $($field: $trt::$func(self.$field, rhs.$field)),+ }
+                Self::Output { $($field: $trt::$func(self.$field, rhs.$field)),+ }
             }
         }
-        impl<T: $trt<Output = T> + Copy> $trt<T> for $v<T> {
-            type Output = Self;
+        impl<T: $trt<T, Output = T> + Copy> $trt<T> for $v<T> {
+            type Output = $v<T>;
             fn $func(self, rhs: T) -> Self::Output {
-                Self { $($field: $trt::$func(self.$field, rhs)),+ }
+                Self::Output { $($field: $trt::$func(self.$field, rhs)),+ }
             }
         }
     };
@@ -75,11 +75,11 @@ macro_rules! vector_operation {
 
 vector_default! { V3 { x , y, z } }
 // vector_default! { V4 { x , y, z } }
-vector_operation! { unary V3 { x , y, z } Not::not}
-vector_operation! { unary V3 { x , y, z } Neg::neg}
-vector_operation! { binary V3 { x , y, z } Add::add}
-vector_operation! { binary V3 { x , y, z } Sub::sub}
-vector_operation! { assign V3 { x , y, z } AddAssign::add_assign}
+vector_operator! { unary V3 { x , y, z } Not::not}
+vector_operator! { unary V3 { x , y, z } Neg::neg}
+vector_operator! { binary V3 { x , y, z } Add::add}
+vector_operator! { binary V3 { x , y, z } Sub::sub}
+vector_operator! { assign V3 { x , y, z } AddAssign::add_assign}
 
 impl<T: Copy + Default + Num> Vx<T> for V3<T> {}
 

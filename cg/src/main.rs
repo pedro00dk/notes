@@ -1,4 +1,5 @@
 mod util;
+
 use util::Vx;
 
 fn main() {
