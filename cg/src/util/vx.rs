@@ -1,7 +1,5 @@
 #![allow(dead_code)]
-use core::slice::SlicePattern;
-use num::{Num, One, Zero};
-// use std::fmt::Debug;
+use num::Num;
 use std::iter::FromIterator;
 use std::ops::{Add, AddAssign, Neg, Not, Sub};
 
@@ -75,49 +73,45 @@ macro_rules! vector_operator {
     };
 }
 
+macro_rules! vector_iterator {
+    (from $v:ident { $($field:ident),+ }) => {
+        impl<T: Default> FromIterator<T> for $v<T> {
+            fn from_iter<U: IntoIterator<Item = T>>(iter: U) -> Self {
+                let mut iter = iter.into_iter();
+                Self { $($field: iter.next().unwrap_or_default()),+ }
+            }
+        }
+        impl<'a, T: 'a + Copy + Default> FromIterator<&'a T> for $v<T> {
+            fn from_iter<U: IntoIterator<Item = &'a T>>(iter: U) -> Self {
+                let mut iter = iter.into_iter();
+                Self { $($field: *iter.next().unwrap_or(&T::default())),+ }
+            }
+        }
+    };
+    (into $v:ident { $($field:ident),+ } $size:expr) => {
+        impl<T> IntoIterator for $v<T> {
+            type Item = T;
+            type IntoIter = std::array::IntoIter<T, $size>;
+            fn into_iter(self) -> Self::IntoIter {
+                std::array::IntoIter::new([ $(self.$field),* ])
+            }
+        }
+        impl<T: Copy> IntoIterator for &$v<T> {
+            type Item = T;
+            type IntoIter = std::array::IntoIter<T, $size>;
+            fn into_iter(self) -> Self::IntoIter {
+                std::array::IntoIter::new([ $(self.$field),* ])
+            }
+        }
+
+    };
+}
+
 vector_default! { V3 { x , y, z } }
-vector_operator! { unary V3 { x , y, z } Not::not}
-vector_operator! { unary V3 { x , y, z } Neg::neg}
-vector_operator! { binary V3 { x , y, z } Add::add}
-vector_operator! { binary V3 { x , y, z } Sub::sub}
-vector_operator! { assign V3 { x , y, z } AddAssign::add_assign}
-
-impl<T: Default> FromIterator<T> for V3<T> {
-    fn from_iter<U: IntoIterator<Item = T>>(iter: U) -> Self {
-        let mut iter = iter.into_iter();
-        Self {
-            x: iter.next().unwrap_or_default(),
-            y: iter.next().unwrap_or_default(),
-            z: iter.next().unwrap_or_default(),
-        }
-    }
-}
-
-impl<'a, T: Copy + Default> FromIterator<&'a T> for &'a V3<T> {
-    fn from_iter<U: IntoIterator<Item = &'a T>>(iter: U) -> Self {
-        let mut iter = iter.into_iter();
-        Self {
-            x: *iter.next().unwrap_or_else(|| &T::default()),
-            y: *iter.next().unwrap_or_else(|| &T::default()),
-            z: *iter.next().unwrap_or_else(|| &T::default()),
-        }
-    }
-}
-
-impl<T> IntoIterator for V3<T> {
-    type Item = T;
-    type IntoIter = std::array::IntoIter<T, 3>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        std::array::IntoIter::new([self.x, self.y, self.z])
-    }
-}
-
-impl<'a, T> IntoIterator for &'a V3<T> {
-    type Item = &'a T;
-    type IntoIter = std::slice::Iter<'a, T>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        [self.x, self.y, self.z].into_iter()
-    }
-}
+vector_operator! { unary V3 { x , y, z } Not::not }
+vector_operator! { unary V3 { x , y, z } Neg::neg }
+vector_operator! { binary V3 { x , y, z } Add::add }
+vector_operator! { binary V3 { x , y, z } Sub::sub }
+vector_operator! { assign V3 { x , y, z } AddAssign::add_assign }
+vector_iterator! { from V3 { x , y, z } }
+vector_iterator! { into V3 { x , y, z } 3 }

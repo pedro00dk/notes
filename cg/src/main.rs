@@ -12,6 +12,8 @@ fn main() {
 
     let x = vec![1, 2, 3, 4, 5];
     let z = util::V3::from_iter(x);
+    let u = z.into_iter();
+    let b = z + z;
 
-    println!("Hello, world! ${:?}  ---- {:?} {:?}", z, -v, u - 3.0);
+    println!("Hello, world! ${:?}  ---- {:?} {:?}", z, u, b);
 }
