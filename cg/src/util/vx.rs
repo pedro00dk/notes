@@ -1,7 +1,7 @@
 #![allow(dead_code)]
-use num::Num;
+use num::{Float, Num};
 use std::iter::FromIterator;
-use std::ops::{Add, AddAssign, Neg, Not, Sub};
+use std::ops::*;
 
 pub trait Vx<T>
 where
@@ -32,43 +32,6 @@ macro_rules! vector_default {
     ($v:ident { $($field:ident),+ }) => {
         impl<T: Default> Default for $v<T> {
             fn default() -> Self { Self { $($field: T::default()),+ } }
-        }
-    };
-}
-
-macro_rules! vector_operator {
-    (unary $v:ident { $($field:ident),+ } $trt:ident::$func:ident) => {
-        impl<T: $trt<Output = T>> $trt for $v<T> {
-            type Output = Self;
-            fn $func(self) -> Self::Output {
-                Self::Output { $($field: $trt::$func(self.$field)),+ }
-            }
-        }
-    };
-    (binary $v:ident { $($field:ident),+ } $trt:ident::$func:ident) => {
-        impl<T: $trt<Output = T>> $trt for $v<T> {
-            type Output = Self;
-            fn $func(self, rhs: Self) -> Self::Output {
-                Self::Output { $($field: $trt::$func(self.$field, rhs.$field)),+ }
-            }
-        }
-        impl<T: $trt<Output = T> + Copy> $trt<T> for $v<T> {
-            type Output = Self;
-            fn $func(self, rhs: T) -> Self::Output {
-                Self::Output { $($field: $trt::$func(self.$field, rhs)),+ }
-            }
-        }
-    };
-    (assign $v:ident { $($field:ident),+ } $trt:ident::$func:ident) => {
-        impl<T: $trt> $trt for $v<T> {
-            fn $func(&mut self, rhs: Self) {
-                $($trt::$func(&mut self.$field, rhs.$field));*
-            }
-        }
-        impl<T: $trt + Copy> $trt<T> for $v<T> {
-            fn $func(&mut self, rhs: T) {
-                $($trt::$func(&mut self.$field, rhs));*
-            }
         }
     };
 }
@@ -144,12 +107,79 @@ macro_rules! vector_iterator {
     };
 }
 
+macro_rules! vector_comparator {
+    ($v:ident { $($field:ident),+ }) => {
+        impl<T: Float> PartialOrd for $v<T> {
+            fn partial_cmp(&self, rhs: &Self) -> Option<std::cmp::Ordering> {
+                let self_mag_2 = $(self.$field * self.$field +)+ T::zero();
+                let rhs_mag_2 = $(rhs.$field * rhs.$field +)+ T::zero();
+                return match self_mag_2 - rhs_mag_2 {
+                    x if x < T::zero() => Some(std::cmp::Ordering::Less),
+                    x if x > T::zero() => Some(std::cmp::Ordering::Greater),
+                    _ => Some(std::cmp::Ordering::Equal),
+                };
+            }
+        }
+        impl<T: PartialEq> PartialEq for $v<T> {
+            fn eq(&self, rhs: &Self) -> bool {
+                $(self.$field == rhs.$field)&&+
+            }
+        }
+
+    };
+}
+
+macro_rules! vector_operator {
+    (unary $v:ident { $($field:ident),+ } $trt:ident::$func:ident) => {
+        impl<T: $trt<Output = T>> $trt for $v<T> {
+            type Output = Self;
+            fn $func(self) -> Self::Output {
+                Self::Output { $($field: $trt::$func(self.$field)),+ }
+            }
+        }
+    };
+    (binary $v:ident { $($field:ident),+ } $trt:ident::$func:ident) => {
+        impl<T: $trt<Output = T>> $trt for $v<T> {
+            type Output = Self;
+            fn $func(self, rhs: Self) -> Self::Output {
+                Self::Output { $($field: $trt::$func(self.$field, rhs.$field)),+ }
+            }
+        }
+        impl<T: $trt<Output = T> + Copy> $trt<T> for $v<T> {
+            type Output = Self;
+            fn $func(self, rhs: T) -> Self::Output {
+                Self::Output { $($field: $trt::$func(self.$field, rhs)),+ }
+            }
+        }
+    };
+    (assign $v:ident { $($field:ident),+ } $trt:ident::$func:ident) => {
+        impl<T: $trt> $trt for $v<T> {
+            fn $func(&mut self, rhs: Self) {
+                $($trt::$func(&mut self.$field, rhs.$field));*
+            }
+        }
+        impl<T: $trt + Copy> $trt<T> for $v<T> {
+            fn $func(&mut self, rhs: T) {
+                $($trt::$func(&mut self.$field, rhs));*
+            }
+        }
+    };
+}
+
 vector_default! { V3 { x , y, z } }
+vector_from_into! { V3 { x , y, z } 3 }
+vector_iterator! { from V3 { x , y, z } }
+vector_iterator! { into V3 { x , y, z } 3 }
+vector_comparator! { V3 { x , y, z } }
 vector_operator! { unary V3 { x , y, z } Not::not }
 vector_operator! { unary V3 { x , y, z } Neg::neg }
 vector_operator! { binary V3 { x , y, z } Add::add }
 vector_operator! { binary V3 { x , y, z } Sub::sub }
+vector_operator! { binary V3 { x , y, z } Mul::mul }
+vector_operator! { binary V3 { x , y, z } Div::div }
+vector_operator! { binary V3 { x , y, z } Rem::rem }
 vector_operator! { assign V3 { x , y, z } AddAssign::add_assign }
-vector_from_into! { V3 { x , y, z } 3 }
-vector_iterator! { from V3 { x , y, z } }
-vector_iterator! { into V3 { x , y, z } 3 }
+vector_operator! { assign V3 { x , y, z } SubAssign::sub_assign }
+vector_operator! { assign V3 { x , y, z } MulAssign::mul_assign }
+vector_operator! { assign V3 { x , y, z } DivAssign::div_assign }
+vector_operator! { assign V3 { x , y, z } RemAssign::rem_assign }

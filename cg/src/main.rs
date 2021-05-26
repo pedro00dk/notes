@@ -10,12 +10,14 @@ fn main() {
     u += 3.0;
     u += v;
 
-    let x = vec![1, 2, 3, 4, 5];
+    let x = vec![1f32, 2.0, 3.0, 4.0, 5.0];
     let z = util::V3::from_iter(x);
     let u = z.into_iter();
-    let b = z + z;
-
+    let mut b = z + z;
+    b += v;
     // let c: [i32; 3] = From::from(b);
+
+    println!("{}", b == v);
 
     println!("Hello, world! ${:?}  ---- {:?} {:?}", z, u, b);
 }
