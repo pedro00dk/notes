@@ -1,5 +1,6 @@
 mod util;
 
+use std::iter::FromIterator;
 use util::Vx;
 
 fn main() {
@@ -9,5 +10,8 @@ fn main() {
     u += 3.0;
     u += v;
 
-    println!("Hello, world! {:?} {:?} {:?}", -v, u - 3.0, v + u);
+    let x = vec![1, 2, 3, 4, 5];
+    let z = util::V3::from_iter(x);
+
+    println!("Hello, world! ${:?}  ---- {:?} {:?}", z, -v, u - 3.0);
 }
