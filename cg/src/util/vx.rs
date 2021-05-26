@@ -45,7 +45,7 @@ macro_rules! vector_operator {
             }
         }
     };
-    (binary $v:ident { $($field:ident),+ } $trt:ident::$func:ident ) => {
+    (binary $v:ident { $($field:ident),+ } $trt:ident::$func:ident) => {
         impl<T: $trt<Output = T>> $trt for $v<T> {
             type Output = Self;
             fn $func(self, rhs: Self) -> Self::Output {
@@ -68,6 +68,43 @@ macro_rules! vector_operator {
         impl<T: $trt + Copy> $trt<T> for $v<T> {
             fn $func(&mut self, rhs: T) {
                 $($trt::$func(&mut self.$field, rhs));*
+            }
+        }
+    };
+}
+
+macro_rules! vector_from_into {
+    ($v:ident { $($field:ident),+ } $size:expr) => {
+        impl<'a, T: Copy> From<&'a [T; $size]> for $v<T> {
+            fn from(slice: &'a [T; $size]) -> Self {
+                let v: &V3<T> = From::from(slice);
+                *v
+            }
+        }
+        impl<'a, T> From<&'a [T; $size]> for &'a $v<T> {
+            fn from(slice: &'a [T; $size]) -> Self {
+                unsafe { std::mem::transmute(slice) }
+            }
+        }
+        impl<'a, T> From<&'a mut [T; $size]> for &'a mut $v<T> {
+            fn from(slice: &'a mut [T; $size]) -> Self {
+                unsafe { std::mem::transmute(slice) }
+            }
+        }
+        impl<'a, T: Copy> From<&'a $v<T>> for [T; $size] {
+            fn from(vector: &'a $v<T>) -> Self {
+                let s: &[T; 3] = From::from(vector);
+                *s
+            }
+        }
+        impl<'a, T> From<&'a $v<T>> for &'a [T; $size] {
+            fn from(vector: &'a $v<T>) -> Self {
+                unsafe { std::mem::transmute(vector) }
+            }
+        }
+        impl<'a, T> From<&'a mut $v<T>> for &'a mut [T; $size] {
+            fn from(vector: &'a mut $v<T>) -> Self {
+                unsafe { std::mem::transmute(vector) }
             }
         }
     };
@@ -113,5 +150,6 @@ vector_operator! { unary V3 { x , y, z } Neg::neg }
 vector_operator! { binary V3 { x , y, z } Add::add }
 vector_operator! { binary V3 { x , y, z } Sub::sub }
 vector_operator! { assign V3 { x , y, z } AddAssign::add_assign }
+vector_from_into! { V3 { x , y, z } 3 }
 vector_iterator! { from V3 { x , y, z } }
 vector_iterator! { into V3 { x , y, z } 3 }

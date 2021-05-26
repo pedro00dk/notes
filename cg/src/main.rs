@@ -15,5 +15,7 @@ fn main() {
     let u = z.into_iter();
     let b = z + z;
 
+    // let c: [i32; 3] = From::from(b);
+
     println!("Hello, world! ${:?}  ---- {:?} {:?}", z, u, b);
 }
