@@ -1,32 +1,107 @@
 #![allow(dead_code)]
-use num::{Float, Num};
+use num::Float;
 use std::iter::FromIterator;
+use std::mem;
 use std::ops::*;
 use std::usize;
 
 pub trait Vx<T>
 where
-    Self: Default,
-    T: Copy + Default + Num,
+    Self: Copy + Default,
+    Self: FromIterator<T> + IntoIterator<Item = T>,
+    Self: Index<usize, Output = T> + IndexMut<usize>,
+    Self: Add<Output = Self>
+        + Add<T, Output = Self>
+        + Sub<Output = Self>
+        + Sub<T, Output = Self>
+        + Mul<Output = Self>
+        + Mul<T, Output = Self>
+        + Div<Output = Self>
+        + Div<T, Output = Self>
+        + Rem<Output = Self>
+        + Rem<T, Output = Self>,
+    T: Copy + Default + Float,
 {
-    // fn dim() -> usize;
-    // fn of(value: f32) -> Self;
+    fn dim() -> usize {
+        mem::size_of::<Self>() / mem::size_of::<T>()
+    }
+
+    fn of(value: T) -> Self {
+        let mut vx = Self::default();
+        for i in 0..Self::dim() {
+            vx[i] = value;
+        }
+        vx
+    }
+
+    fn dot(&self, other: &Self) -> T {
+        (*self * *other).into_iter().fold(T::zero(), |acc, v| acc + v)
+    }
+
+    fn mag(&self) -> T {
+        self.dot(self).sqrt()
+    }
+
+    fn mag2(&self) -> T {
+        self.dot(self)
+    }
+
+    fn dist(&self, other: &Self) -> T {
+        (*self - *other).mag()
+    }
+
+    fn dist2(&self, other: &Self) -> T {
+        (*self - *other).mag2()
+    }
+
+    fn cos(&self, other: &Self) -> T {
+        self.dot(other) / (self.mag() * other.mag())
+    }
+
+    fn sin(&self, other: &Self) -> T {
+        (T::one() - self.cos(other).powi(2)).sqrt()
+    }
+
+    fn rad(&self, other: &Self) -> T {
+        self.cos(other).acos()
+    }
+
+    fn deg(&self, other: &Self) -> T {
+        self.cos(other).acos().to_degrees()
+    }
+
+    fn norm(self) -> Self {
+        self / self.mag()
+    }
 }
 
-#[repr(C)]
-#[derive(Copy, Clone, Debug)]
-pub struct V3<T> {
-    pub x: T,
-    pub y: T,
-    pub z: T,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone, Debug)]
-pub struct V4<T> {
-    pub x: T,
-    pub y: T,
-    pub w: T,
+macro_rules! vector {
+    ($v:ident $size:expr , { $($field:ident),+ }) => {
+        #[repr(C)]
+        #[derive(Copy, Clone, Debug)]
+        pub struct $v<T> {
+            $(pub $field: T),*
+        }
+        vector_default! { $v { $($field),+ } }
+        vector_from_into! { $v $size , { $($field),+ } }
+        vector_iterator! { from $v { $($field),+ } }
+        vector_iterator! { into $v $size , { $($field),+ } }
+        vector_index! { $v $size }
+        vector_comparator! { $v { $($field),+ } }
+        vector_operator! { unary $v { $($field),+ } Not::not }
+        vector_operator! { unary $v { $($field),+ } Neg::neg }
+        vector_operator! { binary $v { $($field),+ } Add::add }
+        vector_operator! { binary $v { $($field),+ } Sub::sub }
+        vector_operator! { binary $v { $($field),+ } Mul::mul }
+        vector_operator! { binary $v { $($field),+ } Div::div }
+        vector_operator! { binary $v { $($field),+ } Rem::rem }
+        vector_operator! { assign $v { $($field),+ } AddAssign::add_assign }
+        vector_operator! { assign $v { $($field),+ } SubAssign::sub_assign }
+        vector_operator! { assign $v { $($field),+ } MulAssign::mul_assign }
+        vector_operator! { assign $v { $($field),+ } DivAssign::div_assign }
+        vector_operator! { assign $v { $($field),+ } RemAssign::rem_assign }
+        impl<T: Default + Float> Vx<T> for $v<T> {}
+    };
 }
 
 macro_rules! vector_default {
@@ -41,7 +116,7 @@ macro_rules! vector_from_into {
     ($v:ident $size:expr , { $($field:ident),+ }) => {
         impl<'a, T: Copy> From<&'a [T; $size]> for $v<T> {
             fn from(slice: &'a [T; $size]) -> Self {
-                let v: &V3<T> = From::from(slice);
+                let v: &$v<T> = From::from(slice);
                 *v
             }
         }
@@ -57,7 +132,7 @@ macro_rules! vector_from_into {
         }
         impl<'a, T: Copy> From<&'a $v<T>> for [T; $size] {
             fn from(vector: &'a $v<T>) -> Self {
-                let s: &[T; 3] = From::from(vector);
+                let s: &[T; $size] = From::from(vector);
                 *s
             }
         }
@@ -110,13 +185,13 @@ macro_rules! vector_iterator {
 
 macro_rules! vector_index {
     ($v:ident $size:expr) => {
-        vector_index! { base $v 3 , usize => T }
-        vector_index! { base $v 3 , Range<usize> => [T] }
-        vector_index! { base $v 3 , RangeFrom<usize> => [T] }
-        vector_index! { base $v 3 , RangeInclusive<usize> => [T] }
-        vector_index! { base $v 3 , RangeTo<usize> => [T] }
-        vector_index! { base $v 3 , RangeToInclusive<usize> => [T] }
-        vector_index! { base $v 3 , RangeFull => [T] }
+        vector_index! { base $v $size , usize => T }
+        vector_index! { base $v $size , Range<usize> => [T] }
+        vector_index! { base $v $size , RangeFrom<usize> => [T] }
+        vector_index! { base $v $size , RangeInclusive<usize> => [T] }
+        vector_index! { base $v $size , RangeTo<usize> => [T] }
+        vector_index! { base $v $size , RangeToInclusive<usize> => [T] }
+        vector_index! { base $v $size , RangeFull => [T] }
     };
     (base $v:ident $size:expr , $indexer:ty => $out:ty ) => {
         impl<T> Index<$indexer> for $v<T> {
@@ -194,21 +269,7 @@ macro_rules! vector_operator {
     };
 }
 
-vector_default! { V3 { x , y, z } }
-vector_from_into! { V3 3 , { x , y, z } }
-vector_iterator! { from V3 { x , y, z } }
-vector_iterator! { into V3 3 , { x , y, z } }
-vector_index! { V3 3 }
-vector_comparator! { V3 { x , y, z } }
-vector_operator! { unary V3 { x , y, z } Not::not }
-vector_operator! { unary V3 { x , y, z } Neg::neg }
-vector_operator! { binary V3 { x , y, z } Add::add }
-vector_operator! { binary V3 { x , y, z } Sub::sub }
-vector_operator! { binary V3 { x , y, z } Mul::mul }
-vector_operator! { binary V3 { x , y, z } Div::div }
-vector_operator! { binary V3 { x , y, z } Rem::rem }
-vector_operator! { assign V3 { x , y, z } AddAssign::add_assign }
-vector_operator! { assign V3 { x , y, z } SubAssign::sub_assign }
-vector_operator! { assign V3 { x , y, z } MulAssign::mul_assign }
-vector_operator! { assign V3 { x , y, z } DivAssign::div_assign }
-vector_operator! { assign V3 { x , y, z } RemAssign::rem_assign }
+vector! { V1 1 , { x }}
+vector! { V2 2 , { x, y }}
+vector! { V3 3 , { x, y, z }}
+vector! { V4 4 , { x, y, z, w }}

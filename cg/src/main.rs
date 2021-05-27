@@ -25,7 +25,7 @@ fn main() {
     // &b[0..2] = 3.0;
     println!("{}", b[2]);
     // println!("{:?}", &b[0..=3]);
-    println!("{:?}", b);
+    println!("{:?}", b.mag());
 
     println!("Hello, world! ${:?}  ---- {:?} {:?}", z, u, b);
 }
