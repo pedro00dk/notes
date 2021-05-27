@@ -16,8 +16,16 @@ fn main() {
     let mut b = z + z;
     b += v;
     // let c: [i32; 3] = From::from(b);
-
+    let j = &b[0..1];
     println!("{}", b == v);
+    println!("{}", b[0]);
+    println!("{}", b[1]);
+    println!("{}", b[2]);
+    b[2] = 3.0;
+    // &b[0..2] = 3.0;
+    println!("{}", b[2]);
+    // println!("{:?}", &b[0..=3]);
+    println!("{:?}", b);
 
     println!("Hello, world! ${:?}  ---- {:?} {:?}", z, u, b);
 }

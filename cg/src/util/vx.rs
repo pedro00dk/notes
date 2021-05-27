@@ -2,6 +2,7 @@
 use num::{Float, Num};
 use std::iter::FromIterator;
 use std::ops::*;
+use std::usize;
 
 pub trait Vx<T>
 where
@@ -37,7 +38,7 @@ macro_rules! vector_default {
 }
 
 macro_rules! vector_from_into {
-    ($v:ident { $($field:ident),+ } $size:expr) => {
+    ($v:ident $size:expr , { $($field:ident),+ }) => {
         impl<'a, T: Copy> From<&'a [T; $size]> for $v<T> {
             fn from(slice: &'a [T; $size]) -> Self {
                 let v: &V3<T> = From::from(slice);
@@ -88,7 +89,7 @@ macro_rules! vector_iterator {
             }
         }
     };
-    (into $v:ident { $($field:ident),+ } $size:expr) => {
+    (into $v:ident $size:expr , { $($field:ident),+ }) => {
         impl<T> IntoIterator for $v<T> {
             type Item = T;
             type IntoIter = std::array::IntoIter<T, $size>;
@@ -104,6 +105,33 @@ macro_rules! vector_iterator {
             }
         }
 
+    };
+}
+
+macro_rules! vector_index {
+    ($v:ident $size:expr) => {
+        vector_index! { base $v 3 , usize => T }
+        vector_index! { base $v 3 , Range<usize> => [T] }
+        vector_index! { base $v 3 , RangeFrom<usize> => [T] }
+        vector_index! { base $v 3 , RangeInclusive<usize> => [T] }
+        vector_index! { base $v 3 , RangeTo<usize> => [T] }
+        vector_index! { base $v 3 , RangeToInclusive<usize> => [T] }
+        vector_index! { base $v 3 , RangeFull => [T] }
+    };
+    (base $v:ident $size:expr , $indexer:ty => $out:ty ) => {
+        impl<T> Index<$indexer> for $v<T> {
+            type Output = $out;
+            fn index(&self, index: $indexer) -> &Self::Output {
+                let ptr: &[T; $size] = From::from(self);
+                &ptr[index]
+            }
+        }
+        impl<T> IndexMut<$indexer> for $v<T> {
+            fn index_mut(&mut self, index: $indexer) -> &mut Self::Output {
+                let ptr: &mut [T; $size] = From::from(self);
+                &mut ptr[index]
+            }
+        }
     };
 }
 
@@ -167,9 +195,10 @@ macro_rules! vector_operator {
 }
 
 vector_default! { V3 { x , y, z } }
-vector_from_into! { V3 { x , y, z } 3 }
+vector_from_into! { V3 3 , { x , y, z } }
 vector_iterator! { from V3 { x , y, z } }
-vector_iterator! { into V3 { x , y, z } 3 }
+vector_iterator! { into V3 3 , { x , y, z } }
+vector_index! { V3 3 }
 vector_comparator! { V3 { x , y, z } }
 vector_operator! { unary V3 { x , y, z } Not::not }
 vector_operator! { unary V3 { x , y, z } Neg::neg }
