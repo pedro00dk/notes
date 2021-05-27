@@ -1,9 +1,7 @@
 #![allow(dead_code)]
 use num::Float;
 use std::iter::FromIterator;
-use std::mem;
 use std::ops::*;
-use std::usize;
 
 pub trait Vx<T>
 where
@@ -22,17 +20,9 @@ where
         + Rem<T, Output = Self>,
     T: Copy + Default + Float,
 {
-    fn dim() -> usize {
-        mem::size_of::<Self>() / mem::size_of::<T>()
-    }
+    fn dim() -> usize;
 
-    fn of(value: T) -> Self {
-        let mut vx = Self::default();
-        for i in 0..Self::dim() {
-            vx[i] = value;
-        }
-        vx
-    }
+    fn of(value: T) -> Self;
 
     fn dot(&self, other: &Self) -> T {
         (*self * *other).into_iter().fold(T::zero(), |acc, v| acc + v)
@@ -100,7 +90,15 @@ macro_rules! vector {
         vector_operator! { assign $v { $($field),+ } MulAssign::mul_assign }
         vector_operator! { assign $v { $($field),+ } DivAssign::div_assign }
         vector_operator! { assign $v { $($field),+ } RemAssign::rem_assign }
-        impl<T: Default + Float> Vx<T> for $v<T> {}
+
+        impl<T: Default + Float> Vx<T> for $v<T> {
+            fn dim() -> usize {
+                $size
+            }
+            fn of(value: T) -> Self {
+                Self { $($field: value),+ }
+            }
+        }
     };
 }
 
