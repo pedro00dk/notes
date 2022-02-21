@@ -1,5 +1,5 @@
 import itertools
-from typing import Any, Callable, Union, cast
+from typing import Any, Callable, cast
 
 from ..graph import Edge, Graph
 
@@ -236,10 +236,10 @@ def test():
     from ..factory import random_undirected
 
     def save_size(
-        algorithm: Callable[[Graph[Any, Any]], Union[list[int], tuple[float, list[int]]]],
+        algorithm: Callable[[Graph[Any, Any]], list[int] | tuple[float, list[int]]],
         input: Graph[Any, Any],
         sizes: list[float],
-    ) -> Union[list[int], tuple[float, list[int]]]:
+    ) -> list[int] | tuple[float, list[int]]:
         result = algorithm(input)
         sizes.append(len(result) if isinstance(result, list) else len(result[1]))
         return result

@@ -1,15 +1,15 @@
 import mmap
 import random
 import timeit
-from typing import Any, Callable, Optional, TypeVar, Union
+from typing import Any, Callable, Optional, TypeVar
 
 T = TypeVar("T")
 U = TypeVar("U")
 V = TypeVar("V")
 CheckedOperation = tuple[Callable[..., Any], tuple[Any, ...], Any]
 UncheckedOperation = tuple[Callable[..., Any], tuple[Any, ...]]
-Operation = Union[CheckedOperation, UncheckedOperation]
-AnyBytes = Union[bytes, bytearray, memoryview, mmap.mmap]
+Operation = CheckedOperation | UncheckedOperation
+AnyBytes = bytes | bytearray | memoryview | mmap.mmap
 
 
 def verify(operations: tuple[Operation, ...]):
@@ -129,7 +129,7 @@ def heuristic_approximation(label: str, optimal_results: list[float], heuristic_
 
 
 def read(
-    *, path: Optional[str] = None, string: Optional[str] = None, byte: Optional[Union[bytes, bytearray]] = None
+    *, path: Optional[str] = None, string: Optional[str] = None, byte: Optional[bytes | bytearray] = None
 ) -> tuple[AnyBytes, Callable[[], Any]]:
     """
     Returns an indexable bytes object from a file path, string, bytes or bytearray, this function allows running
