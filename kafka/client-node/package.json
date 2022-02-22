@@ -1,0 +1,10 @@
+{
+    "type": "module",
+    "dependencies": {
+        "kafkajs": "1.16.0"
+    },
+    "scripts": {
+        "consumer": "node consumer.js",
+        "producer": "node producer.js"
+    }
+}

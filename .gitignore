@@ -1,2 +1,10 @@
 .vscode/*
 *.code-workspace
+
+# python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# node
+node_modules
