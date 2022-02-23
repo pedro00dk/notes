@@ -16,7 +16,6 @@ services:
         volumes:
             - 'kafka-0-data:/bitnami'
         environment:
-            - KAFKA_BROKER_ID=0
             - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
             - ALLOW_PLAINTEXT_LISTENER=yes
             - KAFKA_CFG_LISTENERS=INTERNAL://:9090,EXTERNAL://:9080
@@ -32,7 +31,6 @@ services:
         volumes:
             - 'kafka-1-data:/bitnami'
         environment:
-            - KAFKA_BROKER_ID=1
             - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
             - ALLOW_PLAINTEXT_LISTENER=yes
             - KAFKA_CFG_LISTENERS=INTERNAL://:9090,EXTERNAL://:9081
@@ -48,7 +46,6 @@ services:
         volumes:
             - 'kafka-2-data:/bitnami'
         environment:
-            - KAFKA_BROKER_ID=2
             - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
             - ALLOW_PLAINTEXT_LISTENER=yes
             - KAFKA_CFG_LISTENERS=INTERNAL://:9090,EXTERNAL://:9082
