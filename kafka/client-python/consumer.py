@@ -10,7 +10,7 @@ import kafka
 consumer = kafka.KafkaConsumer(
     "foo",
     client_id="consumer-python",
-    # group_id="foo-consumer",
+    group_id="consumer-foo",
     bootstrap_servers=["localhost:9080", "localhost:9081", "localhost:9082"],
 )
 
@@ -25,5 +25,5 @@ signal.signal(signal.SIGINT, signal_handler)
 
 for message in consumer:
     print(
-        f'{message.topic}-{message.partition} key: {cast(bytes, message.key).decode("utf-8")} key: {cast(bytes, message.value).decode("utf-8")}'
+        f'{message.topic}-{message.partition} key: {message.key and cast(bytes, message.key).decode("utf-8")} key: {message.value and cast(bytes, message.value).decode("utf-8")}'
     )

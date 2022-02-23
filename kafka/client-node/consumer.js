@@ -5,7 +5,7 @@ const kafka = new Kafka({
     brokers: ['localhost:9080', 'localhost:9081', 'localhost:9082'],
 })
 
-const consumer = kafka.consumer({ groupId: 'foo-consumer' })
+const consumer = kafka.consumer({ groupId: 'consumer-foo' })
 await consumer.connect()
 
 process.on('SIGINT', async () => {
