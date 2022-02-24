@@ -10,7 +10,7 @@ func main() {
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"client.id":         "consumer-go",
 		"group.id":          "consumer-foo",
-		"bootstrap.servers": "localhost:9080,localhost:9081,localhost:9082",
+		"bootstrap.servers": "localhost:10200,localhost:10201,localhost:10202",
 	})
 	if err != nil {
 		panic(err)

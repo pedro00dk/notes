@@ -7,7 +7,7 @@ import time
 import kafka
 
 producer = kafka.KafkaProducer(
-    client_id="producer-python", bootstrap_servers=["localhost:9080", "localhost:9081", "localhost:9082"]
+    client_id="producer-python", bootstrap_servers=["localhost:10200", "localhost:10201", "localhost:10202"],
 )
 
 

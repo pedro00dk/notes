@@ -2,58 +2,51 @@ version: '3'
 
 services:
     zookeeper:
-        image: 'bitnami/zookeeper:3.7'
-        volumes:
-            - 'zookeeper-data:/bitnami'
+        image: 'confluentinc/cp-zookeeper:7.0.1'
+        ports:
+            - 10000:10000
         environment:
-            ZOO_SERVER_ID: 0
+            ZOOKEEPER_CLIENT_PORT: 10000
             ALLOW_ANONYMOUS_LOGIN: yes
 
-    kafka-0:
-        image: docker.io/bitnami/kafka:3
-        ports:
-            - '9080:9080'
-        volumes:
-            - 'kafka-0-data:/bitnami'
-        environment:
-            - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-            - ALLOW_PLAINTEXT_LISTENER=yes
-            - KAFKA_CFG_LISTENERS=INTERNAL://:9090,EXTERNAL://:9080
-            - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
-            - KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka-0:9090,EXTERNAL://localhost:9080
-            - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
+    kafka0:
+        image: confluentinc/cp-kafka:7.0.1
         depends_on:
             - zookeeper
-    kafka-1:
-        image: docker.io/bitnami/kafka:3
         ports:
-            - '9081:9081'
-        volumes:
-            - 'kafka-1-data:/bitnami'
+            - 10200:10200
         environment:
-            - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-            - ALLOW_PLAINTEXT_LISTENER=yes
-            - KAFKA_CFG_LISTENERS=INTERNAL://:9090,EXTERNAL://:9081
-            - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
-            - KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka-1:9090,EXTERNAL://localhost:9081
-            - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
+            KAFKA_BROKER_ID: 0
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper:10000
+            KAFKA_ADVERTISED_LISTENERS: DOCKER://kafka0:10100,HOST://localhost:10200
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER:PLAINTEXT,HOST:PLAINTEXT
+            KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+    kafka1:
+        image: confluentinc/cp-kafka:7.0.1
         depends_on:
             - zookeeper
-    kafka-2:
-        image: docker.io/bitnami/kafka:3
         ports:
-            - '9082:9082'
-        volumes:
-            - 'kafka-2-data:/bitnami'
+            - 10201:10201
         environment:
-            - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-            - ALLOW_PLAINTEXT_LISTENER=yes
-            - KAFKA_CFG_LISTENERS=INTERNAL://:9090,EXTERNAL://:9082
-            - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
-            - KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka-2:9090,EXTERNAL://localhost:9082
-            - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
+            KAFKA_BROKER_ID: 1
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper:10000
+            KAFKA_ADVERTISED_LISTENERS: DOCKER://kafka1:10100,HOST://localhost:10201
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER:PLAINTEXT,HOST:PLAINTEXT
+            KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+    kafka2:
+        image: confluentinc/cp-kafka:7.0.1
         depends_on:
             - zookeeper
+        ports:
+            - 10202:10202
+        environment:
+            KAFKA_BROKER_ID: 2
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper:10000
+            KAFKA_ADVERTISED_LISTENERS: DOCKER://kafka2:10100,HOST://localhost:10202
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER:PLAINTEXT,HOST:PLAINTEXT
+            KAFKA_INTER_BROKER_LISTENER_NAME:
+                DOCKER
+                # - ALLOW_PLAINTEXT_LISTENER=yes
 
     kafka-ui:
         image: provectuslabs/kafka-ui:latest
@@ -61,20 +54,10 @@ services:
             - 8080:8080
         depends_on:
             - zookeeper
-            - kafka-0
-            - kafka-1
-            - kafka-2
+            - kafka0
+            - kafka1
+            - kafka2
         environment:
             KAFKA_CLUSTERS_0_NAME: kafka
-            KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
-            KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-0:9090,kafka-1:9090,kafka-2:9090
-
-volumes:
-    zookeeper-data:
-        driver: local
-    kafka-0-data:
-        driver: local
-    kafka-1-data:
-        driver: local
-    kafka-2-data:
-        driver: local
+            KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:10000
+            KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka0:10100,kafka1:10100,kafka2:10100
