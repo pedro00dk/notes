@@ -1,9 +1,11 @@
 # Notes
 
-My collections of study notes on several computer science topics.
+My collections of study notes on some computer science topics, languages, and tools.
 
 ## [Data Structures and Algorithms](./dsa/)
 
 ## [Computer Graphics](./cg/)
 
-## [Docker] (./docker/)
+## [Docker](./docker/)
+
+## [Terraform](./terraform/)
