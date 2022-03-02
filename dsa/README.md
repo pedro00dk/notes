@@ -394,7 +394,7 @@ Space complexity is available in algorithms files.
         -   `StringOffline.occurrences_count` **TODO**
         -   `StringOffline.longest_repeated_substring` **TODO**
         -   `StringOffline.longest_common_prefix` **TODO**
-    -   [`SuffixTree extends StringOffline`](./src/search/string_offline/suffix_array.py) **- space: O(n)**
+    -   [`SuffixTree extends StringOffline`](./src/search/string_offline/suffix_tree.py) **- space: O(n)**
         -   `StringOffline.__init__` _(naive)_ **- O(n<sup>2</sup>)**
         -   `StringOffline.__init__` _(ukkonen)_ **- O(n)**
         -   `StringOffline.__str__` **- O(n<sup>2</sup>)**
