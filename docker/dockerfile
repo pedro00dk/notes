@@ -1,0 +1,28 @@
+# FROM command uses a docker image as a basis for this one
+FROM python:latest
+
+# set the working directory to /app
+WORKDIR /app/
+
+# copy the current directory contents into the container at /app/
+# the ADD command can also be used for copying and it has extra features
+# for caching purposes, only requirements is used in the next step
+# that way, docker can reuse previous build steps
+COPY ./requirements.txt ./
+
+# install any needed packages specified in requirements.txt
+RUN pip install --requirement ./requirements.txt
+
+# copy the rest of the files
+COPY ./ ./
+
+# tell the engine port 80 is going to be used, but does not publish it
+EXPOSE 80
+
+# define environment variable
+ENV NAME World !!!
+
+# command to run when the container launches
+# the ENTRYPOINT command can be used as well, be it has different semantics from CMD when starting containers
+# in some cases ENTRYPOINT and CMD can be combined together to form a single command
+CMD ["python", "app.py"]
