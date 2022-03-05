@@ -2,10 +2,16 @@
 
 My collections of study notes on some computer science topics, languages, and tools.
 
-## [Data Structures and Algorithms](./dsa/)
+### [Data Structures and Algorithms](./dsa/)
 
-## [Computer Graphics](./cg/)
+### [Computer Graphics](./cg/)
 
-## [Docker](./docker/)
+## Tools
 
-## [Terraform](./terraform/)
+### [Docker](./docker/)
+
+### [Terraform](./terraform/)
+
+## APIs
+
+### [Sinch](./sinch/)
