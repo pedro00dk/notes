@@ -1,13 +1,18 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"example/chat/pkg"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
+	"strings"
 	"time"
+
+	"github.com/segmentio/kafka-go"
 )
 
 type ListenRequest struct {
@@ -57,15 +62,40 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	h.onRequest(message)
 }
 
-func Listen(port int, onRequest func(message ListenRequest)) {
+func listen(port int, onRequest func(message ListenRequest)) {
 	server := http.Server{Addr: ":" + strconv.Itoa(port), Handler: &handler{onRequest}}
 	log.Fatal(server.ListenAndServe())
 }
 
+func kafkaWriter(brokers []string, topic string, create bool) *kafka.Writer {
+	if len(brokers) == 0 {
+		log.Fatal("KAFKA_BROKERS is not set")
+	}
+	return &kafka.Writer{
+		Addr:     kafka.TCP(brokers[0]),
+		Topic:    topic,
+		Balancer: &kafka.LeastBytes{},
+	}
+}
+
 func main() {
-	Listen(3000, func(request ListenRequest) {
-		x := request.Message.Contact_message
-		fmt.Printf("%T\n", x)
-		fmt.Println(x)
+	webhookPort, _ := strconv.Atoi(os.Getenv("WEBHOOK_PORT"))
+	kafkaBrokers := strings.Split(os.Getenv("KAFKA_BROKERS"), ",")
+	kafkaTopic := os.Getenv("KAFKA_TOPIC")
+	kafkaCreate := os.Getenv("KAFKA_CREATE") == "true"
+	writer := kafkaWriter(kafkaBrokers, kafkaTopic, kafkaCreate)
+	defer writer.Close()
+	listen(webhookPort, func(request ListenRequest) {
+		fmt.Println(request)
+		data, err := json.Marshal(request)
+		if err != nil {
+			data = []byte(err.Error())
+		}
+		err = writer.WriteMessages(context.Background(),
+			kafka.Message{Value: data},
+		)
+		if err != nil {
+			log.Fatal("failed to write message:", err)
+		}
 	})
 }
