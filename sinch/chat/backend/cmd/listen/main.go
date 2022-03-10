@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"example/chat/pkg"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -16,39 +15,40 @@ import (
 )
 
 type ListenRequest struct {
-	App_id           string
-	Accepted_time    time.Time
-	Event_time       time.Time
-	Message_metadata string
-	Message          struct {
-		Id               string
-		Sender_id        string
-		Contact_id       string
-		Conversation_id  string
-		Accept_time      time.Time
-		Direction        pkg.Direction
-		Processing_mode  pkg.ProcessingMode
-		Metadata         string
+	App_id           string    `json:"app_id"`
+	Accepted_time    time.Time `json:"accepted_time"`
+	Event_time       time.Time `json:"event_time"`
+	Message_metadata string    `json:"message_metadata"`
+	Message          *struct {
+		Id               string             `json:"id"`
+		Sender_id        string             `json:"sender_id"`
+		Contact_id       string             `json:"contact_id"`
+		Conversation_id  string             `json:"conversation_id"`
+		Accept_time      time.Time          `json:"accept_time"`
+		Direction        pkg.Direction      `json:"direction"`
+		Processing_mode  pkg.ProcessingMode `json:"processing_mode"`
+		Metadata         string             `json:"metadata"`
 		Channel_identity struct {
-			App_id   int
-			Identity string
-			Channel  pkg.Channel
-		}
-		Contact_message pkg.ContactMessage
-	}
-	Message_delivery_report struct {
-		Message_id       string
-		Contact_id       string
-		Conversation_id  string
-		Processing_mode  pkg.ProcessingMode
-		Status           pkg.Status
-		Metadata         string
+			App_id   string      `json:"app_id"`
+			Identity string      `json:"identity"`
+			Channel  pkg.Channel `json:"channel"`
+		} `json:"channel_identity"`
+		Contact_message pkg.ProviderMessage `json:"contact_message"`
+		// Contact_message pkg.ContactMessage `json:"contact_message"`
+	} `json:"message,omitempty"`
+	Message_delivery_report *struct {
+		Message_id       string             `json:"message_id"`
+		Contact_id       string             `json:"contact_id"`
+		Conversation_id  string             `json:"conversation_id"`
+		Processing_mode  pkg.ProcessingMode `json:"processing_mode"`
+		Status           pkg.Status         `json:"status"`
+		Metadata         string             `json:"metadata"`
 		Channel_identity struct {
-			App_id   int
-			Identity string
-			Channel  pkg.Channel
-		}
-	}
+			App_id   string      `json:"app_id"`
+			Identity string      `json:"identity"`
+			Channel  pkg.Channel `json:"channel"`
+		} `json:"channel_identity"`
+	} `json:"message_delivery_report,omitempty"`
 }
 
 type handler struct {
@@ -86,7 +86,6 @@ func main() {
 	writer := kafkaWriter(kafkaBrokers, kafkaTopic, kafkaCreate)
 	defer writer.Close()
 	listen(webhookPort, func(request ListenRequest) {
-		fmt.Println(request)
 		data, err := json.Marshal(request)
 		if err != nil {
 			data = []byte(err.Error())
