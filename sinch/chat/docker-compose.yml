@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+    # kafka containers
+    zookeeper:
+        image: 'confluentinc/cp-zookeeper:7.0.1'
+        ports:
+            - 10000:10000
+        environment:
+            ZOOKEEPER_CLIENT_PORT: 10000
+            ALLOW_ANONYMOUS_LOGIN: yes
+    kafka:
+        image: confluentinc/cp-kafka:7.0.1
+        depends_on:
+            - zookeeper
+        ports:
+            - 11001:11001
+        environment:
+            KAFKA_BROKER_ID: 0
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper:10000
+            KAFKA_ADVERTISED_LISTENERS: DOCKER://kafka:11000,HOST://localhost:11001
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER:PLAINTEXT,HOST:PLAINTEXT
+            KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+    kafka-ui:
+        image: provectuslabs/kafka-ui:latest
+        depends_on:
+            - zookeeper
+            - kafka
+        ports:
+            - 12000:8080
+        environment:
+            KAFKA_CLUSTERS_0_NAME: kafka
+            KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:10000
+            KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:11000
+
+    # application containers
+    backend:
+        build:
+            context: ./backend/
+            dockerfile: dockerfile
+        depends_on:
+            - kafka
+        ports:
+            - 3000:13000
+        environment:
+            WEBHOOK_PORT: 13000
+            KAFKA_BROKERS: kafka:11000
+            KAFKA_TOPIC: foo
+            KAFKA_CREATE: true
