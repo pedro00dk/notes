@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"example/chat/pkg"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -33,8 +34,7 @@ type ListenRequest struct {
 			Identity string      `json:"identity"`
 			Channel  pkg.Channel `json:"channel"`
 		} `json:"channel_identity"`
-		Contact_message pkg.ProviderMessage `json:"contact_message"`
-		// Contact_message pkg.ContactMessage `json:"contact_message"`
+		Contact_message pkg.ContactMessage `json:"contact_message"`
 	} `json:"message,omitempty"`
 	Message_delivery_report *struct {
 		Message_id       string             `json:"message_id"`
@@ -86,6 +86,7 @@ func main() {
 	writer := kafkaWriter(kafkaBrokers, kafkaTopic, kafkaCreate)
 	defer writer.Close()
 	listen(webhookPort, func(request ListenRequest) {
+		fmt.Println(request)
 		data, err := json.Marshal(request)
 		if err != nil {
 			data = []byte(err.Error())
