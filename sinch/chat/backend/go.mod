@@ -1,6 +1,6 @@
 module example/chat
 
-go 1.18
+go 1.17
 
 require github.com/segmentio/kafka-go v0.4.30
 

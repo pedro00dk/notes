@@ -37,11 +37,13 @@ services:
     backend:
         build:
             context: ./backend/
-            dockerfile: dockerfile
+            dockerfile: dockerfile.development
         depends_on:
             - kafka
         ports:
             - 3000:13000
+        volumes:
+            - ./backend/:/app/
         environment:
             WEBHOOK_PORT: 13000
             KAFKA_BROKERS: kafka:11000
