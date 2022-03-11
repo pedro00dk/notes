@@ -1,11 +1,16 @@
+## common ignores
+build/
+tmp/
+
+## visual studio code files and directories
 .vscode/*
 *.code-workspace
 
-# python
+## python
 .venv/
 __pycache__/
 *.py[cod]
 *$py.class
 
-# node
-node_modules
+## node
+node_modules/
