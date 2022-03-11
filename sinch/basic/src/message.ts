@@ -1,17 +1,3 @@
-export type Channel =
-    | 'INSTAGRAM'
-    | 'KAKAOTALK'
-    | 'LINE'
-    | 'MESSENGER'
-    | 'MMS'
-    | 'RCS'
-    | 'SMS'
-    | 'TELEGRAM'
-    | 'VIBER'
-    | 'VIBERBM'
-    | 'WECHAT'
-    | 'WHATSAPP'
-
 type TextMessage = { text_message: { text: string } }
 type MediaMessage = { media_message: { url: string; thumbnail_url?: string } }
 type LocationMessage = {

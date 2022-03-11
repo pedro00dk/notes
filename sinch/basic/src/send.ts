@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer'
-import { Channel, ProviderMessage } from './type'
+import { ProviderMessage } from './message'
 
 /**
  * Sinch Conversation API currently supported regions.
@@ -19,14 +19,14 @@ type SendRequest = {
     app_id: string
     recipient:
         | { contact_id: string }
-        | { identified_by: { channel_entities: { app_id?: string; identity: string; channel: Channel }[] } }
+        | { identified_by: { channel_entities: { app_id?: string; identity: string; channel: string }[] } }
     message: ProviderMessage & {
         explicit_channel_message?: { [key: string]: any }
         additionalProperties?: { contact_name?: string }
     }
     project_id?: string
     callback_url?: string
-    channel_priority_order?: Channel[]
+    channel_priority_order?: string[]
     channel_properties?: { [property: string]: string }
     message_metadata?: string
     conversation_metadata?: object

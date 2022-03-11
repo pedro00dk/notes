@@ -1,5 +1,5 @@
 import express from 'express'
-import { Channel, ContactMessage } from './type'
+import { ContactMessage } from './message'
 
 /**
  * Conversation API message type sent to webhooks.
@@ -15,7 +15,7 @@ type ListenRequest = {
         sender_id: string
         contact_id: string
         conversation_id: string
-        channel_identity: { app_id: string; identity: string; channel: Channel }
+        channel_identity: { app_id: string; identity: string; channel: string }
         accept_time: string | Date
         direction: 'TO_APP'
         processing_mode: 'CONVERSATION'
@@ -26,7 +26,7 @@ type ListenRequest = {
         message_id: string
         contact_id: string
         conversation_id: string
-        channel_identity: { app_id: string; identity: string; channel: Channel }
+        channel_identity: { app_id: string; identity: string; channel: string }
         processing_mode: 'CONVERSATION'
         metadata: ''
         status: 'QUEUED_ON_CHANNEL' | 'DELIVERED'
