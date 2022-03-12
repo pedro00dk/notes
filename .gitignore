@@ -1,6 +1,13 @@
 ## common ignores
+
+# result of build commands on different languages
 build/
+
+# temporary files that can be discarded at any moment
 tmp/
+
+# mounted volumes use by as database storages on docker
+data/
 
 ## visual studio code files and directories
 .vscode/*
