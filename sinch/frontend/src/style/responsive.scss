@@ -1,0 +1,52 @@
+@use 'sass:map';
+
+$breakpoints: (
+    min: 320px,
+    phone: 480px,
+    tablet: 768px,
+    small: 1280px,
+    large: 1920px,
+);
+
+$caps: (
+    min: 0px,
+    max: 1000000px,
+);
+
+@mixin phone($smaller: true, $larger: false) {
+    $min: if($smaller, map.get($caps, min), map.get($breakpoints, min));
+    $max: if($larger, map.get($caps, max), map.get($breakpoints, phone));
+    @media (min-width: $min) and (max-width: $max) {
+        @content;
+    }
+}
+
+@mixin tablet($smaller: false, $larger: false) {
+    $min: if($smaller, map.get($caps, min), map.get($breakpoints, phone) + 1);
+    $max: if($larger, map.get($caps, max), map.get($breakpoints, tablet));
+    @media (min-width: $min) and (max-width: $max) {
+        @content;
+    }
+}
+
+@mixin small($smaller: false, $larger: false) {
+    $min: if($smaller, map.get($caps, min), map.get($breakpoints, tablet) + 1);
+    $max: if($larger, map.get($caps, max), map.get($breakpoints, small));
+    @media (min-width: $min) and (max-width: $max) {
+        @content;
+    }
+}
+
+@mixin large($smaller: false, $larger: true) {
+    $min: if($smaller, map.get($caps, min), map.get($breakpoints, small) + 1);
+    $max: if($larger, map.get($caps, max), map.get($breakpoints, large));
+    @media (min-width: $min) and (max-width: $max) {
+        @content;
+    }
+}
+
+:root {
+    @each $breakpoint, $size in $breakpoints {
+        --breakpoint-#{$breakpoint}: #{$size};
+    }
+}

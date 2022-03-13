@@ -1,0 +1,16 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+:root,
+body {
+    block-size: 100%;
+    inline-size: 100%;
+}
+
+#root {
+    min-block-size: 100%;
+    inline-size: 100%;
+}
