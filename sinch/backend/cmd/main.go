@@ -98,6 +98,7 @@ func main() {
 	kafkaCreate := os.Getenv("KAFKA_CREATE") == "true"
 	writer := kafkaWriter(kafkaBrokers, kafkaTopic, kafkaCreate)
 	defer writer.Close()
+	fmt.Println(serverPort)
 	listen(serverPort, func(request ListenRequest) {
 		fmt.Println(request)
 		data, err := json.Marshal(request)
