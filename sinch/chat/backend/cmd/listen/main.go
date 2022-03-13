@@ -13,8 +13,13 @@ import (
 	"time"
 
 	"github.com/segmentio/kafka-go"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// Struct of Sinch Conversation API incoming requests.
+//
 type ListenRequest struct {
 	App_id           string    `json:"app_id"`
 	Accepted_time    time.Time `json:"accepted_time"`
@@ -79,22 +84,37 @@ func kafkaWriter(brokers []string, topic string, create bool) *kafka.Writer {
 }
 
 func main() {
-	webhookPort, _ := strconv.Atoi(os.Getenv("WEBHOOK_PORT"))
+	mongoClient, err := mongo.Connect(context.Background(), options.Client().ApplyURI(os.Getenv("MONGO_URL")))
+	if err != nil {
+		log.Fatal(err)
+	}
+	mongoDatabase := mongoClient.Database(os.Getenv("MONGO_DB"))
+	mongoCollectionUsers := mongoDatabase.Collection("users")
+	// mongoCollectionMessages := mongoDatabase.Collection("messages")
+
+	serverPort, _ := strconv.Atoi(os.Getenv("SERVER_PORT"))
 	kafkaBrokers := strings.Split(os.Getenv("KAFKA_BROKERS"), ",")
 	kafkaTopic := os.Getenv("KAFKA_TOPIC")
 	kafkaCreate := os.Getenv("KAFKA_CREATE") == "true"
 	writer := kafkaWriter(kafkaBrokers, kafkaTopic, kafkaCreate)
 	defer writer.Close()
-	listen(webhookPort, func(request ListenRequest) {
+	listen(serverPort, func(request ListenRequest) {
 		fmt.Println(request)
 		data, err := json.Marshal(request)
 		if err != nil {
 			data = []byte(err.Error())
 		}
-		err = writer.WriteMessages(context.Background(),
-			kafka.Message{Value: data},
+		mongoCollectionUsers.ReplaceOne(
+			context.Background(),
+			bson.M{"id": request.Message.Contact_id, "channel": request.Message.Channel_identity.Channel},
+			bson.M{
+				"id":      request.Message.Contact_id,
+				"channel": request.Message.Channel_identity.Channel,
+				"time":    request.Event_time,
+			},
+			options.Replace().SetUpsert(true),
 		)
-		if err != nil {
+		if err := writer.WriteMessages(context.Background(), kafka.Message{Value: data}); err != nil {
 			log.Fatal("failed to write message:", err)
 		}
 	})

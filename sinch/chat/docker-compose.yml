@@ -75,7 +75,9 @@ services:
         volumes:
             - ./backend/:/app/
         environment:
-            WEBHOOK_PORT: 12000
+            SERVER_PORT: 12000
+            MONGO_URL: mongodb://root:pass@mongo:10000/
+            MONGO_DB: chat
             KAFKA_BROKERS: kafka:11000
             KAFKA_TOPIC: foo
             KAFKA_CREATE: true
