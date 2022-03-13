@@ -15,19 +15,19 @@ export const App = () => (
                 },
                 {
                     name: 'Pedro Henrique',
-                    channel: 'MESSENGER',
+                    channel: 'WHATSAPP',
                     lastMessage: 'Olá, tudo bem?',
                     messageDate: subDays(new Date(), -1),
                 },
                 {
                     name: 'Pedro Henrique',
-                    channel: 'MESSENGER',
+                    channel: 'KAKAOTALK',
                     lastMessage: 'Olá, tudo bem?',
                     messageDate: new Date(),
                 },
                 {
                     name: 'Pedro Henrique',
-                    channel: 'MESSENGER',
+                    channel: 'TELEGRAM',
                     lastMessage: 'Olá, tudo bem?',
                     messageDate: subDays(new Date(), 1),
                 },
