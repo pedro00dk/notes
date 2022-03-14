@@ -1,6 +1,8 @@
-// @layer shared {
+@use '../../style/font.scss';
+
 :where(.root) {
     --padding-ratio: 1;
+    --icon-size: 1rem;
 
     display: flex;
     align-items: center;
@@ -11,12 +13,14 @@
     & > :where(input) {
         inline-size: 0;
         flex: 1;
+        @include font.label-regular;
     }
     & > :is(img, svg) {
         min-block-size: var(--icon-size);
         block-size: var(--icon-size);
         min-inline-size: var(--icon-size);
         inline-size: var(--icon-size);
+        color: inherit;
     }
 
     & > .small {
@@ -31,7 +35,7 @@
 }
 
 :where(.theme) {
-    color: var(--color-text-0);
+    color: var(--color-text-1);
     background-color: var(--color-background-2);
 
     & > :where(input) {

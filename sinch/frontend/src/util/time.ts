@@ -18,6 +18,6 @@ export const formatDate = Intl.DateTimeFormat('en-US', { day: '2-digit', month: 
  * @returns String representation of `date`.
  */
 export const formatElapsed = (date: Date, from = new Date()) => {
-    const difference = differenceInCalendarDays(new Date(), from)
-    ;(!difference ? formatTime : difference > 0 && difference < 7 ? formatWeek : formatDate).format(date)
+    const difference = differenceInCalendarDays(from, date)
+    return (!difference ? formatTime : difference > 0 && difference < 7 ? formatWeek : formatDate).format(date)
 }
