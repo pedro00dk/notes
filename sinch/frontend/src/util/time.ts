@@ -1,4 +1,8 @@
-import { differenceInCalendarDays, isToday } from 'date-fns'
+/**
+ * Utilities for printing dates.
+ */
+
+import { differenceInCalendarDays } from 'date-fns'
 
 export const formatTime = Intl.DateTimeFormat('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' })
 export const formatWeek = Intl.DateTimeFormat('en-US', { weekday: 'long' })
@@ -10,13 +14,10 @@ export const formatDate = Intl.DateTimeFormat('en-US', { day: '2-digit', month: 
  * If `date` is in the future, excluding the current day, prints the date.
  *
  * @param date Date to be printed.
+ * @param from Base date to check difference, defaults to `new Date()`.
  * @returns String representation of `date`.
  */
-export const formatElapsed = (date: Date) =>
-    differenceInCalendarDays(new Date(), date) < 0
-        ? formatDate.format(date)
-        : isToday(date)
-        ? formatTime.format(date)
-        : differenceInCalendarDays(new Date(), date) < 7
-        ? formatWeek.format(date)
-        : formatDate.format(date)
+export const formatElapsed = (date: Date, from = new Date()) => {
+    const difference = differenceInCalendarDays(new Date(), from)
+    ;(!difference ? formatTime : difference > 0 && difference < 7 ? formatWeek : formatDate).format(date)
+}
