@@ -22,21 +22,14 @@ services:
         image: mongo-express
         restart: unless-stopped
         ports:
-            - 10100:10100
+            - 10999:10999
         environment:
-            VCAP_APP_PORT: 10100
+            VCAP_APP_PORT: 10999
             ME_CONFIG_MONGODB_URL: mongodb://root:pass@mongo:10000/
         depends_on:
             - mongo
 
     # kafka and related services
-    zookeeper:
-        image: 'confluentinc/cp-zookeeper:7.0.1'
-        ports:
-            - 11100:11100
-        environment:
-            ZOOKEEPER_CLIENT_PORT: 11100
-            ALLOW_ANONYMOUS_LOGIN: yes
     kafka:
         image: confluentinc/cp-kafka:7.0.1
         depends_on:
@@ -45,22 +38,39 @@ services:
             - 11010:11010
         environment:
             KAFKA_BROKER_ID: 0
-            KAFKA_ZOOKEEPER_CONNECT: zookeeper:11100
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper:11200
             KAFKA_ADVERTISED_LISTENERS: DOCKER://kafka:11000,HOST://localhost:11010
             KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER:PLAINTEXT,HOST:PLAINTEXT
             KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+    kafka-rest:
+        image: confluentinc/cp-kafka-rest:7.0.1
+        depends_on:
+            - kafka
+        ports:
+            - 11100:11100
+        environment:
+            KAFKA_REST_HOST_NAME: kafka-rest
+            KAFKA_REST_BOOTSTRAP_SERVERS: DOCKER://kafka:11000
+            KAFKA_REST_LISTENERS: http://0.0.0.0:11100
+    zookeeper:
+        image: 'confluentinc/cp-zookeeper:7.0.1'
+        ports:
+            - 11200:11200
+        environment:
+            ZOOKEEPER_CLIENT_PORT: 11200
+            ALLOW_ANONYMOUS_LOGIN: yes
     kafka-ui:
         image: provectuslabs/kafka-ui
         depends_on:
             - zookeeper
             - kafka
         ports:
-            - 11200:11200
+            - 11999:11999
         environment:
-            SERVER_PORT: 11200
+            SERVER_PORT: 11999
             KAFKA_CLUSTERS_0_NAME: kafka
-            KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:11100
             KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:11000
+            KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:11200
 
     # application containers
     backend:
@@ -76,8 +86,5 @@ services:
             - ./backend/:/app/
         environment:
             SERVER_PORT: 12000
-            MONGO_URL: mongodb://root:pass@mongo:10000/
-            MONGO_DB: chat
             KAFKA_BROKERS: kafka:11000
             KAFKA_TOPIC: foo
-            KAFKA_CREATE: true
