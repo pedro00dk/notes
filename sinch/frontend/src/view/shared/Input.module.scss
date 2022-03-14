@@ -1,0 +1,46 @@
+// @layer shared {
+:where(.root) {
+    --padding-ratio: 1;
+
+    display: flex;
+    align-items: center;
+    gap: calc(1rem * var(--padding-ratio));
+    padding: calc(1rem * var(--padding-ratio));
+    border-radius: 0.25rem;
+
+    & > :where(input) {
+        inline-size: 0;
+        flex: 1;
+    }
+    & > :is(img, svg) {
+        min-block-size: var(--icon-size);
+        block-size: var(--icon-size);
+        min-inline-size: var(--icon-size);
+        inline-size: var(--icon-size);
+    }
+
+    & > .small {
+        --padding-ratio: 0.75;
+    }
+    & > .medium {
+        --padding-ratio: 1;
+    }
+    & > .large {
+        --padding-ratio: 1.25;
+    }
+}
+
+:where(.theme) {
+    color: var(--color-text-0);
+    background-color: var(--color-background-2);
+
+    & > :where(input) {
+        border: none;
+        outline: none;
+        color: inherit;
+        background-color: transparent;
+        &::placeholder {
+            color: var(--color-text-2);
+        }
+    }
+}
