@@ -21,6 +21,8 @@
         "react-query": "3.34.16"
     },
     "scripts": {
-        "start": "vite"
+        "start": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
     }
 }
