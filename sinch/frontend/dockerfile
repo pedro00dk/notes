@@ -1,12 +1,10 @@
 FROM node:17-alpine as build
 
 WORKDIR /app/
-
+COPY ./package* ./
+RUN npm ci
 COPY ./ ./
-RUN npm ci && npm run build
 
-FROM nginx:alpine
+ENV SERVER_PORT 80
 
-COPY --from=build /app/build/ /usr/share/nginx/html/
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "run" ,"start", "--", "--host"]

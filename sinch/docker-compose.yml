@@ -79,7 +79,7 @@ services:
     backend:
         build:
             context: ./backend/
-            dockerfile: dockerfile.development
+            dockerfile: dockerfile
         depends_on:
             - mongo
             - kafka
@@ -99,8 +99,9 @@ services:
             - mongo
             - kafka
         ports:
-            - 3001:3000
+            - 12001:12001
         volumes:
-            - ./frontend/:/app/
+            - ./frontend/src/:/app/src/
         environment:
+            SERVER_PORT: 12001
             VITE_API_ENDPOINT: http://localhost:11100
