@@ -2,8 +2,7 @@
 
 Collection of data structures and algorithms implemented in Python.
 
-The minimum python version required is 3.9.
-Scripts of this project must be run as a module:
+The minimum python version required is 3.9. Scripts of this project must be run as a module:
 
 ```shell
 cd <project-root>
@@ -21,8 +20,7 @@ $ python -m src.graph.path.ssp
 
 ---
 
-The time complexity in **big-O** notation is shown beside algorithms names.
-Space complexity is available in algorithms files.
+The time complexity in **big-O** notation is shown beside algorithms names. Space complexity is available in algorithms files.
 
 ---
 

@@ -2,12 +2,15 @@
 
 This repository was created to learn and practice docker concepts and tools.
 
-The full docker reference is available at https://docs.docker.com/.
+Other useful links:
+
+-   Docker Home: https://www.docker.com/
+-   Docker Hub: https://hub.docker.com/
+-   Documentation: https://docs.docker.com/.
 
 ## Dockerfile
 
-The Dockerfile is formed by a list of commands used to specify and configure the environment for the application that
-will be executed.
+The Dockerfile is formed by a list of commands used to specify and configure the environment for the application that will be executed.
 
 ```docker
 # FROM command uses a docker image as a basis for this one
@@ -42,13 +45,9 @@ CMD ["python", "app.py"]
 
 ## Image
 
-With the Dockerfile specification, an image can be created using the command `docker image build --tag <image-name> ./`.
-The path at the end (`./`) indicates the context that is going to be used to create the image, where the files are going
-to be copied from. The dockerfile is expected to be in the same directory and be called `Dockerfile` or `dockerfile`. A
-dockerfile in another directory or with another name can be specified through the `--file` flag.
+With the Dockerfile specification, an image can be created using the command `docker image build --tag <image-name> ./`. The path at the end (`./`) indicates the context that is going to be used to create the image, where the files are going to be copied from. The dockerfile is expected to be in the same directory and be called `Dockerfile` or `dockerfile`. A dockerfile in another directory or with another name can be specified through the `--file` flag.
 
-The image is built based on the Dockerfile specification, it already contains the application files copied by the COPY
-command, but it isn't running yet.
+The image is built based on the Dockerfile specification, it already contains the application files copied by the COPY command, but it isn't running yet.
 
 The docker images can be listed with the command `docker image ls`.
 
@@ -79,8 +78,7 @@ $ docker container run --rm <container-name> <image-name>
 ...
 ```
 
-Running containers info can be listed with the command `docker container ls`, `docker container ls --all` can be used as
-well to list all running and stopped containers.
+Running containers info can be listed with the command `docker container ls`, `docker container ls --all` can be used as well to list all running and stopped containers.
 
 Other operations for manipulating containers:
 
@@ -100,9 +98,7 @@ $ docker container rm <container-name-or-id>
 
 ## Sharing images
 
-A docker image can be shared in a registry, which is a collection of repositories containing docker images. Docker
-already provides a cloud registry called [Docker Hub](https://cloud.docker.com), but other providers can be used as
-well.
+A docker image can be shared in a registry, which is a collection of repositories containing docker images. Docker already provides a cloud registry called [Docker Hub](https://hub.docker.com/), but other providers can be used as well.
 
 Is possible to login using the docker CLI using the command
 
@@ -124,13 +120,11 @@ $ docker image tag <image-name> pedro00dk/app:1.0.0
 
 ### Publishing images
 
-The app can be published with the command `docker image push <username>/<repository>:<tag>`. If the command exists
-successfully, the app will be available at the docker hub.
+The app can be published with the command `docker image push <username>/<repository>:<tag>`. If the command exists successfully, the app will be available at the docker hub.
 
 ### Pulling images
 
-Docker images can be pulled from the registry by running `docker image pull <image-name>`. If the image is already
-available locally, the pull command will update the image.
+Docker images can be pulled from the registry by running `docker image pull <image-name>`. If the image is already available locally, the pull command will update the image.
 
 ```shell
 $ # pulling the image we just published
@@ -149,11 +143,9 @@ $ docker container run --interactive --tty python:latest
 
 ### Docker Compose
 
-The `docker-compose` (in newer docker version `docker compose`) is a tool for managing a set of containers at once using
-a configuration file. The configuration file is usually called `docker-compose.yaml` but may have other names as well.
+The `docker-compose` (in newer docker version `docker compose`) is a tool for managing a set of containers at once using a configuration file. The configuration file is usually called `docker-compose.yaml` but may have other names as well.
 
-This file can control the behavior of multiple containers (published or local), setting their images, publishing ports,
-volumes, setting up the network, and even limiting the memory and CPU usage.
+This file can control the behavior of multiple containers (published or local), setting their images, publishing ports, volumes, setting up the network, and even limiting the memory and CPU usage.
 
 ```yml
 # configuration version, newer versions have access to more features
