@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: mongo
+    namespace: my-namespace
+data:
+    database-url: mongo.my-namespace
