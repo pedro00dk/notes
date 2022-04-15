@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+    name: nginx-pod-multi-container
+spec:
+    containers:
+        - name: nginx
+          image: nginx
+          ports:
+              - containerPort: 80
+        - name: python
+          image: python:alpine
+          command: ['python']
+          args: ['-m', 'http.server', '$(SERVER_PORT)']
+          env:
+              - name: SERVER_PORT
+                value: '8001'
+          ports:
+              - containerPort: 8001
