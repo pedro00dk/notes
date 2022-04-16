@@ -71,4 +71,105 @@ nginx-deployment-9fbb7d78-7f2ld     0/1     Terminating         0          45s
 nginx-deployment-9fbb7d78-7f2ld     0/1     Terminating         0          45s
 ```
 
+We can also use the describe command to check a deployment or replicaset:
+
+```shell
+$ kubectl describe deployments nginx-deployment
+Name:                   nginx-deployment
+Namespace:              default
+CreationTimestamp:      ...
+Labels:                 <none>
+Annotations:            deployment.kubernetes.io/revision: 1
+Selector:               app=nginx
+Replicas:               2 desired | 2 updated | 2 total | 2 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:  app=nginx
+  Containers:
+   nginx:
+    Image:        nginx:alpine
+    Port:         80/TCP
+    Host Port:    0/TCP
+    Environment:  <none>
+    Mounts:       <none>
+  Volumes:        <none>
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  <none>
+NewReplicaSet:   nginx-deployment-9fbb7d78 (2/2 replicas created)
+Events:
+  Type    Reason             Age   From                   Message
+  ----    ------             ----  ----                   -------
+  Normal  ScalingReplicaSet  34m   deployment-controller  Scaled up replica set nginx-deployment-9fbb7d78 to 2
+```
+
 ## Networking
+
+So far, we could only access our pods by `kubectl port-forward`ing their open ports. Containers inside a pod can easily access each other through localhost because they use the same network. However, pods are nonpermanent, and have dynamically assigned IPs each time they are created, so it is not possible to know ahead of time with IP address a pod is going to use. Another issue is that when using replicasets or deployments, multiple pods may be created, and we will want to split requests among them.
+
+To solve all these problems, kubernetes provides **Services**.
+
+> **Service**
+>
+> A Service is a networking abstraction that allows a set of pods to be exposed as a single network service. In order to achieve that, services have their own IP address and DNS names inside a kubernetes cluster. All requests that arrive on the service will be distributed (using a load balancer) to the pods that match a service's selector rules.
+>
+> When used together with _deployments_, services allow _rolling updates_ to be applied.
+
+[2-service.yaml](./2-service.yaml) describes a service configuration. The `ports` section describe all ports that are going to be mapped from the service to pods <port:service> -> <targetPort:pod>.
+
+The `selector` section describes the rules used to match which pods are going to be part of the service. Selectors are a list of key-value pairs that matches pods `metadata.labels` values. All service rules need to match in order to a pod to become part of the service.
+
+Just like deployments, service configuration can be applied with the `kubectl apply` command.
+
+```shell
+$ kubectl apply --filename 2-service.yaml
+service/nginx created
+
+$ # services are mutable, meaning we can easily re-apply changed configurations
+$ # making change to exposed port
+$ sed 's/port: 8000/port: 8080/' 2-service.yaml > 2-service-updated.yaml
+
+$ # re-applying update deployment configuration
+$ kubectl apply --filename 2-service-updated.yaml
+service/nginx configured
+```
+
+We can list all services with the following command:
+
+```shell
+$ kubectl get services
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP    35m
+nginx        ClusterIP   10.100.243.28   <none>        8080/TCP   8m33s
+
+$ # by setting output to wide, se can see the services' selectors
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE   SELECTOR
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP    39m   <none>
+nginx        ClusterIP   10.100.243.28   <none>        8080/TCP   12m   app=nginx
+```
+
+Describing a service will also provide some extra information:
+
+```shell
+$ kubectl describe services nginx
+Name:              nginx
+Namespace:         default
+Labels:            <none>
+Annotations:       <none>
+Selector:          app=nginx
+Type:              ClusterIP
+IP Family Policy:  SingleStack
+IP Families:       IPv4
+IP:                10.100.243.28
+IPs:               10.100.243.28
+Port:              <unset>  8080/TCP
+TargetPort:        80/TCP
+Endpoints:         172.17.0.3:80,172.17.0.4:80
+Session Affinity:  None
+Events:            <none>
+```
