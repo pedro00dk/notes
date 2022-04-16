@@ -181,18 +181,18 @@ Lastly, we can execute commands inside a container using the `kubectl exec` subc
 
 ```shell
 $ kubectl exec -it nginx-pod-single-container -- sh
-# # shell on nginx-pod-single-container context
+# # shell on nginx-pod-single-container.nginx container
 ...
 
 $ # on multi container pods, one of the container is used
 $ kubectl exec -it nginx-pod-multi-container -- sh
 Defaulted container "nginx" out of: nginx, python
-# # shell on nginx-pod-single-container.nginx context
+# # shell on nginx-pod-single-container.nginx container
 ...
 
 $ # a container can be chose with the --container option
 $ kubectl exec -it nginx-pod-multi-container --container python -- sh
-# # shell on nginx-pod-single-container.python context
+# # shell on nginx-pod-single-container.python container
 # # accessing nginx-pod-single-container.python through local network
 # wget -O - localhost
 Connecting to localhost (127.0.0.1:80)
@@ -210,6 +210,6 @@ working. Further configuration is required.</p>
 ...
 </body>
 </html>
--                    100% |****************************|   615  0:00:00 ETA
+-                    100% |*********************|   615  0:00:00 ETA
 written to stdout
 ```

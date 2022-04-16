@@ -139,7 +139,49 @@ $ kubectl apply --filename 2-service-updated.yaml
 service/nginx configured
 ```
 
-We can list all services with the following command:
+At this point a pod can easily access set of pods by using their service. The service is still not exposed externally, so we can only test it from inside the cluster. Unfortunately, pods from given service cannot access themselves through that service, so we need to create a new test pod.
+
+```shell
+$ # the creation order of services and deployments does not matter
+$ # create or update our deployment
+$ kubectl apply --filename 1-deployment.yaml
+deployment.apps/nginx-deployment created
+
+$ # create or update our service
+$ kubectl apply --filename 2-service.yaml
+service/nginx unchanged
+
+$ # create a pod for testing
+$ # the sleep command is initially set so the pod does not terminate
+$ kubectl run test-pod --image alpine --command -- sh -c "sleep 1d"
+pod/test-pod created
+
+$ # open a shell in the test pod and access nginx pods through service
+$ kubectl exec -it test-pod -- sh
+# # shell on nginx-deployment-9fbb7d78-8gndt.nginx container
+# wget -O - http://nginx:8000
+Connecting to nginx:8000 (10.100.243.28:8000)
+writing to stdout
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+...
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+...
+</body>
+</html>
+-                    100% |*********************|   615  0:00:00 ETA
+written to stdout
+```
+
+The service name is used as the domain name as well, so we can access the service pods by through (if using http) `http://<service-name>:<service-port>` -> `http://nginx:8000`. That behavior changes slightly when using _namespaces_. Namespaces were not introduced yet, but just for coverage purposes, when a service is part of a namespace the service url must also contain the namespace name:
+
+We can list all services with the following command: `http://<service-name>.<namespace-name>:<service-port>`.
 
 ```shell
 $ kubectl get services
