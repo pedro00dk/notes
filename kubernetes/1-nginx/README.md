@@ -108,7 +108,7 @@ Events:
   Normal  ScalingReplicaSet  34m   deployment-controller  Scaled up replica set nginx-deployment-9fbb7d78 to 2
 ```
 
-## Networking
+### Networking
 
 So far, we could only access our pods by `kubectl port-forward`ing their open ports. Containers inside a pod can easily access each other through localhost because they use the same network. However, pods are nonpermanent, and have dynamically assigned IPs each time they are created, so it is not possible to know ahead of time with IP address a pod is going to use. Another issue is that when using replicasets or deployments, multiple pods may be created, and we will want to split requests among them.
 
@@ -215,3 +215,15 @@ Endpoints:         172.17.0.3:80,172.17.0.4:80
 Session Affinity:  None
 Events:            <none>
 ```
+
+In order to access the service externally (for testing purposes), services can also be exposed by `kubectl port-forward`.
+
+```shell
+$ kubectl port-forward services/nginx 8080
+Forwarding from 127.0.0.1:8080 -> 8080
+Forwarding from [::1]:8080 -> 8080
+Handling connection for 8080
+...
+```
+
+So far, we used _internal_ services (`type: ClusterIP`), which can only be exposed externally by the `kubectl port-forward`. Services can be made _external_, which allows them to be accessed from outside the kubernetes cluster without port forwarding. External services are going to be reviewed in the following examples.

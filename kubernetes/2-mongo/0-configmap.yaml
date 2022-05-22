@@ -3,4 +3,5 @@ kind: ConfigMap
 metadata:
     name: mongo
 data:
-    database-url: mongo.my-namespace
+    mongodb-host: mongo
+    mongodb-port: '27017'

@@ -24,23 +24,22 @@ spec:
                         valueFrom:
                             secretKeyRef:
                                 name: mongo
-                                key: username
+                                key: mongodb-username
                       - name: MONGO_INITDB_ROOT_PASSWORD
                         valueFrom:
                             secretKeyRef:
                                 name: mongo
-                                key: password
+                                key: mongodb-password
 ---
 apiVersion: v1
 kind: Service
 metadata:
     name: mongo
 spec:
+    type: ClusterIP
     selector:
         app: mongo
-    type: LoadBalancer
     ports:
         - protocol: TCP
-          port: 80
           targetPort: 27017
-          nodePort: 30001
+          port: 27017
