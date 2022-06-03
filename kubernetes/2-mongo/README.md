@@ -64,4 +64,31 @@ deployment.apps/mongo-express created
 service/mongo-express created
 ```
 
+### External Services
+
 Different from the mongodb service, the mongo-express service is external. External services have a `type: NodePort` or `type: LoadBalancer` (note: internal services `type: ClusterIP` are still load balancers).
+
+#### `type: NodePort` Service
+
+NodePort services are the most primitive type of external services. It works by exposing a port (called `nodePort`) on all cluster nodes. A node port must be in the range 30000–32767. Once set up, the service will be directly addressable through each of the cluster node IPs on the service's `nodePort`. This type of service is not very secure because the ports are always open, so external clients have direct access to worker nodes.
+
+When using minikube, the nodes' IPs can be obtained through the `minikube` or `kubectl` commands
+
+```shell
+$ # minikube provides the ip of the master node
+$ minikube ip
+192.168.49.2
+
+$ # kubectl can provide the ip of all nodes
+$ kubectl get nodes --output wide
+NAME           ...   INTERNAL-IP    ...
+minikube       ...   192.168.49.2   ...
+minikube-m02   ...   192.168.49.3   ...
+minikube-m03   ...   192.168.49.4   ...
+```
+
+Given the internal IPs returned by the kubectl command, our service will be available at: `192.168.49.2:8081`, `192.168.49.3:8081`, and `192.168.49.4:8081`.
+
+#### `type: LoadBalancer` Service
+
+This is the preferred type of external service. However, it is only available by cloud providers such as Google Cloud Platform. Load balancer services extend on nodePort services by rerouting requests from the cloud provider's external load balancer into the kubernetes cluster. The `nodePort` is still required, but now they are only exposed to the load balancer itself, which is going to redirect the traffic.
