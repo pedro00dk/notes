@@ -53,3 +53,4 @@ Examples:
 -   [Example 1: Nginx](./1-nginx/): ReplicaSets, deployments, and services (internal).
 -   [Example 2: Mongo](./2-mongo/): ConfigMaps, secrets, multi-document files, and services (internal and external).
 -   [Example 3: Mongo](./3-mongo/): Ingress
+-   [Example 4: Prometheus](./4-prometheus/): Helm and Monitoring
