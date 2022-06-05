@@ -6,7 +6,7 @@
 >
 > ConfigMaps can be mounted as both environment variables or as files in a pod.
 
-[0-configmap.yaml](./0-configmap.yaml) describes a configmap with information.
+[0-configmap.yaml](./0-configmap.yaml) describes a configmap with information mongodb's host and port.
 
 > **Secret**
 >

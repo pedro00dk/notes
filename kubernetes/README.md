@@ -52,3 +52,4 @@ Examples:
 -   [Example 0: Nginx](./0-nginx/): Introduction to pods, creating and interacting them.
 -   [Example 1: Nginx](./1-nginx/): ReplicaSets, deployments, and services (internal).
 -   [Example 2: Mongo](./2-mongo/): ConfigMaps, secrets, multi-document files, and services (internal and external).
+-   [Example 3: Mongo](./3-mongo/): Ingress
