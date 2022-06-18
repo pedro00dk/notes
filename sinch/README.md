@@ -1,15 +1,7 @@
 # Sinch - Conversation API
 
-# Chat Project
+[Sinch](https://www.sinch.com/) Conversation API is a service that allows communicating with several messenger technologies through a single API.
 
-## Backend
+The [Sinch Conversation API documentation](https://developers.sinch.com/docs/conversation/) provides easy getting started steps to send and receive messages though the API.
 
-The backend modules handles listening messages through a web hook and sending messages back to clients. Any received messages are stored in the database.
-
-Received messages are sent to `kafka` so they can be consumed by `frontend` clients.
-
-## Database
-
-TODO
-
-## Frontend
+This project is just a consolidation of their getting started steps with in typescript.

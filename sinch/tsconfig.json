@@ -3,10 +3,10 @@
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
         "lib": ["DOM", "ESNext"],
-        "module": "ES2022",
-        "moduleResolution": "node",
+        "module": "ESNext",
+        "moduleResolution": "Node",
         "outDir": "./build/",
         "strict": true,
-        "target": "ES2022"
+        "target": "ESNext"
     }
 }
