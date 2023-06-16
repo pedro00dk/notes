@@ -1,3 +1,8 @@
+#![feature(generic_const_exprs)]
+
+mod math;
+mod raytrace;
+
 use js_sys::{Uint8ClampedArray, WebAssembly};
 use leptos::*;
 use wasm_bindgen::prelude::*;

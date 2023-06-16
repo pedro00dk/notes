@@ -15,8 +15,8 @@ where
     pub data: [T; R * C],
 }
 
-pub type VC<T, const D: usize> = MX<T, D, 1>;
 pub type VR<T, const D: usize> = MX<T, 1, D>;
+pub type VC<T, const D: usize> = MX<T, D, 1>;
 
 // init
 

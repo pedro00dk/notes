@@ -153,6 +153,7 @@ version = "0.1.0"
 dependencies = [
  "js-sys",
  "leptos",
+ "num-traits",
  "wasm-bindgen",
  "web-sys",
 ]
