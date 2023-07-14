@@ -4,7 +4,7 @@ Collection of CG algorithms and techniques written in rust and compiled to the w
 
 ## Installation
 
-Check [asdf](https://asdf-vm.com/) `.tool-versions` for required languages tools.
+Check [asdf](https://asdf-vm.com) `.tool-versions` for required languages tools.
 
 The following block describes other tools and procedures required to run the project.
 

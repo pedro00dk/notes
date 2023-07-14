@@ -19,10 +19,10 @@ wasm-bindgen = "0.2.87"
 [dependencies.web-sys]
 version = "0.3.64"
 features = [
-  'CanvasRenderingContext2d',
   'ErrorEvent',
   'Event',
-  'ImageData',
+  'Gpu',
+  'GpuCanvasContext',
   'Navigator',
   'Window',
   'Worker',
