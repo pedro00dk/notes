@@ -1,12 +1,10 @@
+#![allow(incomplete_features)]
 #![feature(generic_const_exprs)]
-#![cfg(web_sys_unstable_apis)]
+// mod math;
+// mod raytrace;
 
-mod math;
-mod raytrace;
-
-use js_sys::{Uint8ClampedArray, WebAssembly};
 use leptos::*;
-use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
 use web_sys::GpuCanvasContext;
 
 fn main() {
@@ -28,8 +26,7 @@ fn App(cx: Scope) -> impl IntoView {
             .unwrap()
             .unwrap()
             .unchecked_into::<GpuCanvasContext>();
-
-        // ctx.
+        web_sys::console::log_1(&ctx);
         log!("hello");
     });
 
