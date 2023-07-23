@@ -26,7 +26,7 @@ fn App(cx: Scope) -> impl IntoView {
         webgpu.print();
         web::webgpu::draw(
             &webgpu,
-            matrix!(VR[0.0 0.3 0.7 1.0]).transpose().transpose(),
+            matrix!(VR[0.0, 0.3, 0.7, 1.0]).transpose().transpose(),
         );
         if let 0 = canvas {
             log!("None");

@@ -139,12 +139,12 @@ pub fn draw(webgpu: &WebGpu, clear: crate::math::MX<f32, 1, 4>) {
     //     matrix!(VR[0.0 3.0]),
     // );
     let triangles: [Triangle<2>; 2] = [
-        matrix!([-0.8 -0.8]),
-        matrix!([0.8 -0.8]),
-        matrix!([0.8 0.8]),
-        matrix!([-0.8 -0.8]),
-        matrix!([0.8 0.8]),
-        matrix!([-0.8 0.8]),
+        matrix!([-0.8, -0.8]),
+        matrix!([0.8, -0.8]),
+        matrix!([0.8, 0.8]),
+        matrix!([-0.8, -0.8]),
+        matrix!([0.8, 0.8]),
+        matrix!([-0.8, 0.8]),
     ];
 
     web_sys::console::log_1(&array::typed_f32(triangles, false))
