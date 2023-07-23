@@ -24,7 +24,7 @@ $ cargo install trunk
 
 ## Running
 
-Run `trunk serve` to start a development server and access `http://localhost:3000`.
+Run `RUSTFLAGS='--cfg=web_sys_unstable_apis' trunk serve` to start a development server and access `http://localhost:3000`.
 
 The thunk dev server will start on port 3001, and a reverse proxy will also start and allow access on port 3000. The proxy is required because some web necessary features require HTTP headers to be provided, Thunk does not support adding extra headers to the responses.
 
