@@ -1,5 +1,8 @@
 #![allow(unused)]
-use js_sys::Array;
+use js_sys::{
+    Array, Float32Array, Float64Array, Int16Array, Int32Array, Int8Array, Uint16Array, Uint32Array,
+    Uint8Array, Uint8ClampedArray,
+};
 use num_traits::{Float, Num};
 use std::ops::{
     Add, AddAssign, BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Div, DivAssign,
@@ -215,6 +218,50 @@ op_math_assign!(BitXorAssign::bitxor_assign);
 op_math_assign!(ShlAssign::shl_assign);
 op_math_assign!(ShrAssign::shr_assign);
 
+// javascript
+
+impl<T, const R: usize, const C: usize> From<&MX<T, R, C>> for Array
+where
+    T: Copy,
+    JsValue: From<T>,
+    [(); R * C]:,
+{
+    fn from(value: &MX<T, R, C>) -> Self {
+        let array = Array::new_with_length(value.data.len() as u32);
+        value.data.iter().enumerate().for_each(|(i, v)| {
+            array.set(i as u32, JsValue::from(*v));
+        });
+        array
+    }
+}
+
+macro_rules! js_array_from {
+    ($arr:ident::$t:ty) => {
+        impl<const R: usize, const C: usize> From<&MX<$t, R, C>> for $arr
+        where
+            [(); R * C]:,
+        {
+            fn from(value: &MX<$t, R, C>) -> Self {
+                let array = $arr::new_with_length(value.data.len() as u32);
+                value.data.iter().enumerate().for_each(|(i, v)| {
+                    array.set_index(i as u32, *v);
+                });
+                array
+            }
+        }
+    };
+}
+
+js_array_from!(Float32Array::f32);
+js_array_from!(Float64Array::f64);
+js_array_from!(Uint8ClampedArray::u8);
+js_array_from!(Uint8Array::u8);
+js_array_from!(Uint16Array::u16);
+js_array_from!(Uint32Array::u32);
+js_array_from!(Int8Array::i8);
+js_array_from!(Int16Array::i16);
+js_array_from!(Int32Array::i32);
+
 // compare
 
 impl<T: PartialEq, const R: usize, const C: usize> PartialEq for MX<T, R, C>
@@ -223,21 +270,6 @@ where
 {
     fn eq(&self, other: &Self) -> bool {
         self.data.iter().zip(other.data.iter()).all(|(a, b)| a == b)
-    }
-}
-
-// javascript
-
-impl<const R: usize, const C: usize> Into<Array> for &MX<f32, R, C>
-where
-    [(); R * C]:,
-{
-    fn into(self) -> Array {
-        let array = Array::new_with_length(self.data.len() as u32);
-        self.data.iter().enumerate().for_each(|(i, v)| {
-            array.set(i as u32, JsValue::from(*v));
-        });
-        array
     }
 }
 

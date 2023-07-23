@@ -1,5 +1,5 @@
 use crate::math::MX;
-use js_sys::{Array, Object, Reflect};
+use js_sys::{Array, Float32Array, Object, Reflect};
 use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{self, GpuRenderPassDescriptor};
@@ -87,9 +87,11 @@ pub fn draw(webgpu: &WebGpu, clear: crate::math::MX<f32, 1, 4>) {
     )
     .unwrap();
 
+    let clear2 = Float32Array::from(&clear);
     let clear: Array = (&clear).into();
     web_sys::console::log_1(&clear);
-    Reflect::set(&color_attachment, &JsValue::from("clearValue"), &clear).unwrap();
+    web_sys::console::log_1(&clear2);
+    Reflect::set(&color_attachment, &JsValue::from("clearValue"), &clear2).unwrap();
     Reflect::set(
         &color_attachment,
         &JsValue::from("storeOp"),
