@@ -11,6 +11,15 @@ use std::ops::{
 };
 use wasm_bindgen::{JsCast, JsValue};
 
+/// `MX` is generic matrix implementation for all matrix-like and vector-like types.
+///
+/// utilities:
+/// - `matrix!` macro for initialization.
+/// - `FromIter` and `IntoIter`.
+/// - 1-dimensional and 2-dimensional `Index` and `IndexMut`.
+/// - All `std::ops` operators for types that support it.
+/// - `PartialEq` for types that support it.
+/// - Algebraic operation for Float matrices.
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct MX<T, const R: usize, const C: usize>
@@ -20,17 +29,33 @@ where
     pub data: [T; R * C],
 }
 
+/// Single row matrix.
 pub type VR<T, const D: usize> = MX<T, 1, D>;
+
+/// Single column matrix.
 pub type VC<T, const D: usize> = MX<T, D, 1>;
 
-// init
-
-#[macro_export]
-macro_rules! count {
-    () => { 0 };
-    ($head:expr, $($tail:expr,)*) => { 1 + count!($($tail,)*) };
-}
-
+/// Matrix initializers.
+///
+/// Supported formats are:
+/// - `matrix!((R, C)<T>)`: `matrix!((2, 2)<usize>)`
+///   - Create a `R`x`C` matrix of `T` elements. This matrix data is not initialized.
+///
+/// - `matrix!((R, C)(V))`: `matrix!((2, 2)(0))`
+///   - Create a `R`x`C` matrix of elements of `V` type. V must implement `Copy`.
+///
+/// - `matrix!((R, C) [d0 d1 d2 d3 ...])`: `matrix!((2, 2) [0 1 2 3])`
+///   - Create a `R`x`C` matrix with the `dx` provided elements. `dx` length must be equal to `R`*`C`
+///
+/// - `matrix!([r0...][r1...] rx...)`: `matrix!([0 1][2 3])`
+///   - Create a matrix with the `rx` provided elements. The matrix shape is determined by `rx` and `r[i]` lengths.
+///
+///
+/// - `matrix!(VR[d0 d1 d2 d3 ...])`: `matrix!(VR[0 1 2 3])`
+///   - Create a single row matrix with `dx` columns.
+///
+/// - `matrix!(VC[d0 d1 d2 d3 ...])`: `matrix!(VC[0 1 2 3])`
+///   - Create a single row matrix with `dx` rows.
 #[macro_export]
 macro_rules! matrix {
 
@@ -65,6 +90,13 @@ macro_rules! matrix {
         const C: usize = count!($($v,)+);
         crate::math::VC::<_, C> { data: [$($v,)+] }
     })()};
+}
+
+/// helper for `matrix!`
+#[macro_export]
+macro_rules! count {
+    () => { 0 };
+    ($head:expr, $($tail:expr,)*) => { 1 + count!($($tail,)*) };
 }
 
 // iter
