@@ -1,24 +1,36 @@
 #![allow(unused)]
 use js_sys::{
-    ArrayBuffer, BigInt64Array, BigUint64Array, Float32Array, Float64Array, Int16Array, Int32Array,
-    Int8Array, SharedArrayBuffer, Uint16Array, Uint32Array, Uint8Array, Uint8ClampedArray,
-    WebAssembly,
+    Array, ArrayBuffer, BigInt64Array, BigUint64Array, Float32Array, Float64Array, Int16Array,
+    Int32Array, Int8Array, SharedArrayBuffer, Uint16Array, Uint32Array, Uint8Array,
+    Uint8ClampedArray, WebAssembly,
 };
+use std::iter::Iterator;
 use std::mem::size_of;
-use wasm_bindgen::JsCast;
+use wasm_bindgen::{JsCast, JsValue};
 
+// memory
+
+/// Return the WebAssembly memory as an ArrayBuffer.
 pub fn memory_buffer() -> ArrayBuffer {
     let memory = wasm_bindgen::memory().unchecked_into::<WebAssembly::Memory>();
     memory.buffer().unchecked_into::<ArrayBuffer>()
 }
 
+/// Return the WebAssembly memory as a SharedArrayBuffer.
 pub fn memory_buffer_shared() -> SharedArrayBuffer {
     let memory = wasm_bindgen::memory().unchecked_into::<WebAssembly::Memory>();
     memory.buffer().unchecked_into::<SharedArrayBuffer>()
 }
 
+// typed arrays
+
 macro_rules! array_buffer {
     ($name:ident $arr:ident::$t:ty) => {
+        /// Return a typed array that contains the `data` memory region.
+        ///
+        /// The underlying typed array buffer will depend on the WebAssembly memory type.
+        /// If `copy` is `false` a subarray is returned, no memory is copied, this can be unsafe, as the memory region
+        /// might be altered from javascript operations.
         pub fn $name<T: Sized>(data: T, copy: bool) -> $arr {
             let begin = [data].as_ptr() as u32 / size_of::<$t>() as u32;
             let end = begin + (size_of::<T>() / size_of::<$t>()) as u32;
@@ -43,46 +55,21 @@ array_buffer!(typed_i64 BigInt64Array::i64);
 array_buffer!(typed_f32 Float32Array::f32);
 array_buffer!(typed_f64 Float64Array::f64);
 
-// javascript
+// arrays
 
-// impl<T, const R: usize, const C: usize> From<&MX<T, R, C>> for Array
-// where
-//     T: Copy,
-//     JsValue: From<T>,
-//     [(); R * C]:,
-// {
-//     fn from(value: &MX<T, R, C>) -> Self {
-//         let array = Array::new_with_length(value.data.len() as u32);
-//         value.data.iter().enumerate().for_each(|(i, v)| {
-//             array.set(i as u32, JsValue::from(*v));
-//         });
-//         array
-//     }
-// }
+/// Wrap a single `&JsValue` into a js `Array`.
+pub fn wrap(value: &JsValue) -> Array {
+    let array = Array::new();
+    array.push(value);
+    array
+}
 
-// macro_rules! js_array_from {
-//     ($arr:ident::$t:ty) => {
-//         impl<const R: usize, const C: usize> From<&MX<$t, R, C>> for $arr
-//         where
-//             [(); R * C]:,
-//         {
-//             fn from(value: &MX<$t, R, C>) -> Self {
-//                 let array = $arr::new_with_length(value.data.len() as u32);
-//                 value.data.iter().enumerate().for_each(|(i, v)| {
-//                     array.set_index(i as u32, *v);
-//                 });
-//                 array
-//             }
-//         }
-//     };
-// }
-
-// js_array_from!(Float32Array::f32);
-// js_array_from!(Float64Array::f64);
-// js_array_from!(Uint8ClampedArray::u8);
-// js_array_from!(Uint8Array::u8);
-// js_array_from!(Uint16Array::u16);
-// js_array_from!(Uint32Array::u32);
-// js_array_from!(Int8Array::i8);
-// js_array_from!(Int16Array::i16);
-// js_array_from!(Int32Array::i32);
+/// Wrap a single value that `JsValue From<value>` is implemented for into a js `Array`.
+pub fn wrap_cast<T>(value: T) -> Array
+where
+    JsValue: From<T>,
+{
+    let array = Array::new();
+    array.push(&JsValue::from(value));
+    array
+}
