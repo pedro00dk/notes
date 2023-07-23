@@ -1,10 +1,12 @@
-use num_traits::Float;
-use std::mem::MaybeUninit;
+#![allow(unused)]
+use js_sys::Array;
+use num_traits::{Float, Num};
 use std::ops::{
     Add, AddAssign, BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Div, DivAssign,
     Index, IndexMut, Mul, MulAssign, Neg, Not, Rem, RemAssign, Shl, ShlAssign, Shr, ShrAssign, Sub,
     SubAssign,
 };
+use wasm_bindgen::{JsCast, JsValue};
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -20,6 +22,7 @@ pub type VC<T, const D: usize> = MX<T, D, 1>;
 
 // init
 
+#[macro_export]
 macro_rules! count {
     () => { 0 };
     ($head:expr, $($tail:expr,)*) => { 1 + count!($($tail,)*) };
@@ -29,7 +32,11 @@ macro_rules! count {
 macro_rules! matrix {
 
     (($r:expr, $c:expr) <$t:ty>) => { crate::math::MX::<$t, $r, $c> {
-        data: unsafe { MaybeUninit::uninit().assume_init() } }
+        data: unsafe {
+            use std::mem::MaybeUninit;
+            let data_uninit: [MaybeUninit<$t>; $r * $c] = MaybeUninit::uninit().assume_init();
+            data_uninit.as_ptr().cast::<[$t; $r * $c]>().read()
+        } }
     };
 
     (($r:expr, $c:expr) ($v:expr)) => {
@@ -216,6 +223,21 @@ where
 {
     fn eq(&self, other: &Self) -> bool {
         self.data.iter().zip(other.data.iter()).all(|(a, b)| a == b)
+    }
+}
+
+// javascript
+
+impl<const R: usize, const C: usize> Into<Array> for &MX<f32, R, C>
+where
+    [(); R * C]:,
+{
+    fn into(self) -> Array {
+        let array = Array::new_with_length(self.data.len() as u32);
+        self.data.iter().enumerate().for_each(|(i, v)| {
+            array.set(i as u32, JsValue::from(*v));
+        });
+        array
     }
 }
 
