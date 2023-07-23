@@ -1,7 +1,10 @@
+use crate::{count, matrix};
 use js_sys::{Array, Object, Reflect};
 use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{self, GpuRenderPassDescriptor};
+
+use crate::math::Triangle;
 
 use super::array;
 
@@ -122,11 +125,27 @@ pub fn draw(webgpu: &WebGpu, clear: crate::math::MX<f32, 1, 4>) {
     let pass = encoder.begin_render_pass(&GpuRenderPassDescriptor::new(&color_attachments));
     pass.end();
     let command_buffer = encoder.finish();
-    let x = Array::new();
-    x.push(&command_buffer);
+
+    // let x = Array::new();
+    // x.push(&command_buffer);
 
     web_sys::console::log_1(&pass);
     web_sys::console::log_1(&command_buffer);
 
-    webgpu.device.queue().submit(&x);
+    webgpu.device.queue().submit(&array::wrap(&command_buffer));
+    // let t: Triangle<2> = (
+    //     matrix!(VR[0.0 3.0]),
+    //     matrix!(VR[0.0 3.0]),
+    //     matrix!(VR[0.0 3.0]),
+    // );
+    let triangles: [Triangle<2>; 2] = [
+        matrix!([-0.8 -0.8]),
+        matrix!([0.8 -0.8]),
+        matrix!([0.8 0.8]),
+        matrix!([-0.8 -0.8]),
+        matrix!([0.8 0.8]),
+        matrix!([-0.8 0.8]),
+    ];
+
+    web_sys::console::log_1(&array::typed_f32(triangles, false))
 }
