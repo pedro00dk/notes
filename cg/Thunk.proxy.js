@@ -15,4 +15,4 @@ const server = http.createServer((req, res) => {
     req.pipe(proxyRequest, { end: true })
 })
 
-server.listen(proxyPort, () => console.log(`thunk reverse proxy ${proxyPort}:${targetPort}`))
+server.listen(proxyPort, () => console.log(`${' '.repeat(33)} 📡 proxy  listening at http://127.0.0.1:${proxyPort}`))
