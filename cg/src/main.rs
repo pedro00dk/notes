@@ -1,11 +1,11 @@
 #![allow(incomplete_features)]
+#![feature(async_closure)]
 #![feature(generic_const_exprs)]
-// mod math;
-// mod raytrace;
+
+mod gpu;
+mod math;
 
 use leptos::*;
-use wasm_bindgen::JsCast;
-use web_sys::GpuCanvasContext;
 
 fn main() {
     mount_to_body(|cx| view! { cx, <App /> })
@@ -14,21 +14,31 @@ fn main() {
 #[component]
 fn App(cx: Scope) -> impl IntoView {
     let canvas_ref = create_node_ref::<html::Canvas>(cx);
+    // let (canvas, setCanvas) = create_signal(cx, None);
+    let (canvas, setCanvas) = create_signal(cx, 0);
+    // create_effect(cx, move |_| setCanvas(canvas_ref.get()));
 
-    create_effect(cx, move |_| {
-        let canvas = canvas_ref.get();
-        if let None = canvas {
+    create_resource(cx, canvas, async move |canvas| {
+        let c = canvas_ref.get().unwrap();
+        web_sys::console::log_1(&c);
+        let webgpu = gpu::webgpu::WebGpu::new(canvas_ref.get()).await.unwrap();
+        webgpu.print();
+        webgpu.print();
+        gpu::webgpu::draw(
+            &webgpu,
+            matrix!(VR[0.0 0.3 0.7 1.0]).transpose().transpose(),
+        );
+        if let 0 = canvas {
+            log!("None");
             return;
         }
-        let ctx = canvas
-            .unwrap()
-            .get_context("webgpu")
-            .unwrap()
-            .unwrap()
-            .unchecked_into::<GpuCanvasContext>();
-        web_sys::console::log_1(&ctx);
-        log!("hello");
+        log!("Some");
     });
+
+    // create_effect(cx, move |_| {
+    //     log!("1");
+    //     log!("hello");
+    // });
 
     view! { cx, <canvas _ref=canvas_ref /> }
 }
