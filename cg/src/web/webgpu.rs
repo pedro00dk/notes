@@ -1,8 +1,9 @@
-use crate::math::MX;
-use js_sys::{Array, Float32Array, Object, Reflect};
+use js_sys::{Array, Object, Reflect};
 use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{self, GpuRenderPassDescriptor};
+
+use super::array;
 
 pub struct WebGpu {
     pub canvas: leptos::HtmlElement<leptos::html::Canvas>,
@@ -86,23 +87,38 @@ pub fn draw(webgpu: &WebGpu, clear: crate::math::MX<f32, 1, 4>) {
         &JsValue::from("clear"),
     )
     .unwrap();
-
-    let clear2 = Float32Array::from(&clear);
-    let clear: Array = (&clear).into();
-    web_sys::console::log_1(&clear);
-    web_sys::console::log_1(&clear2);
-    Reflect::set(&color_attachment, &JsValue::from("clearValue"), &clear2).unwrap();
     Reflect::set(
         &color_attachment,
         &JsValue::from("storeOp"),
         &JsValue::from("store"),
     )
     .unwrap();
+
+    //
+    //
+
+    // let clear1: Array = (&clear).into();
+    // let clear2 = Float32Array::from(&clear);
+    let clear3 = array::typed_f32(clear, false);
+    // web_sys::console::log_1(&clear1);
+    // web_sys::console::log_1(&clear2);
+    web_sys::console::log_1(&clear3);
+
+    Reflect::set(&color_attachment, &JsValue::from("clearValue"), &clear3).unwrap();
+
     web_sys::console::log_1(&texture);
     web_sys::console::log_1(&view);
     web_sys::console::log_1(&descriptor);
 
-    // let a = JsValue::from(&descriptor);
+    //
+
+    // web_sys::console::log_1(&memory_buffer());
+    // web_sys::console::log_1(&data_array(clear, false));
+    // web_sys::console::log_1(&data_array(clear, false));
+    // web_sys::console::log_1(&data_array(clear, true));
+    //
+    //
+
     let pass = encoder.begin_render_pass(&GpuRenderPassDescriptor::new(&color_attachments));
     pass.end();
     let command_buffer = encoder.finish();

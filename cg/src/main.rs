@@ -2,8 +2,8 @@
 #![feature(async_closure)]
 #![feature(generic_const_exprs)]
 
-mod web;
 mod math;
+mod web;
 
 use leptos::*;
 
