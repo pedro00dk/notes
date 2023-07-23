@@ -2,7 +2,7 @@
 #![feature(async_closure)]
 #![feature(generic_const_exprs)]
 
-mod gpu;
+mod web;
 mod math;
 
 use leptos::*;
@@ -21,10 +21,10 @@ fn App(cx: Scope) -> impl IntoView {
     create_resource(cx, canvas, async move |canvas| {
         let c = canvas_ref.get().unwrap();
         web_sys::console::log_1(&c);
-        let webgpu = gpu::webgpu::WebGpu::new(canvas_ref.get()).await.unwrap();
+        let webgpu = web::webgpu::WebGpu::new(canvas_ref.get()).await.unwrap();
         webgpu.print();
         webgpu.print();
-        gpu::webgpu::draw(
+        web::webgpu::draw(
             &webgpu,
             matrix!(VR[0.0 0.3 0.7 1.0]).transpose().transpose(),
         );
