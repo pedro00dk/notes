@@ -25,35 +25,40 @@ pub fn memory_buffer_shared() -> SharedArrayBuffer {
 // typed arrays
 
 macro_rules! array_buffer {
-    ($name:ident $arr:ident::$t:ty) => {
+    ($name:ident $name_copy:ident $arr:ident::$t:ty) => {
         /// Return a typed array that contains the `data` memory region.
         ///
-        /// The underlying typed array buffer will depend on the WebAssembly memory type.
-        /// If `copy` is `false` a subarray is returned, no memory is copied, this can be unsafe, as the memory region
-        /// might be altered from javascript operations.
-        pub fn $name<T: Sized>(data: T, copy: bool) -> $arr {
+        /// The underlying typed array buffer is a subarray of the WebAssembly memory and is not copied.
+        /// The buffer type will depend on the WebAssembly memory type.
+        /// This might be unsafe, as the memory region might be altered from javascript operations.
+        pub fn $name<T: Sized>(data: T) -> $arr {
             let begin = [data].as_ptr() as u32 / size_of::<$t>() as u32;
             let end = begin + (size_of::<T>() / size_of::<$t>()) as u32;
-            if copy {
-                return $arr::new(&memory_buffer()).slice(begin, end);
-            } else {
-                return $arr::new(&memory_buffer()).subarray(begin, end);
-            }
+            $arr::new(&memory_buffer()).subarray(begin, end)
+        }
+
+        /// Return a typed array that contains the `data` memory region.
+        ///
+        /// The underlying typed array buffer is copied from the WebAssembly memory.
+        pub fn $name_copy<T: Sized>(data: T) -> $arr {
+            let begin = [data].as_ptr() as u32 / size_of::<$t>() as u32;
+            let end = begin + (size_of::<T>() / size_of::<$t>()) as u32;
+            $arr::new(&memory_buffer()).slice(begin, end)
         }
     };
 }
 
-array_buffer!(typed_u8c Uint8ClampedArray::u8);
-array_buffer!(typed_u8 Uint8Array::u8);
-array_buffer!(typed_u16 Uint16Array::u16);
-array_buffer!(typed_u32 Uint32Array::u32);
-array_buffer!(typed_u64 BigUint64Array::u64);
-array_buffer!(typed_i8 Int8Array::i8);
-array_buffer!(typed_i16 Int16Array::i16);
-array_buffer!(typed_i32 Int32Array::i32);
-array_buffer!(typed_i64 BigInt64Array::i64);
-array_buffer!(typed_f32 Float32Array::f32);
-array_buffer!(typed_f64 Float64Array::f64);
+array_buffer!(typed_u8c typed_u8c_copy Uint8ClampedArray::u8);
+array_buffer!(typed_u8 typed_u8_copy Uint8Array::u8);
+array_buffer!(typed_u16 typed_u16_copy Uint16Array::u16);
+array_buffer!(typed_u32 typed_u32_copy Uint32Array::u32);
+array_buffer!(typed_u64 typed_u64_copy BigUint64Array::u64);
+array_buffer!(typed_i8 typed_i8_copy Int8Array::i8);
+array_buffer!(typed_i16 typed_i16_copy Int16Array::i16);
+array_buffer!(typed_i32 typed_i32_copy Int32Array::i32);
+array_buffer!(typed_i64 typed_i64_copy BigInt64Array::i64);
+array_buffer!(typed_f32 typed_f32_copy Float32Array::f32);
+array_buffer!(typed_f64 typed_f64_copy Float64Array::f64);
 
 // arrays
 

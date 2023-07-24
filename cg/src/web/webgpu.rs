@@ -1,8 +1,11 @@
+use std::mem::size_of;
+
 use crate::{count, matrix};
-use js_sys::{Array, Object, Reflect};
+use js_sys::{Array, JsString, Object, Reflect};
 use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::JsFuture;
-use web_sys::{self, GpuRenderPassDescriptor};
+
+use web_sys::*;
 
 use crate::math::Triangle;
 
@@ -102,7 +105,7 @@ pub fn draw(webgpu: &WebGpu, clear: crate::math::MX<f32, 1, 4>) {
 
     // let clear1: Array = (&clear).into();
     // let clear2 = Float32Array::from(&clear);
-    let clear3 = array::typed_f32(clear, false);
+    let clear3 = array::typed_f32(clear);
     // web_sys::console::log_1(&clear1);
     // web_sys::console::log_1(&clear2);
     web_sys::console::log_1(&clear3);
@@ -133,19 +136,41 @@ pub fn draw(webgpu: &WebGpu, clear: crate::math::MX<f32, 1, 4>) {
     web_sys::console::log_1(&command_buffer);
 
     webgpu.device.queue().submit(&array::wrap(&command_buffer));
-    // let t: Triangle<2> = (
-    //     matrix!(VR[0.0 3.0]),
-    //     matrix!(VR[0.0 3.0]),
-    //     matrix!(VR[0.0 3.0]),
-    // );
+
     let triangles: [Triangle<2>; 2] = [
-        matrix!([-0.8, -0.8]),
-        matrix!([0.8, -0.8]),
-        matrix!([0.8, 0.8]),
-        matrix!([-0.8, -0.8]),
-        matrix!([0.8, 0.8]),
-        matrix!([-0.8, 0.8]),
+        (
+            matrix!(VR[-0.8f32, -0.8f32]),
+            matrix!(VR[0.8f32, -0.8f32]),
+            matrix!(VR[0.8f32, 0.8f32]),
+        ),
+        (
+            matrix!(VR[-0.8f32, -0.8f32]),
+            matrix!(VR[0.8f32, 0.8f32]),
+            matrix!(VR[-0.8f32, 0.8f32]),
+        ),
     ];
 
-    web_sys::console::log_1(&array::typed_f32(triangles, false))
+    let x = &array::typed_f32(triangles);
+    web_sys::console::log_1(&array::typed_f32(triangles));
+
+    let dd = GpuBufferDescriptor::new(x.byte_length() as f64, 8 | 32);
+    let bff = webgpu.device.create_buffer(&dd);
+    bff.set_label("triangles");
+    web_sys::console::log_1(&dd);
+    web_sys::console::log_1(&bff);
+
+    webgpu
+        .device
+        .queue()
+        .write_buffer_with_u32_and_buffer_source(&bff, 0, &x);
+
+    let attr = Object::new();
+    Reflect::set(&attr, &JsValue::from("view"), &JsValue::from("float32x2")).unwrap();
+    Reflect::set(&attr, &JsValue::from("offset"), &JsValue::from(0)).unwrap();
+    Reflect::set(&attr, &JsValue::from("shaderLocation"), &JsValue::from(0)).unwrap();
+
+    let layout = GpuVertexBufferLayout::new(8.0, &array::wrap(&attr));
+    web_sys::console::log_1(&layout);
+
+    // webgpu.device.create_s
 }
