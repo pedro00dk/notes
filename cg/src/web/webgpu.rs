@@ -1,4 +1,4 @@
-use std::mem::size_of;
+use std::{cell, mem::size_of};
 
 use crate::{count, matrix};
 use js_sys::{Array, JsString, Object, Reflect};
@@ -126,16 +126,6 @@ pub fn draw(webgpu: &WebGpu, clear: crate::math::MX<f32, 1, 4>) {
     //
 
     let pass = encoder.begin_render_pass(&GpuRenderPassDescriptor::new(&color_attachments));
-    pass.end();
-    let command_buffer = encoder.finish();
-
-    // let x = Array::new();
-    // x.push(&command_buffer);
-
-    web_sys::console::log_1(&pass);
-    web_sys::console::log_1(&command_buffer);
-
-    webgpu.device.queue().submit(&array::wrap(&command_buffer));
 
     let triangles: [Triangle<2>; 2] = [
         (
@@ -165,12 +155,71 @@ pub fn draw(webgpu: &WebGpu, clear: crate::math::MX<f32, 1, 4>) {
         .write_buffer_with_u32_and_buffer_source(&bff, 0, &x);
 
     let attr = Object::new();
-    Reflect::set(&attr, &JsValue::from("view"), &JsValue::from("float32x2")).unwrap();
+    Reflect::set(&attr, &JsValue::from("format"), &JsValue::from("float32x2")).unwrap();
     Reflect::set(&attr, &JsValue::from("offset"), &JsValue::from(0)).unwrap();
     Reflect::set(&attr, &JsValue::from("shaderLocation"), &JsValue::from(0)).unwrap();
 
     let layout = GpuVertexBufferLayout::new(8.0, &array::wrap(&attr));
     web_sys::console::log_1(&layout);
 
-    // webgpu.device.create_s
+    let sha = GpuShaderModuleDescriptor::new(
+        "
+@vertex
+fn vertex_main(@location(0) pos: vec4f) -> @builtin(position) vec4f {
+    // return pos;
+    return vec4f(pos[0], pos[1], 0.0, 1.0);
+    }
+    
+    @fragment
+    fn fragment_main() -> @location(0) vec4f
+    {
+    return vec4f(1.0, 0.0, 0.0, 1.0);
+    }
+        ",
+    );
+    let cell_shader_module = webgpu.device.create_shader_module(&sha);
+    web_sys::console::log_1(&cell_shader_module);
+
+    let mut gvs = GpuVertexState::new("vertex_main", &cell_shader_module);
+    gvs.buffers(&array::wrap(&layout));
+    web_sys::console::log_1(&gvs);
+    let mut gfs = GpuFragmentState::new("fragment_main", &cell_shader_module, &JsValue::UNDEFINED);
+
+    let targ = Object::new();
+    Reflect::set(
+        &targ,
+        &JsValue::from("format"),
+        &JsValue::from(webgpu.format),
+    )
+    .unwrap();
+    // gfs.targets(&array::wrap(&targ));
+    gfs.targets(&array::wrap(&targ));
+    web_sys::console::log_1(&gfs);
+
+    let mut pip = GpuRenderPipelineDescriptor::new(&JsValue::from("auto"), &gvs);
+    // pip.for
+    pip.fragment(&gfs);
+    web_sys::console::log_1(&pip);
+    let pipeline = webgpu.device.create_render_pipeline(&pip);
+    web_sys::console::log_1(&pipeline);
+
+    pass.set_pipeline(&pipeline);
+    pass.set_vertex_buffer(0, &bff);
+    // pass.draw(triangles.length / 2); // 6 vertices
+    pass.draw(12 / 2); // 6 vertices
+
+    //
+    //
+    //
+
+    pass.end();
+    let command_buffer = encoder.finish();
+
+    // let x = Array::new();
+    // x.push(&command_buffer);
+
+    web_sys::console::log_1(&pass);
+    web_sys::console::log_1(&command_buffer);
+
+    webgpu.device.queue().submit(&array::wrap(&command_buffer));
 }
