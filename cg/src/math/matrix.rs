@@ -51,10 +51,10 @@ pub type VC<T, const D: usize> = MX<T, D, 1>;
 ///   - Create a matrix with the `rx` provided elements. The matrix shape is determined by `rx` and `r[i]` lengths.
 ///
 ///
-/// - `matrix!(VR[d0, d1, d2, d3, ...])`: `matrix!(VR[0 1 2 3])`
+/// - `matrix!(VR[d0, d1, d2, d3, ...])`: `matrix!(VR[0, 1, 2, 3])`
 ///   - Create a single row matrix with `dx` columns.
 ///
-/// - `matrix!(VC[d0, d1, d2, d3, ...])`: `matrix!(VC[0 1 2 3])`
+/// - `matrix!(VC[d0, d1, d2, d3, ...])`: `matrix!(VC[0, 1, 2, 3])`
 ///   - Create a single row matrix with `dx` rows.
 #[macro_export]
 macro_rules! matrix {
