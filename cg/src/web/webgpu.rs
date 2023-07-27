@@ -2,6 +2,7 @@ use std::{cell, mem::size_of};
 
 use crate::{count, matrix};
 use js_sys::{Array, JsString, Object, Reflect};
+use leptos::html::tr;
 use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::JsFuture;
 
@@ -103,28 +104,10 @@ pub fn draw(webgpu: &WebGpu, clear: crate::math::MX<f32, 1, 4>) {
     //
     //
 
-    // let clear1: Array = (&clear).into();
-    // let clear2 = Float32Array::from(&clear);
-    let clear3 = array::typed_f32_copy(clear);
-    let a = Array::new();
-    // a.push(&JsValue::from(clear3.at(0).unwrap()));
-    // a.push(&JsValue::from(clear3.at(1).unwrap()));
-    // a.push(&JsValue::from(clear3.at(2).unwrap()));
-    // a.push(&JsValue::from(clear3.at(3).unwrap()));
-    web_sys::console::log_1(&JsValue::from(clear3.at(0).unwrap()));
-    web_sys::console::log_1(&JsValue::from(clear3.at(1).unwrap()));
-    web_sys::console::log_1(&JsValue::from(clear3.at(2).unwrap()));
-    web_sys::console::log_1(&JsValue::from(clear3.at(3).unwrap()));
-    a.push(&JsValue::from(clear[0]));
-    a.push(&JsValue::from(clear[1]));
-    a.push(&JsValue::from(clear[2]));
-    a.push(&JsValue::from(clear[3]));
-    // web_sys::console::log_1(&clear1);
-    // web_sys::console::log_1(&clear2);
-    web_sys::console::log_1(&clear3);
+    let clear3 = array::typed_f32(&clear);
 
     // Reflect::set(&color_attachment, &JsValue::from("clearValue"), &clear3).unwrap();
-    Reflect::set(&color_attachment, &JsValue::from("clearValue"), &a).unwrap();
+    Reflect::set(&color_attachment, &JsValue::from("clearValue"), &clear3).unwrap();
 
     web_sys::console::log_1(&color_attachments);
     web_sys::console::log_1(&texture);
@@ -155,20 +138,21 @@ pub fn draw(webgpu: &WebGpu, clear: crate::math::MX<f32, 1, 4>) {
         ),
     ];
 
-    let x = &array::typed_f32_copy(triangles);
+    let x = &array::typed_f32(&triangles);
     web_sys::console::log_1(&x);
-    web_sys::console::log_1(&JsValue::from(x.at(0)));
-    web_sys::console::log_1(&JsValue::from(x.at(1)));
-    web_sys::console::log_1(&JsValue::from(x.at(2)));
-    web_sys::console::log_1(&JsValue::from(x.at(3)));
-    web_sys::console::log_1(&JsValue::from(x.at(4)));
-    web_sys::console::log_1(&JsValue::from(x.at(5)));
-    web_sys::console::log_1(&JsValue::from(x.at(6)));
-    web_sys::console::log_1(&JsValue::from(x.at(7)));
-    web_sys::console::log_1(&JsValue::from(x.at(8)));
-    web_sys::console::log_1(&JsValue::from(x.at(9)));
-    web_sys::console::log_1(&JsValue::from(x.at(10)));
-    web_sys::console::log_1(&JsValue::from(x.at(11)));
+
+    // web_sys::console::log_1(&JsValue::from(x.at(0)));
+    // web_sys::console::log_1(&JsValue::from(x.at(1)));
+    // web_sys::console::log_1(&JsValue::from(x.at(2)));
+    // web_sys::console::log_1(&JsValue::from(x.at(3)));
+    // web_sys::console::log_1(&JsValue::from(x.at(4)));
+    // web_sys::console::log_1(&JsValue::from(x.at(5)));
+    // web_sys::console::log_1(&JsValue::from(x.at(6)));
+    // web_sys::console::log_1(&JsValue::from(x.at(7)));
+    // web_sys::console::log_1(&JsValue::from(x.at(8)));
+    // web_sys::console::log_1(&JsValue::from(x.at(9)));
+    // web_sys::console::log_1(&JsValue::from(x.at(10)));
+    // web_sys::console::log_1(&JsValue::from(x.at(11)));
 
     let dd = GpuBufferDescriptor::new(x.byte_length() as f64, 8 | 32);
     let bff = webgpu.device.create_buffer(&dd);

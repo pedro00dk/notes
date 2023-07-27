@@ -31,8 +31,8 @@ macro_rules! array_buffer {
         /// The underlying typed array buffer is a subarray of the WebAssembly memory and is not copied.
         /// The buffer type will depend on the WebAssembly memory type.
         /// This might be unsafe, as the memory region might be altered from javascript operations.
-        pub fn $name<T: Sized>(data: T) -> $arr {
-            let begin = [data].as_ptr() as u32 / size_of::<$t>() as u32;
+        pub fn $name<T: Sized>(data: &T) -> $arr {
+            let begin = data as *const T as u32 / size_of::<$t>() as u32;
             let end = begin + (size_of::<T>() / size_of::<$t>()) as u32;
             $arr::new(&memory_buffer()).subarray(begin, end)
         }
@@ -40,8 +40,8 @@ macro_rules! array_buffer {
         /// Return a typed array that contains the `data` memory region.
         ///
         /// The underlying typed array buffer is copied from the WebAssembly memory.
-        pub fn $name_copy<T: Sized>(data: T) -> $arr {
-            let begin = [data].as_ptr() as u32 / size_of::<$t>() as u32;
+        pub fn $name_copy<T: Sized>(data: &T) -> $arr {
+            let begin = data as *const T as u32 / size_of::<$t>() as u32;
             let end = begin + (size_of::<T>() / size_of::<$t>()) as u32;
             $arr::new(&memory_buffer()).slice(begin, end)
         }
