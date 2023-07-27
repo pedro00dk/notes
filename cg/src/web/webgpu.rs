@@ -105,13 +105,28 @@ pub fn draw(webgpu: &WebGpu, clear: crate::math::MX<f32, 1, 4>) {
 
     // let clear1: Array = (&clear).into();
     // let clear2 = Float32Array::from(&clear);
-    let clear3 = array::typed_f32(clear);
+    let clear3 = array::typed_f32_copy(clear);
+    let a = Array::new();
+    // a.push(&JsValue::from(clear3.at(0).unwrap()));
+    // a.push(&JsValue::from(clear3.at(1).unwrap()));
+    // a.push(&JsValue::from(clear3.at(2).unwrap()));
+    // a.push(&JsValue::from(clear3.at(3).unwrap()));
+    web_sys::console::log_1(&JsValue::from(clear3.at(0).unwrap()));
+    web_sys::console::log_1(&JsValue::from(clear3.at(1).unwrap()));
+    web_sys::console::log_1(&JsValue::from(clear3.at(2).unwrap()));
+    web_sys::console::log_1(&JsValue::from(clear3.at(3).unwrap()));
+    a.push(&JsValue::from(clear[0]));
+    a.push(&JsValue::from(clear[1]));
+    a.push(&JsValue::from(clear[2]));
+    a.push(&JsValue::from(clear[3]));
     // web_sys::console::log_1(&clear1);
     // web_sys::console::log_1(&clear2);
     web_sys::console::log_1(&clear3);
 
-    Reflect::set(&color_attachment, &JsValue::from("clearValue"), &clear3).unwrap();
+    // Reflect::set(&color_attachment, &JsValue::from("clearValue"), &clear3).unwrap();
+    Reflect::set(&color_attachment, &JsValue::from("clearValue"), &a).unwrap();
 
+    web_sys::console::log_1(&color_attachments);
     web_sys::console::log_1(&texture);
     web_sys::console::log_1(&view);
     web_sys::console::log_1(&descriptor);
@@ -140,8 +155,20 @@ pub fn draw(webgpu: &WebGpu, clear: crate::math::MX<f32, 1, 4>) {
         ),
     ];
 
-    let x = &array::typed_f32(triangles);
-    web_sys::console::log_1(&array::typed_f32(triangles));
+    let x = &array::typed_f32_copy(triangles);
+    web_sys::console::log_1(&x);
+    web_sys::console::log_1(&JsValue::from(x.at(0)));
+    web_sys::console::log_1(&JsValue::from(x.at(1)));
+    web_sys::console::log_1(&JsValue::from(x.at(2)));
+    web_sys::console::log_1(&JsValue::from(x.at(3)));
+    web_sys::console::log_1(&JsValue::from(x.at(4)));
+    web_sys::console::log_1(&JsValue::from(x.at(5)));
+    web_sys::console::log_1(&JsValue::from(x.at(6)));
+    web_sys::console::log_1(&JsValue::from(x.at(7)));
+    web_sys::console::log_1(&JsValue::from(x.at(8)));
+    web_sys::console::log_1(&JsValue::from(x.at(9)));
+    web_sys::console::log_1(&JsValue::from(x.at(10)));
+    web_sys::console::log_1(&JsValue::from(x.at(11)));
 
     let dd = GpuBufferDescriptor::new(x.byte_length() as f64, 8 | 32);
     let bff = webgpu.device.create_buffer(&dd);
@@ -164,18 +191,18 @@ pub fn draw(webgpu: &WebGpu, clear: crate::math::MX<f32, 1, 4>) {
 
     let sha = GpuShaderModuleDescriptor::new(
         "
-@vertex
-fn vertex_main(@location(0) pos: vec4f) -> @builtin(position) vec4f {
-    // return pos;
-    return vec4f(pos[0], pos[1], 0.0, 1.0);
-    }
-    
-    @fragment
-    fn fragment_main() -> @location(0) vec4f
-    {
-    return vec4f(1.0, 0.0, 0.0, 1.0);
-    }
-        ",
+    @vertex
+    fn vertex_main(@location(0) pos: vec4f) -> @builtin(position) vec4f {
+        // return pos;
+        return vec4f(pos[0], pos[1], 0.0, 1.0);
+        }
+
+        @fragment
+        fn fragment_main() -> @location(0) vec4f
+        {
+        return vec4f(1.0, 0.0, 0.0, 1.0);
+        }
+            ",
     );
     let cell_shader_module = webgpu.device.create_shader_module(&sha);
     web_sys::console::log_1(&cell_shader_module);

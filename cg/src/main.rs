@@ -19,10 +19,22 @@ fn App(cx: Scope) -> impl IntoView {
     // create_effect(cx, move |_| setCanvas(canvas_ref.get()));
 
     create_resource(cx, canvas, async move |canvas| {
-        let c = canvas_ref.get().unwrap();
-        web_sys::console::log_1(&c);
+        let x = matrix!(VR[0.1,0.2,0.3,0.4]);
+        let a = &web::array::typed_f64_copy(x);
+        // let c = canvas_ref.get().unwrap();
+
+        web_sys::console::log_1(&a);
+        web_sys::console::log_1(&a);
+        web_sys::console::log_1(&a);
+        web_sys::console::log_1(&a);
+        web_sys::console::log_1(&a);
+        web_sys::console::log_1(&a);
+        web_sys::console::log_1(&a);
+        web_sys::console::log_1(&js_sys::JSON::stringify(&a).unwrap());
+        web_sys::console::log_1(&a);
+        web_sys::console::log_1(&js_sys::JSON::stringify(&a).unwrap());
+
         let webgpu = web::webgpu::WebGpu::new(canvas_ref.get()).await.unwrap();
-        webgpu.print();
         webgpu.print();
         web::webgpu::draw(
             &webgpu,
