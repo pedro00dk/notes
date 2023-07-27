@@ -76,18 +76,18 @@ macro_rules! matrix {
     };
 
     ($([$($v:expr),+])+) => {(||{
-        const R: usize = count!($([$($v),+],)+);
-        const C: usize = count!($($($v,)+)+) / R;
+        const R: usize = crate::math::count!($([$($v),+],)+);
+        const C: usize = crate::math::count!($($($v,)+)+) / R;
         crate::math::MX::<_, R, C> { data: [$($($v,)+)+] }
     })()};
 
     (VR [$($v:expr),+]) => { (||{
-        const R: usize = count!($($v,)+);
+        const R: usize = crate::math::count!($($v,)+);
         crate::math::VR::<_, R> { data: [$($v,)+] }
     })()};
 
     (VC [$($v:expr),+]) => { (||{
-        const C: usize = count!($($v,)+);
+        const C: usize = crate::math::count!($($v,)+);
         crate::math::VC::<_, C> { data: [$($v,)+] }
     })()};
 }
@@ -96,8 +96,11 @@ macro_rules! matrix {
 #[macro_export]
 macro_rules! count {
     () => { 0 };
-    ($head:expr, $($tail:expr,)*) => { 1 + count!($($tail,)*) };
+    ($head:expr, $($tail:expr,)*) => { 1 + crate::math::count!($($tail,)*) };
 }
+
+pub(crate) use count;
+pub(crate) use matrix;
 
 // iter
 
