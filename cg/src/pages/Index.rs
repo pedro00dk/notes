@@ -10,7 +10,7 @@ pub fn Index(cx: Scope) -> impl IntoView {
     create_resource(cx, canvas, async move |canvas| {
         let webgpu = web::webgpu::WebGpu::new(canvas_ref.get()).await.unwrap();
         webgpu.print();
-        web::webgpu::draw(&webgpu, math::matrix!(VR[0.0, 0.3, 0.7, 1.0]));
+        web::webgpu::draw(&webgpu, math::mx!(VR[0.0, 0.3, 0.7, 1.0]));
     });
 
     view! { cx, <canvas _ref=canvas_ref /> }

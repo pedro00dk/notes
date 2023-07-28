@@ -7,8 +7,8 @@ mod pages;
 mod web;
 
 use leptos::*;
-use pages::Index;
+use pages::Index::Index;
 
 fn main() {
-    mount_to_body(|cx| view! { cx, <Index::Index /> })
+    mount_to_body(|cx| view! { cx, <Index /> })
 }

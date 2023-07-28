@@ -14,7 +14,7 @@ use wasm_bindgen::{JsCast, JsValue};
 /// `MX` is generic matrix implementation for all matrix-like and vector-like types.
 ///
 /// utilities:
-/// - `matrix!` macro for initialization.
+/// - `mx!` macro for initialization.
 /// - `FromIter` and `IntoIter`.
 /// - 1-dimensional and 2-dimensional `Index` and `IndexMut`.
 /// - All `std::ops` operators for types that support it.
@@ -38,26 +38,26 @@ pub type VC<T, const D: usize> = MX<T, D, 1>;
 /// Matrix initializers.
 ///
 /// Supported formats are:
-/// - `matrix!((R, C)<T>)`: `matrix!((2, 2)<usize>)`
+/// - `mx!((R, C)<T>)`: `mx!((2, 2)<usize>)`
 ///   - Create a `R`x`C` matrix of `T` elements. This matrix data is not initialized.
 ///
-/// - `matrix!((R, C)(V))`: `matrix!((2, 2)(0))`
+/// - `mx!((R, C)(V))`: `mx!((2, 2)(0))`
 ///   - Create a `R`x`C` matrix of elements of `V` type. V must implement `Copy`.
 ///
-/// - `matrix!((R, C) [d0, d1, d2, d3, ...])`: `matrix!((2, 2) [0, 1, 2, 3])`
+/// - `mx!((R, C) [d0, d1, d2, d3, ...])`: `mx!((2, 2) [0, 1, 2, 3])`
 ///   - Create a `R`x`C` matrix with the `dx` provided elements. `dx` length must be equal to `R`*`C`
 ///
-/// - `matrix!([r0...][r1...] rx...)`: `matrix!([0, 1][2, 3])`
+/// - `mx!([r0...][r1...] rx...)`: `mx!([0, 1][2, 3])`
 ///   - Create a matrix with the `rx` provided elements. The matrix shape is determined by `rx` and `r[i]` lengths.
 ///
 ///
-/// - `matrix!(VR[d0, d1, d2, d3, ...])`: `matrix!(VR[0, 1, 2, 3])`
+/// - `mx!(VR[d0, d1, d2, d3, ...])`: `mx!(VR[0, 1, 2, 3])`
 ///   - Create a single row matrix with `dx` columns.
 ///
-/// - `matrix!(VC[d0, d1, d2, d3, ...])`: `matrix!(VC[0, 1, 2, 3])`
+/// - `mx!(VC[d0, d1, d2, d3, ...])`: `mx!(VC[0, 1, 2, 3])`
 ///   - Create a single row matrix with `dx` rows.
 #[macro_export]
-macro_rules! matrix {
+macro_rules! mx {
 
     (($r:expr, $c:expr) <$t:ty>) => { crate::math::MX::<$t, $r, $c> {
         data: unsafe {
@@ -76,31 +76,28 @@ macro_rules! matrix {
     };
 
     ($([$($v:expr),+])+) => {(||{
-        const R: usize = crate::math::count!($([$($v),+],)+);
-        const C: usize = crate::math::count!($($($v,)+)+) / R;
+        const R: usize = crate::math::matrix::mx!($([$($v),+],)+);
+        const C: usize = crate::math::matrix::mx!($($($v,)+)+) / R;
         crate::math::MX::<_, R, C> { data: [$($($v,)+)+] }
     })()};
 
     (VR [$($v:expr),+]) => { (||{
-        const R: usize = crate::math::count!($($v,)+);
+        const R: usize = crate::math::matrix::mx!($($v,)+);
         crate::math::VR::<_, R> { data: [$($v,)+] }
     })()};
 
     (VC [$($v:expr),+]) => { (||{
-        const C: usize = crate::math::count!($($v,)+);
+        const C: usize = crate::math::matrix::mx!($($v,)+);
         crate::math::VC::<_, C> { data: [$($v,)+] }
     })()};
-}
 
-/// helper for `matrix!`
-#[macro_export]
-macro_rules! count {
+    // count helper for `mx!`
     () => { 0 };
-    ($head:expr, $($tail:expr,)*) => { 1 + crate::math::count!($($tail,)*) };
+    ($head:expr, $($tail:expr,)*) => { 1 + crate::math::matrix::mx!($($tail,)*) };
 }
 
-pub(crate) use count;
-pub(crate) use matrix;
+// pub(crate) use count;
+pub(crate) use mx;
 
 // iter
 
@@ -109,7 +106,7 @@ where
     [(); R * C]:,
 {
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
-        let mut res = matrix!((R, C)(T::default()));
+        let mut res = mx!((R, C)(T::default()));
         iter.into_iter()
             .enumerate()
             .take(R * C)
@@ -288,7 +285,7 @@ where
     where
         [(); C * R]:,
     {
-        let mut res = matrix!((C, R)<T>);
+        let mut res = mx!((C, R)<T>);
         for i in 0..R {
             for j in 0..C {
                 res[R * j + i] = self[C * i + j]
@@ -303,7 +300,7 @@ where
         [(); C * C_]:,
         [(); R * C_]:,
     {
-        let mut res = matrix!((R, C_)(T::zero()));
+        let mut res = mx!((R, C_)(T::zero()));
         for i in 0..R {
             for j in 0..C_ {
                 for k in 0..C {
@@ -319,22 +316,22 @@ mod test {
 
     #[test]
     fn init() {
-        let m = matrix!((2, 2)<f64>);
-        let m = matrix!((2, 2)(0.0));
+        let m = mx!((2, 2)<f64>);
+        let m = mx!((2, 2)(0.0));
         assert!((0..4).all(|i| m.data[i] == 0.0));
-        let m = matrix!((2,2) [0.0, 1.0, 2.0, 3.0]);
+        let m = mx!((2,2) [0.0, 1.0, 2.0, 3.0]);
         assert!((0..4).all(|i| m.data[i] == i as f64));
-        let m = matrix!([0.0, 1.0][2.0, 3.0]);
+        let m = mx!([0.0, 1.0][2.0, 3.0]);
         assert!((0..4).all(|i| m.data[i] == i as f64));
-        let m = matrix!(VR[0.0, 1.0, 2.0, 3.0]);
+        let m = mx!(VR[0.0, 1.0, 2.0, 3.0]);
         assert!((0..4).all(|i| m.data[i] == i as f64));
-        let m = matrix!(VC[0.0, 1.0, 2.0, 3.0]);
+        let m = mx!(VC[0.0, 1.0, 2.0, 3.0]);
         assert!((0..4).all(|i| m.data[i] == i as f64));
     }
 
     #[test]
     fn iter() {
-        let m = matrix!([0, 1, 2, 3][4, 5, 6, 7]);
+        let m = mx!([0, 1, 2, 3][4, 5, 6, 7]);
         let ma = crate::math::MX::<i32, 2, 4>::from_iter(m.into_iter());
         let mb = crate::math::MX::<i32, 4, 2>::from_iter(m.into_iter());
         assert!((0..m.data.len()).all(|i| m.data[i] == ma.data[i] && m.data[i] == mb.data[i]));
@@ -346,7 +343,7 @@ mod test {
 
     #[test]
     fn index() {
-        let mut m = matrix!([0, 1, 2, 3][4, 5, 6, 7]);
+        let mut m = mx!([0, 1, 2, 3][4, 5, 6, 7]);
         assert!((0..m.data.len()).all(|i| m[i] == i));
         (0..m.data.len()).for_each(|i| m[i] = m[i] * 2);
         assert!((0..m.data.len()).all(|i| m[i] == i * 2));
@@ -354,18 +351,18 @@ mod test {
 
     #[test]
     fn algebra() {
-        let m = matrix!([0.0, 1.0, 2.0, 3.0][4.0, 5.0, 6.0, 7.0]);
+        let m = mx!([0.0, 1.0, 2.0, 3.0][4.0, 5.0, 6.0, 7.0]);
         let r = m.reshape::<4, 2>();
         assert!((0..r.data.len()).all(|i| r[i] == m[i]));
 
-        let m = matrix!([0.0, 1.0, 2.0, 3.0][4.0, 5.0, 6.0, 7.0]);
-        let m = matrix!([0.0, 1.0][4.0, 5.0]);
+        let m = mx!([0.0, 1.0, 2.0, 3.0][4.0, 5.0, 6.0, 7.0]);
+        let m = mx!([0.0, 1.0][4.0, 5.0]);
         let r = m.transpose();
 
-        let ma = matrix!([0.0, 1.0, 2.0, 3.0][4.0, 5.0, 6.0, 7.0]);
-        let mb = matrix!([0.0, 1.0][2.0, 3.0][4.0, 5.0][6.0, 7.0]);
+        let ma = mx!([0.0, 1.0, 2.0, 3.0][4.0, 5.0, 6.0, 7.0]);
+        let mb = mx!([0.0, 1.0][2.0, 3.0][4.0, 5.0][6.0, 7.0]);
         let r = ma.multiply(&mb);
-        assert!(r == matrix!([28.0, 34.0][76.0, 98.0]));
+        assert!(r == mx!([28.0, 34.0][76.0, 98.0]));
         assert_eq!(ma.shape(), (2, 4));
         assert_eq!(mb.shape(), (4, 2));
         assert_eq!(r.shape(), (ma.shape().0, mb.shape().1));

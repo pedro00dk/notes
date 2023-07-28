@@ -1,6 +1,6 @@
 use std::{cell, mem::size_of};
 
-use crate::{count, matrix};
+use crate::mx;
 use js_sys::{Array, JsString, Object, Reflect};
 use leptos::html::tr;
 use wasm_bindgen::{JsCast, JsValue};
@@ -127,14 +127,14 @@ pub fn draw(webgpu: &WebGpu, clear: crate::math::MX<f32, 1, 4>) {
 
     let triangles: [Triangle<2>; 2] = [
         (
-            matrix!(VR[-0.8f32, -0.8f32]),
-            matrix!(VR[0.8f32, -0.8f32]),
-            matrix!(VR[0.8f32, 0.8f32]),
+            mx!(VR[-0.8f32, -0.8f32]),
+            mx!(VR[0.8f32, -0.8f32]),
+            mx!(VR[0.8f32, 0.8f32]),
         ),
         (
-            matrix!(VR[-0.8f32, -0.8f32]),
-            matrix!(VR[0.8f32, 0.8f32]),
-            matrix!(VR[-0.8f32, 0.8f32]),
+            mx!(VR[-0.8f32, -0.8f32]),
+            mx!(VR[0.8f32, 0.8f32]),
+            mx!(VR[-0.8f32, 0.8f32]),
         ),
     ];
 
