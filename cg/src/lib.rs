@@ -8,7 +8,14 @@ mod web;
 
 use leptos::*;
 use pages::Index::Index;
+use wasm_bindgen::prelude::*;
 
-fn main() {
+#[wasm_bindgen]
+extern "C" {
+    fn alert(s: &str);
+}
+
+#[wasm_bindgen]
+pub fn mount() {
     mount_to_body(|cx| view! { cx, <Index /> })
 }

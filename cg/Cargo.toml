@@ -1,11 +1,13 @@
 [package]
-name = "cg"
+name = "index"
 version = "0.1.0"
 edition = "2021"
 
-[build]
-target = "wasm32-unknown-unknown"
-rustflags = ["--cfg=web_sys_unstable_apis"]
+[lib]
+crate-type = ["cdylib"]
+
+[dev-dependencies]
+wasm-bindgen-cli = "0.2.87"
 
 [dependencies]
 js-sys = "0.3.64"
