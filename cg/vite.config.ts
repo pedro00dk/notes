@@ -4,7 +4,11 @@ import type { Plugin, UserConfig } from 'vite'
 const wasmCompilePlugin = (): Plugin => ({
     name: 'wasmCompile',
     configureServer: async ({ config: { isProduction }, watcher }) => {
-        const wasmCompile = () => execSync(`npm run wasm:gen:${isProduction ? 'prd' : 'dev'}`, { stdio: 'inherit' })
+        const wasmCompile = () => {
+            try {
+                execSync(`npm run wasm:gen:${isProduction ? 'prd' : 'dev'}`, { stdio: 'inherit' })
+            } catch {}
+        }
         wasmCompile()
         watcher.on('change', file => void (file.endsWith('.rs') && wasmCompile()))
     },
