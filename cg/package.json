@@ -12,10 +12,10 @@
         "typescript:check": "tsc",
         "typescript:watch": "tsc --watch",
         "wasm:gen:dev-wasm": "RUSTFLAGS='--cfg=web_sys_unstable_apis' cargo build --target wasm32-unknown-unknown",
-        "wasm:gen:dev-glue": "wasm-bindgen --out-dir ./src/ --target bundler --browser --no-typescript ./target/wasm32-unknown-unknown/debug/index.wasm && rm ./src/index.js",
+        "wasm:gen:dev-glue": "wasm-bindgen --out-dir ./src/ --target bundler --browser --no-typescript --weak-refs --reference-types ./target/wasm32-unknown-unknown/debug/index.wasm && rm ./src/index.js",
         "wasm:gen:dev": "npm run wasm:gen:dev-wasm && npm run wasm:gen:dev-glue",
         "wasm:gen:prd-wasm": "RUSTFLAGS='--cfg=web_sys_unstable_apis' cargo build --target wasm32-unknown-unknown --release",
-        "wasm:gen:prd-glue": "wasm-bindgen --out-dir ./src/ --target bundler --browser --no-typescript ./target/wasm32-unknown-unknown/release/index.wasm && rm ./src/index.js",
+        "wasm:gen:prd-glue": "wasm-bindgen --out-dir ./src/ --target bundler --browser --no-typescript --weak-refs --reference-types ./target/wasm32-unknown-unknown/release/index.wasm && rm ./src/index.js",
         "wasm:gen:prd": "npm run wasm:gen:prd-wasm && npm run wasm:gen:prd-glue",
         "start": "vite"
     }
