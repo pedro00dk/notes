@@ -1,3 +1,4 @@
+use crate::components::editor::Editor;
 use crate::math;
 use crate::web;
 use leptos::*;
@@ -13,5 +14,10 @@ pub fn Index(cx: Scope) -> impl IntoView {
         web::webgpu::draw(&webgpu, math::mx!(VR[0.0, 0.3, 0.7, 1.0]));
     });
 
-    view! { cx, <canvas _ref=canvas_ref /> }
+    view! { cx,
+        <div>
+            <canvas _ref=canvas_ref />
+            <Editor language="wgsl" theme="vs-dark" />
+        </div>
+    }
 }

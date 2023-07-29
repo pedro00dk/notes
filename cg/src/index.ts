@@ -1,8 +1,12 @@
 import * as bindgen from './index_bg'
 import wasmInit from './index_bg.wasm?init'
+//
+import { editor } from 'monaco-editor'
 
-document.body.appendChild(document.createElement('span')).textContent = 'hello world!'
+const imports = {
+    './index_bg.js': bindgen,
+    'monaco-editor': { editor: () => editor },
+}
 
-const wasmModule = await wasmInit({ './index_bg.js': bindgen })
-bindgen.__wbg_set_wasm(wasmModule.exports)
+bindgen.__wbg_set_wasm((await wasmInit({ ...imports })).exports)
 bindgen.mount()

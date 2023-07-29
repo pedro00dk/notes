@@ -2,6 +2,7 @@
 #![feature(async_closure)]
 #![feature(generic_const_exprs)]
 
+mod components;
 mod math;
 mod pages;
 mod web;
