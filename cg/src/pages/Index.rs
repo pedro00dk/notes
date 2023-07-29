@@ -2,6 +2,7 @@ use crate::components::editor::Editor;
 use crate::math;
 use crate::web;
 use leptos::*;
+use wasm_bindgen::prelude::*;
 
 #[component]
 pub fn Index(cx: Scope) -> impl IntoView {
@@ -17,7 +18,7 @@ pub fn Index(cx: Scope) -> impl IntoView {
     view! { cx,
         <div>
             <canvas _ref=canvas_ref />
-            <Editor language="wgsl" theme="vs-dark" />
+            <Editor language="wgsl" theme="vs-dark" on_change=Some(||web_sys::console::log_1(&JsValue::from("editor..."))) />
         </div>
     }
 }

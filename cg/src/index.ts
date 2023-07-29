@@ -1,6 +1,6 @@
 import * as bindgen from './index_bg'
 import wasmInit from './index_bg.wasm?init'
-//
+
 import { editor } from 'monaco-editor'
 
 const imports = {

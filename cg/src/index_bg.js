@@ -159,6 +159,31 @@ const CLOSURE_DTORS = new FinalizationRegistry(state => {
     wasm.__wbindgen_export_3.get(state.dtor)(state.a, state.b)
 });
 
+function makeClosure(arg0, arg1, dtor, f) {
+    const state = { a: arg0, b: arg1, cnt: 1, dtor };
+    const real = (...args) => {
+        // First up with a closure we increment the internal reference
+        // count. This ensures that the Rust closure environment won't
+        // be deallocated while we're invoking it.
+        state.cnt++;
+        try {
+            return f(state.a, state.b, ...args);
+        } finally {
+            if (--state.cnt === 0) {
+                wasm.__wbindgen_export_3.get(state.dtor)(state.a, state.b);
+                state.a = 0;
+                CLOSURE_DTORS.unregister(state)
+            }
+        }
+    };
+    real.original = state;
+    CLOSURE_DTORS.register(real, state, state);
+    return real;
+}
+function __wbg_adapter_24(arg0, arg1) {
+    wasm._dyn_core__ops__function__Fn_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h2456d04ec546b7bf(arg0, arg1);
+}
+
 function makeMutClosure(arg0, arg1, dtor, f) {
     const state = { a: arg0, b: arg1, cnt: 1, dtor };
     const real = (...args) => {
@@ -183,12 +208,12 @@ function makeMutClosure(arg0, arg1, dtor, f) {
     CLOSURE_DTORS.register(real, state, state);
     return real;
 }
-function __wbg_adapter_24(arg0, arg1) {
+function __wbg_adapter_27(arg0, arg1) {
     wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h162254376d9d8cac(arg0, arg1);
 }
 
-function __wbg_adapter_27(arg0, arg1, arg2) {
-    wasm.closure260_externref_shim(arg0, arg1, arg2);
+function __wbg_adapter_30(arg0, arg1, arg2) {
+    wasm.closure267_externref_shim(arg0, arg1, arg2);
 }
 
 /**
@@ -231,6 +256,11 @@ export function __wbg_create_fc3d67116b8319ae(arg0, arg1, arg2) {
 
 export function __wbg_getModel_3835af0538c3f0eb(arg0) {
     const ret = arg0.getModel();
+    return ret;
+};
+
+export function __wbg_onDidChangeContent_a599e776557dcb0e(arg0, arg1) {
+    const ret = arg0.onDidChangeContent(arg1);
     return ret;
 };
 
@@ -627,13 +657,18 @@ export function __wbindgen_memory() {
     return ret;
 };
 
-export function __wbindgen_closure_wrapper2735(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 226, __wbg_adapter_24);
+export function __wbindgen_closure_wrapper929(arg0, arg1, arg2) {
+    const ret = makeClosure(arg0, arg1, 120, __wbg_adapter_24);
     return ret;
 };
 
-export function __wbindgen_closure_wrapper6842(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 261, __wbg_adapter_27);
+export function __wbindgen_closure_wrapper2764(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 233, __wbg_adapter_27);
+    return ret;
+};
+
+export function __wbindgen_closure_wrapper6871(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 268, __wbg_adapter_30);
     return ret;
 };
 
