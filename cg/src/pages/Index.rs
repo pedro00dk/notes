@@ -1,5 +1,6 @@
 use crate::components::editor::Editor;
 use crate::components::editor::StandaloneCodeEditor;
+use crate::components::player::Player;
 use crate::math;
 use crate::web;
 use leptos::*;
@@ -20,6 +21,7 @@ pub fn Index(cx: Scope) -> impl IntoView {
     view! { cx,
         <div>
             <canvas _ref=canvas_ref />
+            <Player />
             <Editor language="wgsl" theme="vs-dark" on_change=Some(move ||web_sys::console::log_1(&JsValue::from(&editor.get().unwrap().get_model().get_value()))) set_editor=set_editor />
         </div>
     }
