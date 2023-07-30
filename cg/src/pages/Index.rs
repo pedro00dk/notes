@@ -1,7 +1,7 @@
 use crate::components::editor::Editor;
-use crate::components::editor::StandaloneCodeEditor;
 use crate::components::player::Player;
 use crate::math;
+use crate::util::types::StandaloneCodeEditor;
 use crate::web;
 use leptos::*;
 use wasm_bindgen::prelude::*;

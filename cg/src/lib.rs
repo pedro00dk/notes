@@ -5,6 +5,7 @@
 mod components;
 mod math;
 mod pages;
+mod util;
 mod web;
 
 use leptos::*;

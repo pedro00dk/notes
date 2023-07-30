@@ -1,3 +1,4 @@
+use crate::util::types;
 use js_sys::{Function, JsString, Object, Reflect};
 use leptos::{html, *};
 use wasm_bindgen::prelude::*;
@@ -19,8 +20,24 @@ pub fn Player(
         <div>
             <canvas _ref=canvas_ref />
             <div>
-                <button />
-                <button />
+                <button>  <svg
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+            >
+                // <use_ href=types::sprite("circle").as_string() />
+            </svg></button>
+                <button>
+                <svg
+                    width="24"
+                    height="24"
+                    fill="none"
+                    stroke="currentColor"
+                >
+                    <use_ href="/node_modules/feather-icons/dist/feather-sprite.svg#circle"/>
+                </svg>
+                </button>
                 <span></span>
                 <span></span>
                 <span></span>
