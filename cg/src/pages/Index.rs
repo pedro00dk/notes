@@ -1,4 +1,5 @@
 use crate::components::editor::Editor;
+use crate::components::editor::StandaloneCodeEditor;
 use crate::math;
 use crate::web;
 use leptos::*;
@@ -8,6 +9,7 @@ use wasm_bindgen::prelude::*;
 pub fn Index(cx: Scope) -> impl IntoView {
     let canvas_ref = create_node_ref::<html::Canvas>(cx);
     let (canvas, setCanvas) = create_signal(cx, 0);
+    let (editor, set_editor) = create_signal::<Option<StandaloneCodeEditor>>(cx, None);
 
     create_resource(cx, canvas, async move |canvas| {
         let webgpu = web::webgpu::WebGpu::new(canvas_ref.get()).await.unwrap();
@@ -18,7 +20,7 @@ pub fn Index(cx: Scope) -> impl IntoView {
     view! { cx,
         <div>
             <canvas _ref=canvas_ref />
-            <Editor language="wgsl" theme="vs-dark" on_change=Some(||web_sys::console::log_1(&JsValue::from("editor..."))) />
+            <Editor language="wgsl" theme="vs-dark" on_change=Some(move ||web_sys::console::log_1(&JsValue::from(&editor.get().unwrap().get_model().get_value()))) set_editor=set_editor />
         </div>
     }
 }
