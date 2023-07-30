@@ -15,6 +15,7 @@ const wasmCompilePlugin = (): Plugin => ({
 })
 
 export default {
+    build: { target: 'esnext' },
     server: { port: 5000 },
     plugins: [wasmCompilePlugin()],
 } as UserConfig

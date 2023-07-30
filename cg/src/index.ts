@@ -1,6 +1,7 @@
 import * as bindgen from './index_bg'
 import wasmInit from './index_bg.wasm?init'
 
+import 'feather-icons'
 import { editor } from 'monaco-editor'
 
 const imports = {
