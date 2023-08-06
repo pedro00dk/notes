@@ -42,5 +42,7 @@ web-sys = { version = "0.3.64", features = [
     'GpuTextureView',
     'GpuVertexBufferLayout',
     'Navigator',
+    'ResizeObserver',
+    'ResizeObserverEntry',
     'Window',
 ] }

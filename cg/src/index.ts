@@ -6,7 +6,7 @@ import { editor } from 'monaco-editor'
 
 const imports = {
     './index_bg.js': bindgen,
-    'feather-icons': { sprite: (name: string) => `${featherSpriteUrl}#${name}` },
+    'feather-icons': { sprite: () => featherSpriteUrl },
     'monaco-editor': { editor: () => editor },
 }
 
