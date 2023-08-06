@@ -25,32 +25,68 @@ use wasm_bindgen::{JsCast, JsValue};
 macro_rules! js {
 
     // object init - literal keys
-    ({$($k:literal: $v:expr),*}) => {{
+    ({$($key:literal: $value:expr),*}) => {{
         let object = js_sys::Object::new();
-        $(js_sys::Reflect::set(&object, &JsValue::from($k), &wasm_bindgen::JsValue::from($v)).unwrap();)*
+        $(js_sys::Reflect::set(&object, &JsValue::from($key), &wasm_bindgen::JsValue::from($value)).unwrap();)*
         object
     }};
 
     // object init - expression keys
-    ({$([$k:expr]: $v:expr),*}) => {{
+    ({$([$key:expr]: $value:expr),*}) => {{
         let object = js_sys::Object::new();
-        $(js_sys::Reflect::set(&object, &wasm_bindgen::JsValue::from($k), &wasm_bindgen::JsValue::from($v)).unwrap();)*
+        $(js_sys::Reflect::set(&object, &wasm_bindgen::JsValue::from($key), &wasm_bindgen::JsValue::from($value)).unwrap();)*
         object
     }};
 
     // object init - array
-    ([$($v:expr),*]) => {{
+    ([$($value:expr),*]) => {{
         let array = js_sys::Array::new();
-        $(array.push(&wasm_bindgen::JsValue::from($v));)*
+        $(array.push(&wasm_bindgen::JsValue::from($value));)*
         array
     }};
 
     // object getter
-    ($o:ident[$k:expr]) => { js_sys::Reflect::get(&$o, &wasm_bindgen::JsValue::from($k)).unwrap_or(wasm_bindgen::JsValue::UNDEFINED) };
+    ($object:ident[$key:expr]) => {
+        js_sys::Reflect::get(&$object, &wasm_bindgen::JsValue::from($key)).unwrap_or(wasm_bindgen::JsValue::UNDEFINED)
+    };
+
+    // object getter option
+    ($object:ident[$key:expr]?) => {
+        js_sys::Reflect::get(&$object, &wasm_bindgen::JsValue::from($key)).ok()
+    };
+
+    // object getter or value
+    ($object:ident[$key:expr] ?? $default:expr) => {
+        js_sys::Reflect::get(&$object, &wasm_bindgen::JsValue::from($key)).unwrap_or(wasm_bindgen::JsValue::from(&default))
+    };
+
+    // object getter and cast
+    ($object:ident[$key:expr] as $type:ty) => {
+        js_sys::Reflect::get(&$object, &wasm_bindgen::JsValue::from($key)).unwrap_or(wasm_bindgen::JsValue::UNDEFINED).unchecked_into::<$type>()
+    };
 
     // object setter
-    ($o:ident[$k:expr] = $v:expr) => { js_sys::Reflect::set(&$o, &wasm_bindgen::JsValue::from($k), &wasm_bindgen::JsValue::from($v)).err().unwrap_or(wasm_bindgen::JsValue::UNDEFINED) };
+    ($object:ident[$key:expr] = $value:expr) => {
+        js_sys::Reflect::set(&$object, &wasm_bindgen::JsValue::from($key), &wasm_bindgen::JsValue::from($vvalue)).err().unwrap_or(wasm_bindgen::JsValue::UNDEFINED)
+    };
 }
+
+pub(crate) use js;
+
+/// The `js_fn!` macro provides utilities for creating [`wasm_bindgen::closure::Closure`] and [`js_sys::Function`].
+/// Function parameters and return types must all be convertible to [`wasm_bindgen::JsValue`].
+/// Other constraints in [`wasm_bindgen::closure::Closure`] must also be followed.
+///
+/// Creating function:
+/// - `let f = js_fn!(<dyn Fn()> move || {})`
+/// - `let f = js_fn!(<dyn Fn(String) -> String> move |s| {s})`
+macro_rules! js_fn {
+    (<$type:ty>$function:expr) => {
+        Function::from(Closure::<$type>::new($function).into_js_value())
+    };
+}
+
+pub(crate) use js_fn;
 
 // memory buffers
 
