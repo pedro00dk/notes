@@ -57,7 +57,7 @@ macro_rules! js {
 
     // object getter or value
     ($object:ident[$key:expr] ?? $default:expr) => {
-        js_sys::Reflect::get(&$object, &wasm_bindgen::JsValue::from($key)).unwrap_or(wasm_bindgen::JsValue::from(&default))
+        js_sys::Reflect::get(&$object, &wasm_bindgen::JsValue::from($key)).unwrap_or(wasm_bindgen::JsValue::from(&$default))
     };
 
     // object getter and cast
@@ -67,7 +67,7 @@ macro_rules! js {
 
     // object setter
     ($object:ident[$key:expr] = $value:expr) => {
-        js_sys::Reflect::set(&$object, &wasm_bindgen::JsValue::from($key), &wasm_bindgen::JsValue::from($vvalue)).err().unwrap_or(wasm_bindgen::JsValue::UNDEFINED)
+        js_sys::Reflect::set(&$object, &wasm_bindgen::JsValue::from($key), &wasm_bindgen::JsValue::from(&$value)).err().unwrap_or(wasm_bindgen::JsValue::UNDEFINED)
     };
 }
 
@@ -82,7 +82,7 @@ pub(crate) use js;
 /// - `let f = js_fn!(<dyn Fn(String) -> String> move |s| {s})`
 macro_rules! js_fn {
     (<$type:ty>$function:expr) => {
-        Function::from(Closure::<$type>::new($function).into_js_value())
+        js_sys::Function::from(wasm_bindgen::closure::Closure::<$type>::new($function).into_js_value())
     };
 }
 
@@ -90,13 +90,13 @@ pub(crate) use js_fn;
 
 // memory buffers
 
-/// Return the WebAssembly memory as an ArrayBuffer.
+/// Return the WebAssembly memory as an `ArrayBuffer`.
 pub fn memory_buffer() -> ArrayBuffer {
     let memory = wasm_bindgen::memory().unchecked_into::<WebAssembly::Memory>();
     memory.buffer().unchecked_into::<ArrayBuffer>()
 }
 
-/// Return the WebAssembly memory as a SharedArrayBuffer.
+/// Return the WebAssembly memory as a `SharedArrayBuffer`.
 pub fn memory_buffer_shared() -> SharedArrayBuffer {
     let memory = wasm_bindgen::memory().unchecked_into::<WebAssembly::Memory>();
     memory.buffer().unchecked_into::<SharedArrayBuffer>()

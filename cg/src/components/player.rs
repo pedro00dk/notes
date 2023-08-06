@@ -3,20 +3,28 @@ use crate::util::{
     types::feather_icons,
 };
 use js_sys::{Array, Function, JsString, Reflect};
-use leptos::{html, *};
+use leptos::{
+    html,
+    MaybeSignal::{Dynamic, Static},
+    *,
+};
 use wasm_bindgen::prelude::*;
+use web_sys::MouseEvent;
 
 #[component]
 pub fn Player(
     cx: Scope,
-    // #[prop(optional)] language: &'static str,
+    // #[prop(optional)] playing: bool,
     // #[prop(optional)] theme: &'static str,
     // #[prop(optional)] set_editor: Option<WriteSignal<Option<StandaloneCodeEditor>>>,
+    // #[prop(default = None)] on_change: Option<TOnChange>,
     // #[prop(default = None)] on_change: Option<TOnChange>,
 ) -> impl IntoView
 // where
 //     TOnChange: Fn() + 'static,
 {
+    let (playing, set_playing) = create_signal(cx, false);
+    let icon = Signal::derive(cx, move || if playing() { "pause" } else { "play" });
     let canvas_ref = create_node_ref::<html::Canvas>(cx);
     let (resolution, set_resolution) = create_signal(cx, (0, 0));
     let root = view! {
@@ -24,14 +32,13 @@ pub fn Player(
         <div class="components_player">
             <canvas _ref=canvas_ref />
             <div>
-                <PlayerButton icon="skip-back" />
-                <PlayerButton icon="play" />
-                <PlayerButton icon="pause" />
+                <PlayerButton icon=Static("skip-back")/>
+                <PlayerButton icon=Dynamic(icon) on:click=move |_|set_playing(!playing()) />
                 <span>140.3</span>
                 <span>60.1fps</span>
                 <span>{move || format!("{}x{}", resolution().0, resolution().1)}</span>
-                <PlayerButton icon="circle" color="marron" />
-                <PlayerButton icon="maximize" />
+                <PlayerButton icon=Static("circle") />
+                <PlayerButton icon=Static("maximize") />
             </div>
         </div>
     };
@@ -43,24 +50,13 @@ pub fn Player(
     }))
     .unwrap()
     .observe(&canvas_ref.get().unwrap());
+
+    create_effect(cx, move |_| log!("{} -- {}", playing(), icon()));
+
     root
 }
 
 #[component]
-fn PlayerButton(
-    cx: Scope,
-    icon: &'static str,
-    #[prop(optional)] color: &'static str,
-    #[prop(optional)] record: bool,
-) -> impl IntoView {
-    // let color = if record { "maroon" } else { "black" };
-    let fill = if record { "maroon" } else { "none" };
-    let scale = if record { "maroon" } else { "none" };
-    view! { cx,
-        <button>
-            <svg viewBox="0 0 24 24" style:color=color>
-                <use_ href=feather_icons::name(icon) />
-            </svg>
-        </button>
-    }
+fn PlayerButton(cx: Scope, icon: MaybeSignal<&'static str>) -> impl IntoView {
+    view! { cx, <button><svg viewBox="0 0 24 24"><use_ href=feather_icons::name(icon.get()) /></svg></button> }
 }

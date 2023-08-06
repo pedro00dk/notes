@@ -2,7 +2,10 @@ use js_sys::Function;
 use leptos::*;
 use wasm_bindgen::prelude::*;
 
-use crate::util::{js::js, types::monaco_editor};
+use crate::util::{
+    js::{js, js_fn},
+    types::monaco_editor,
+};
 
 #[component]
 pub fn Editor<TOnChange>(
@@ -23,8 +26,7 @@ where
     }
     if let Some(on_change) = on_change {
         let model = code_editor.get_model();
-        let callback = Function::from(Closure::<dyn Fn()>::new(on_change).into_js_value());
-        model.on_did_change_content(&callback);
+        model.on_did_change_content(&js_fn!(<dyn Fn()> on_change));
     }
     root
 }
