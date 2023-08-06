@@ -1,15 +1,9 @@
 #![allow(unused)]
-use js_sys::{
-    Array, Float32Array, Float64Array, Int16Array, Int32Array, Int8Array, Uint16Array, Uint32Array,
-    Uint8Array, Uint8ClampedArray,
-};
-use num_traits::{Float, Num};
+use num_traits::Float;
 use std::ops::{
-    Add, AddAssign, BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Div, DivAssign,
-    Index, IndexMut, Mul, MulAssign, Neg, Not, Rem, RemAssign, Shl, ShlAssign, Shr, ShrAssign, Sub,
-    SubAssign,
+    Add, AddAssign, BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Div, DivAssign, Index, IndexMut,
+    Mul, MulAssign, Neg, Not, Rem, RemAssign, Shl, ShlAssign, Shr, ShrAssign, Sub, SubAssign,
 };
-use wasm_bindgen::{JsCast, JsValue};
 
 /// `MX` is generic matrix implementation for all matrix-like and vector-like types.
 ///
@@ -96,7 +90,6 @@ macro_rules! mx {
     ($head:expr, $($tail:expr,)*) => { 1 + crate::math::matrix::mx!($($tail,)*) };
 }
 
-// pub(crate) use count;
 pub(crate) use mx;
 
 // iter
@@ -158,8 +151,7 @@ op_index!((usize, usize), index, R * index.0 + index.1);
 
 macro_rules! op_math_binary {
     ($op:ident::$fn:ident) => {
-        impl<T: Copy + Default + $op<Output = T>, const R: usize, const C: usize> $op
-            for MX<T, R, C>
+        impl<T: Copy + Default + $op<Output = T>, const R: usize, const C: usize> $op for MX<T, R, C>
         where
             [(); R * C]:,
         {
@@ -173,8 +165,7 @@ macro_rules! op_math_binary {
                 )
             }
         }
-        impl<T: Copy + Default + $op<Output = T>, const R: usize, const C: usize> $op<T>
-            for MX<T, R, C>
+        impl<T: Copy + Default + $op<Output = T>, const R: usize, const C: usize> $op<T> for MX<T, R, C>
         where
             [(); R * C]:,
         {
@@ -199,8 +190,7 @@ op_math_binary!(Shr::shr);
 
 macro_rules! op_math_unary {
     ($op:ident::$fn:ident) => {
-        impl<T: Copy + Default + $op<Output = T>, const R: usize, const C: usize> $op
-            for MX<T, R, C>
+        impl<T: Copy + Default + $op<Output = T>, const R: usize, const C: usize> $op for MX<T, R, C>
         where
             [(); R * C]:,
         {
@@ -222,10 +212,7 @@ macro_rules! op_math_assign {
             [(); R * C]:,
         {
             fn $fn(&mut self, rhs: Self) {
-                self.data
-                    .iter_mut()
-                    .zip(rhs)
-                    .for_each(|(a, b)| $op::$fn(a, b));
+                self.data.iter_mut().zip(rhs).for_each(|(a, b)| $op::$fn(a, b));
             }
         }
         impl<T: Copy + Default + $op, const R: usize, const C: usize> $op<T> for MX<T, R, C>
