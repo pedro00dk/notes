@@ -28,7 +28,7 @@ pub fn Player(cx: Scope) -> impl IntoView {
     );
 
     view! { cx,
-        <div>
+        <div class="components_player">
             <View rw_playing=rw_playing set_canvas=set_canvas />
             <Editor language="wgsl" theme="vs-dark" on_change=Some(move ||web_sys::console::log_1(&JsValue::from(&editor.get().unwrap().get_model().get_value()))) set_editor=set_editor />
         </div>

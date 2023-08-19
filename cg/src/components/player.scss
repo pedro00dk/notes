@@ -1,0 +1,12 @@
+.components_player {
+    display: flex;
+    padding: 1rem 1.5rem;
+    gap: 1.5rem;
+
+    & > :nth-child(1) {
+        flex: 0 0 min(800px, 100%);
+    }
+    & > :nth-last-child(1) {
+        flex: 1;
+    }
+}
