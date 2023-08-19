@@ -1,54 +1,36 @@
-use crate::util::{
-    js::{js, js_fn},
-    types::feather_icons,
-};
-use js_sys::{Array, Function, JsString, Reflect};
-use leptos::{
-    html,
-    MaybeSignal::{Dynamic, Static},
-    *,
-};
+use crate::components::editor::Editor;
+use crate::components::view::View;
+use crate::math;
+use crate::util::types::monaco_editor;
+use crate::web;
+use leptos::html;
+use leptos::*;
 use wasm_bindgen::prelude::*;
-use web_sys::MouseEvent;
 
 #[component]
-pub fn Player(
-    cx: Scope,
-    rw_playing: RwSignal<bool>,
-    set_canvas: WriteSignal<Option<html::HtmlElement<html::Canvas>>>,
-) -> impl IntoView {
-    let canvas_ref = create_node_ref::<html::Canvas>(cx);
-    let (playing, set_playing) = rw_playing.split();
-    let icon = Signal::derive(cx, move || if playing() { "pause" } else { "play" });
-    let (resolution, set_resolution) = create_signal(cx, (0, 0));
-    let root = view! {
+pub fn Player(cx: Scope) -> impl IntoView {
+    let rw_playing = create_rw_signal(cx, true);
+    let (canvas, set_canvas) = create_signal::<Option<html::HtmlElement<html::Canvas>>>(cx, None);
+    let (editor, set_editor) = create_signal::<Option<monaco_editor::StandaloneCodeEditor>>(cx, None);
+
+    create_resource(
         cx,
-        <div class="components_player">
-            <canvas _ref=canvas_ref />
-            <div>
-                <PlayerButton icon="skip-back"/>
-                <PlayerButton icon=icon on:click=move |_|set_playing(!playing()) />
-                <span>140.3</span>
-                <span>60.1fps</span>
-                <span>{move || format!("{}x{}", resolution().0, resolution().1)}</span>
-                <PlayerButton icon="maximize" />
-            </div>
-        </div>
-    };
-    let canvas = &canvas_ref.get().unwrap();
-    set_canvas(Some(canvas.clone()));
-    web_sys::ResizeObserver::new(&js_fn!(<dyn Fn(Array)> move |entries: Array| {
-        let entry = js!(entries[0] as web_sys::ResizeObserverEntry).content_box_size().at(0);
-        let block = js!(entry["blockSize"]).as_f64().unwrap_or_default() as i32;
-        let inline = js!(entry["inlineSize"]).as_f64().unwrap_or_default() as i32;
-        set_resolution((inline as i32, block as i32));
-    }))
-    .unwrap()
-    .observe(canvas);
-    root
-}
+        move || canvas,
+        async move |canvas| {
+            if let None = canvas.get() {
+                return;
+            }
+            let canvas = canvas.get().unwrap();
+            let webgpu = web::webgpu::WebGpu::new(Some(canvas)).await.unwrap();
+            webgpu.print();
+            web::webgpu::draw(&webgpu, math::mx!(VR[0.0, 0.3, 0.3, 1.0]));
+        },
+    );
 
-#[component]
-fn PlayerButton(cx: Scope, #[prop(into)] icon: MaybeSignal<&'static str>) -> impl IntoView {
-    view! { cx, <button><svg viewBox="0 0 24 24"><use_ href=move||feather_icons::name(icon.get()) /></svg></button> }
+    view! { cx,
+        <div>
+            <View rw_playing=rw_playing set_canvas=set_canvas />
+            <Editor language="wgsl" theme="vs-dark" on_change=Some(move ||web_sys::console::log_1(&JsValue::from(&editor.get().unwrap().get_model().get_value()))) set_editor=set_editor />
+        </div>
+    }
 }
